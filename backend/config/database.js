@@ -1,7 +1,7 @@
 /**
  * Sequelize database configuration
- * - Prefers PostgreSQL when DB_* env vars are provided
- * - Falls back to local SQLite (dev.sqlite) when not configured
+ * - Optimized for Vercel Postgres (Neon)
+ * - Prioritizes official Vercel environment variables
  */
 const path = require('path');
 const dotenv = require('dotenv');
@@ -11,64 +11,68 @@ const { Sequelize } = require('sequelize');
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const {
-  DB_HOST,
-  DB_USER,
-  DB_PASSWORD,
-  DB_NAME,
-  DB_PORT = 5432,
   DATABASE_URL,
-  POSTGRES_URL, // Vercel Postgres
+  POSTGRES_URL,
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_HOST,
+  POSTGRES_PORT = 5432,
+  POSTGRES_DATABASE,
   NODE_ENV = 'development',
-  DB_DIALECT,
 } = process.env;
 
 let sequelize;
 
 const isProduction = NODE_ENV === 'production';
+
+// Preference 1: Full Connection String (Recommended for Vercel/Neon)
 const connectionString = DATABASE_URL || POSTGRES_URL;
 
 if (connectionString) {
-  // Use connection string (common for Neon, Supabase, Vercel Postgres)
   sequelize = new Sequelize(connectionString, {
     dialect: 'postgres',
     dialectModule: require('pg'),
     logging: !isProduction ? console.log : false,
-    dialectOptions: isProduction ? {
+    dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, // Required for Neon/Vercel Postgres
       },
-    } : {},
+    },
     define: {
       underscored: false,
       freezeTableName: true,
     },
   });
-} else if (DB_HOST && DB_USER && DB_NAME) {
-  // Use individual credentials
-  sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD || '', {
-    host: DB_HOST,
-    port: Number(DB_PORT),
+} 
+// Preference 2: Individual Vercel-specific variables
+else if (POSTGRES_HOST && POSTGRES_USER && POSTGRES_DATABASE) {
+  sequelize = new Sequelize(POSTGRES_DATABASE, POSTGRES_USER, POSTGRES_PASSWORD, {
+    host: POSTGRES_HOST,
+    port: Number(POSTGRES_PORT),
     dialect: 'postgres',
     dialectModule: require('pg'),
     logging: !isProduction ? console.log : false,
-    dialectOptions: isProduction ? {
+    dialectOptions: {
       ssl: {
         require: true,
         rejectUnauthorized: false,
       },
-    } : {},
+    },
     define: {
       underscored: false,
       freezeTableName: true,
     },
   });
-} else {
+} 
+// Fallback: Local SQLite (only for development if no PG vars present)
+else {
   const storage = path.join(__dirname, '..', 'dev.sqlite');
+  console.log('No PostgreSQL configuration found, falling back to SQLite:', storage);
   sequelize = new Sequelize({
     dialect: 'sqlite',
     storage,
-    logging: NODE_ENV === 'development' ? console.log : false,
+    logging: !isProduction ? console.log : false,
     define: {
       underscored: false,
       freezeTableName: true,
@@ -77,4 +81,3 @@ if (connectionString) {
 }
 
 module.exports = sequelize;
-
