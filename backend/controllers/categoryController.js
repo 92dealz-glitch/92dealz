@@ -8,3 +8,16 @@ exports.list = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.getBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const category = await Category.findOne({ where: { slug } });
+    if (!category) {
+      return res.status(404).json({ success: false, message: 'Category not found' });
+    }
+    return res.json({ success: true, data: category });
+  } catch (err) {
+    return next(err);
+  }
+};

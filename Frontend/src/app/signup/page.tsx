@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser, loginUser } from "@/lib/api";
 
-type UserRole = "user" | "vendor" | "admin";
+type UserRole = "user" | "vendor";
 type ContactMethod = "phone" | "email";
 
 const EyeIcon = ({ showPassword, setShowPassword }: { showPassword: boolean, setShowPassword: React.Dispatch<React.SetStateAction<boolean>> }) => (
@@ -114,7 +114,7 @@ const VendorFields = ({ formData, handleChange }: { formData: any, handleChange:
 
 const RoleToggle = ({ role, setRole, setError }: { role: UserRole, setRole: (r: UserRole) => void, setError: (e: string) => void }) => (
   <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1 mb-6">
-    {(["user", "vendor", "admin"] as UserRole[]).map((r) => (
+    {(["user", "vendor"] as UserRole[]).map((r) => (
       <button
         key={r}
         type="button"
@@ -130,17 +130,13 @@ const RoleToggle = ({ role, setRole, setError }: { role: UserRole, setRole: (r: 
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
-        ) : r === "vendor" ? (
+        ) : (
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
-        ) : (
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-            <path d="M10 2h4l1 4h4v4l-4 1-1 4h-4l-1-4-4-1V6h4l1-4z" />
-          </svg>
         )}
-        {r === "user" ? "User" : r === "vendor" ? "Vendor" : "Admin"}
+        {r === "user" ? "User" : "Vendor"}
       </button>
     ))}
   </div>

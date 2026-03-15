@@ -38,7 +38,7 @@ exports.register = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(password, salt);
 
-    const allowedRoles = new Set(['user', 'vendor', 'admin']);
+    const allowedRoles = new Set(['user', 'vendor']);
     const roleToSave = role && allowedRoles.has(role) ? role : 'user';
     await User.create({ name, email, password: hashed, phone: phone || null, role: roleToSave });
 

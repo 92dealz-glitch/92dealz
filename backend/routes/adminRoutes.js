@@ -35,4 +35,7 @@ router.get('/analytics/summary', analytics.summary);
 router.get('/analytics/top-deals', analytics.topDeals);
 router.get('/analytics/clicks-by-day', analytics.clicksByDay);
 
+// Vendors
+router.post('/vendors', ctrl.createVendor);
+
 module.exports = router;

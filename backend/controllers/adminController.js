@@ -234,3 +234,32 @@ exports.updateSubmission = async (req, res, next) => {
     return next(err);
   }
 };
+
+// Admin creating Vendor
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
+
+exports.createVendor = async (req, res, next) => {
+  try {
+    const { name, email, password, phone } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: 'Name, email and password are required' });
+    }
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      return res.status(409).json({ success: false, message: 'Email already registered' });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
+    const vendor = await User.create({
+      name,
+      email,
+      password: hashed,
+      phone: phone || null,
+      role: 'vendor'
+    });
+    return res.status(201).json({ success: true, data: { id: vendor.id, name: vendor.name, email: vendor.email } });
+  } catch (err) {
+    return next(err);
+  }
+};

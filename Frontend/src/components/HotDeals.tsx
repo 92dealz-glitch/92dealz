@@ -5,51 +5,38 @@ import { useRef } from "react";
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesProvider";
 
-const items = [
-  {
-    id: 1,
-    title: "Power Bank",
-    price: "₦ 17,000",
-    img: "/assets/images/phone.svg",
-    location: "Jos",
-    newLabel: "Brand New",
-  },
-  {
-    id: 2,
-    title: "Gown",
-    price: "₦ 17,000",
-    img: "/assets/images/dress.svg",
-    location: "Jos",
-    newLabel: "Brand New",
-  },
-  {
-    id: 3,
-    title: "Boots",
-    price: "₦ 17,000",
-    img: "/assets/images/bgshoe.svg",
-    location: "Jos",
-    newLabel: "Brand New",
-  },
-  {
-    id: 4,
-    title: "Apple Glasses",
-    price: "₦ 17,000",
-    img: "/assets/images/phone.svg",
-    location: "Jos",
-    newLabel: "Brand New",
-  },
-  {
-    id: 5,
-    title: "Flower Vase",
-    price: "₦ 17,000",
-    img: "/assets/images/furniture.svg",
-    location: "Jos",
-    newLabel: "",
-  },
-];
+interface HotDeal {
+  id: number;
+  title: string;
+  price: string;
+  img: string;
+  location: string;
+  newLabel?: string;
+}
+
+import { listActiveAds } from "@/services/ads.service";
+import { useEffect, useState } from "react";
 
 export default function HotDeals() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [list, setList] = useState<HotDeal[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await listActiveAds();
+        const mapped: HotDeal[] = (res.data || []).reverse().slice(0, 8).map((d: any) => ({
+          id: d.id,
+          title: d.title,
+          price: `₦ ${Number(d.price).toLocaleString()}`,
+          img: d.image_url || "/assets/images/bgphone.svg",
+          location: d.location || "Nigeria",
+          newLabel: "Brand New",
+        }));
+        setList(mapped);
+      } catch (err) {}
+    })();
+  }, []);
 
   const { isFavorite, toggle } = useFavorites();
 
@@ -117,7 +104,7 @@ export default function HotDeals() {
             "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           }
         >
-          {items.map((item) => (
+          {list.map((item) => (
             <div
               key={item.id}
               className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#FF6B35] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start min-h-[320px] lg:min-h-0"

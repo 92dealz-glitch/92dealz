@@ -38,6 +38,12 @@ export default function Navbar() {
   const [query, setQuery] = useState("");
   const [mQuery, setMQuery] = useState("");
   const favorites = useFavorites();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+    setIsLoggedIn(!!token);
+  }, []);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -102,19 +108,23 @@ export default function Navbar() {
 
             {/* Right Section */}
             <div className="flex items-center gap-4">
-              <Link href="/signup" className="text-sm text-zinc-700 hover:text-orange-600">
-                Sign up
-              </Link>
-              <Link href="/login" className="text-sm text-zinc-700 hover:text-orange-600">
-                Log in
-              </Link>
-              <Link href="/signup" className="text-sm text-zinc-700 hover:text-orange-600">
-              <button className="hidden lg:inline-flex items-center rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-orange-600 transition-colors">
-                Start Selling Today!
-              </button>
-              </Link>
-
-              <NavUserMenu />
+              {!isLoggedIn ? (
+                <>
+                  <Link href="/signup" className="text-sm text-zinc-700 hover:text-orange-600">
+                    Sign up
+                  </Link>
+                  <Link href="/login" className="text-sm text-zinc-700 hover:text-orange-600">
+                    Log in
+                  </Link>
+                  <Link href="/signup" className="text-sm text-zinc-700 hover:text-orange-600">
+                    <button className="hidden lg:inline-flex items-center rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-orange-600 transition-colors">
+                      Start Selling Today!
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <NavUserMenu />
+              )}
             </div>
           </div>
         </div>
@@ -138,13 +148,19 @@ export default function Navbar() {
 
             <div className="ml-auto flex items-center gap-3">
               <div className="flex items-center gap-3">
-                <Link href="/login" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-orange-600">
-                  Log In
-                </Link>
-                <span className="text-[15px] text-gray-400">/</span>
-                <Link href="/signup" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-orange-600">
-                  Sign Up
-                </Link>
+                {!isLoggedIn ? (
+                  <>
+                    <Link href="/login" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-orange-600">
+                      Log In
+                    </Link>
+                    <span className="text-[15px] text-gray-400">/</span>
+                    <Link href="/signup" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-orange-600">
+                      Sign Up
+                    </Link>
+                  </>
+                ) : (
+                  <NavUserMenu />
+                )}
               </div>
 
               <button
@@ -219,31 +235,11 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* Search Row (fixed icon alignment) */}
-              {/* <div className="flex items-center gap-2 mb-4">
-                <div className="w-[130px] flex-shrink-0">
-                  <LocationDropdown value="Lagos" onChange={() => {}} />
-                </div>
-
-                <div className="flex flex-1 items-center overflow-hidden rounded-lg border border-orange-500 bg-white h-[42px]">
-                  <input
-                    type="text"
-                    placeholder="I am looking for..."
-                    className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full"
-                  />
-                  <button className="flex items-center justify-center bg-orange-500 px-4 h-full">
-                    <Search size={18} className="text-white" />
-                  </button>
-                </div>
-              </div> */}
-
               <div className="flex w-full items-stretch gap-2 pb-4">
-                {/* Location Dropdown */}
                 <div className="flex-shrink-0 w-auto min-w-[100px] max-w-[130px]">
                   <LocationDropdown value="Lagos" onChange={() => { }} />
                 </div>
 
-                {/* Search Bar */}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -268,79 +264,85 @@ export default function Navbar() {
               </div>
 
               {/* Login/Signup Buttons */}
-              <div className="flex gap-3 mb-4">
-                <Link href="/login" className="flex-1 bg-orange-500 text-white py-3 rounded-md shadow inline-flex items-center justify-center">
-                  Login
-                </Link>
-                <Link href="/signup" className="flex-1 bg-orange-500 text-white py-3 rounded-md shadow inline-flex items-center justify-center">
-                  Signup
-                </Link>
-              </div>
+              {!isLoggedIn && (
+                <div className="flex gap-3 mb-4">
+                  <Link href="/login" className="flex-1 bg-orange-500 text-white py-3 rounded-md shadow inline-flex items-center justify-center">
+                    Login
+                  </Link>
+                  <Link href="/signup" className="flex-1 bg-orange-500 text-white py-3 rounded-md shadow inline-flex items-center justify-center">
+                    Signup
+                  </Link>
+                </div>
+              )}
 
               {/* Menu Links */}
-              <div className="divide-y">
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <Bell className="text-orange-600" />
-                  <div className="text-sm font-medium">Notifications</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <Mail className="text-orange-600" />
-                  <div className="text-sm">Messages</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <HelpCircle className="text-orange-600" />
-                  <div className="text-sm">Help Center</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <MessageSquare className="text-orange-600" />
-                  <div className="text-sm">Chat With Us</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <Lock className="text-orange-600" />
-                  <div className="text-sm">Update Password</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <Shield className="text-orange-600" />
-                  <div className="text-sm">Verify Account</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <CreditCard className="text-orange-600" />
-                  <div className="text-sm">Payment Details</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3">
-                  <Settings className="text-orange-600" />
-                  <div className="text-sm">Settings</div>
-                </div>
-                <div className="px-4 py-3 flex items-center gap-3 text-red-500">
-                  <LogOut className="text-red-500" />
-                  <div className="text-sm">Logout</div>
-                </div>
+              <div className="py-2 border-b border-zinc-100">
+                <button
+                  onClick={() => {
+                    const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
+                    setMobileMenuOpen(false);
+                    router.push(r === "vendor" ? "/vendor-dashboard" : r === "admin" ? "/admin" : "/user/dashboard");
+                  }}
+                  className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
+                >
+                  <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Settings size={16} /></span>
+                  Dashboard
+                </button>
+                <button
+                  onClick={() => {
+                    const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
+                    setMobileMenuOpen(false);
+                    router.push(r === "vendor" ? "/vendor-dashboard/add-product" : "/user/profile");
+                  }}
+                  className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
+                >
+                  <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Plus size={16} /></span>
+                  { (typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "My Profile" }
+                </button>
               </div>
 
-              {/* Bottom Fixed Navigation */}
-              <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t">
+              <div className="divide-y divide-zinc-100">
+                {[
+                  { icon: Bell, label: "Notifications" },
+                  { icon: Mail, label: "Messages" },
+                  { icon: HelpCircle, label: "Help Center" },
+                  { icon: MessageSquare, label: "Chat With Us" },
+                  { icon: Lock, label: "Update Password" },
+                  { icon: Shield, label: "Verify Account" },
+                  { icon: CreditCard, label: "Payment Details" },
+                  { icon: LogoutButton, label: "Logout", color: "text-red-500" }
+                ].map((item, idx) => (
+                  <div key={idx} className={`px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer ${item.color || "text-zinc-700"}`}>
+                    <item.icon className={item.color ? "text-red-500" : "text-orange-600"} size={20} />
+                    <div className="text-sm font-medium">{item.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Bottom Fixed Navigation in Modal */}
+              <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t z-50">
                 <div className="max-w-7xl mx-auto px-4">
                   <div className="flex items-center justify-between h-16">
-                    <button className="flex flex-col items-center text-sm text-zinc-700">
-                      <Home />
-                      <span className="text-xs">Home</span>
-                    </button>
-                    <button className="flex flex-col items-center text-sm text-zinc-700">
-                      <Heart />
-                      <span className="text-xs">Favorite</span>
-                    </button>
-                    <button className="flex flex-col items-center text-sm text-zinc-700">
-                      <Plus />
-                      <span className="text-xs">Sell</span>
-                    </button>
-                    <button className="flex flex-col items-center text-sm text-zinc-700">
-                      <Grid />
-                      <span className="text-xs">My Ads</span>
-                    </button>
-                    <button className="flex flex-col items-center text-sm text-zinc-700">
-                      <User />
-                      <span className="text-xs">Account</span>
-                    </button>
+                    <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                      <Home size={22} />
+                      <span className="text-[10px] mt-1 text-center">Home</span>
+                    </Link>
+                    <Link href="/favorites" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                      <Heart size={22} />
+                      <span className="text-[10px] mt-1 text-center">Favorite</span>
+                    </Link>
+                    <Link href="/sell" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                      <Plus size={22} />
+                      <span className="text-[10px] mt-1 text-center">Sell</span>
+                    </Link>
+                    <Link href="/my-ads" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                      <Grid size={22} />
+                      <span className="text-[10px] mt-1 text-center">My Ads</span>
+                    </Link>
+                    <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                      <User size={22} />
+                      <span className="text-[10px] mt-1 text-center">Account</span>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -351,28 +353,30 @@ export default function Navbar() {
 
       {/* Persistent bottom navigation shown on mobile when modal is closed */}
       {!mobileMenuOpen && (
-        <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t z-40">
+        <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between h-16">
               <Link href="/" className="flex flex-col items-center text-sm text-zinc-700">
-                <Home />
-                <span className="text-xs">Home</span>
+                <Home size={22} />
+                <span className="text-[10px] mt-1 text-center">Home</span>
               </Link>
               <Link href="/favorites" className="flex flex-col items-center text-sm text-zinc-700">
-                <Heart />
-                <span className="text-xs">Favorite</span>
+                <Heart size={22} />
+                <span className="text-[10px] mt-1 text-center">Favorite</span>
               </Link>
-              <Link href="/sell" className="flex flex-col items-center text-sm text-zinc-700">
-                <Plus />
-                <span className="text-xs">Sell</span>
+              <Link href="/sell" className="flex flex-col items-center text-sm text-[#FF6B35]">
+                <div className="bg-[#FF6B35] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white">
+                  <Plus size={24} className="text-white" />
+                </div>
+                <span className="text-[10px] mt-1 text-center">Sell</span>
               </Link>
               <Link href="/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
-                <Grid />
-                <span className="text-xs">My Ads</span>
+                <Grid size={22} />
+                <span className="text-[10px] mt-1 text-center">My Ads</span>
               </Link>
               <Link href="/account" className="flex flex-col items-center text-sm text-zinc-700">
                 <UserAvatarCircle small />
-                <span className="text-xs">Account</span>
+                <span className="text-[10px] mt-1 text-center">Account</span>
               </Link>
             </div>
           </div>
@@ -392,7 +396,7 @@ export default function Navbar() {
                     setOpen((v) => !v);
                   }}
                   disabled={!!openCategory}
-                  className="flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700"
+                  className="flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-medium"
                 >
                   <Menu size={18} />
                   Browse Categories
@@ -403,14 +407,14 @@ export default function Navbar() {
                     className="left-0"
                     onSelect={(id) => {
                       setOpen(false);
-                      setOpenCategory(id);
+                      router.push(`/category/${id}`);
                     }}
                   />
                 )}
               </div>
 
               {/* Category Buttons */}
-              <div className="hidden sm:flex items-center gap-12 text-sm">
+              <div className="hidden sm:flex items-center gap-10 text-sm">
                 {["fashion", "phones", "computer", "health", "electronics"].map(
                   (category) => (
                     <button
@@ -420,7 +424,7 @@ export default function Navbar() {
                           c === category ? null : category,
                         )
                       }
-                      className="text-zinc-700 hover:text-orange-600 transition-all"
+                      className="text-zinc-700 hover:text-orange-600 transition-all font-medium py-2"
                     >
                       {category === "fashion" && "Fashion"}
                       {category === "phones" && "Phones & Tablets"}
@@ -440,7 +444,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 hover:text-orange-600 transition-colors"
                 >
                   <Heart size={20} />
-                  <span className="text-xs">{favorites.items.length}</span>
+                  <span className="text-xs font-bold">{favorites.items.length}</span>
                 </button>
               </div>
             </div>
@@ -450,9 +454,10 @@ export default function Navbar() {
         {openCategory && (
           <CategoryMegaMenu
             category={openCategory}
-            onSelect={() => {
+            onSelect={(item) => {
               setOpenCategory(null);
               setOpen(false);
+              router.push(`/category/${openCategory}?sub=${item}`);
             }}
           />
         )}
@@ -489,16 +494,10 @@ function useNavProfileImage() {
 
 function NavUserMenu() {
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    function close(e: MouseEvent) {
-      const t = e.target as HTMLElement;
-      if (!t.closest?.("#nav-user-menu")) return;
-    }
-    return () => {};
-  }, []);
   const url = useNavProfileImage();
   const role = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
   const router = useRouter();
+
   function signOut() {
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("token");
@@ -506,29 +505,56 @@ function NavUserMenu() {
       window.localStorage.removeItem("profile_image_url");
     }
     router.push("/login");
+    window.location.reload();
   }
+
   function go(path: string) {
     setOpen(false);
     router.push(path);
   }
+
   const vendor = role === "vendor";
+
   return (
     <div className="relative" id="nav-user-menu">
-      <button onClick={() => setOpen(v => !v)} className="flex items-center justify-center rounded-full bg-orange-500 p-2 hover:bg-orange-600 transition-colors w-9 h-9 overflow-hidden">
+      <button 
+        onClick={() => setOpen(v => !v)} 
+        className="flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-600 transition-colors w-10 h-10 overflow-hidden border-2 border-white shadow-sm"
+      >
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={url} alt="Me" className="w-full h-full object-cover rounded-full" />
+          <img src={url} alt="Me" className="w-full h-full object-cover" />
         ) : (
-          <User size={20} className="text-white" />
+          <User size={22} className="text-white" />
         )}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border border-zinc-200 rounded-lg shadow-lg overflow-hidden z-50">
-          <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard")} className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50">View Profile</button>
-          <button onClick={() => go(vendor ? "/vendor-dashboard/settings/personal-details" : role === "admin" ? "/admin/settings" : "/user/dashboard/settings")} className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50">Account Settings</button>
-          {vendor && <button onClick={() => go("/vendor-dashboard/messages")} className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50">Messages</button>}
-          <button onClick={signOut} className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 text-red-600">Sign out</button>
-        </div>
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 mt-3 w-56 bg-white border border-zinc-100 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="bg-zinc-50 px-4 py-3 border-b border-zinc-100 mb-1">
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Account Role</p>
+              <p className="text-sm font-bold text-orange-600 capitalize">{role}</p>
+            </div>
+            <div className="p-1.5 space-y-0.5">
+              <button onClick={() => go(vendor ? "/vendor/dashboard" : role === "admin" ? "/admin" : "/user/dashboard")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <Settings size={16} />
+                Dashboard
+              </button>
+              <button onClick={() => go(vendor ? "/vendor-dashboard/add-product" : "/user/profile")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <Plus size={16} />
+                {vendor ? "Add New Deal" : "My Profile"}
+              </button>
+              <button 
+                onClick={signOut} 
+                className="w-full text-left px-3 py-2 text-sm hover:bg-red-50 text-red-600 rounded-lg transition-colors flex items-center gap-3 mt-1 pt-2 border-t border-zinc-100"
+              >
+                <LogOut size={16} />
+                Sign out
+              </button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
@@ -536,15 +562,19 @@ function NavUserMenu() {
 
 function UserAvatarCircle({ small = false }: { small?: boolean }) {
   const url = useNavProfileImage();
-  const size = small ? "w-6 h-6" : "w-9 h-9";
+  const size = small ? "w-6 h-6" : "w-10 h-10";
   return (
-    <div className={`${size} rounded-full bg-orange-500 flex items-center justify-center text-white overflow-hidden`}>
+    <div className={`${size} rounded-full bg-orange-500 flex items-center justify-center text-white overflow-hidden border border-white shadow-sm`}>
       {url ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={url} alt="Me" className="w-full h-full object-cover rounded-full" />
+        <img src={url} alt="Me" className="w-full h-full object-cover" />
       ) : (
-        <User size={small ? 14 : 16} />
+        <User size={small ? 14 : 20} />
       )}
     </div>
   );
+}
+
+function LogoutButton(props: any) {
+  return <LogOut {...props} />;
 }

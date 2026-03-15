@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import StatCard from "@/components/admin/StatCard";
 import { API_BASE } from "@/services/apiClient";
+import VendorManagement from "@/components/admin/VendorManagement";
 
 import { 
   ResponsiveContainer, 
@@ -227,6 +228,8 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+
+      <VendorManagement />
 
       {/* Recent Deals Table Placeholder */}
       <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">

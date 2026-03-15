@@ -3,8 +3,9 @@ import Link from "next/link";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import CategoryListingClient from "../../../components/CategoryListingClient";
-import { getCategory } from "../../../data/categoriesData";
-import { getItemsByCategory, getAllItems } from "../../../data/mockItems";
+import { apiFetch } from "@/services/apiClient";
+import { ENDPOINTS } from "@/utils/constants";
+import { searchDeals } from "@/services/search.service";
 
 type Props = {
   params: { slug: string };
@@ -22,8 +23,21 @@ export default async function CategoryPage({ params }: Props) {
       .join(" ");
   };
 
-  const category = (await getCategory(slug)) || { title: formatSlug(slug) };
-  const items = await getItemsByCategory(slug);
+  let categoryId: number | undefined;
+  let categoryLabel = formatSlug(slug);
+
+  try {
+    const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
+    if (catRes.success && catRes.data) {
+      categoryId = catRes.data.id;
+      categoryLabel = catRes.data.name;
+    }
+  } catch (err) {
+    console.error("Failed to fetch category by slug:", err);
+  }
+
+  const res = await searchDeals({ category_id: categoryId, page: 1, limit: 50 });
+  const items = res.data || [];
 
   const brands = [
     "huawei",
@@ -36,9 +50,14 @@ export default async function CategoryPage({ params }: Props) {
     "tecno",
   ];
 
-  const displayItems = items.length > 0 ? items : (await getAllItems()).slice(0, 6);
-
-  const categoryLabel = (category && category.title) || formatSlug(slug);
+  const displayItems = items.map((l: any) => ({
+    id: l.id,
+    title: l.title,
+    price: `₦${Number(l.price).toLocaleString()}`,
+    desc: l.description || undefined,
+    badge: l.image_url || "/assets/images/bgphone.svg",
+    location: l.location || "N/A"
+  }));
 
   return (
     <>
@@ -69,6 +88,7 @@ export default async function CategoryPage({ params }: Props) {
                   className="flex flex-col items-center flex-none w-[80px] sm:w-[96px] md:w-[110px] p-1"
                 >
                   <div className="w-full h-10 sm:h-12 md:h-14 flex items-center justify-center bg-white rounded">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`/assets/images/brand/${b}.svg`}
                       alt={b}
@@ -86,7 +106,7 @@ export default async function CategoryPage({ params }: Props) {
 
         <CategoryListingClient
           items={displayItems}
-          title={category.title}
+          title={categoryLabel}
           brands={brands}
         />
       </main>
@@ -96,4 +116,4 @@ export default async function CategoryPage({ params }: Props) {
       </div>
     </>
   );
-}
+}
