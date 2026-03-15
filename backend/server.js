@@ -44,9 +44,37 @@ app.use(morgan('dev'));
 
 // Body parsing middleware
 app.use(bodyParser.json());
+// CORS configuration (support comma-separated list, sanitized for matching)
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3005')
+  .split(',')
+  .map((o) => o.trim().replace(/\/$/, "")); // Remove trailing slashes for exact match
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      const sanitizedOrigin = origin.replace(/\/$/, "");
+      if (allowedOrigins.indexOf(sanitizedOrigin) !== -1 || allowedOrigins.includes('*')) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked for origin: ${origin}`);
+        callback(new Error('CORS: Origin not allowed'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  })
+);
+
+// Logging middleware
+app.use(morgan('dev'));
+
+// Body parsing middleware
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => res.send('Auth Server Running'));
+app.get('/', (req, res) => res.send('234Deals API Server Running'));
 
 // Database
 const sequelize = require('./config/database');
@@ -81,23 +109,29 @@ const vendorRoutes = require('./routes/vendorRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const marketerRoutes = require('./routes/marketerRoutes');
 
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/deals', dealRoutes);
-app.use('/api/ads', adsRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/stores', storeRoutes);
-app.use('/api/favorites', favoriteRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/alerts', alertRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/submissions', submissionRoutes);
-app.use('/api/uploads', uploadRoutes);
+// Helper to register routes with and without /api prefix
+function registerRoutes(prefix, router) {
+  app.use(`/api${prefix}`, router);
+  app.use(prefix, router);
+}
+
+registerRoutes('/users', userRoutes);
+registerRoutes('/auth', authRoutes);
+registerRoutes('/deals', dealRoutes);
+registerRoutes('/ads', adsRoutes);
+registerRoutes('/categories', categoryRoutes);
+registerRoutes('/stores', storeRoutes);
+registerRoutes('/favorites', favoriteRoutes);
+registerRoutes('/search', searchRoutes);
+registerRoutes('/alerts', alertRoutes);
+registerRoutes('/admin', adminRoutes);
+registerRoutes('/submissions', submissionRoutes);
+registerRoutes('/uploads', uploadRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/api/messages', messageRoutes);
-app.use('/api/vendor', vendorRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/marketer', marketerRoutes);
+registerRoutes('/messages', messageRoutes);
+registerRoutes('/vendor', vendorRoutes);
+registerRoutes('/analytics', analyticsRoutes);
+registerRoutes('/marketer', marketerRoutes);
 
 // Error handling middleware (registered after routes)
 const errorHandler = require('./middleware/errorHandler');
