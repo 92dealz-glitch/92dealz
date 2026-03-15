@@ -1,0 +1,102 @@
+const sequelize = require('../config/database');
+
+exports.logView = async (req, res, next) => {
+  try {
+    const { deal_id } = req.body;
+    if (!deal_id) return res.status(400).json({ success: false, message: 'deal_id required' });
+    const userId = req.user ? req.user.id : null;
+    await sequelize.query(
+      `INSERT INTO click_events (deal_id, user_id, type, clicked_at) VALUES ($1, $2, 'view', NOW())`,
+      { bind: [Number(deal_id), userId] }
+    );
+    return res.status(201).json({ success: true });
+  } catch (err) { return next(err); }
+};
+
+exports.logContact = async (req, res, next) => {
+  try {
+    const { deal_id } = req.body;
+    if (!deal_id) return res.status(400).json({ success: false, message: 'deal_id required' });
+    const userId = req.user ? req.user.id : null;
+    await sequelize.query(
+      `INSERT INTO click_events (deal_id, user_id, type, clicked_at) VALUES ($1, $2, 'contact', NOW())`,
+      { bind: [Number(deal_id), userId] }
+    );
+    return res.status(201).json({ success: true });
+  } catch (err) { return next(err); }
+};
+
+// Admin analytics endpoints (used by adminRoutes)
+exports.summary = async (_req, res, next) => {
+  try {
+    const [[deals]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_deals FROM deals`);
+    const [[published]] = await sequelize.query(`SELECT COUNT(*)::INT AS published FROM deals WHERE status='active'`);
+    const [[drafts]] = await sequelize.query(`SELECT COUNT(*)::INT AS drafts FROM deals WHERE status='draft'`);
+    const [[scheduled]] = await sequelize.query(`SELECT COUNT(*)::INT AS scheduled FROM deals WHERE status='scheduled'`);
+    const [[views]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_views FROM click_events WHERE type='view'`);
+    const [[contacts]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_contacts FROM click_events WHERE type='contact'`);
+    
+    // Get deals by category
+    const [categories] = await sequelize.query(
+      `SELECT c.name, COUNT(d.id)::INT AS value
+       FROM categories c
+       LEFT JOIN deals d ON d.category_id = c.id
+       GROUP BY c.id
+       ORDER BY value DESC
+       LIMIT 7`
+    );
+
+    // Get recent deals
+    const [recentDeals] = await sequelize.query(
+      `SELECT d.id, d.title, d.status, d.price, d."updatedAt", u.name as merchant,
+              (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id AND ce.type='view') as views
+       FROM deals d
+       LEFT JOIN users u ON u.id = d."userId"
+       ORDER BY d."createdAt" DESC
+       LIMIT 5`
+    );
+
+    return res.json({ 
+      success: true, 
+      data: { 
+        total_deals: deals.total_deals || 0, 
+        published: published.published || 0,
+        drafts: drafts.drafts || 0,
+        scheduled: scheduled.scheduled || 0,
+        total_views: views.total_views || 0, 
+        total_contacts: contacts.total_contacts || 0,
+        categories,
+        recentDeals
+      } 
+    });
+  } catch (err) { return next(err); }
+};
+
+exports.topDeals = async (_req, res, next) => {
+  try {
+    const [rows] = await sequelize.query(
+      `SELECT d.id, d.title, d.price, d.image_url, COUNT(c.id)::INT AS views
+       FROM deals d
+       LEFT JOIN click_events c ON c.deal_id = d.id AND c.type='view'
+       GROUP BY d.id
+       ORDER BY views DESC
+       LIMIT 10`
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err) { return next(err); }
+};
+
+exports.clicksByDay = async (_req, res, next) => {
+  try {
+    const [rows] = await sequelize.query(
+      `SELECT date_trunc('day', clicked_at)::date AS day,
+              SUM(CASE WHEN type='view' THEN 1 ELSE 0 END)::INT AS views,
+              SUM(CASE WHEN type='contact' THEN 1 ELSE 0 END)::INT AS contacts
+       FROM click_events
+       GROUP BY 1
+       ORDER BY day DESC
+       LIMIT 30`
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err) { return next(err); }
+};
