@@ -15,6 +15,35 @@ const morgan = require('morgan');
 // Load env from backend/.env
 dotenv.config({ path: path.join(__dirname, '.env') });
 
+const app = express();
+
+// CORS configuration (support comma-separated list of allowed origins)
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3005')
+  .split(',')
+  .map((o) => o.trim());
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS: Origin not allowed: ' + origin));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  })
+);
+
+// Logging middleware
+app.use(morgan('dev'));
+
+// Body parsing middleware
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => res.send('Auth Server Running'));
@@ -51,6 +80,7 @@ const messageRoutes = require('./routes/messageRoutes');
 const vendorRoutes = require('./routes/vendorRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const marketerRoutes = require('./routes/marketerRoutes');
+
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/deals', dealRoutes);
