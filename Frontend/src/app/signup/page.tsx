@@ -7,6 +7,164 @@ import { registerUser, loginUser } from "@/lib/api";
 type UserRole = "user" | "vendor" | "admin";
 type ContactMethod = "phone" | "email";
 
+const EyeIcon = ({ showPassword, setShowPassword }: { showPassword: boolean, setShowPassword: React.Dispatch<React.SetStateAction<boolean>> }) => (
+  <button
+    type="button"
+    onClick={() => setShowPassword((p) => !p)}
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+    aria-label="Toggle password visibility"
+  >
+    {showPassword ? (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" />
+        <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+        <path d="M14.12 14.12a3 3 0 11-4.24-4.24" />
+        <line x1="1" y1="1" x2="23" y2="23" />
+      </svg>
+    ) : (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    )}
+  </button>
+);
+
+const inputCls = "w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition placeholder-gray-400";
+const labelCls = "block text-sm font-medium text-gray-700 mb-1";
+
+interface BaseFieldsProps {
+  role: UserRole;
+  method: ContactMethod;
+  formData: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  showPassword: boolean;
+  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const BaseFields = ({ role, method, formData, handleChange, showPassword, setShowPassword }: BaseFieldsProps) => (
+  <>
+    <div>
+      <label className={labelCls}>{role === "vendor" ? "Owner / Contact Name" : "Full Name"}</label>
+      <input name="name" required value={formData.name} onChange={handleChange}
+        placeholder={role === "vendor" ? "Your full name" : "Enter your full name"}
+        className={inputCls} />
+    </div>
+    <div>
+      <label className={labelCls}>{method === "phone" ? "Phone Number" : "Email Address"}</label>
+      <input name="contact" required type={method === "email" ? "email" : "text"}
+        value={formData.contact} onChange={handleChange}
+        placeholder={method === "phone" ? "e.g. +2348012345678" : "you@example.com"}
+        className={inputCls} />
+    </div>
+    <div>
+      <label className={labelCls}>Password</label>
+      <div className="relative">
+        <input name="password" required type={showPassword ? "text" : "password"}
+          value={formData.password} onChange={handleChange}
+          placeholder="Create a password" className={`${inputCls} pr-11`} />
+        <EyeIcon showPassword={showPassword} setShowPassword={setShowPassword} />
+      </div>
+    </div>
+    <div>
+      <label className={labelCls}>Confirm Password</label>
+      <input name="confirmPassword" required type="password"
+        value={formData.confirmPassword} onChange={handleChange}
+        placeholder="Re-enter your password" className={inputCls} />
+    </div>
+  </>
+);
+
+const VendorFields = ({ formData, handleChange }: { formData: any, handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void }) => (
+  <>
+    <div className="flex items-center gap-3 my-1">
+      <div className="flex-1 h-px bg-gray-200" />
+      <span className="text-xs text-gray-400 font-medium whitespace-nowrap">Business Details</span>
+      <div className="flex-1 h-px bg-gray-200" />
+    </div>
+
+    <div>
+      <label className={labelCls}>Business / Store Name</label>
+      <input name="businessName" required value={formData.businessName} onChange={handleChange}
+        placeholder="e.g. Adaeze Fashion House" className={inputCls} />
+    </div>
+    <div>
+      <label className={labelCls}>Business Category</label>
+      <select name="businessCategory" required value={formData.businessCategory}
+        onChange={handleChange}
+        className={`${inputCls} bg-white`}>
+        <option value="" disabled>Select a category</option>
+        <option value="fashion">Fashion & Clothing</option>
+        <option value="electronics">Electronics & Gadgets</option>
+        <option value="food">Food & Groceries</option>
+        <option value="beauty">Beauty & Health</option>
+        <option value="home">Home & Furniture</option>
+        <option value="auto">Automobiles & Parts</option>
+        <option value="services">Services</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div>
+      <label className={labelCls}>Business Address</label>
+      <input name="businessAddress" required value={formData.businessAddress} onChange={handleChange}
+        placeholder="e.g. 14 Broad Street, Lagos" className={inputCls} />
+    </div>
+  </>
+);
+
+const RoleToggle = ({ role, setRole, setError }: { role: UserRole, setRole: (r: UserRole) => void, setError: (e: string) => void }) => (
+  <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1 mb-6">
+    {(["user", "vendor", "admin"] as UserRole[]).map((r) => (
+      <button
+        key={r}
+        type="button"
+        onClick={() => { setRole(r); setError(""); }}
+        className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-all duration-200 ${
+          role === r
+            ? "bg-white text-orange-500 shadow-sm"
+            : "text-gray-500 hover:text-gray-700"
+        }`}
+      >
+        {r === "user" ? (
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        ) : r === "vendor" ? (
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        ) : (
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <path d="M10 2h4l1 4h4v4l-4 1-1 4h-4l-1-4-4-1V6h4l1-4z" />
+          </svg>
+        )}
+        {r === "user" ? "User" : r === "vendor" ? "Vendor" : "Admin"}
+      </button>
+    ))}
+  </div>
+);
+
+const ContactMethodToggle = ({ method, setMethod }: { method: ContactMethod, setMethod: (m: ContactMethod) => void }) => (
+  <div className="flex gap-2 mb-4">
+    {(["phone", "email"] as ContactMethod[]).map((m) => (
+      <button
+        key={m}
+        type="button"
+        onClick={() => setMethod(m)}
+        className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+          method === m
+            ? "bg-orange-500 border-orange-500 text-white"
+            : "bg-white border-gray-300 text-gray-600 hover:border-orange-300"
+        }`}
+      >
+        {m === "phone" ? "Phone Number" : "Email"}
+      </button>
+    ))}
+  </div>
+);
+
 export default function SignupPage() {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>("user");
@@ -69,158 +227,6 @@ export default function SignupPage() {
     }
   };
 
-  /* ─── Shared Sub-components ──────────────────────────────── */
-
-  const RoleToggle = () => (
-    <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1 mb-6">
-      {(["user", "vendor", "admin"] as UserRole[]).map((r) => (
-        <button
-          key={r}
-          type="button"
-          onClick={() => { setRole(r); setError(""); }}
-          className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-all duration-200 ${
-            role === r
-              ? "bg-white text-orange-500 shadow-sm"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          {r === "user" ? (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          ) : r === "vendor" ? (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-          ) : (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M10 2h4l1 4h4v4l-4 1-1 4h-4l-1-4-4-1V6h4l1-4z" />
-            </svg>
-          )}
-          {r === "user" ? "User" : r === "vendor" ? "Vendor" : "Admin"}
-        </button>
-      ))}
-    </div>
-  );
-
-  const ContactMethodToggle = ({ pill = false }: { pill?: boolean }) => (
-    <div className={`flex gap-2 mb-4 ${pill ? "" : ""}`}>
-      {(["phone", "email"] as ContactMethod[]).map((m) => (
-        <button
-          key={m}
-          type="button"
-          onClick={() => setMethod(m)}
-          className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-            method === m
-              ? "bg-orange-500 border-orange-500 text-white"
-              : "bg-white border-gray-300 text-gray-600 hover:border-orange-300"
-          }`}
-        >
-          {m === "phone" ? "Phone Number" : "Email"}
-        </button>
-      ))}
-    </div>
-  );
-
-  const EyeIcon = () => (
-    <button
-      type="button"
-      onClick={() => setShowPassword((p) => !p)}
-      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-      aria-label="Toggle password visibility"
-    >
-      {showPassword ? (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" />
-          <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
-          <path d="M14.12 14.12a3 3 0 11-4.24-4.24" />
-          <line x1="1" y1="1" x2="23" y2="23" />
-        </svg>
-      ) : (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      )}
-    </button>
-  );
-
-  const inputCls = "w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition placeholder-gray-400";
-  const labelCls = "block text-sm font-medium text-gray-700 mb-1";
-
-  const BaseFields = () => (
-    <>
-      <div>
-        <label className={labelCls}>{role === "vendor" ? "Owner / Contact Name" : "Full Name"}</label>
-        <input name="name" required value={formData.name} onChange={handleChange}
-          placeholder={role === "vendor" ? "Your full name" : "Enter your full name"}
-          className={inputCls} />
-      </div>
-      <div>
-        <label className={labelCls}>{method === "phone" ? "Phone Number" : "Email Address"}</label>
-        <input name="contact" required type={method === "email" ? "email" : "text"}
-          value={formData.contact} onChange={handleChange}
-          placeholder={method === "phone" ? "e.g. +2348012345678" : "you@example.com"}
-          className={inputCls} />
-      </div>
-      <div>
-        <label className={labelCls}>Password</label>
-        <div className="relative">
-          <input name="password" required type={showPassword ? "text" : "password"}
-            value={formData.password} onChange={handleChange}
-            placeholder="Create a password" className={`${inputCls} pr-11`} />
-          <EyeIcon />
-        </div>
-      </div>
-      <div>
-        <label className={labelCls}>Confirm Password</label>
-        <input name="confirmPassword" required type="password"
-          value={formData.confirmPassword} onChange={handleChange}
-          placeholder="Re-enter your password" className={inputCls} />
-      </div>
-    </>
-  );
-
-  const VendorFields = () => (
-    <>
-      {/* Divider */}
-      <div className="flex items-center gap-3 my-1">
-        <div className="flex-1 h-px bg-gray-200" />
-        <span className="text-xs text-gray-400 font-medium whitespace-nowrap">Business Details</span>
-        <div className="flex-1 h-px bg-gray-200" />
-      </div>
-
-      <div>
-        <label className={labelCls}>Business / Store Name</label>
-        <input name="businessName" required value={formData.businessName} onChange={handleChange}
-          placeholder="e.g. Adaeze Fashion House" className={inputCls} />
-      </div>
-      <div>
-        <label className={labelCls}>Business Category</label>
-        <select name="businessCategory" required value={formData.businessCategory}
-          onChange={handleChange}
-          className={`${inputCls} bg-white`}>
-          <option value="" disabled>Select a category</option>
-          <option value="fashion">Fashion & Clothing</option>
-          <option value="electronics">Electronics & Gadgets</option>
-          <option value="food">Food & Groceries</option>
-          <option value="beauty">Beauty & Health</option>
-          <option value="home">Home & Furniture</option>
-          <option value="auto">Automobiles & Parts</option>
-          <option value="services">Services</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div>
-        <label className={labelCls}>Business Address</label>
-        <input name="businessAddress" required value={formData.businessAddress} onChange={handleChange}
-          placeholder="e.g. 14 Broad Street, Lagos" className={inputCls} />
-      </div>
-    </>
-  );
-
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-0 px-0 sm:py-12 sm:px-4">
       <div className="w-full sm:max-w-4xl sm:rounded-2xl overflow-hidden shadow-none sm:shadow-2xl border-0 sm:border sm:border-gray-200 bg-white relative">
@@ -246,7 +252,7 @@ export default function SignupPage() {
           </div>
           <p className="text-gray-600 text-sm mb-6">Join 234Deals — sign up as a customer or vendor.</p>
 
-          <RoleToggle />
+          <RoleToggle role={role} setRole={setRole} setError={setError} />
 
           {role === "vendor" && (
             <div className="flex items-start gap-2 mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl">
@@ -259,13 +265,13 @@ export default function SignupPage() {
             </div>
           )}
 
-          <ContactMethodToggle />
+          <ContactMethodToggle method={method} setMethod={setMethod} />
 
           {error && <div className="mb-3 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-3.5">
-            <BaseFields />
-            {role === "vendor" && <VendorFields />}
+            <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
+            {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} />}
 
             <button type="submit" disabled={loading}
               className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50 mt-2">
@@ -330,7 +336,7 @@ export default function SignupPage() {
             </h1>
             <p className="text-gray-500 text-sm mb-6">Sign up as a customer or register your store as a vendor.</p>
 
-            <RoleToggle />
+            <RoleToggle role={role} setRole={setRole} setError={setError} />
 
             {role === "vendor" && (
               <div className="flex items-start gap-2 mb-5 p-3 bg-orange-50 border border-orange-200 rounded-xl">
@@ -345,14 +351,14 @@ export default function SignupPage() {
 
             <div className="mb-4">
               <p className="text-xs text-gray-500 mb-2 font-medium">Sign up via</p>
-              <ContactMethodToggle />
+              <ContactMethodToggle method={method} setMethod={setMethod} />
             </div>
 
             {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{error}</div>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <BaseFields />
-              {role === "vendor" && <VendorFields />}
+              <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
+              {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} />}
 
               <button type="submit" disabled={loading}
                 className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">

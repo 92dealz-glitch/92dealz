@@ -158,7 +158,7 @@ export default function Navbar() {
 
           {/* Mobile Search Row */}
           <div className="flex w-full items-center gap-2">
-            <div className="flex-shrink-0 w-[130px]">
+            <div className="flex-shrink-0 w-auto min-w-[100px] max-w-[130px]">
               <LocationDropdown value="Lagos" onChange={() => { }} />
             </div>
 
@@ -174,14 +174,14 @@ export default function Navbar() {
             >
               <input
                 type="text"
-                placeholder="I am looking for..."
+                placeholder="Search..."
                 value={mQuery}
                 onChange={(e) => setMQuery(e.target.value)}
-                className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full"
+                className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full min-w-0"
               />
               <button
                 type="submit"
-                className="flex items-center justify-center bg-orange-500 px-4 h-full"
+                className="flex items-center justify-center bg-orange-500 px-3 h-full shrink-0"
               >
                 <Search size={18} className="text-white" />
               </button>
@@ -239,21 +239,32 @@ export default function Navbar() {
 
               <div className="flex w-full items-stretch gap-2 pb-4">
                 {/* Location Dropdown */}
-                <div className="flex-shrink-0 w-[130px]">
+                <div className="flex-shrink-0 w-auto min-w-[100px] max-w-[130px]">
                   <LocationDropdown value="Lagos" onChange={() => { }} />
                 </div>
 
                 {/* Search Bar */}
-                <div className="flex flex-1 items-stretch overflow-hidden rounded-lg border border-orange-500 bg-white">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (mQuery.trim()) {
+                      setMobileMenuOpen(false);
+                      router.push(`/search?search=${encodeURIComponent(mQuery.trim())}`);
+                    }
+                  }}
+                  className="flex flex-1 items-stretch overflow-hidden rounded-lg border border-orange-500 bg-white"
+                >
                   <input
                     type="text"
-                    placeholder="I am looking for..."
-                    className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 outline-none"
+                    placeholder="Search..."
+                    value={mQuery}
+                    onChange={(e) => setMQuery(e.target.value)}
+                    className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 outline-none min-w-0"
                   />
-                  <button className="flex items-center justify-center bg-orange-500 px-4">
+                  <button type="submit" className="flex items-center justify-center bg-orange-500 px-3 shrink-0">
                     <Search size={18} className="text-white" />
                   </button>
-                </div>
+                </form>
               </div>
 
               {/* Login/Signup Buttons */}

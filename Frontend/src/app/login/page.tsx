@@ -80,7 +80,7 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <p className="text-gray-900 font-bold text-[15px] mb-8 leading-snug">
+          <p className="text-gray-600 text-[14px] mb-8 leading-snug">
             Welcome back! please login to your account
           </p>
 
