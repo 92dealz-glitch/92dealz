@@ -7,7 +7,7 @@ async function apiFetch<T>(
   path: string,
   options: { method?: HttpMethod; body?: unknown; auth?: boolean } = {}
 ): Promise<T> {
-  const url = `${API_BASE}${path}`;
+  const url = `${API_BASE.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (options.auth) {
     if (typeof window !== "undefined") {

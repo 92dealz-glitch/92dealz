@@ -6,7 +6,8 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}, auth 
     const token = window.localStorage.getItem("token");
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers, cache: "no-store" });
+  const url = `${API_BASE.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+  const res = await fetch(url, { ...options, headers, cache: "no-store" });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const message = (data && (data.message || data.error)) || `Request failed with status ${res.status}`;

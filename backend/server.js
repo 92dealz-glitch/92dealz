@@ -15,28 +15,6 @@ const morgan = require('morgan');
 // Load env from backend/.env
 dotenv.config({ path: path.join(__dirname, '.env') });
 
-const app = express();
-
-// CORS configuration (support comma-separated list of allowed origins)
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3005')
-  .split(',')
-  .map((o) => o.trim());
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin) return callback(null, true); // allow non-browser or same-origin
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error(`CORS: Origin ${origin} not allowed`));
-    },
-    credentials: true,
-  })
-);
-
-// Logging middleware
-app.use(morgan('dev'));
-
-// Body parsing middleware
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => res.send('Auth Server Running'));
