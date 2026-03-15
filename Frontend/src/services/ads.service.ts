@@ -35,7 +35,10 @@ export async function createAd(payload: AdPayload) {
       body.image_url = payload.images;
     }
   }
-  return apiFetch<{ success: boolean; data: any }>(BASE, { method: "POST", body: JSON.stringify(body) }, true);
+  const role = typeof window !== "undefined" ? window.localStorage.getItem("role") : "user";
+  const path = role === "vendor" ? "/submissions" : BASE;
+
+  return apiFetch<{ success: boolean; data: any }>(path, { method: "POST", body: JSON.stringify(body) }, true);
 }
 
 export async function updateAd(id: number, payload: Partial<AdPayload>) {

@@ -31,6 +31,14 @@ const Submission = sequelize.define('Submission', {
     type: DataTypes.BIGINT,
     allowNull: true,
   },
+  image_url: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  images_json: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
   status: {
     type: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED'),
     allowNull: false,

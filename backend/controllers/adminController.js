@@ -224,6 +224,8 @@ exports.updateSubmission = async (req, res, next) => {
         userId: sub.user_id,
         ...(sub.category_id ? { category_id: sub.category_id } : {}),
         ...(sub.store_id ? { store_id: sub.store_id } : {}),
+        image_url: sub.image_url || null,
+        images_json: sub.images_json || null,
       });
       try {
         await notifyAlertsForDeal({ title: sub.title, price: sub.price, category_id: sub.category_id }, sendGeneric);

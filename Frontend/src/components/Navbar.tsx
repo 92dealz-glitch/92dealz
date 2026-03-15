@@ -281,7 +281,7 @@ export default function Navbar() {
                   onClick={() => {
                     const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
                     setMobileMenuOpen(false);
-                    router.push(r === "vendor" ? "/vendor-dashboard" : r === "admin" ? "/admin" : "/user/dashboard");
+                    router.push(r === "vendor" ? "/vendor-dashboard" : r === "admin" ? "/admin" : "/user/dashboard/settings");
                   }}
                   className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                 >
@@ -331,15 +331,15 @@ export default function Navbar() {
                       <Heart size={22} />
                       <span className="text-[10px] mt-1 text-center">Favorite</span>
                     </Link>
-                    <Link href="/sell" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                    <Link href="/vendor-dashboard/add-product" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
                       <Plus size={22} />
                       <span className="text-[10px] mt-1 text-center">Sell</span>
                     </Link>
-                    <Link href="/my-ads" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                    <Link href="/vendor-dashboard/my-ads" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
                       <Grid size={22} />
                       <span className="text-[10px] mt-1 text-center">My Ads</span>
                     </Link>
-                    <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                    <Link href="/user/dashboard/settings" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
                       <User size={22} />
                       <span className="text-[10px] mt-1 text-center">Account</span>
                     </Link>
@@ -364,17 +364,17 @@ export default function Navbar() {
                 <Heart size={22} />
                 <span className="text-[10px] mt-1 text-center">Favorite</span>
               </Link>
-              <Link href="/sell" className="flex flex-col items-center text-sm text-[#FF6B35]">
+              <Link href="/vendor-dashboard/add-product" className="flex flex-col items-center text-sm text-[#FF6B35]">
                 <div className="bg-[#FF6B35] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white">
                   <Plus size={24} className="text-white" />
                 </div>
                 <span className="text-[10px] mt-1 text-center">Sell</span>
               </Link>
-              <Link href="/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
+              <Link href="/vendor-dashboard/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
                 <Grid size={22} />
                 <span className="text-[10px] mt-1 text-center">My Ads</span>
               </Link>
-              <Link href="/account" className="flex flex-col items-center text-sm text-zinc-700">
+              <Link href="/user/dashboard/settings" className="flex flex-col items-center text-sm text-zinc-700">
                 <UserAvatarCircle small />
                 <span className="text-[10px] mt-1 text-center">Account</span>
               </Link>
