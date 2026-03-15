@@ -31,6 +31,7 @@ if (connectionString) {
   // Use connection string (common for Neon, Supabase, Vercel Postgres)
   sequelize = new Sequelize(connectionString, {
     dialect: 'postgres',
+    dialectModule: require('pg'),
     logging: !isProduction ? console.log : false,
     dialectOptions: isProduction ? {
       ssl: {
@@ -49,6 +50,7 @@ if (connectionString) {
     host: DB_HOST,
     port: Number(DB_PORT),
     dialect: 'postgres',
+    dialectModule: require('pg'),
     logging: !isProduction ? console.log : false,
     dialectOptions: isProduction ? {
       ssl: {
