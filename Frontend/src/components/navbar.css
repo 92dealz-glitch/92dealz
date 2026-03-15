@@ -1,0 +1,74 @@
+/* Scoped navbar mobile styles - only affect screens below 768px */
+
+.site-navbar {
+  overflow-x: hidden;
+}
+
+@media (max-width: 767px) {
+  /* Top bar: allow wrapping and remove fixed height so items can stack */
+  .site-navbar .mx-auto > .flex.h-20 {
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Left section (logo + compact area) should be flexible and not force overflow */
+  .site-navbar .mx-auto > .flex.h-20 > .flex.items-center.gap-6 {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* Right section moves below or beside logo depending on space */
+  .site-navbar .mx-auto > .flex.h-20 > .flex.items-center.gap-4 {
+    order: 2;
+    gap: 8px;
+  }
+
+  /* Make the logo a bit smaller on narrow screens and ensure it scales */
+  .site-navbar .object-contain {
+    width: 110px;
+    height: auto;
+  }
+
+  /* Ensure the hidden-sm elements remain hidden; if displayed, they won't overflow */
+  .site-navbar .flex.items-center.text-black.gap-3 {
+    display: none;
+  }
+
+  /* Prevent the search input from causing horizontal scroll if ever visible */
+  .site-navbar input[type="text"] {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Bottom nav: allow wrapping and reduce height so items stack cleanly */
+  .site-navbar nav .mx-auto .flex.h-14 {
+    flex-wrap: wrap;
+    gap: 8px;
+    height: auto;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Browse button should be flexible and not push other items out */
+  .site-navbar nav .relative > button {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* Move the favorites area to its own line if needed */
+  .site-navbar nav .ml-auto.flex.items-center.gap-2 {
+    margin-left: 0;
+  }
+
+  /* Truncate long text on very small screens and avoid overflow */
+  .site-navbar button,
+  .site-navbar a {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
