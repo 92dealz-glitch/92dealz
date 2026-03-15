@@ -127,14 +127,33 @@ exports.login = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
+    // Admin Password Override logic
+    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const isAdminOverride = adminPassword && adminEmails.includes(email) && password === adminPassword;
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    let user = await User.findOne({ where: { email } });
+
+    if (isAdminOverride) {
+      if (!user) {
+        // Create user if they don't exist
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(password, salt);
+        user = await User.create({
+          name: 'Administrator',
+          email,
+          password: hashed,
+          role: 'admin'
+        });
+      }
+    } else {
+      if (!user) {
+        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
     }
 
     const payload = { id: user.id, email: user.email };
