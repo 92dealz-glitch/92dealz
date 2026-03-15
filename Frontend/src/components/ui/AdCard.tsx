@@ -8,11 +8,14 @@ import { useFavorites } from "@/context/FavoritesProvider";
 export type AdItem = {
   id: number | string;
   price: string;
+  priceRaw?: number;
   title: string;
+  brand?: string;
   desc?: string;
   badge?: string;
   location?: string;
   likes?: number;
+  rating?: number;
   condition?: string;
 };
 
