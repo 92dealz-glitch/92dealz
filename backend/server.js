@@ -17,8 +17,15 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 
-app.use(cors());
-app.options('*', cors()); // Enable pre-flight for all routes
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization,Accept');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Logging middleware
 app.use(morgan('dev'));
