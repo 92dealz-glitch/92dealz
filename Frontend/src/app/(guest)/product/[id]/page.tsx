@@ -5,7 +5,7 @@ import Footer from '../../../../components/Footer'
 import Link from 'next/link'
 import SimilarItems from '../../../../components/SimilarItems'
 import Button from '../../../../components/ui/Button'
-import { API_BASE } from "@/services/apiClient"
+import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
 
 type Props = {
@@ -23,8 +23,7 @@ export default function ProductPage({ params }: Props) {
     let active = true
     ;(async () => {
       try {
-        const res = await fetch(`${API_BASE}/ads/${id}`, { cache: "no-store" })
-        const data = await res.json()
+        const data = await apiFetch<{ success: boolean; data: any }>(`ads/${id}`);
         if (!active || !data?.success) return
         const d = data.data
         let images = [d.image_url || '/assets/images/bgphone.svg']
@@ -38,8 +37,7 @@ export default function ProductPage({ params }: Props) {
             console.error("Failed to parse images_json", e)
           }
         }
-        const sellerRes = await fetch(`${API_BASE}/users/${d.userId}`)
-        const sellerData = await sellerRes.json()
+        const sellerData = await apiFetch<{ success: boolean; data: any }>(`users/${d.userId}`);
         const seller = sellerData?.data || {}
         const sellerName = seller.name || "Seller"
         const createdAt = seller.createdAt ? new Date(seller.createdAt) : new Date();
@@ -73,6 +71,8 @@ export default function ProductPage({ params }: Props) {
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
+      } catch (err) {
+        console.error("Failed to fetch product or seller:", err);
       } finally {
         if (active) setLoading(false)
       }

@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useNotification } from "@/context/NotificationContext";
-import { API_BASE } from "@/services/apiClient";
+import { apiFetch } from "@/services/apiClient";
 
 const statusStyles = {
   active: "bg-[#10B981] text-white",
@@ -52,13 +52,7 @@ export default function DealsManagementPage() {
   useEffect(() => {
     async function loadDeals() {
       try {
-        const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-        if (!token) return;
-
-        const res = await fetch(`${API_BASE}/admin/deals`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const result = await res.json();
+        const result = await apiFetch<{ success: boolean; data: any[] }>("admin/deals", {}, true);
         if (result.success) {
           setDeals(result.data);
         }
@@ -79,23 +73,16 @@ export default function DealsManagementPage() {
     });
   }, [deals, searchTerm, statusFilter]);
 
-  const handleDelete = async (id: number) => {
     try {
-      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-      const res = await fetch(`${API_BASE}/admin/deals/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const result = await res.json();
+      const result = await apiFetch<{ success: boolean }>(`admin/deals/${id}`, { method: "DELETE" }, true);
       if (result.success) {
         setDeals(prev => prev.filter(d => d.id !== id));
-        showNotification("warning", "Deal moved to trash.");
+        showNotification("warning", "Deal removed successfully.");
       }
     } catch (err) {
       showNotification("error", "Failed to delete deal.");
     }
     setActiveMenuId(null);
-  };
 
   if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading deals...</div>;
 
