@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import type { CategoryData } from "../data/categoriesData";
 import { getCategory } from "../data/categoriesData";

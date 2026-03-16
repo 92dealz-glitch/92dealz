@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Store, Camera, Smartphone, Laptop, Car, Home as HomeIcon, Footprints, Briefcase, Dog, Utensils, Construction, Tv, HeartPulse, Palette, Package, PlusCircle, Trophy } from "lucide-react";
 
@@ -15,7 +16,7 @@ const categories = [
 ];
 
 export default function CategoryBar() {
-  const [brokenImages, setBrokenImages] = React.useState<Record<string, boolean>>({});
+  const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   const handleImageError = (name: string) => {
     setBrokenImages((prev) => ({ ...prev, [name]: true }));

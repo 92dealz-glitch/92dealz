@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { listActiveAds } from "@/services/ads.service";
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesProvider";
 
@@ -14,8 +14,7 @@ interface HotDeal {
   newLabel?: string;
 }
 
-import { listActiveAds } from "@/services/ads.service";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function HotDeals() {
   const scrollRef = useRef<HTMLDivElement>(null);
