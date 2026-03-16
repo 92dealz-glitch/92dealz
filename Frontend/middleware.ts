@@ -43,6 +43,5 @@ export const config = {
   matcher: [
     "/buyer/:path*",
     "/seller/:path*",
-    "/admin/:path*",
   ],
 };
