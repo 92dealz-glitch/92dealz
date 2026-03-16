@@ -11,14 +11,23 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const [isChecking, setIsChecking] = React.useState(true);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const role = window.localStorage.getItem("role") || "";
       if (role.toLowerCase() !== "admin") {
         router.replace("/login");
+      } else {
+        setIsChecking(false);
       }
     }
   }, [router]);
+
+  if (isChecking) {
+    return <div className="min-h-screen flex items-center justify-center bg-zinc-50 font-bold text-orange-500">Loading Dashboard...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-zinc-50 flex flex-col">
       <Navbar />

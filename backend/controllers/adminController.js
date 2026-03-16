@@ -279,6 +279,27 @@ exports.updateVendorStatus = async (req, res, next) => {
   }
 };
 
+exports.deleteVendor = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const vendor = await User.findOne({ where: { id, role: 'vendor' } });
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: 'Vendor not found' });
+    }
+
+    // Cascade: delete all deals associated with this vendor
+    const Deal = require('../models/Deal');
+    await Deal.destroy({ where: { userId: id } });
+
+    // Finally, destroy the vendor
+    await vendor.destroy();
+
+    return res.json({ success: true, message: 'Vendor and all associated deals deleted successfully' });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 exports.createVendor = async (req, res, next) => {
   try {
     const { name, email, password, phone } = req.body;

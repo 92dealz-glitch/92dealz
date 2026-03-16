@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Search, Loader2, Store, CheckCircle, XCircle, Clock } from "lucide-react";
-import { getAdminVendors, updateAdminVendorStatus } from "@/lib/api";
+import { Search, Loader2, Store, CheckCircle, XCircle, Clock, Trash2 } from "lucide-react";
+import { getAdminVendors, updateAdminVendorStatus, deleteAdminVendor } from "@/lib/api";
 import { useNotification } from "@/context/NotificationContext";
 
 interface Vendor {
@@ -46,6 +46,20 @@ export default function VendorsManagement() {
       fetchVendors();
     } catch (err: any) {
       showNotification("error", err.message || "Failed to update vendor status");
+    }
+  };
+
+  const handleDelete = async (id: number, name: string) => {
+    if (!window.confirm(`Are you absolutely sure you want to permanently delete the vendor "${name}" and all of their deals/products? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      await deleteAdminVendor(id);
+      showNotification("success", "Vendor and associated deals deleted successfully");
+      fetchVendors();
+    } catch (err: any) {
+      showNotification("error", err.message || "Failed to delete vendor");
     }
   };
 
@@ -138,18 +152,18 @@ export default function VendorsManagement() {
                         </span>
                       )}
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-4 text-right flex items-center justify-end gap-2">
                       {vendor.status === "pending" || vendor.status === "rejected" ? (
                         <button
                           onClick={() => handleUpdateStatus(vendor.id, "active")}
-                          className="px-3 py-1.5 bg-emerald-50 text-emerald-600 font-medium rounded-lg text-xs hover:bg-emerald-100 transition border border-emerald-200 mr-2"
+                          className="px-3 py-1.5 bg-emerald-50 text-emerald-600 font-medium rounded-lg text-xs hover:bg-emerald-100 transition border border-emerald-200"
                         >
                           Approve
                         </button>
                       ) : (
                         <button
                           onClick={() => handleUpdateStatus(vendor.id, "rejected")}
-                          className="px-3 py-1.5 bg-red-50 text-red-600 font-medium rounded-lg text-xs hover:bg-red-100 transition border border-red-200 mr-2"
+                          className="px-3 py-1.5 bg-red-50 text-red-600 font-medium rounded-lg text-xs hover:bg-red-100 transition border border-red-200"
                         >
                           Suspend
                         </button>
@@ -163,6 +177,14 @@ export default function VendorsManagement() {
                           Reject
                         </button>
                       )}
+
+                      <button
+                        onClick={() => handleDelete(vendor.id, vendor.name)}
+                        className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition border border-red-200"
+                        title="Delete Vendor"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))}

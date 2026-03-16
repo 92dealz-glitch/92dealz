@@ -39,5 +39,6 @@ router.get('/analytics/clicks-by-day', analytics.clicksByDay);
 router.get('/vendors', ctrl.getVendors);
 router.put('/vendors/:id/status', ctrl.updateVendorStatus);
 router.post('/vendors', ctrl.createVendor);
+router.delete('/vendors/:id', ctrl.deleteVendor);
 
 module.exports = router;

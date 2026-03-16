@@ -157,3 +157,10 @@ export async function updateAdminVendorStatus(id: number, status: "pending" | "a
     { method: "PUT", body: { status }, auth: true }
   );
 }
+
+export async function deleteAdminVendor(id: number) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/vendors/${id}`,
+    { method: "DELETE", auth: true }
+  );
+}
