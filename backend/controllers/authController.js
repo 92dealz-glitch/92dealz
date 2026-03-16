@@ -33,6 +33,11 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid email format' });
     }
 
+    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    if (adminEmails.includes(email)) {
+      return res.status(403).json({ success: false, message: 'Cannot register with this email' });
+    }
+
     const existing = await User.findOne({ where: { email } });
     if (existing) {
       return res.status(409).json({ success: false, message: 'Email already registered' });
@@ -130,6 +135,7 @@ exports.resetPassword = async (req, res, next) => {
     return next(err);
   }
 };
+
 // POST /api/auth/login
 exports.login = async (req, res, next) => {
   try {
@@ -158,6 +164,10 @@ exports.login = async (req, res, next) => {
           password: hashed,
           role: 'admin'
         });
+      } else if (user.role !== 'admin') {
+        // Ensure role is admin if override is used for existing user
+        await User.update({ role: 'admin' }, { where: { id: user.id } });
+        user.role = 'admin';
       }
     } else {
       if (!user) {
