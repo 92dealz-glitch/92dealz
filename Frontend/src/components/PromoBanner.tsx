@@ -1,6 +1,7 @@
 "use client";  
 
 import Image from "next/image";
+import Link from "next/link";
 import React from 'react'
 
 export default function PromoBanner() {
@@ -63,8 +64,9 @@ export default function PromoBanner() {
 
             {/* CTA Button - centered */}
             <div>
-              <button 
-                className="bg-[#FF6339] hover:bg-[#E85A2E] active:bg-[#D14F24] 
+              <Link
+                href="/vendor-dashboard/add-product"
+                className="inline-block bg-[#FF6339] hover:bg-[#E85A2E] active:bg-[#D14F24] 
                            text-white font-semibold text-sm sm:text-[16px] 
                            px-6 py-3 sm:px-10 sm:py-4 lg:px-12 lg:py-4
                            rounded-full 
@@ -72,11 +74,11 @@ export default function PromoBanner() {
                            hover:shadow-[0_12px_28px_rgba(255,107,53,0.45)] 
                            transition-all duration-300 ease-out
                            hover:scale-[1.02] active:scale-[0.98]
-                           focus:outline-none focus:ring-4 focus:ring-[#FF6B35]/30"
+                           focus:outline-none focus:ring-4 focus:ring-[#FF6B35]/30 text-center"
                 aria-label="Grab promotional spot"
               >
                 Grab this spot
-              </button>
+              </Link>
             </div>
           </div>
 

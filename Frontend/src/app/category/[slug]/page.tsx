@@ -56,7 +56,8 @@ export default async function CategoryPage({ params }: Props) {
     price: `₦${Number(l.price).toLocaleString()}`,
     desc: l.description || undefined,
     badge: l.image_url || "/assets/images/bgphone.svg",
-    location: l.location || "N/A"
+    location: l.location || l.city || "Nigeria",
+    condition: l.condition || "Brand New",
   }));
 
   return (

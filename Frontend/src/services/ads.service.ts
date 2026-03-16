@@ -9,6 +9,20 @@ export interface AdPayload {
   category_id?: number | null;
   images?: string[] | string;
   status?: "active" | "sold" | "draft" | "closed";
+  condition?: string;
+  brand?: string;
+  model?: string;
+  color?: string;
+  negotiable?: string;
+  screenSize?: string;
+  ram?: string;
+  mainCamera?: string;
+  selfieCamera?: string;
+  battery?: string;
+  internalStorage?: string;
+  state?: string;
+  city?: string;
+  location?: string;
 }
 
 export async function listActiveAds() {
@@ -25,6 +39,20 @@ export async function createAd(payload: AdPayload) {
     description: payload.description ?? null,
     price: payload.price,
     status: payload.status ?? "active",
+    condition: payload.condition,
+    brand: payload.brand,
+    model: payload.model,
+    color: payload.color,
+    negotiable: payload.negotiable,
+    screenSize: payload.screenSize,
+    ram: payload.ram,
+    mainCamera: payload.mainCamera,
+    selfieCamera: payload.selfieCamera,
+    battery: payload.battery,
+    internalStorage: payload.internalStorage,
+    state: payload.state,
+    city: payload.city,
+    location: payload.location || (payload.city && payload.state ? `${payload.city}, ${payload.state}` : payload.state || payload.city),
   };
   if (payload.category_id !== undefined) body.category_id = payload.category_id;
   if (payload.images) {

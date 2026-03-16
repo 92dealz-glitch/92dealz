@@ -59,6 +59,30 @@ const User = sequelize.define('User', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  businessName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  businessCategory: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  businessAddress: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  rating: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
+  },
+  total_ads: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  responseTime: {
+    type: DataTypes.STRING,
+    defaultValue: 'Within 1 hour',
+  },
 }, {
   tableName: 'users',
   timestamps: true,

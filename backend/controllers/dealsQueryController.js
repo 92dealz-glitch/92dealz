@@ -144,7 +144,10 @@ exports.getById = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   try {
     await introspect();
-    const { title, description, price, store_id, category_id, image_url, images_json, expiry_date, status } = req.body;
+    const { 
+      title, description, price, store_id, category_id, image_url, images_json, expiry_date, status,
+      condition, brand, model, color, negotiable, screenSize, ram, mainCamera, selfieCamera, battery, internalStorage, state, city, location 
+    } = req.body;
     const userId = req.user && req.user.id;
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
@@ -159,6 +162,16 @@ exports.create = async (req, res, next) => {
     if (has('images_json') && typeof images_json !== 'undefined') { idx += 1; cols.push('images_json'); vals.push(`$${idx}`); bind.push(images_json); }
     if (has('expiry_date') && typeof expiry_date !== 'undefined') { idx += 1; cols.push('expiry_date'); vals.push(`$${idx}`); bind.push(expiry_date); }
     if (has('status') && typeof status !== 'undefined') { idx += 1; cols.push('status'); vals.push(`$${idx}`); bind.push(status); }
+    
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    for (const f of extraFields) {
+      if (has(f) && typeof req.body[f] !== 'undefined') {
+        idx += 1;
+        cols.push(f);
+        vals.push(`$${idx}`);
+        bind.push(req.body[f]);
+      }
+    }
 
     const sql = `INSERT INTO deals (${cols.join(', ')}) VALUES (${vals.join(', ')}) RETURNING id`;
     const [rows] = await sequelize.query(sql, { bind });
@@ -188,6 +201,10 @@ exports.update = async (req, res, next) => {
     if (has('images_json')) allowed.push('images_json');
     if (has('expiry_date')) allowed.push('expiry_date');
     if (has('status')) allowed.push('status');
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    for (const f of extraFields) {
+      if (has(f)) allowed.push(f);
+    }
     const sets = [];
     const bind = [];
     let idx = 0;

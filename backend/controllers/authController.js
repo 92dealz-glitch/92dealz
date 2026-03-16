@@ -19,6 +19,9 @@ exports.register = async (req, res, next) => {
     const password = req.body.password;
     const phone = req.body.phone;
     const rawRole = req.body.role;
+    const businessName = req.body.businessName;
+    const businessCategory = req.body.businessCategory;
+    const businessAddress = req.body.businessAddress;
     const name = typeof rawName === 'string' ? rawName.trim() : rawName;
     const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : rawEmail;
     const role = typeof rawRole === 'string' ? rawRole.trim().toLowerCase() : undefined;
@@ -40,9 +43,19 @@ exports.register = async (req, res, next) => {
 
     const allowedRoles = new Set(['user', 'vendor']);
     const roleToSave = role && allowedRoles.has(role) ? role : 'user';
-    await User.create({ name, email, password: hashed, phone: phone || null, role: roleToSave });
 
-    return res.status(201).json({ success: true, message: 'Registration successful' });
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashed,
+      phone,
+      role: roleToSave,
+      businessName: roleToSave === 'vendor' ? businessName : null,
+      businessCategory: roleToSave === 'vendor' ? businessCategory : null,
+      businessAddress: roleToSave === 'vendor' ? businessAddress : null,
+    });
+
+    return res.status(201).json({ success: true, message: 'Registration successful', user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } });
   } catch (err) {
     return next(err);
   }

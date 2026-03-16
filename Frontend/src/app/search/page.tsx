@@ -35,6 +35,8 @@ export default async function SearchPage({
     price: `₦${Number(l.price).toLocaleString()}`,
     desc: l.description || undefined,
     badge: l.image_url || "/assets/images/bgphone.svg",
+    location: l.location || l.city || "Nigeria",
+    condition: l.condition || "Brand New",
   }));
 
   return (

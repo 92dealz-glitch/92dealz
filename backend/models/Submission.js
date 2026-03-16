@@ -49,6 +49,63 @@ const Submission = sequelize.define('Submission', {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
+  condition: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  brand: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  model: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  color: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  negotiable: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'No',
+  },
+  screenSize: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  ram: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  mainCamera: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  selfieCamera: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  battery: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  internalStorage: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   tableName: 'submissions',
   timestamps: false,

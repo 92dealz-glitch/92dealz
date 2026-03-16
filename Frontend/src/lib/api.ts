@@ -37,6 +37,9 @@ export interface RegisterPayload {
   password: string;
   phone?: string | null;
   role?: "user" | "vendor" | "admin";
+  businessName?: string;
+  businessCategory?: string;
+  businessAddress?: string;
 }
 
 export async function registerUser(payload: RegisterPayload) {

@@ -14,7 +14,9 @@ export default function RecentAds() {
           price: `₦ ${Number(d.price).toLocaleString()}`,
           title: d.title,
           desc: d.description || "",
-          badge: d.image_url || "/assets/images/bgphone.svg",
+          img: d.image_url || "/assets/images/bgphone.svg",
+          location: d.location || d.city || "Nigeria",
+          newLabel: d.condition || "Brand New",
         }));
         setList(mapped);
       } catch {}

@@ -206,6 +206,9 @@ export default function SignupPage() {
         email,
         password: formData.password.trim(),
         role,
+        businessName: formData.businessName,
+        businessCategory: formData.businessCategory,
+        businessAddress: formData.businessAddress,
       });
       const res = await loginUser({ email, password: formData.password.trim() });
       const r = String(res.user?.role || "").toLowerCase();

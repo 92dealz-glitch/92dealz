@@ -22,7 +22,15 @@ export default function AddProductForm() {
         price: "",
         negotiable: "No",
         description: "",
-        images: [] as string[]
+        images: [] as string[],
+        state: "",
+        city: "",
+        screenSize: "",
+        ram: "",
+        mainCamera: "",
+        selfieCamera: "",
+        battery: "",
+        internalStorage: ""
     });
 
     const updateFormData = (newData: Partial<typeof formData>) => {
@@ -109,7 +117,15 @@ export default function AddProductForm() {
                                         price: "",
                                         negotiable: "No",
                                         description: "",
-                                        images: []
+                                        images: [],
+                                        state: "",
+                                        city: "",
+                                        screenSize: "",
+                                        ram: "",
+                                        mainCamera: "",
+                                        selfieCamera: "",
+                                        battery: "",
+                                        internalStorage: ""
                                     });
                                     setStep(1);
                                     setShowClearModal(false);
@@ -290,7 +306,20 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                 title: data.title, 
                 price: p, 
                 description: data.description, 
-                images: data.images 
+                images: data.images,
+                condition: data.condition,
+                brand: data.brand,
+                model: data.model,
+                color: data.color,
+                negotiable: data.negotiable,
+                screenSize: data.screenSize,
+                ram: data.ram,
+                mainCamera: data.mainCamera,
+                selfieCamera: data.selfieCamera,
+                battery: data.battery,
+                internalStorage: data.internalStorage,
+                state: data.state,
+                city: data.city
             });
             router.push("/vendor-dashboard/my-ads");
         } catch (e: any) {

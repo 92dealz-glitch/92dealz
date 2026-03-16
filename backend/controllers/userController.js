@@ -26,7 +26,7 @@ exports.getUsers = async (req, res, next) => {
 
     const users = await User.findAll({ 
       where,
-      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt'],
+      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime'],
       order: [['id', 'ASC']] 
     });
 
@@ -55,7 +55,7 @@ exports.getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -71,8 +71,6 @@ exports.getUserById = async (req, res, next) => {
     const data = {
       ...user.toJSON(),
       total_ads: adsRow.total_ads || 0,
-      responseTime: "Within 1 hour",
-      rating: 4.5,
     };
 
     return res.json({ success: true, data });
@@ -100,7 +98,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getProfile = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });

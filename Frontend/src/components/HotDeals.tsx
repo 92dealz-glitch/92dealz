@@ -29,8 +29,8 @@ export default function HotDeals() {
           title: d.title,
           price: `₦ ${Number(d.price).toLocaleString()}`,
           img: d.image_url || "/assets/images/bgphone.svg",
-          location: d.location || "Nigeria",
-          newLabel: "Brand New",
+          location: d.location || d.city || "Nigeria",
+          newLabel: d.condition || "Brand New",
         }));
         setList(mapped);
       } catch (err) {}

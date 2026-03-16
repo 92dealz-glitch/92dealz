@@ -15,6 +15,8 @@ export default function TrendingAds() {
           title: d.title,
           desc: d.description || "",
           badge: d.image_url || "/assets/images/bgphone.svg",
+          location: d.location || d.city || "Nigeria",
+          condition: d.condition || "Brand New",
         }));
         setList(mapped);
       } catch {}

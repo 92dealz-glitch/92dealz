@@ -56,8 +56,20 @@ export default function ProductPage({ params }: Props) {
           sellerTotalAds: seller.total_ads || 0,
           sellerResponseTime: seller.responseTime || "Within 1 hour",
           images,
-          condition: 'Brand New',
-          location: 'Lagos',
+          condition: d.condition || 'Brand New',
+          location: d.location || d.city || 'Nigeria',
+          brand: d.brand,
+          model: d.model,
+          color: d.color,
+          negotiable: d.negotiable,
+          screenSize: d.screenSize,
+          ram: d.ram,
+          mainCamera: d.mainCamera,
+          selfieCamera: d.selfieCamera,
+          battery: d.battery,
+          internalStorage: d.internalStorage,
+          state: d.state,
+          city: d.city,
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -353,7 +365,68 @@ export default function ProductPage({ params }: Props) {
                 )}
 
                 {activeTab === 'specs' && (
-                  <div className="text-gray-500 italic">No specifications provided.</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {product.brand && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Brand</span>
+                        <span className="font-semibold">{product.brand}</span>
+                      </div>
+                    )}
+                    {product.model && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Model</span>
+                        <span className="font-semibold">{product.model}</span>
+                      </div>
+                    )}
+                    {product.condition && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Condition</span>
+                        <span className="font-semibold">{product.condition}</span>
+                      </div>
+                    )}
+                    {product.color && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Color</span>
+                        <span className="font-semibold">{product.color}</span>
+                      </div>
+                    )}
+                    {product.screenSize && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Screen Size</span>
+                        <span className="font-semibold">{product.screenSize}</span>
+                      </div>
+                    )}
+                    {product.ram && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">RAM</span>
+                        <span className="font-semibold">{product.ram}</span>
+                      </div>
+                    )}
+                    {product.internalStorage && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Storage</span>
+                        <span className="font-semibold">{product.internalStorage}</span>
+                      </div>
+                    )}
+                    {product.battery && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Battery</span>
+                        <span className="font-semibold">{product.battery}</span>
+                      </div>
+                    )}
+                    {product.mainCamera && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Main Camera</span>
+                        <span className="font-semibold">{product.mainCamera}</span>
+                      </div>
+                    )}
+                    {product.location && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Location</span>
+                        <span className="font-semibold">{product.location}</span>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

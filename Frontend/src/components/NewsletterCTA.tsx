@@ -1,4 +1,39 @@
+"use client";
+import React, { useState } from "react";
+
 export default function NewsletterCTA() {
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail("");
+    }
+  };
+
+  if (subscribed) {
+    return (
+      <section className="w-full py-10 px-4 sm:px-6">
+        <div className="max-w-[1200px] mx-auto">
+          <div
+            className="w-full rounded-[18px] overflow-hidden shadow-lg relative bg-orange-600 text-center py-20 px-8 text-white"
+          >
+            <h2 className="text-3xl font-bold mb-4">Check your inbox! 📧</h2>
+            <p className="text-lg">Thank you for subscribing to our newsletter. We&apos;ll keep you posted!</p>
+            <button 
+              onClick={() => setSubscribed(false)}
+              className="mt-6 text-sm underline opacity-80 hover:opacity-100"
+            >
+              Back
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="w-full py-10 px-4 sm:px-6">
       <div className="max-w-[1200px] mx-auto">
@@ -25,10 +60,13 @@ export default function NewsletterCTA() {
 
               {/* Right form */}
               <div className="md:w-1/3 w-full flex flex-col items-stretch md:items-end">
-                <form className="w-full md:w-[380px] flex flex-col items-stretch gap-3">
+                <form onSubmit={handleSubmit} className="w-full md:w-[380px] flex flex-col items-stretch gap-3">
                   <input
                     type="email"
+                    required
                     placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full rounded-md px-4 py-3 outline-none bg-white text-black placeholder-gray-400"
                   />
 
