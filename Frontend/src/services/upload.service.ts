@@ -20,9 +20,8 @@ export async function uploadImage(file: File) {
     const msg = (data && (data.message || data.error)) || "Upload failed";
     throw new Error(msg);
   }
-  const path: string = data.url;
-  const base = API_BASE.replace(/\/api$/, "");
-  const absolute = path.startsWith("http") ? path : `${base}${path}`;
-  return { url: absolute };
+  
+  // The backend now returns an absolute URL (e.g. https://res.cloudinary.com/...)
+  return { url: data.url };
 }
 
