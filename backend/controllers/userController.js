@@ -112,7 +112,7 @@ exports.getProfile = async (req, res, next) => {
 // PUT /api/user/profile
 exports.updateProfile = async (req, res, next) => {
   try {
-    const { name, phone, profile_image_url } = req.body;
+    const { name, phone, profile_image_url, businessName, businessCategory, businessAddress, about } = req.body;
     const user = await User.findByPk(req.user.id);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -120,10 +120,20 @@ exports.updateProfile = async (req, res, next) => {
     if (typeof name === 'string') user.name = name;
     if (typeof phone === 'string' || phone === null) user.phone = phone || null;
     if (typeof profile_image_url === 'string' || profile_image_url === null) user.profile_image_url = profile_image_url || null;
+    
+    // Vendor profile updates
+    if (typeof businessName === 'string' || businessName === null) user.businessName = businessName || null;
+    if (typeof businessCategory === 'string' || businessCategory === null) user.businessCategory = businessCategory || null;
+    if (typeof businessAddress === 'string' || businessAddress === null) user.businessAddress = businessAddress || null;
+    if (typeof about === 'string' || about === null) user.about = about || null;
+    
     await user.save();
     return res.json({
       success: true,
-      data: { id: user.id, name: user.name, email: user.email, phone: user.phone, profile_image_url: user.profile_image_url },
+      data: { 
+        id: user.id, name: user.name, email: user.email, phone: user.phone, profile_image_url: user.profile_image_url,
+        businessName: user.businessName, businessCategory: user.businessCategory, businessAddress: user.businessAddress, about: user.about
+      },
     });
   } catch (err) {
     return next(err);

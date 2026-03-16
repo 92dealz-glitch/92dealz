@@ -217,7 +217,7 @@ export default function SignupPage() {
       } else if (r === "admin") {
         router.push("/admin-dashboard");
       } else {
-        router.push("/user-dashboard");
+        router.push("/");
       }
     } catch (err: any) {
       setError(err.message);

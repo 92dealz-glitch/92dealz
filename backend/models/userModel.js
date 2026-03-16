@@ -76,6 +76,10 @@ const User = sequelize.define('User', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  about: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
   rating: {
     type: DataTypes.FLOAT,
     defaultValue: 0,

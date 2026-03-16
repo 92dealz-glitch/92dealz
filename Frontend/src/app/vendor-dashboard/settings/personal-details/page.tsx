@@ -6,17 +6,35 @@ import { uploadImage } from "@/services/upload.service";
 import { getMyProfile, updateProfileImage } from "@/lib/api";
 
 export default function PersonalDetailsPage() {
+    const [profile, setProfile] = useState<any>({
+        name: "", email: "", phone: "", businessName: "", businessCategory: "", businessAddress: "", about: ""
+    });
     const [photo, setPhoto] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState({ text: "", type: "" });
     const inputRef = useRef<HTMLInputElement | null>(null);
+
     useEffect(() => {
         (async () => {
             try {
                 const res = await getMyProfile();
-                setPhoto(res.data.profile_image_url || null);
+                if (res?.data) {
+                    const data = res.data as any;
+                    setProfile({
+                        name: data.name || "",
+                        email: data.email || "",
+                        phone: data.phone || "",
+                        businessName: data.businessName || "",
+                        businessCategory: data.businessCategory || "",
+                        businessAddress: data.businessAddress || "",
+                        about: data.about || "",
+                    });
+                    setPhoto(data.profile_image_url || null);
+                }
             } catch {}
         })();
     }, []);
+
     async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
         const f = e.target.files?.[0];
         if (!f) return;
@@ -34,75 +52,126 @@ export default function PersonalDetailsPage() {
             setSaving(false);
         }
     }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        setProfile({ ...profile, [e.target.name]: e.target.value });
+    };
+
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        setMessage({ text: "", type: "" });
+        try {
+            // using the new updateMyProfile function imported via api.ts
+            // Note: email cannot be changed via this profile update usually, but we keep it readOnly or send it.
+            const { updateMyProfile } = require("@/lib/api");
+            await updateMyProfile({
+                name: profile.name,
+                phone: profile.phone,
+                businessName: profile.businessName,
+                businessCategory: profile.businessCategory,
+                businessAddress: profile.businessAddress,
+                about: profile.about
+            });
+            setMessage({ text: "Profile updated successfully!", type: "success" });
+        } catch (err: any) {
+            setMessage({ text: err.message || "Failed to update profile", type: "error" });
+        } finally {
+            setSaving(false);
+        }
+    };
+
     return (
         <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden p-8 lg:p-12 animate-in fade-in duration-500">
-            <h2 className="text-black font-black text-2xl mb-12">Personal Details</h2>
+            <h2 className="text-black font-black text-2xl mb-8">Personal & Business Details</h2>
+
+            {message.text && (
+                <div className={`mb-6 p-4 rounded-lg font-bold text-sm ${message.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                    {message.text}
+                </div>
+            )}
 
             <div className="max-w-3xl">
                 <div className="mb-12 relative inline-block">
-                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg relative">
+                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg relative bg-zinc-100">
                         {photo ? (
-                          // eslint-disable-next-line @next/next/no-img-element
                           <img src={photo} alt="Profile" className="absolute inset-0 w-full h-full object-cover" />
                         ) : (
-                          <Image src="/images/heroimage.svg" alt="Profile" fill className="object-cover" />
+                          <div className="flex items-center justify-center w-full h-full text-zinc-400 font-bold text-3xl">
+                              {profile.name ? profile.name.substring(0, 1).toUpperCase() : "?"}
+                          </div>
                         )}
                     </div>
                     <label className="absolute bottom-0 right-0 bg-[#E85A28] text-white p-2.5 rounded-full border-4 border-white shadow-md hover:bg-[#D44D1F] transition-all cursor-pointer">
                         <CameraIcon />
                         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={onPick} />
                     </label>
-                    {saving ? <div className="absolute -bottom-6 left-0 text-xs text-zinc-500 font-bold">Saving...</div> : null}
                 </div>
 
-                <form className="space-y-8">
+                <form onSubmit={handleSave} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="flex flex-col gap-2">
-                            <label className="text-black font-black text-[15px]">First Name</label>
-                            <input type="text" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="Enter first name" />
+                            <label className="text-black font-black text-[15px]">Full Name</label>
+                            <input type="text" name="name" value={profile.name} onChange={handleChange} required className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="Enter full name" />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className="text-black font-black text-[15px]">Last Name</label>
-                            <input type="text" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="Enter last name" />
+                            <label className="text-black font-black text-[15px]">Email Address (Read Only)</label>
+                            <input type="email" value={profile.email} readOnly className="border border-zinc-200 bg-zinc-50 rounded-lg p-4 text-zinc-500 font-bold focus:outline-none transition-colors cursor-not-allowed" />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="flex flex-col gap-2">
-                            <label className="text-black font-black text-[15px]">Email</label>
-                            <input type="email" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="example@email.com" />
-                        </div>
                         <div className="flex flex-col gap-2">
                             <label className="text-black font-black text-[15px]">Phone Number</label>
-                            <input type="text" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="+234 8100909 000" />
+                            <input type="text" name="phone" value={profile.phone} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="+234 8100909 000" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <label className="text-black font-black text-[15px]">Business Name</label>
+                            <input type="text" name="businessName" value={profile.businessName} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="e.g. Adaeze Fashion House" />
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-black font-black text-[15px]">Location</label>
-                        <div className="relative">
-                            <select className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white">
-                                <option>Lagos, Nigeria</option>
-                                <option>Abuja, Nigeria</option>
-                            </select>
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
-                                <ChevronDownIcon />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="flex flex-col gap-2">
+                            <label className="text-black font-black text-[15px]">Business Category</label>
+                            <div className="relative">
+                                <select name="businessCategory" value={profile.businessCategory} onChange={handleChange} className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white">
+                                    <option value="">Select a category</option>
+                                    <option value="fashion">Fashion & Clothing</option>
+                                    <option value="electronics">Electronics & Gadgets</option>
+                                    <option value="food">Food & Groceries</option>
+                                    <option value="beauty">Beauty & Health</option>
+                                    <option value="home">Home & Furniture</option>
+                                    <option value="auto">Automobiles & Parts</option>
+                                    <option value="services">Services</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                                    <ChevronDownIcon />
+                                </div>
                             </div>
                         </div>
+                        <div className="flex flex-col gap-2">
+                            <label className="text-black font-black text-[15px]">Business Address</label>
+                            <input type="text" name="businessAddress" value={profile.businessAddress} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="e.g. 14 Broad Street, Lagos" />
+                        </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-black font-black text-[15px]">About You / About Your Business</label>
+                        <label className="text-black font-black text-[15px]">About Your Business</label>
                         <textarea
-                            rows={6}
+                            name="about"
+                            value={profile.about}
+                            onChange={handleChange}
+                            rows={4}
                             placeholder="Write a short description about yourself or your business"
                             className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors resize-none"
                         />
                     </div>
 
-                    <div className="flex justify-center pt-8">
-                        <button className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-16 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[240px]">
-                            Save Changes
+                    <div className="flex justify-start pt-8">
+                        <button type="submit" disabled={saving} className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-16 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[240px]">
+                            {saving ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

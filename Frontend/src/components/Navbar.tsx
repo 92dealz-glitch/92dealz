@@ -277,27 +277,29 @@ export default function Navbar() {
 
               {/* Menu Links */}
               <div className="py-2 border-b border-zinc-100">
+                {typeof window !== "undefined" && (window.localStorage.getItem("role") || "user").toLowerCase() !== "user" && (
+                  <button
+                    onClick={() => {
+                      const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
+                      setMobileMenuOpen(false);
+                      router.push(r === "vendor" ? "/vendor-dashboard" : r === "admin" ? "/admin" : "/user/dashboard/settings");
+                    }}
+                    className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
+                  >
+                    <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Settings size={16} /></span>
+                    Dashboard
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
                     setMobileMenuOpen(false);
-                    router.push(r === "vendor" ? "/vendor-dashboard" : r === "admin" ? "/admin" : "/user/dashboard/settings");
-                  }}
-                  className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
-                >
-                  <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Settings size={16} /></span>
-                  Dashboard
-                </button>
-                <button
-                  onClick={() => {
-                    const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
-                    setMobileMenuOpen(false);
-                    router.push(r === "vendor" ? "/vendor-dashboard/add-product" : "/user/dashboard/settings");
+                    router.push(r === "vendor" ? "/vendor-dashboard/add-product" : "/");
                   }}
                   className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                 >
                   <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Plus size={16} /></span>
-                  { (typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "My Profile" }
+                  { (typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals" }
                 </button>
               </div>
 
@@ -339,10 +341,6 @@ export default function Navbar() {
                       <Grid size={22} />
                       <span className="text-[10px] mt-1 text-center">My Ads</span>
                     </Link>
-                    <Link href="/user/dashboard/settings" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
-                      <User size={22} />
-                      <span className="text-[10px] mt-1 text-center">Account</span>
-                    </Link>
                   </div>
                 </div>
               </div>
@@ -373,10 +371,6 @@ export default function Navbar() {
               <Link href="/vendor-dashboard/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
                 <Grid size={22} />
                 <span className="text-[10px] mt-1 text-center">My Ads</span>
-              </Link>
-              <Link href="/user/dashboard/settings" className="flex flex-col items-center text-sm text-zinc-700">
-                <UserAvatarCircle small />
-                <span className="text-[10px] mt-1 text-center">Account</span>
               </Link>
             </div>
           </div>
@@ -537,16 +531,21 @@ function NavUserMenu() {
               <p className="text-sm font-bold text-orange-600 capitalize">{role}</p>
             </div>
             <div className="p-1.5 space-y-0.5">
-              <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
-                <Settings size={16} />
-                Dashboard
-              </button>
-              <button onClick={() => go(vendor ? "/vendor-dashboard/add-product" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
-                <Plus size={16} />
-                {vendor ? "Add New Deal" : "My Profile"}
-              </button>
+              {role !== "user" && (
+                <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                  <Settings size={16} />
+                  Dashboard
+                </button>
+              )}
+              {vendor && (
+                <button onClick={() => go("/vendor-dashboard/add-product")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                  <Plus size={16} />
+                  Add New Deal
+                </button>
+              )}
               <button 
                 onClick={signOut} 
+
                 className="w-full text-left px-3 py-2 text-sm hover:bg-red-50 text-red-600 rounded-lg transition-colors flex items-center gap-3 mt-1 pt-2 border-t border-zinc-100"
               >
                 <LogOut size={16} />

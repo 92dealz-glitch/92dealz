@@ -88,7 +88,7 @@ export async function updateProfileImage(url: string | null) {
 }
 
 export async function getMyProfile() {
-  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null } }>(
+  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string } }>(
     "/users/profile",
     { method: "GET", auth: true }
   );
