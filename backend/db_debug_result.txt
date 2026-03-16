@@ -1,0 +1,4 @@
+Attempting authentication...
+Authenticated successfully.
+DEALS COLUMNS: ["id","title","description","price","category_id","image_url","images_json","status","userId","createdAt","updatedAt","condition","brand","model","color","negotiable","screenSize","ram","mainCamera","selfieCamera","battery","internalStorage","state","city","location"]
+DEALS COUNT: 0

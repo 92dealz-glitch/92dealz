@@ -87,11 +87,14 @@ exports.list = async (req, res, next) => {
 
     const baseSelectCols = ['id', 'title', 'description', 'price', '"createdAt"', '"userId"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
-                    'condition', 'brand', 'model', 'color', 'negotiable', '"screenSize"', 'ram',
-                    '"mainCamera"', '"selfieCamera"', 'battery', '"internalStorage"', 'state', 'city', 'location'];
+                    'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
     for (const f of fields) {
-      if (has(f)) baseSelectCols.push(f);
-      else if (has(`"${f}"`)) baseSelectCols.push(`"${f}"`);
+      if (has(f)) {
+        // Quote if it's camelCase (contains uppercase letters)
+        const quoted = /[A-Z]/.test(f) ? `"${f}"` : f;
+        baseSelectCols.push(quoted);
+      }
     }
 
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals ${whereSql}`;
@@ -123,15 +126,17 @@ exports.getById = async (req, res, next) => {
   try {
     await introspect();
     const id = Number(req.params.id);
-    const baseSelectCols = ['id', 'title', 'description', 'price', '"createdAt"', '"userId"'];
-    if (has('image_url')) baseSelectCols.push('image_url');
-    if (has('images_json')) baseSelectCols.push('images_json');
-    if (has('expiry_date')) baseSelectCols.push('expiry_date');
-    if (has('store_id')) baseSelectCols.push('store_id');
-    if (has('category_id')) baseSelectCols.push('category_id');
-    if (has('status')) baseSelectCols.push('status');
-
-    const sql = `SELECT ${baseSelectCols.join(', ')} FROM deals WHERE id = $1`;
+    const selectCols = ['id', 'title', 'description', 'price', '"createdAt"', '"userId"'];
+    const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
+                    'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    for (const f of fields) {
+      if (has(f)) {
+        const quoted = /[A-Z]/.test(f) ? `"${f}"` : f;
+        selectCols.push(quoted);
+      }
+    }
+    const sql = `SELECT ${selectCols.join(', ')} FROM deals WHERE id = $1`;
     const [rows] = await sequelize.query(sql, { bind: [id] });
     if (!rows.length) {
       return res.status(404).json({ success: false, message: 'Deal not found' });
@@ -164,13 +169,14 @@ exports.create = async (req, res, next) => {
     if (has('expiry_date') && typeof expiry_date !== 'undefined') { idx += 1; cols.push('expiry_date'); vals.push(`$${idx}`); bind.push(expiry_date); }
     if (has('status') && typeof status !== 'undefined') { idx += 1; cols.push('status'); vals.push(`$${idx}`); bind.push(status); }
     
-    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', '"screenSize"', 'ram', '"mainCamera"', '"selfieCamera"', 'battery', '"internalStorage"', 'state', 'city', 'location'];
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
     for (const f of extraFields) {
-      if (has(f.replace(/"/g, "")) && typeof req.body[f.replace(/"/g, "")] !== 'undefined') {
+      if (has(f) && typeof req.body[f] !== 'undefined') {
         idx += 1;
-        cols.push(f);
+        const colName = /[A-Z]/.test(f) ? `"${f}"` : f;
+        cols.push(colName);
         vals.push(`$${idx}`);
-        bind.push(req.body[f.replace(/"/g, "")]);
+        bind.push(req.body[f]);
       }
     }
 
@@ -202,19 +208,19 @@ exports.update = async (req, res, next) => {
     if (has('images_json')) allowed.push('images_json');
     if (has('expiry_date')) allowed.push('expiry_date');
     if (has('status')) allowed.push('status');
-    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', '"screenSize"', 'ram', '"mainCamera"', '"selfieCamera"', 'battery', '"internalStorage"', 'state', 'city', 'location'];
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
     for (const f of extraFields) {
-      if (has(f.replace(/"/g, ""))) allowed.push(f);
+      if (has(f)) allowed.push(f);
     }
     const sets = [];
     const bind = [];
     let idx = 0;
     for (const k of allowed) {
-      const bodyKey = k.replace(/"/g, "");
-      if (req.body[bodyKey] !== undefined) {
+      if (req.body[k] !== undefined) {
         idx += 1;
-        sets.push(`${k} = $${idx}`);
-        bind.push(req.body[bodyKey]);
+        const colName = /[A-Z]/.test(k) ? `"${k}"` : k;
+        sets.push(`${colName} = $${idx}`);
+        bind.push(req.body[k]);
       }
     }
     // Always update updatedAt
@@ -275,22 +281,32 @@ exports.remove = async (req, res, next) => {
 exports.trending = async (req, res, next) => {
   try {
     await introspect();
+    const selectCols = ['d.id', 'd.title', 'd.description', 'd.price', 'd."createdAt"'];
+    const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
+                    'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    for (const f of fields) {
+      if (has(f)) {
+        const quoted = /[A-Z]/.test(f) ? `d."${f}"` : `d.${f}`;
+        selectCols.push(quoted);
+      }
+    }
     if (HAS_CLICK_EVENTS) {
       const [rows] = await sequelize.query(
-        `SELECT d.id, d.title, d.description, d.price, d."createdAt", COUNT(c.id)::INT AS clicks
+        `SELECT ${selectCols.join(', ')}, COUNT(c.id)::INT AS clicks
          FROM deals d
          JOIN click_events c ON c.deal_id = d.id
          WHERE c.clicked_at > NOW() - INTERVAL '7 days'
-         GROUP BY d.id
+         GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
          ORDER BY clicks DESC
          LIMIT 20`
       );
       return res.json({ success: true, data: rows });
     }
     const [rows] = await sequelize.query(
-      `SELECT id, title, description, price, "createdAt"
-       FROM deals
-       ORDER BY "createdAt" DESC
+      `SELECT ${selectCols.join(', ')}
+       FROM deals d
+       ORDER BY d."createdAt" DESC
        LIMIT 20`
     );
     return res.json({ success: true, data: rows });

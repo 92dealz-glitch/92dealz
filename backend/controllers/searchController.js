@@ -65,10 +65,15 @@ exports.search = async (req, res, next) => {
     const orderSql = `ORDER BY ${sortSql(req.query.sort)}`;
 
     const selectCols = ['id', 'title', 'description', 'price', '"createdAt"'];
-    if (has('image_url')) selectCols.push('image_url');
-    if (has('expiry_date')) selectCols.push('expiry_date');
-    if (has('store_id')) selectCols.push('store_id');
-    if (has('category_id')) selectCols.push('category_id');
+    const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
+                    'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    for (const f of fields) {
+      if (has(f)) {
+        const quoted = /[A-Z]/.test(f) ? `"${f}"` : f;
+        selectCols.push(quoted);
+      }
+    }
 
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals ${whereSql}`;
     const dataSql = `SELECT ${selectCols.join(', ')} FROM deals ${whereSql} ${orderSql} LIMIT ${limit} OFFSET ${offset}`;
