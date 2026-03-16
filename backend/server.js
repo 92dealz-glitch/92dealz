@@ -28,24 +28,12 @@ app.use(
       // Allow requests with no origin (like mobile apps or local curl)
       if (!origin) return callback(null, true);
 
-      const allowedOrigins = [
-        "https://234deals-frontend-inky.vercel.app",
-        "https://234deals-frontend1.vercel.app",
-        "http://localhost:3000",
-        "http://localhost:3005"
-      ];
-
-      // Exact match or match with trailing slash
-      const isAllowed = allowedOrigins.some(o => {
-        const normalizedOrigin = origin.replace(/\/$/, "");
-        const normalizedAllowed = o.replace(/\/$/, "");
-        return normalizedOrigin === normalizedAllowed;
-      });
+      // Regex to allow any 234deals related domain or localhost
+      const isAllowed = /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?|https:\/\/([a-z0-9-]+\.)?vercel\.app|https:\/\/234deals\.online)$/i.test(origin);
 
       if (isAllowed) {
         callback(null, true);
       } else {
-        // Log CORS failure for debugging in Vercel logs
         console.warn(`CORS blocked for origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
