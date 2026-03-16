@@ -73,6 +73,7 @@ export default function DealsManagementPage() {
     });
   }, [deals, searchTerm, statusFilter]);
 
+  const handleDelete = async (id: number) => {
     try {
       const result = await apiFetch<{ success: boolean }>(`admin/deals/${id}`, { method: "DELETE" }, true);
       if (result.success) {
@@ -83,6 +84,7 @@ export default function DealsManagementPage() {
       showNotification("error", "Failed to delete deal.");
     }
     setActiveMenuId(null);
+  };
 
   if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading deals...</div>;
 

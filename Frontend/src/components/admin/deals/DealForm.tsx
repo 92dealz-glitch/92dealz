@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { 
   ChevronLeft, 
@@ -9,10 +9,14 @@ import {
   Plus, 
   X, 
   ChevronDown,
-  Upload
+  Upload,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useNotification } from "@/context/NotificationContext";
+import { createDeal, updateDeal, getAdminCategories, getAdminVendors } from "@/lib/api";
+import { apiFetch } from "@/services/apiClient";
 
 interface DealFormProps {
   initialData?: any;
@@ -20,13 +24,36 @@ interface DealFormProps {
 }
 
 export default function DealForm({ initialData, type }: DealFormProps) {
+  const router = useRouter();
   const { showNotification } = useNotification();
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [merchants, setMerchants] = useState<any[]>([]);
+  
   const [isFeatured, setIsFeatured] = useState(initialData?.isFeatured || false);
-  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image_url || initialData?.image || null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    async function loadResources() {
+      try {
+        const [catRes, merRes] = await Promise.all([
+          getAdminCategories(),
+          getAdminVendors()
+        ]);
+        if (catRes.success) setCategories(catRes.data);
+        if (merRes.success) setMerchants(merRes.data);
+      } catch (err) {
+        console.error("Failed to load resources", err);
+      }
+    }
+    loadResources();
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -35,9 +62,61 @@ export default function DealForm({ initialData, type }: DealFormProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const uploadToCloudinary = async (file: File): Promise<string | null> => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await apiFetch<{ success: boolean; url: string }>("upload/image", {
+        method: "POST",
+        body: formData,
+      }, true);
+      return res.success ? res.url : null;
+    } catch (err) {
+      console.error("Upload failed", err);
+      return null;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    showNotification("success", type === "add" ? "Deal created successfully" : "Deal updated successfully");
+    setLoading(true);
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      const data: any = Object.fromEntries(formData.entries());
+      
+      // Handle numeric fields
+      data.price = Number(data.price.replace(/,/g, ""));
+      data.originalPrice = data.originalPrice ? Number(data.originalPrice.replace(/,/g, "")) : undefined;
+      data.category_id = data.category_id ? Number(data.category_id) : undefined;
+      data.store_id = data.store_id ? Number(data.store_id) : undefined;
+      data.isFeatured = isFeatured;
+
+      // Image upload
+      let finalImageUrl = imagePreview;
+      if (selectedFile) {
+        const uploadedUrl = await uploadToCloudinary(selectedFile);
+        if (uploadedUrl) {
+          finalImageUrl = uploadedUrl;
+        } else {
+          showNotification("error", "Image upload failed. Proceeding with previous image.");
+        }
+      }
+      data.image_url = finalImageUrl;
+
+      if (type === "add") {
+        await createDeal(data);
+        showNotification("success", "Deal created successfully");
+      } else {
+        await updateDeal(initialData.id, data);
+        showNotification("success", "Deal updated successfully");
+      }
+      router.push("/admin/deals");
+    } catch (err: any) {
+      showNotification("error", err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,36 +137,43 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                 <input
                   type="text"
                   required
+                  name="title"
                   defaultValue={initialData?.title}
                   placeholder="e.g., Samsung Galaxy S24"
                   className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
                 />
               </div>
-
+ 
               <div className="space-y-2">
                 <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
                   Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   required
+                  name="description"
                   defaultValue={initialData?.description}
                   placeholder="Describe the deal in detail..."
                   rows={6}
                   className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors resize-none font-medium text-sm"
                 ></textarea>
               </div>
-
+ 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
                     Category <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
-                    <select required className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium cursor-pointer">
+                    <select 
+                      required 
+                      name="category_id"
+                      defaultValue={initialData?.category_id}
+                      className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium cursor-pointer"
+                    >
                       <option value="">Select category</option>
-                      <option>Electronics</option>
-                      <option>Fashion</option>
-                      <option>Phones & Tablet</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      ))}
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
                   </div>
@@ -98,13 +184,14 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                   </label>
                   <input
                     type="text"
+                    name="tags"
                     defaultValue={initialData?.tags}
                     placeholder="smartphone, sale, tech"
                     className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
                   />
                 </div>
               </div>
-
+ 
               <div className="space-y-2">
                 <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
                   Deal URL (Affiliate Link) <span className="text-red-500">*</span>
@@ -112,19 +199,21 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                 <input
                   type="url"
                   required
+                  name="url"
                   defaultValue={initialData?.url}
                   placeholder="https://example.com/deal"
                   className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
                 />
               </div>
-
+ 
               <div className="space-y-2">
                 <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
                   Expiry Date
                 </label>
                 <input
                   type="date"
-                  defaultValue={initialData?.expiryDate}
+                  name="expiry_date"
+                  defaultValue={initialData?.expiry_date ? new Date(initialData.expiry_date).toISOString().split('T')[0] : ""}
                   className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
                 />
               </div>
@@ -147,6 +236,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                     <input
                       type="text"
                       required
+                      name="price"
                       defaultValue={initialData?.price}
                       placeholder="450,000"
                       className="w-full pl-8 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
@@ -162,6 +252,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                     <input
                       type="text"
                       required
+                      name="originalPrice"
                       defaultValue={initialData?.originalPrice}
                       placeholder="950,000"
                       className="w-full pl-8 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
@@ -169,18 +260,22 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                   </div>
                 </div>
               </div>
-
+ 
               <div className="space-y-2">
                 <label className="text-sm text-zinc-900 flex items-center gap-1">
                   Merchant <span className="text-red-500">*</span>
                 </label>
                 <div className="relative font-bold">
-                  <select required className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium cursor-pointer">
+                  <select 
+                    required 
+                    name="store_id"
+                    defaultValue={initialData?.store_id}
+                    className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium cursor-pointer"
+                  >
                     <option value="">Select merchant</option>
-                    <option>TechHub Nigeria</option>
-                    <option>SportsWorld</option>
-                    <option>Jumia</option>
-                    <option>Konga</option>
+                    {merchants.map(mer => (
+                      <option key={mer.id} value={mer.id}>{mer.name}</option>
+                    ))}
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
                 </div>
@@ -243,7 +338,12 @@ export default function DealForm({ initialData, type }: DealFormProps) {
               <div className="space-y-2">
                 <label className="text-sm text-zinc-900 font-bold">Status</label>
                 <div className="relative">
-                  <select required className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium">
+                  <select 
+                    required 
+                    name="status"
+                    defaultValue={initialData?.status || "published"}
+                    className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
+                  >
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
                     <option value="scheduled">Scheduled</option>
@@ -252,13 +352,14 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
                 </div>
               </div>
-
+ 
               <div className="space-y-3 pt-4 font-bold">
                 <button 
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 bg-[#E85A28] text-white py-3 rounded-lg font-bold hover:bg-[#D14F23] transition-colors shadow-md shadow-[#E85A28]/20 active:scale-95"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 bg-[#E85A28] text-white py-3 rounded-lg font-bold hover:bg-[#D14F23] transition-colors shadow-md shadow-[#E85A28]/20 active:scale-95 disabled:opacity-50"
                 >
-                  <Save size={18} />
+                  {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                   {type === "add" ? "Create Deal" : "Save Changes"}
                 </button>
                 <Link 

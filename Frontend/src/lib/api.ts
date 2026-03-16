@@ -101,14 +101,14 @@ export async function getDeals() {
   );
 }
 
-export async function createDeal(payload: { title: string; description?: string; price: number }) {
+export async function createDeal(payload: any) {
   return apiFetch<{ success: boolean; data: any }>(
     "/deals",
     { method: "POST", body: payload, auth: true }
   );
 }
 
-export async function updateDeal(id: number, payload: { title?: string; description?: string | null; price?: number }) {
+export async function updateDeal(id: number, payload: any) {
   return apiFetch<{ success: boolean; data: any }>(
     `/deals/${id}`,
     { method: "PUT", body: payload, auth: true }
@@ -176,5 +176,12 @@ export async function updateAdminSubmissionStatus(id: number, status: "APPROVED"
   return apiFetch<{ success: boolean; data: any }>(
     `/admin/submissions/${id}`,
     { method: "PUT", body: { status }, auth: true }
+  );
+}
+
+export async function getAdminCategories() {
+  return apiFetch<{ success: boolean; data: any[] }>(
+    "/admin/categories",
+    { method: "GET", auth: true }
   );
 }

@@ -7,6 +7,7 @@ import SimilarItems from '../../../../components/SimilarItems'
 import Button from '../../../../components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
+import { Loader2 } from "lucide-react"
 
 type Props = {
   params: Promise<{ id: string }>
@@ -127,18 +128,46 @@ export default function ProductPage({ params }: Props) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!product.id || !product.title) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h2>
+          <p className="text-gray-600 mb-6">The product you are looking for does not exist or has been removed.</p>
+          <Link href="/" className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition">
+            Go to Homepage
+          </Link>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar />
       <main className="max-w-[1200px] mx-auto mt-6 px-4 sm:px-6">
-        <nav className="text-gray-600 text-sm mb-4">Home &gt; Phones &gt; Mobile Phones &gt; Smartphones</nav>
+        <nav className="text-gray-600 text-sm mb-4">Home &gt; Products &gt; {product.title}</nav>
 
         <div className="grid gap-6 items-start lg:grid-cols-[1fr_360px]">
           {/* Left: Gallery + Info (card with orange border) */}
           <section className="rounded-lg border-2 border-orange-300 bg-white p-4 sm:p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h1 className="text-2xl font-extrabold text-orange-600">{product.title || (loading ? "Loading..." : "Ad")}</h1>
+                <h1 className="text-2xl font-extrabold text-orange-600">{product.title}</h1>
                 <p className="text-gray-700 mt-2">{product.desc}</p>
               </div>
               <div className="flex items-center gap-3">
