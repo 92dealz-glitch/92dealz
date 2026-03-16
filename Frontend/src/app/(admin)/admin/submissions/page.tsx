@@ -14,7 +14,48 @@ import {
   Tag
 } from "lucide-react";
 import { getAdminSubmissions, updateAdminSubmissionStatus } from "@/lib/api";
-import { toast } from "react-hot-toast";
+import { useNotification } from "@/context/NotificationContext";
+
+// --- Helper Components ---
+
+function StatusBadge({ status }: { status: string }) {
+  const styles = {
+    PENDING: "bg-orange-50 text-orange-600 border-orange-100",
+    APPROVED: "bg-green-50 text-green-600 border-green-100",
+    REJECTED: "bg-red-50 text-red-600 border-red-100",
+  };
+  
+  const colors = styles[status as keyof typeof styles] || "bg-zinc-50 text-zinc-600 border-zinc-100";
+  
+  return (
+    <span className={`px-3 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${colors}`}>
+      {status}
+    </span>
+  );
+}
+
+function DetailBox({ label, value }: { label: string, value: string }) {
+  return (
+    <div className="p-4 bg-zinc-50 border border-zinc-100 rounded-2xl">
+      <div className="text-zinc-400 text-[10px] font-black uppercase mb-1">{label}</div>
+      <div className="text-black font-bold text-sm">{value}</div>
+    </div>
+  );
+}
+
+function ClipboardListIcon() {
+  return (
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4D4D8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <path d="M9 12h6" />
+      <path d="M9 16h6" />
+      <path d="M9 8h6" />
+    </svg>
+  );
+}
+
+// --- Main Page Component ---
 
 interface Submission {
   id: number;
@@ -33,6 +74,7 @@ interface Submission {
 }
 
 export default function SubmissionsPage() {
+  const { showNotification } = useNotification();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,7 +93,7 @@ export default function SubmissionsPage() {
         setSubmissions(res.data);
       }
     } catch (error) {
-      toast.error("Failed to fetch submissions");
+      showNotification("error", "Failed to fetch submissions");
     } finally {
       setLoading(false);
     }
@@ -62,12 +104,12 @@ export default function SubmissionsPage() {
     try {
       const res = await updateAdminSubmissionStatus(id, status);
       if (res.success) {
-        toast.success(`Submission ${status === "APPROVED" ? "approved" : "rejected"}!`);
+        showNotification("success", `Submission ${status === "APPROVED" ? "approved" : "rejected"}!`);
         fetchSubmissions();
         setSelectedSubmission(null);
       }
     } catch (error) {
-      toast.error("Failed to update status");
+      showNotification("error", "Failed to update status");
     } finally {
       setIsUpdating(false);
     }
@@ -266,39 +308,3 @@ export default function SubmissionsPage() {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const styles = {
-    PENDING: "bg-orange-50 text-orange-600 border-orange-100",
-    APPROVED: "bg-green-50 text-green-600 border-green-100",
-    REJECTED: "bg-red-50 text-red-600 border-red-100",
-  };
-  
-  const colors = styles[status as keyof typeof styles] || "bg-zinc-50 text-zinc-600 border-zinc-100";
-  
-  return (
-    <span className={`px-3 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${colors}`}>
-      {status}
-    </span>
-  );
-}
-
-function DetailBox({ label, value }: { label: string, value: string }) {
-  return (
-    <div className="p-4 bg-zinc-50 border border-zinc-100 rounded-2xl">
-      <div className="text-zinc-400 text-[10px] font-black uppercase mb-1">{label}</div>
-      <div className="text-black font-bold text-sm">{value}</div>
-    </div>
-  );
-}
-
-function ClipboardListIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4D4D8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-      <path d="M9 12h6" />
-      <path d="M9 16h6" />
-      <path d="M9 8h6" />
-    </svg>
-  );
-}

@@ -1,5 +1,4 @@
-"use client"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, use } from "react"
 import Navbar from '../../../../components/Navbar'
 import Footer from '../../../../components/Footer'
 import Link from 'next/link'
@@ -14,8 +13,8 @@ type Props = {
 }
 
 export default function ProductPage({ params }: Props) {
-  // Unwrap params using React.use()
-  const { id } = React.use(params);
+  // Unwrap params using use()
+  const { id } = use(params);
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
     id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: 'Brand New'
