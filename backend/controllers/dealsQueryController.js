@@ -87,8 +87,8 @@ exports.list = async (req, res, next) => {
 
     const baseSelectCols = ['id', 'title', 'description', 'price', '"createdAt"', '"userId"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
-                    'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
-                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+                    'condition', 'brand', 'model', 'color', 'negotiable', '"screenSize"', 'ram',
+                    '"mainCamera"', '"selfieCamera"', 'battery', '"internalStorage"', 'state', 'city', 'location'];
     for (const f of fields) {
       if (has(f)) baseSelectCols.push(f);
       else if (has(`"${f}"`)) baseSelectCols.push(`"${f}"`);
@@ -164,13 +164,13 @@ exports.create = async (req, res, next) => {
     if (has('expiry_date') && typeof expiry_date !== 'undefined') { idx += 1; cols.push('expiry_date'); vals.push(`$${idx}`); bind.push(expiry_date); }
     if (has('status') && typeof status !== 'undefined') { idx += 1; cols.push('status'); vals.push(`$${idx}`); bind.push(status); }
     
-    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', '"screenSize"', 'ram', '"mainCamera"', '"selfieCamera"', 'battery', '"internalStorage"', 'state', 'city', 'location'];
     for (const f of extraFields) {
-      if (has(f) && typeof req.body[f] !== 'undefined') {
+      if (has(f.replace(/"/g, "")) && typeof req.body[f.replace(/"/g, "")] !== 'undefined') {
         idx += 1;
         cols.push(f);
         vals.push(`$${idx}`);
-        bind.push(req.body[f]);
+        bind.push(req.body[f.replace(/"/g, "")]);
       }
     }
 
@@ -202,18 +202,19 @@ exports.update = async (req, res, next) => {
     if (has('images_json')) allowed.push('images_json');
     if (has('expiry_date')) allowed.push('expiry_date');
     if (has('status')) allowed.push('status');
-    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', '"screenSize"', 'ram', '"mainCamera"', '"selfieCamera"', 'battery', '"internalStorage"', 'state', 'city', 'location'];
     for (const f of extraFields) {
-      if (has(f)) allowed.push(f);
+      if (has(f.replace(/"/g, ""))) allowed.push(f);
     }
     const sets = [];
     const bind = [];
     let idx = 0;
     for (const k of allowed) {
-      if (req.body[k] !== undefined) {
+      const bodyKey = k.replace(/"/g, "");
+      if (req.body[bodyKey] !== undefined) {
         idx += 1;
         sets.push(`${k} = $${idx}`);
-        bind.push(req.body[k]);
+        bind.push(req.body[bodyKey]);
       }
     }
     // Always update updatedAt
