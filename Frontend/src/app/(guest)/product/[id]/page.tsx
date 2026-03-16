@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState, use } from "react"
-import Navbar from '../../../../components/Navbar'
-import Footer from '../../../../components/Footer'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import Link from 'next/link'
-import SimilarItems from '../../../../components/SimilarItems'
-import Button from '../../../../components/ui/Button'
+import SimilarItems from '@/components/SimilarItems'
+import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
 import { Loader2 } from "lucide-react"
