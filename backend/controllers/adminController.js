@@ -194,11 +194,24 @@ exports.getSubmissions = async (req, res, next) => {
     const limit = Math.max(parseInt(req.query.limit || '0', 10), 0);
     if (page && limit) {
       const offset = (page - 1) * limit;
-      const { rows, count } = await Submission.findAndCountAll({ order: [['id', 'DESC']], limit, offset });
+      const [rows] = await sequelize.query(
+        `SELECT s.*, u.name as vendor_name
+         FROM submissions s
+         LEFT JOIN users u ON u.id = s.user_id
+         ORDER BY s.id DESC
+         LIMIT $1 OFFSET $2`,
+        { bind: [limit, offset] }
+      );
+      const [[{ count }]] = await sequelize.query(`SELECT COUNT(*)::INT as count FROM submissions`);
       return res.json({ success: true, data: rows, meta: { page, limit, total: count, pages: Math.ceil(count / limit) } });
     } else {
-      const items = await Submission.findAll({ order: [['id', 'DESC']] });
-      return res.json({ success: true, data: items });
+      const [rows] = await sequelize.query(
+        `SELECT s.*, u.name as vendor_name
+         FROM submissions s
+         LEFT JOIN users u ON u.id = s.user_id
+         ORDER BY s.id DESC`
+      );
+      return res.json({ success: true, data: rows });
     }
   } catch (err) {
     return next(err);
@@ -222,10 +235,24 @@ exports.updateSubmission = async (req, res, next) => {
         description: sub.description || null,
         price: sub.price,
         userId: sub.user_id,
-        ...(sub.category_id ? { category_id: sub.category_id } : {}),
-        ...(sub.store_id ? { store_id: sub.store_id } : {}),
+        category_id: sub.category_id || null,
+        store_id: sub.store_id || null,
         image_url: sub.image_url || null,
         images_json: sub.images_json || null,
+        condition: sub.condition || null,
+        brand: sub.brand || null,
+        model: sub.model || null,
+        color: sub.color || null,
+        negotiable: sub.negotiable || 'No',
+        screenSize: sub.screenSize || null,
+        ram: sub.ram || null,
+        mainCamera: sub.mainCamera || null,
+        selfieCamera: sub.selfieCamera || null,
+        battery: sub.battery || null,
+        internalStorage: sub.internalStorage || null,
+        state: sub.state || null,
+        city: sub.city || null,
+        location: sub.location || (sub.city && sub.state ? `${sub.city}, ${sub.state}` : sub.state || sub.city),
       });
       try {
         await notifyAlertsForDeal({ title: sub.title, price: sub.price, category_id: sub.category_id }, sendGeneric);

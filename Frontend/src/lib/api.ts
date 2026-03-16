@@ -164,3 +164,17 @@ export async function deleteAdminVendor(id: number) {
     { method: "DELETE", auth: true }
   );
 }
+
+export async function getAdminSubmissions(page = 1, limit = 50) {
+  return apiFetch<{ success: boolean; data: any[]; meta: any }>(
+    `/admin/submissions?page=${page}&limit=${limit}`,
+    { method: "GET", auth: true }
+  );
+}
+
+export async function updateAdminSubmissionStatus(id: number, status: "APPROVED" | "REJECTED") {
+  return apiFetch<{ success: boolean; data: any }>(
+    `/admin/submissions/${id}`,
+    { method: "PUT", body: { status }, auth: true }
+  );
+}

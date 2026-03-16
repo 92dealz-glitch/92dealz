@@ -20,6 +20,7 @@ import { getMyProfile } from "@/lib/api";
 
 const menuItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
+  { id: "submissions", label: "Submissions", icon: FileText, href: "/admin/submissions" },
   { id: "deals", label: "Deals Management", icon: Package, href: "/admin/deals" },
   { id: "vendors", label: "Vendors Management", icon: Store, href: "/admin/vendors" },
   { id: "taxonomy", label: "Taxonomy", icon: Tag, href: "/admin/taxonomy" },
