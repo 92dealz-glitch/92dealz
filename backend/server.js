@@ -99,23 +99,15 @@ app.use(errorHandler);
 
 const START_PORT = Number(process.env.PORT || 5001);
 
-async function startServer(port) {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connection established');
-    await sequelize.sync({ alter: true });
-    console.log('Database synchronized');
-
-    app.listen(port, () => {
-      console.log(`Server listening on http://localhost:${port}`);
-    }).on('error', (err) => {
-      console.error('Failed to start server:', err);
-      process.exit(1);
-    });
-  } catch (err) {
-    console.error('Failed to start server:', err);
-    process.exit(1);
-  }
+// Sync only if not on Vercel (local dev)
+if (!process.env.VERCEL) {
+  sequelize.sync({ alter: true })
+    .then(() => console.log('Database synchronized (local)'))
+    .catch(err => console.error('Database sync failed:', err));
 }
 
-startServer(START_PORT);
+app.listen(START_PORT, () => {
+  console.log(`Server listening on http://localhost:${START_PORT}`);
+});
+
+module.exports = app; // For Vercel
