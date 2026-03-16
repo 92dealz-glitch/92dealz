@@ -28,8 +28,8 @@ app.use(
       // Allow requests with no origin (like mobile apps or local curl)
       if (!origin) return callback(null, true);
 
-      // Regex to allow any 234deals related domain or localhost
-      const isAllowed = /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?|https:\/\/([a-z0-9-]+\.)?vercel\.app|https:\/\/234deals\.online)$/i.test(origin);
+      // Regex to allow any 234deals related domain, localhost, or any vercel subdomain
+      const isAllowed = /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?|https:\/\/.*\.vercel\.app|https?:\/\/.*\.234deals\.online)$/i.test(origin);
 
       if (isAllowed) {
         callback(null, true);
