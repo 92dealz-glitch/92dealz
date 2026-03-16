@@ -17,32 +17,8 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 
-// CORS configuration (support comma-separated list, sanitized for matching)
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3005')
-  .split(',')
-  .map((o) => o.trim().replace(/\/$/, "")); // Remove trailing slashes for exact match
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or local curl)
-      if (!origin) return callback(null, true);
-
-      // Regex to allow any 234deals related domain, localhost, or any vercel subdomain
-      const isAllowed = /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?|https:\/\/.*\.vercel\.app|https?:\/\/.*\.234deals\.online)$/i.test(origin);
-
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        console.warn(`CORS blocked for origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
-    credentials: true,
-  })
-);
+app.use(cors());
+app.options('*', cors()); // Enable pre-flight for all routes
 
 // Logging middleware
 app.use(morgan('dev'));
