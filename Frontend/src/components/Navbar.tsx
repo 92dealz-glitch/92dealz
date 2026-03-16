@@ -292,7 +292,7 @@ export default function Navbar() {
                   onClick={() => {
                     const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
                     setMobileMenuOpen(false);
-                    router.push(r === "vendor" ? "/vendor-dashboard/add-product" : "/user/profile");
+                    router.push(r === "vendor" ? "/vendor-dashboard/add-product" : "/user/dashboard/settings");
                   }}
                   className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                 >
@@ -537,11 +537,11 @@ function NavUserMenu() {
               <p className="text-sm font-bold text-orange-600 capitalize">{role}</p>
             </div>
             <div className="p-1.5 space-y-0.5">
-              <button onClick={() => go(vendor ? "/vendor/dashboard" : role === "admin" ? "/admin" : "/user/dashboard")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Settings size={16} />
                 Dashboard
               </button>
-              <button onClick={() => go(vendor ? "/vendor-dashboard/add-product" : "/user/profile")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go(vendor ? "/vendor-dashboard/add-product" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Plus size={16} />
                 {vendor ? "Add New Deal" : "My Profile"}
               </button>

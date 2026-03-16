@@ -25,18 +25,28 @@ const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3005')
 app.use(
   cors({
     origin: function (origin, callback) {
+      const allowedOrigins = [
+        "https://234deals-frontend-inky.vercel.app",
+        "https://234deals-frontend1.vercel.app",
+        "http://localhost:3000"
+      ];
+      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      const sanitizedOrigin = origin.replace(/\/$/, "");
-      if (allowedOrigins.indexOf(sanitizedOrigin) !== -1 || allowedOrigins.includes('*')) {
+      
+      // Check if origin is allowed or is a subdomain of 234deals-frontend-inky.vercel.app
+      const isAllowed = allowedOrigins.some(o => origin === o || origin === o + "/");
+      
+      if (isAllowed) {
         callback(null, true);
       } else {
-        console.warn(`CORS blocked for origin: ${origin}`);
-        callback(new Error('CORS: Origin not allowed'));
+        callback(new Error("Not allowed by CORS"));
       }
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   })
 );
 
