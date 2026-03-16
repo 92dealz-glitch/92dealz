@@ -33,11 +33,6 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid email format' });
     }
 
-    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-    if (adminEmails.includes(email)) {
-      return res.status(403).json({ success: false, message: 'Cannot register with this email' });
-    }
-
     const existing = await User.findOne({ where: { email } });
     if (existing) {
       return res.status(409).json({ success: false, message: 'Email already registered' });
@@ -146,40 +141,17 @@ exports.login = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
 
-    // Admin Password Override logic
-    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    const isAdminOverride = adminPassword && adminEmails.includes(email) && password === adminPassword;
-
     let user = await User.findOne({ where: { email } });
-
-    if (isAdminOverride) {
-      if (!user) {
-        // Create user if they don't exist
-        const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(password, salt);
-        user = await User.create({
-          name: 'Administrator',
-          email,
-          password: hashed,
-          role: 'admin'
-        });
-      } else if (user.role !== 'admin') {
-        // Ensure role is admin if override is used for existing user
-        await User.update({ role: 'admin' }, { where: { id: user.id } });
-        user.role = 'admin';
-      }
-    } else {
-      if (!user) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials' });
-      }
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials' });
-      }
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    const payload = { id: user.id, email: user.email };
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    const payload = { id: user.id, email: user.email, role: user.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     return res.json({
