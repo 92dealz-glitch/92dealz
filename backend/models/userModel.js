@@ -47,6 +47,11 @@ const User = sequelize.define('User', {
     allowNull: false,
     defaultValue: 'user',
   },
+  status: {
+    type: DataTypes.ENUM('pending', 'active', 'rejected'),
+    allowNull: false,
+    defaultValue: 'active',
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,

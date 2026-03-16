@@ -1,13 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Mail, CheckCircle2 } from "lucide-react";
 import { useNotification } from "@/context/NotificationContext";
+import { getMyProfile } from "@/lib/api";
 
 export default function ChangeEmailForm() {
   const { showNotification } = useNotification();
   const [email, setEmail] = useState("");
+  const [currentEmail, setCurrentEmail] = useState("Loading...");
   const [isChanging, setIsChanging] = useState(false);
+
+  useEffect(() => {
+    getMyProfile().then((res: any) => {
+      if (res?.data?.email) setCurrentEmail(res.data.email);
+    }).catch(() => {});
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +39,7 @@ export default function ChangeEmailForm() {
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-zinc-900">Email Address</span>
-            <span className="text-sm text-zinc-500 font-medium">admin234deal@gmail.com</span>
+            <span className="text-sm text-zinc-500 font-medium">{currentEmail}</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -81,3 +89,4 @@ export default function ChangeEmailForm() {
     </div>
   );
 }
+

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   LayoutDashboard,
@@ -13,12 +13,15 @@ import {
   Settings,
   LogOut,
   Package,
-  User
+  User,
+  Store
 } from "lucide-react";
+import { getMyProfile } from "@/lib/api";
 
 const menuItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
   { id: "deals", label: "Deals Management", icon: Package, href: "/admin/deals" },
+  { id: "vendors", label: "Vendors Management", icon: Store, href: "/admin/vendors" },
   { id: "taxonomy", label: "Taxonomy", icon: Tag, href: "/admin/taxonomy" },
   { id: "analytics", label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
   { id: "deleted-deals", label: "Deleted Deals", icon: Trash2, href: "/admin/deleted-deals" },
@@ -28,6 +31,32 @@ const menuItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [userName, setUserName] = useState("Loading...");
+  const [userEmail, setUserEmail] = useState("");
+
+  useEffect(() => {
+    getMyProfile()
+      .then((res) => {
+        if (res?.data) {
+          setUserName(res.data.name || "Admin User");
+          setUserEmail(res.data.email || "");
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch profile", err);
+      });
+  }, []);
+
+  const handleSignOut = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("role");
+      window.localStorage.removeItem("user_id");
+      window.localStorage.removeItem("profile_image_url");
+    }
+    router.push("/login");
+  };
 
   return (
     <div className="w-full flex flex-col h-full bg-white border-r border-zinc-200">
@@ -40,12 +69,13 @@ export default function AdminSidebar() {
             width={120}
             height={40}
             className="h-auto w-auto"
+            priority
           />
         </Link>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
           
@@ -73,14 +103,16 @@ export default function AdminSidebar() {
             <User size={20} className="text-zinc-400" />
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="font-bold text-[14px] text-zinc-900 truncate">Admin User</span>
-            <span className="text-[12px] text-zinc-500 truncate">admin@234deal.com</span>
+            <span className="font-bold text-[14px] text-zinc-900 truncate">{userName}</span>
+            {userEmail && (
+              <span className="text-[12px] text-zinc-500 truncate">{userEmail}</span>
+            )}
           </div>
         </div>
         
         <button 
           className="flex items-center gap-3 w-full px-4 py-3 text-zinc-600 hover:text-black hover:bg-zinc-50 rounded-lg transition-colors font-bold text-[15px]"
-          onClick={() => {/* Sign out logic */}}
+          onClick={handleSignOut}
         >
           <LogOut size={20} className="text-zinc-500" />
           <span>Sign Out</span>
@@ -89,3 +121,4 @@ export default function AdminSidebar() {
     </div>
   );
 }
+

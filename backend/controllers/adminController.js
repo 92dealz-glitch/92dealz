@@ -237,9 +237,47 @@ exports.updateSubmission = async (req, res, next) => {
   }
 };
 
-// Admin creating Vendor
+// Admin managing Vendors
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+
+exports.getVendors = async (req, res, next) => {
+  try {
+    const vendors = await User.findAll({
+      where: { role: 'vendor' },
+      attributes: ['id', 'name', 'email', 'phone', 'status', 'businessName', 'createdAt'],
+      order: [['createdAt', 'DESC']]
+    });
+    return res.json({ success: true, data: vendors });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.updateVendorStatus = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const { status } = req.body;
+    
+    if (!['pending', 'active', 'rejected'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status' });
+    }
+    
+    const vendor = await User.findOne({ where: { id, role: 'vendor' } });
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: 'Vendor not found' });
+    }
+    
+    vendor.status = status;
+    await vendor.save();
+    
+    // Optionally: Send an email to the vendor notifying them of approval/rejection
+    
+    return res.json({ success: true, message: 'Vendor status updated', data: { id: vendor.id, status: vendor.status } });
+  } catch (err) {
+    return next(err);
+  }
+};
 
 exports.createVendor = async (req, res, next) => {
   try {
@@ -258,7 +296,8 @@ exports.createVendor = async (req, res, next) => {
       email,
       password: hashed,
       phone: phone || null,
-      role: 'vendor'
+      role: 'vendor',
+      status: 'active' // Admin-created vendors are active by default
     });
     return res.status(201).json({ success: true, data: { id: vendor.id, name: vendor.name, email: vendor.email } });
   } catch (err) {

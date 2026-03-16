@@ -142,3 +142,18 @@ export async function resetPassword(payload: { email: string; newPassword: strin
     { method: "POST", body: payload }
   );
 }
+
+// Admin APIs
+export async function getAdminVendors() {
+  return apiFetch<{ success: boolean; data: any[] }>(
+    "/admin/vendors",
+    { method: "GET", auth: true }
+  );
+}
+
+export async function updateAdminVendorStatus(id: number, status: "pending" | "active" | "rejected") {
+  return apiFetch<{ success: boolean; data: any }>(
+    `/admin/vendors/${id}/status`,
+    { method: "PUT", body: { status }, auth: true }
+  );
+}

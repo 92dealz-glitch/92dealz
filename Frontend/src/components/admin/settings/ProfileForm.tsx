@@ -18,9 +18,9 @@ export default function ProfileForm() {
   const { showNotification } = useNotification();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
-    fullName: "Admin User",
-    email: "admin234dea@gmail.com",
-    phone: "+234 801 234 5678",
+    fullName: "Loading...",
+    email: "Loading...",
+    phone: "Loading...",
     photo: null,
   });
   const [tempProfile, setTempProfile] = useState<ProfileData>(profile);
@@ -33,14 +33,24 @@ export default function ProfileForm() {
           setProfile((p) => ({ ...p, photo: cached }));
           setTempProfile((p) => ({ ...p, photo: cached }));
         }
-        const res = await getMyProfile();
-        const url = (res as any)?.data?.profile_image_url || null;
-        if (url) {
-          setProfile((p) => ({ ...p, photo: url }));
-          setTempProfile((p) => ({ ...p, photo: url }));
-          if (typeof window !== "undefined") window.localStorage.setItem("profile_image_url", url);
+        const res: any = await getMyProfile();
+        if (res?.data) {
+          const { name, email, phone, profile_image_url } = res.data;
+          const updatedProfile = {
+             fullName: name || "",
+             email: email || "",
+             phone: phone || "",
+             photo: profile_image_url || cached
+          };
+          setProfile(updatedProfile);
+          setTempProfile(updatedProfile);
+          if (profile_image_url && typeof window !== "undefined") {
+             window.localStorage.setItem("profile_image_url", profile_image_url);
+          }
         }
-      } catch {}
+      } catch (err) {
+        console.error("Failed to fetch profile", err);
+      }
     })();
   }, []);
 

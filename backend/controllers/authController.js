@@ -43,6 +43,7 @@ exports.register = async (req, res, next) => {
 
     const allowedRoles = new Set(['user', 'vendor']);
     const roleToSave = role && allowedRoles.has(role) ? role : 'user';
+    const initialStatus = roleToSave === 'vendor' ? 'pending' : 'active';
 
     const newUser = await User.create({
       name,
@@ -50,12 +51,13 @@ exports.register = async (req, res, next) => {
       password: hashed,
       phone,
       role: roleToSave,
+      status: initialStatus,
       businessName: roleToSave === 'vendor' ? businessName : null,
       businessCategory: roleToSave === 'vendor' ? businessCategory : null,
       businessAddress: roleToSave === 'vendor' ? businessAddress : null,
     });
 
-    return res.status(201).json({ success: true, message: 'Registration successful', user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } });
+    return res.status(201).json({ success: true, message: 'Registration successful', user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, status: newUser.status } });
   } catch (err) {
     return next(err);
   }
@@ -151,13 +153,13 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    const payload = { id: user.id, email: user.email, role: user.role };
+    const payload = { id: user.id, email: user.email, role: user.role, status: user.status };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     return res.json({
       success: true,
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, status: user.status, phone: user.phone },
     });
   } catch (err) {
     return next(err);
