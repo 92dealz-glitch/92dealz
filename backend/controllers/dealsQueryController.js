@@ -222,12 +222,18 @@ exports.update = async (req, res, next) => {
     }
     // ownership check via WHERE clause on userId
     const userId = req.user && req.user.id;
+    const isAdmin = req.user && req.user.role === 'admin';
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
     bind.push(id);
-    bind.push(userId);
-    const sql = `UPDATE deals SET ${sets.join(', ')} WHERE id = $${bind.length - 1} AND "userId" = $${bind.length} RETURNING id`;
+    let sql;
+    if (isAdmin) {
+      sql = `UPDATE deals SET ${sets.join(', ')} WHERE id = $${bind.length} RETURNING id`;
+    } else {
+      bind.push(userId);
+      sql = `UPDATE deals SET ${sets.join(', ')} WHERE id = $${bind.length - 1} AND "userId" = $${bind.length} RETURNING id`;
+    }
     const [rows] = await sequelize.query(sql, { bind });
     if (!rows.length) {
       return res.status(404).json({ success: false, message: 'Deal not found or not owned by user' });
@@ -242,13 +248,19 @@ exports.remove = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const userId = req.user && req.user.id;
+    const isAdmin = req.user && req.user.role === 'admin';
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
-    const [rows] = await sequelize.query(
-      `DELETE FROM deals WHERE id = $1 AND "userId" = $2 RETURNING id`,
-      { bind: [id, userId] }
-    );
+    let sql, params;
+    if (isAdmin) {
+      sql = `DELETE FROM deals WHERE id = $1 RETURNING id`;
+      params = [id];
+    } else {
+      sql = `DELETE FROM deals WHERE id = $1 AND "userId" = $2 RETURNING id`;
+      params = [id, userId];
+    }
+    const [rows] = await sequelize.query(sql, { bind: params });
     if (!rows.length) {
       return res.status(404).json({ success: false, message: 'Deal not found or not owned by user' });
     }

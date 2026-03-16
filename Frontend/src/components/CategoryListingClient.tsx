@@ -420,19 +420,7 @@ export default function CategoryListingClient({
             </div>
           ) : (
             paged.map((it) => {
-              // override badge image for category listing page
-              const catKey = (it as any).category ?? title?.toLowerCase();
-              const badgeForCategory = (key?: string) => {
-                if (!key) return "/assets/images/bgshoe.svg";
-                const k = key.toString().toLowerCase();
-                if (k.includes("phone")) return "/assets/images/bgphone.svg";
-                if (k.includes("fashion") || k.includes("dress") || k.includes("shoe")) return "/assets/images/bgdress.svg";
-                if (k.includes("shoe") || k.includes("shoes")) return "/assets/images/bgshoe.svg";
-                // fallback
-                return "/assets/images/bgshoe.svg";
-              };
-
-              const displayItem = { ...(it as any), badge: badgeForCategory(catKey) };
+              const displayItem = { ...it };
 
               return (
                 <div key={it.id} className="h-full">

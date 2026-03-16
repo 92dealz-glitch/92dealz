@@ -45,11 +45,18 @@ exports.markSold = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const userId = req.user && req.user.id;
+    const isAdmin = req.user && req.user.role === 'admin';
     if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
-    const [rows] = await sequelize.query(
-      `UPDATE deals SET status = 'sold', "updatedAt" = NOW() WHERE id = $1 AND "userId" = $2 RETURNING id`,
-      { bind: [id, userId] }
-    );
+
+    let sql, params;
+    if (isAdmin) {
+      sql = `UPDATE deals SET status = 'sold', "updatedAt" = NOW() WHERE id = $1 RETURNING id`;
+      params = [id];
+    } else {
+      sql = `UPDATE deals SET status = 'sold', "updatedAt" = NOW() WHERE id = $1 AND "userId" = $2 RETURNING id`;
+      params = [id, userId];
+    }
+    const [rows] = await sequelize.query(sql, { bind: params });
     if (!rows.length) return res.status(404).json({ success: false, message: 'Ad not found or not owned by user' });
     return res.json({ success: true, data: { id: rows[0].id } });
   } catch (err) {
