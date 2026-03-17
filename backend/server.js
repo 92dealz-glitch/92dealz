@@ -50,6 +50,7 @@ require('./models/Alert');
 require('./models/ClickEvent');
 require('./models/Submission');
 require('./models/Message');
+require('./models/Order');
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
@@ -63,6 +64,7 @@ const searchRoutes = require('./routes/searchRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const vendorRoutes = require('./routes/vendorRoutes');
@@ -92,6 +94,7 @@ registerRoutes('/messages', messageRoutes);
 registerRoutes('/vendor', vendorRoutes);
 registerRoutes('/analytics', analyticsRoutes);
 registerRoutes('/marketer', marketerRoutes);
+registerRoutes('/orders', orderRoutes);
 
 // Error handling middleware (registered after routes)
 const errorHandler = require('./middleware/errorHandler');

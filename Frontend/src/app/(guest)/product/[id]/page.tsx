@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 type Props = {
   params: Promise<{ id: string }>
@@ -16,6 +17,7 @@ type Props = {
 export default function ProductPage({ params }: Props) {
   // Unwrap params using use()
   const { id } = use(params);
+  const router = useRouter();
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
     id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: 'Brand New', specifications: {}, subcategory: ''
@@ -67,10 +69,11 @@ export default function ProductPage({ params }: Props) {
           selfieCamera: d.selfieCamera,
           battery: d.battery,
           internalStorage: d.internalStorage,
-          state: d.state,
           city: d.city,
           specifications: d.specifications || {},
           subcategory: d.subcategory || '',
+          sellerPhone: seller.phone || '',
+          sellerEmail: seller.email || '',
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -127,6 +130,40 @@ export default function ProductPage({ params }: Props) {
       alert("An error occurred while sending the message");
     } finally {
       setSendingMessage(false);
+    }
+  };
+
+  const [placingOrder, setPlacingOrder] = useState(false);
+  const handlePlaceOrder = async () => {
+    try {
+      setPlacingOrder(true);
+      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+      if (!token) { alert("Please login to place an order"); return; }
+      
+      const res = await fetch(`${API_BASE}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          deal_id: product.id,
+          vendor_id: product.sellerId,
+          price: parseFloat(product.price.replace(/[^\d.]/g, '')),
+          notes: "I want to buy this item."
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Order placed successfully! Please check your Dashboard -> Orders for confirmation.");
+        router.push("/dashboard/orders");
+      } else {
+        alert(data.message || "Failed to place order");
+      }
+    } catch (err) {
+      alert("An error occurred while placing the order");
+    } finally {
+      setPlacingOrder(false);
     }
   };
 
@@ -250,9 +287,16 @@ export default function ProductPage({ params }: Props) {
                     setMessageText("Hello! I would like to chat about this item.");
                     setMessageModal(true);
                   }} 
-                  className="w-full bg-orange-600 text-white py-3"
+                  className="w-full bg-orange-600 text-white py-3 font-bold"
                 >
                   💬 Chat Seller
+                </Button>
+                <Button 
+                  disabled={placingOrder}
+                  onClick={handlePlaceOrder}
+                  className="w-full bg-black text-white py-3 font-bold flex items-center justify-center gap-2"
+                >
+                  {placingOrder ? "Placing..." : "🛒 Order Now"}
                 </Button>
               </div>
             </div>
@@ -286,6 +330,16 @@ export default function ProductPage({ params }: Props) {
                   <div>Total Ads Posted:</div><div className="font-medium">{product.sellerTotalAds || 0} items</div>
                   <div>Response Time:</div><div className="font-medium">{product.sellerResponseTime || "Within 1 hour"}</div>
                   <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>
+                  {product.sellerPhone && (
+                    <>
+                      <div>Phone:</div><div className="font-medium text-orange-600 select-all">{product.sellerPhone}</div>
+                    </>
+                  )}
+                  {product.sellerEmail && (
+                    <>
+                      <div>Email:</div><div className="font-medium text-zinc-600 truncate max-w-[150px]">{product.sellerEmail}</div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -514,10 +568,10 @@ export default function ProductPage({ params }: Props) {
             <div className="rounded-lg border border-orange-200 bg-white p-4">
               <h4 className="font-semibold mb-3">Contact Options</h4>
               <div className="space-y-3">
-                <button type="button" className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2">📞 View Phone Number</button>
-                <a href="#" className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2">💬 Whatsapp</a>
-                <button type="button" className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2">💬 Chat Seller</button>
-                <button type="button" className="w-full border border-gray-300 py-3 rounded flex items-center justify-center gap-2">✉️ Email</button>
+                <button type="button" onClick={() => alert(`Call: ${product.sellerPhone || 'Not available'}`)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
+                <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
+                <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
+                <a href={`mailto:${product.sellerEmail}`} className="w-full border border-gray-300 py-3 rounded flex items-center justify-center gap-2 font-bold">✉️ Email</a>
               </div>
 
               <div className="mt-4 text-sm text-gray-600">📍 Off Deco Road, Crystals Layout, Delta State, Warri.</div>

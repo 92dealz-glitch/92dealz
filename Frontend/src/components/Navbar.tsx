@@ -441,6 +441,10 @@ export default function Navbar() {
                       <Heart size={22} />
                       <span className="text-[10px] mt-1 text-center">Favorite</span>
                     </Link>
+                    <Link href="/messages" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                      <Mail size={22} />
+                      <span className="text-[10px] mt-1 text-center">Chat</span>
+                    </Link>
                     <Link href="/vendor-dashboard/add-product" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
                       <Plus size={22} />
                       <span className="text-[10px] mt-1 text-center">Sell</span>
@@ -469,6 +473,10 @@ export default function Navbar() {
               <Link href="/favorites" className="flex flex-col items-center text-sm text-zinc-700">
                 <Heart size={22} />
                 <span className="text-[10px] mt-1 text-center">Favorite</span>
+              </Link>
+              <Link href="/messages" className="flex flex-col items-center text-sm text-zinc-700">
+                <Mail size={22} />
+                <span className="text-[10px] mt-1 text-center">Chat</span>
               </Link>
               <Link href="/vendor-dashboard/add-product" className="flex flex-col items-center text-sm text-[#FF6B35]">
                 <div className="bg-[#FF6B35] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white relative z-50">
