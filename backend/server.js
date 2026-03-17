@@ -100,17 +100,6 @@ registerRoutes('/marketer', marketerRoutes);
 registerRoutes('/orders', orderRoutes);
 registerRoutes('/notifications', notificationRoutes);
 
-// Admin / utility route to force sync
-app.get('/api/admin/sync-db', async (req, res) => {
-  try {
-    await sequelize.sync({ alter: true });
-    res.json({ success: true, message: 'Database synced successfully' });
-  } catch (err) {
-    console.error('Manual sync failed:', err);
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
 // Error handling middleware (registered after routes)
 const errorHandler = require('./middleware/errorHandler');
 app.use(errorHandler);
