@@ -1,47 +1,56 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Store, Camera, Smartphone, Laptop, Car, Home as HomeIcon, Footprints, Briefcase, Dog, Utensils, Construction, Tv, HeartPulse, Palette, Package, PlusCircle, Trophy } from "lucide-react";
+import { PlusCircle, Package } from "lucide-react";
+import { getFallbackArray } from "../data/categoriesData";
 
-const categories = [
-  { name: "Post ad", src: "", icon: PlusCircle },
-  { name: "Electronics", src: "/assets/images/laptop.svg", icon: Laptop },
-  { name: "Mobiles", src: "/assets/images/phone.svg", icon: Smartphone },
-  { name: "Vehicles", src: "/assets/images/car.svg", icon: Car },
-  { name: "Property", src: "/assets/images/house.svg", icon: HomeIcon },
-  { name: "Fashion", src: "/assets/images/bgshoe.svg", icon: Footprints },
-  { name: "Business", src: "/assets/images/engineer.svg", icon: Briefcase },
-  { name: "Sports", src: "", icon: Trophy },
-  { name: "Pets", src: "/assets/images/pet.svg", icon: Dog },
-];
+type CategoryItem = {
+  id: string;
+  title: string;
+  icon: string;
+};
 
 export default function CategoryBar() {
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
-  const handleImageError = (name: string) => {
-    setBrokenImages((prev) => ({ ...prev, [name]: true }));
+  useEffect(() => {
+    let mounted = true;
+    getFallbackArray().then((res) => {
+      if (mounted) setCategories(res);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleImageError = (id: string) => {
+    setBrokenImages((prev) => ({ ...prev, [id]: true }));
   };
 
-  const renderIcon = (c: (typeof categories)[0]) => {
-    if (brokenImages[c.name]) {
-      const Icon = c.icon;
-      return <Icon size={48} className="text-orange-600" />;
+  const renderIcon = (c: CategoryItem | { id: string; title: string; icon: string }) => {
+    if (brokenImages[c.id] || !c.icon) {
+      return <Package size={48} className="text-orange-600" />;
     }
     return (
       <Image
-        src={c.src}
-        alt={c.name}
+        src={c.icon}
+        alt={c.title}
         width={84}
         height={84}
         className="object-contain"
-        onError={() => handleImageError(c.name)}
+        onError={() => handleImageError(c.id)}
       />
     );
   };
 
-  // Split categories into two rows
-  const firstRow = categories.slice(0, 5);
-  const secondRow = categories.slice(5);
+  // Prepend "Post ad" special item
+  const postAdItem = { id: "post-ad", title: "Post ad", icon: "" };
+  const allItems = [postAdItem, ...categories];
+
+  // Split items into two rows
+  const firstRow = allItems.slice(0, 5);
+  const secondRow = allItems.slice(5);
 
   return (
     <div className="lg:hidden px-4 py-4 bg-white">
@@ -56,14 +65,18 @@ export default function CategoryBar() {
           <div key={idx} className="overflow-x-auto pb-2 scrollbar-hide">
             <div className="flex gap-4 snap-x snap-mandatory">
               {row.map((c) => (
-                <div key={c.name} className="flex-none w-[100px] snap-center">
+                <div key={c.id} className="flex-none w-[100px] snap-center">
                   <div
                     className="w-[90px] h-[90px] mx-auto rounded-2xl p-2 flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90"
                   >
-                    {renderIcon(c)}
+                    {c.id === "post-ad" ? (
+                      <PlusCircle size={48} className="text-orange-600" />
+                    ) : (
+                      renderIcon(c)
+                    )}
                   </div>
                   <div className="mt-2 text-center text-[11px] font-bold text-zinc-700 leading-tight">
-                    {c.name}
+                    {c.title}
                   </div>
                 </div>
               ))}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Camera } from "lucide-react";
 import { uploadImage } from "@/services/upload.service";
 import { getMyProfile, updateProfileImage } from "@/lib/api";
+import { getFallbackArray } from "@/data/categoriesData";
 
 export default function PersonalDetailsPage() {
     const [profile, setProfile] = useState<any>({
@@ -12,12 +13,16 @@ export default function PersonalDetailsPage() {
     const [photo, setPhoto] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ text: "", type: "" });
+    const [categories, setCategories] = useState<{id: string, title: string}[]>([]);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
+        let mounted = true;
         (async () => {
             try {
-                const res = await getMyProfile();
+                const [res, cats] = await Promise.all([getMyProfile(), getFallbackArray()]);
+                if (!mounted) return;
+                setCategories(cats);
                 if (res?.data) {
                     const data = res.data as any;
                     setProfile({
@@ -33,6 +38,7 @@ export default function PersonalDetailsPage() {
                 }
             } catch {}
         })();
+        return () => { mounted = false; };
     }, []);
 
     async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
@@ -137,14 +143,9 @@ export default function PersonalDetailsPage() {
                             <div className="relative">
                                 <select name="businessCategory" value={profile.businessCategory} onChange={handleChange} className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white">
                                     <option value="">Select a category</option>
-                                    <option value="fashion">Fashion & Clothing</option>
-                                    <option value="electronics">Electronics & Gadgets</option>
-                                    <option value="food">Food & Groceries</option>
-                                    <option value="beauty">Beauty & Health</option>
-                                    <option value="home">Home & Furniture</option>
-                                    <option value="auto">Automobiles & Parts</option>
-                                    <option value="services">Services</option>
-                                    <option value="other">Other</option>
+                                    {categories.map(c => (
+                                        <option key={c.id} value={c.id}>{c.title}</option>
+                                    ))}
                                 </select>
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
                                     <ChevronDownIcon />

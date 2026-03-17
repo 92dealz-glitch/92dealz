@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser, loginUser } from "@/lib/api";
+import { getFallbackArray } from "@/data/categoriesData";
 
 type UserRole = "user" | "vendor";
 type ContactMethod = "phone" | "email";
@@ -75,7 +76,7 @@ const BaseFields = ({ role, method, formData, handleChange, showPassword, setSho
   </>
 );
 
-const VendorFields = ({ formData, handleChange }: { formData: any, handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void }) => (
+const VendorFields = ({ formData, handleChange, categories }: { formData: any, handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void, categories: {id: string, title: string}[] }) => (
   <>
     <div className="flex items-center gap-3 my-1">
       <div className="flex-1 h-px bg-gray-200" />
@@ -94,14 +95,9 @@ const VendorFields = ({ formData, handleChange }: { formData: any, handleChange:
         onChange={handleChange}
         className={`${inputCls} bg-white`}>
         <option value="" disabled>Select a category</option>
-        <option value="fashion">Fashion & Clothing</option>
-        <option value="electronics">Electronics & Gadgets</option>
-        <option value="food">Food & Groceries</option>
-        <option value="beauty">Beauty & Health</option>
-        <option value="home">Home & Furniture</option>
-        <option value="auto">Automobiles & Parts</option>
-        <option value="services">Services</option>
-        <option value="other">Other</option>
+        {categories.map((c) => (
+          <option key={c.id} value={c.id}>{c.title}</option>
+        ))}
       </select>
     </div>
     <div>
@@ -166,6 +162,7 @@ export default function SignupPage() {
   const [role, setRole] = useState<UserRole>("user");
   const [method, setMethod] = useState<ContactMethod>("email");
   const [showPassword, setShowPassword] = useState(false);
+  const [categories, setCategories] = useState<{id: string, title: string}[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
@@ -178,6 +175,16 @@ export default function SignupPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  import("react").then((React) => {
+    React.useEffect(() => {
+      let mounted = true;
+      getFallbackArray().then((res) => {
+        if (mounted) setCategories(res);
+      });
+      return () => { mounted = false; };
+    }, []);
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -270,7 +277,7 @@ export default function SignupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-3.5">
             <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
-            {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} />}
+            {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
             <button type="submit" disabled={loading}
               className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50 mt-2">
@@ -357,7 +364,7 @@ export default function SignupPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
-              {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} />}
+              {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
               <button type="submit" disabled={loading}
                 className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">

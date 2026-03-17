@@ -17,6 +17,14 @@ const Category = sequelize.define('Category', {
     allowNull: false,
     unique: true,
   },
+  icon: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  mega_menu: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
 }, {
   tableName: 'categories',
   timestamps: false,

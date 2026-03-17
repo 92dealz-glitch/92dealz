@@ -27,6 +27,7 @@ import CategoryMegaMenu from "./CategoryMegaMenu";
 import LocationDropdown from "./LocationDropdown";
 import { useFavorites } from "../context/FavoritesProvider";
 import { API_BASE } from "@/services/apiClient";
+import { getFallbackArray } from "../data/categoriesData";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -39,6 +40,12 @@ export default function Navbar() {
   const [mQuery, setMQuery] = useState("");
   const favorites = useFavorites();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [topCats, setTopCats] = useState<{id: string; title: string}[]>([]);
+
+  useEffect(() => {
+    getFallbackArray().then(res => setTopCats(res.slice(0, 5)));
+  }, []);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
@@ -409,22 +416,18 @@ export default function Navbar() {
 
               {/* Category Buttons */}
               <div className="hidden sm:flex items-center gap-10 text-sm">
-                {["fashion", "phones", "computer", "health", "electronics"].map(
-                  (category) => (
+                {topCats.map(
+                  (c) => (
                     <button
-                      key={category}
+                      key={c.id}
                       onClick={() =>
-                        setOpenCategory((c) =>
-                          c === category ? null : category,
+                        setOpenCategory((prev) =>
+                          prev === c.id ? null : c.id,
                         )
                       }
                       className="text-zinc-700 hover:text-orange-600 transition-all font-medium py-2"
                     >
-                      {category === "fashion" && "Fashion"}
-                      {category === "phones" && "Phones & Tablets"}
-                      {category === "computer" && "Computer & Accessories"}
-                      {category === "health" && "Health & Beauty"}
-                      {category === "electronics" && "Electronics"}
+                      {c.title}
                     </button>
                   ),
                 )}
