@@ -28,6 +28,7 @@ import LocationDropdown from "./LocationDropdown";
 import { useFavorites } from "../context/FavoritesProvider";
 import { API_BASE } from "@/services/apiClient";
 import { getFallbackArray } from "../data/categoriesData";
+import { getNotifications, markAsRead, AppNotification } from "@/services/notification.service";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -44,6 +45,9 @@ export default function Navbar() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mSuggestions, setMSuggestions] = useState<string[]>([]);
   const [showMSuggestions, setShowMSuggestions] = useState(false);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
 
   const [topCats, setTopCats] = useState<{id: string; title: string}[]>([]);
 
@@ -116,6 +120,24 @@ export default function Navbar() {
     }, 300);
     return () => clearTimeout(timer);
   }, [mQuery]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const loadNotifications = async () => {
+      try {
+        const res = await getNotifications();
+        if (res.success) {
+          setNotifications(res.data);
+          setUnreadCount(res.data.filter(n => !n.read_at).length);
+        }
+      } catch (err) {
+        console.error("Failed to load notifications", err);
+      }
+    };
+    loadNotifications();
+    const interval = setInterval(loadNotifications, 60000); // Poll every minute
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
 
   function signOut() {
     if (typeof window !== "undefined") {
@@ -217,7 +239,63 @@ export default function Navbar() {
                   </Link>
                 </>
               ) : (
-                <NavUserMenu signOut={signOut} />
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <button 
+                      onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+                      className="p-2 text-zinc-600 hover:text-orange-600 transition-colors relative"
+                    >
+                      <Bell size={24} />
+                      {unreadCount > 0 && (
+                        <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-orange-600 text-white text-[10px] font-bold rounded-full border-2 border-white flex items-center justify-center">
+                          {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
+                      )}
+                    </button>
+                    {showNotificationDropdown && (
+                      <>
+                        <div className="fixed inset-0 z-40" onClick={() => setShowNotificationDropdown(false)} />
+                        <div className="absolute right-0 mt-3 w-80 bg-white border border-zinc-100 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="px-4 py-3 border-b border-zinc-100 bg-zinc-50 flex items-center justify-between">
+                            <span className="text-sm font-bold text-zinc-900">Notifications</span>
+                            {unreadCount > 0 && <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">{unreadCount} New</span>}
+                          </div>
+                          <div className="max-h-[350px] overflow-y-auto">
+                            {notifications.length > 0 ? (
+                              notifications.map((n) => (
+                                <div 
+                                  key={n.id} 
+                                  onClick={async () => {
+                                    if (!n.read_at) await markAsRead(n.id);
+                                    if (n.link) router.push(n.link);
+                                    setShowNotificationDropdown(false);
+                                  }}
+                                  className={`px-4 py-3 border-b border-zinc-50 hover:bg-zinc-50 transition-colors cursor-pointer relative ${!n.read_at ? "bg-orange-50/30" : ""}`}
+                                >
+                                  {!n.read_at && <div className="absolute left-1 top-4 w-1.5 h-1.5 bg-orange-500 rounded-full" />}
+                                  <p className="text-xs font-bold text-zinc-900 mb-0.5">{n.title}</p>
+                                  <p className="text-[11px] text-zinc-500 line-clamp-2 leading-relaxed">{n.message}</p>
+                                  <p className="text-[10px] text-zinc-400 mt-1.5">{new Date(n.createdAt).toLocaleDateString()} at {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="p-8 text-center">
+                                <Bell className="mx-auto text-zinc-200 mb-2" size={32} />
+                                <p className="text-sm text-zinc-400">No notifications yet</p>
+                              </div>
+                            )}
+                          </div>
+                          {notifications.length > 0 && (
+                            <Link href="/dashboard" className="block py-2.5 text-center text-xs font-bold text-orange-600 hover:bg-orange-50 transition-colors border-t border-zinc-100">
+                              View All Notifications
+                            </Link>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <NavUserMenu signOut={signOut} />
+                </div>
               )}
             </div>
           </div>
@@ -428,7 +506,6 @@ export default function Navbar() {
                   { icon: Heart, label: "Favorites", path: "/favorites" },
                   { icon: HelpCircle, label: "Help & Support", path: "/contact" },
                   { icon: Shield, label: "Safety Tips", path: "/safety-tips" },
-                  { icon: Settings, label: "Account Settings", path: "/vendor-dashboard/settings" },
                 ].map((item, idx) => (
                   <Link 
                     key={idx} 
