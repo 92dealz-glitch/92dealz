@@ -413,20 +413,34 @@ export default function Navbar() {
 
               <div className="divide-y divide-zinc-100">
                 {[
-                  { icon: Bell, label: "Notifications" },
-                  { icon: Mail, label: "Messages" },
-                  { icon: HelpCircle, label: "Help Center" },
-                  { icon: MessageSquare, label: "Chat With Us" },
-                  { icon: Lock, label: "Update Password" },
-                  { icon: Shield, label: "Verify Account" },
-                  { icon: CreditCard, label: "Payment Details" },
-                  { icon: LogoutButton, label: "Logout", color: "text-red-500" }
+                  { icon: Bell, label: "Notifications", path: "/dashboard" },
+                  { icon: Mail, label: "Messages", path: "/messages" },
+                  { icon: HelpCircle, label: "Help Center", path: "/faq" },
+                  { icon: MessageSquare, label: "Chat With Us", path: "/contact" },
+                  { icon: Lock, label: "Update Password", path: "/vendor-dashboard/settings" },
+                  { icon: Shield, label: "Verify Account", path: "/vendor-dashboard/settings" },
+                  { icon: CreditCard, label: "Payment Details", path: "/vendor-dashboard/settings" },
                 ].map((item, idx) => (
-                  <div key={idx} className={`px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer ${item.color || "text-zinc-700"}`}>
-                    <item.icon className={item.color ? "text-red-500" : "text-orange-600"} size={20} />
+                  <Link 
+                    key={idx} 
+                    href={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-zinc-700"
+                  >
+                    <item.icon className="text-orange-600" size={20} />
                     <div className="text-sm font-medium">{item.label}</div>
-                  </div>
+                  </Link>
                 ))}
+                <button 
+                  onClick={() => {
+                    signOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-red-500"
+                >
+                  <LogoutButton className="text-red-500" size={20} />
+                  <div className="text-sm font-medium">Logout</div>
+                </button>
               </div>
 
               {/* Bottom Fixed Navigation in Modal */}
@@ -641,11 +655,10 @@ function NavUserMenu() {
             <div className="bg-zinc-50 px-4 py-3 border-b border-zinc-100 mb-1">
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Account Role</p>
               <p className="text-sm font-bold text-orange-600 capitalize">{role}</p>
-            </div>
-            <div className="p-1.5 space-y-0.5">
+            </div            <div className="p-1.5 space-y-0.5">
               {role !== "user" && (
                 <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
-                  <Settings size={16} />
+                  <Grid size={16} />
                   Dashboard
                 </button>
               )}
@@ -655,15 +668,28 @@ function NavUserMenu() {
                   Add New Deal
                 </button>
               )}
+              <div className="h-px bg-zinc-100 my-1 mx-2" />
+              <button onClick={() => go("/messages")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <Mail size={16} />
+                Messages
+              </button>
+              <button onClick={() => go("/favorites")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <Heart size={16} />
+                Favorites
+              </button>
+              <button onClick={() => go(vendor ? "/vendor-dashboard/settings" : "/dashboard")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <Settings size={16} />
+                Settings
+              </button>
               <button 
                 onClick={signOut} 
-
                 className="w-full text-left px-3 py-2 text-sm hover:bg-red-50 text-red-600 rounded-lg transition-colors flex items-center gap-3 mt-1 pt-2 border-t border-zinc-100"
               >
                 <LogOut size={16} />
                 Sign out
               </button>
             </div>
+>
           </div>
         </>
       )}
