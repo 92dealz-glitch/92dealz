@@ -6,6 +6,9 @@ export default function SalesAnalytics() {
     const [activeFilter, setActiveFilter] = useState("Weekly");
     const [series, setSeries] = useState<{day:string; visitors:number; contact_views:number; chats:number}[]>([]);
 
+    const maxVal = Math.max(...series.flatMap(d => [d.visitors, d.contact_views, d.chats]), 10);
+    const yAxisLabels = [maxVal, Math.floor(maxVal * 0.8), Math.floor(maxVal * 0.6), Math.floor(maxVal * 0.4), Math.floor(maxVal * 0.2), 0];
+
     useEffect(() => {
         (async () => {
             try {
