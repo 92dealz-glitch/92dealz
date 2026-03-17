@@ -52,12 +52,7 @@ export default function SalesAnalytics() {
             <div className="relative h-[400px] mt-8 w-full">
                 {/* Y-Axis Labels */}
                 <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-[11px] font-bold text-zinc-400 w-12 text-right pr-4">
-                    <span>100</span>
-                    <span>80</span>
-                    <span>60</span>
-                    <span>40</span>
-                    <span>20</span>
-                    <span>0</span>
+                    {yAxisLabels.map((l, i) => <span key={i}>{l}</span>)}
                 </div>
 
                 {/* Chart Area */}
@@ -75,15 +70,15 @@ export default function SalesAnalytics() {
                             <div className="flex items-end gap-1.5 h-full relative z-10">
                                 <div
                                     className="w-2.5 rounded-sm bg-[#10B981] transition-all duration-700 delay-100"
-                                    style={{ height: `${Math.min(100, d.visitors)}%` }}
+                                    style={{ height: `${(d.visitors / maxVal) * 100}%` }}
                                 />
                                 <div
                                     className="w-2.5 rounded-sm bg-[#E85A28] transition-all duration-700 delay-300"
-                                    style={{ height: `${Math.min(100, d.contact_views)}%` }}
+                                    style={{ height: `${(d.contact_views / maxVal) * 100}%` }}
                                 />
                                 <div
                                     className="w-2.5 rounded-sm bg-[#3B82F6] transition-all duration-700 delay-500"
-                                    style={{ height: `${Math.min(100, d.chats)}%` }}
+                                    style={{ height: `${(d.chats / maxVal) * 100}%` }}
                                 />
                             </div>
                             <span className="absolute bottom-0 text-[11px] font-black text-zinc-500 mt-4">{series[i]?.day || ""}</span>
