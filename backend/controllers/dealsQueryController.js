@@ -167,7 +167,12 @@ exports.create = async (req, res, next) => {
     if (has('store_id') && typeof store_id !== 'undefined') { idx += 1; cols.push('store_id'); vals.push(`$${idx}`); bind.push(store_id); }
     if (has('category_id') && typeof category_id !== 'undefined') { idx += 1; cols.push('category_id'); vals.push(`$${idx}`); bind.push(category_id); }
     if (has('image_url') && typeof image_url !== 'undefined') { idx += 1; cols.push('image_url'); vals.push(`$${idx}`); bind.push(image_url); }
-    if (has('images_json') && typeof images_json !== 'undefined') { idx += 1; cols.push('images_json'); vals.push(`$${idx}`); bind.push(images_json); }
+    if (has('images_json') && typeof images_json !== 'undefined') { 
+      idx += 1; 
+      cols.push('images_json'); 
+      vals.push(`$${idx}`); 
+      bind.push(typeof images_json === 'string' ? images_json : JSON.stringify(images_json)); 
+    }
     if (has('expiry_date') && typeof expiry_date !== 'undefined') { idx += 1; cols.push('expiry_date'); vals.push(`$${idx}`); bind.push(expiry_date); }
     if (has('status') && typeof status !== 'undefined') { idx += 1; cols.push('status'); vals.push(`$${idx}`); bind.push(status); }
     
@@ -178,8 +183,23 @@ exports.create = async (req, res, next) => {
         const colName = /[A-Z]/.test(f) ? `"${f}"` : f;
         cols.push(colName);
         vals.push(`$${idx}`);
-        bind.push(req.body[f]);
+        
+        let value = req.body[f];
+        if (f === 'specifications' && typeof value === 'object' && value !== null) {
+          value = JSON.stringify(value);
+        }
+        if (f === 'status') {
+          const allowed = ['active', 'sold', 'draft', 'closed'];
+          if (!allowed.includes(value)) value = 'active';
+        }
+        bind.push(value);
       }
+    }
+    
+    // images_json special handling if not in extraFields loop correctly
+    if (has('images_json') && typeof images_json !== 'undefined') {
+       // already handled in bind construction if it was in the loop, but bind index is tricky.
+       // The original code handled it at line 170. Let's fix it there.
     }
 
     const sql = `INSERT INTO deals (${cols.join(', ')}) VALUES (${vals.join(', ')}) RETURNING id`;
@@ -222,7 +242,16 @@ exports.update = async (req, res, next) => {
         idx += 1;
         const colName = /[A-Z]/.test(k) ? `"${k}"` : k;
         sets.push(`${colName} = $${idx}`);
-        bind.push(req.body[k]);
+        
+        let value = req.body[k];
+        if ((k === 'specifications' || k === 'images_json') && typeof value === 'object' && value !== null) {
+          value = JSON.stringify(value);
+        }
+        if (k === 'status') {
+          const allowedStatus = ['active', 'sold', 'draft', 'closed'];
+          if (!allowedStatus.includes(value)) value = 'active';
+        }
+        bind.push(value);
       }
     }
     // Always update updatedAt

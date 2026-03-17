@@ -63,6 +63,8 @@ export default function Navbar() {
       if (navRef.current && navRef.current.contains(target)) return;
       setOpen(false);
       setOpenCategory(null);
+      setShowSuggestions(false);
+      setShowMSuggestions(false);
     }
 
     document.addEventListener("click", handleClick);
@@ -153,6 +155,10 @@ export default function Navbar() {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                      onBlur={() => { 
+                        // Small delay to allow clicking suggestions
+                        setTimeout(() => setShowSuggestions(false), 200); 
+                      }}
                       className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
                     />
                     {showSuggestions && suggestions.length > 0 && (
@@ -273,6 +279,9 @@ export default function Navbar() {
                   value={mQuery}
                   onChange={(e) => setMQuery(e.target.value)}
                   onFocus={() => { if (mSuggestions.length > 0) setShowMSuggestions(true); }}
+                  onBlur={() => {
+                    setTimeout(() => setShowMSuggestions(false), 200);
+                  }}
                   className="w-full px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full min-w-0"
                 />
                 {showMSuggestions && mSuggestions.length > 0 && (

@@ -66,7 +66,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
     try {
       const formData = new FormData();
       formData.append("image", file);
-      const res = await apiFetch<{ success: boolean; url: string }>("upload/image", {
+      const res = await apiFetch<{ success: boolean; url: string }>("uploads/image", {
         method: "POST",
         body: formData,
       }, true);
@@ -341,13 +341,13 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                   <select 
                     required 
                     name="status"
-                    defaultValue={initialData?.status || "published"}
+                    defaultValue={initialData?.status || "active"}
                     className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
                   >
-                    <option value="published">Published</option>
+                    <option value="active">Active</option>
                     <option value="draft">Draft</option>
-                    <option value="scheduled">Scheduled</option>
-                    <option value="expired">Expired</option>
+                    <option value="sold">Sold</option>
+                    <option value="closed">Closed</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
                 </div>
