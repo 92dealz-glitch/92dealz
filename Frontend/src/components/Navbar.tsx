@@ -117,6 +117,16 @@ export default function Navbar() {
     return () => clearTimeout(timer);
   }, [mQuery]);
 
+  function signOut() {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("role");
+      window.localStorage.removeItem("profile_image_url");
+    }
+    router.push("/login");
+    window.location.reload();
+  }
+
   return (
     <header className="w-full bg-white shadow-sm">
       {/* ================= DESKTOP HEADER ================= */}
@@ -207,7 +217,7 @@ export default function Navbar() {
                   </Link>
                 </>
               ) : (
-                <NavUserMenu />
+                <NavUserMenu signOut={signOut} />
               )}
             </div>
           </div>
@@ -243,7 +253,7 @@ export default function Navbar() {
                     </Link>
                   </>
                 ) : (
-                  <NavUserMenu />
+                  <NavUserMenu signOut={signOut} />
                 )}
               </div>
 
@@ -612,21 +622,11 @@ function useNavProfileImage() {
   return url;
 }
 
-function NavUserMenu() {
+function NavUserMenu({ signOut }: { signOut: () => void }) {
   const [open, setOpen] = useState(false);
   const url = useNavProfileImage();
   const role = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
   const router = useRouter();
-
-  function signOut() {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("role");
-      window.localStorage.removeItem("profile_image_url");
-    }
-    router.push("/login");
-    window.location.reload();
-  }
 
   function go(path: string) {
     setOpen(false);
@@ -655,7 +655,8 @@ function NavUserMenu() {
             <div className="bg-zinc-50 px-4 py-3 border-b border-zinc-100 mb-1">
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Account Role</p>
               <p className="text-sm font-bold text-orange-600 capitalize">{role}</p>
-            </div            <div className="p-1.5 space-y-0.5">
+            </div>
+            <div className="p-1.5 space-y-0.5">
               {role !== "user" && (
                 <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                   <Grid size={16} />
@@ -689,7 +690,6 @@ function NavUserMenu() {
                 Sign out
               </button>
             </div>
->
           </div>
         </>
       )}
