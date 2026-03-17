@@ -25,6 +25,10 @@ const Category = sequelize.define('Category', {
     type: DataTypes.JSON,
     allowNull: true,
   },
+  specifications_template: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
 }, {
   tableName: 'categories',
   timestamps: false,

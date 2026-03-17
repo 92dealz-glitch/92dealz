@@ -18,7 +18,7 @@ export default function ProductPage({ params }: Props) {
   const { id } = use(params);
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
-    id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: 'Brand New'
+    id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: 'Brand New', specifications: {}, subcategory: ''
   })
   useEffect(() => {
     let active = true
@@ -69,6 +69,8 @@ export default function ProductPage({ params }: Props) {
           internalStorage: d.internalStorage,
           state: d.state,
           city: d.city,
+          specifications: d.specifications || {},
+          subcategory: d.subcategory || '',
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -455,6 +457,18 @@ export default function ProductPage({ params }: Props) {
                         <span className="font-semibold">{product.location}</span>
                       </div>
                     )}
+                    {product.subcategory && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Subcategory</span>
+                        <span className="font-semibold">{product.subcategory}</span>
+                      </div>
+                    )}
+                    {Object.entries(product.specifications || {}).map(([key, value]) => (
+                      <div key={key} className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">{key}</span>
+                        <span className="font-semibold">{String(value)}</span>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

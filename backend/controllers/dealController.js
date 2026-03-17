@@ -2,11 +2,24 @@ const Deal = require('../models/Deal');
 
 exports.createDeal = async (req, res, next) => {
   try {
-    const { title, description, price } = req.body;
+    const { title, description, price, subcategory, specifications, category_id, images_json, image_url, condition, brand, model, color, negotiable, state, city, location } = req.body;
     const deal = await Deal.create({
       title,
       description: description || null,
       price,
+      subcategory,
+      specifications,
+      category_id,
+      images_json,
+      image_url,
+      condition,
+      brand,
+      model,
+      color,
+      negotiable,
+      state,
+      city,
+      location,
       userId: req.user.id,
     });
     return res.status(201).json({ success: true, data: deal });
@@ -17,7 +30,7 @@ exports.createDeal = async (req, res, next) => {
 
 exports.getDeals = async (req, res, next) => {
   try {
-    const deals = await Deal.findAll({ order: [['id', 'ASC']] });
+    const deals = await Deal.findAll({ order: [['id', 'DESC']] });
     return res.json({ success: true, data: deals });
   } catch (err) {
     return next(err);
@@ -40,7 +53,7 @@ exports.getDealById = async (req, res, next) => {
 exports.updateDeal = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, description, price } = req.body;
+    const { title, description, price, subcategory, specifications, status, ...rest } = req.body;
     const deal = await Deal.findByPk(id);
     if (!deal) {
       return res.status(404).json({ success: false, message: 'Deal not found' });
@@ -48,9 +61,15 @@ exports.updateDeal = async (req, res, next) => {
     if (deal.userId !== req.user.id) {
       return res.status(403).json({ success: false, message: 'Not authorized to update this deal' });
     }
-    if (typeof title === 'string') deal.title = title;
-    if (typeof description === 'string' || description === null) deal.description = description || null;
-    if (typeof price !== 'undefined') deal.price = price;
+    
+    // Multi-field update
+    const updates = { title, description, price, subcategory, specifications, status, ...rest };
+    Object.keys(updates).forEach(key => {
+      if (updates[key] !== undefined) {
+        deal[key] = updates[key];
+      }
+    });
+
     await deal.save();
     return res.json({ success: true, data: deal });
   } catch (err) {

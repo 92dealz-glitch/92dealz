@@ -23,6 +23,8 @@ export interface AdPayload {
   state?: string;
   city?: string;
   location?: string;
+  subcategory?: string;
+  specifications?: Record<string, any>;
 }
 
 export async function listActiveAds() {
@@ -53,6 +55,8 @@ export async function createAd(payload: AdPayload) {
     state: payload.state,
     city: payload.city,
     location: payload.location || (payload.city && payload.state ? `${payload.city}, ${payload.state}` : payload.state || payload.city),
+    subcategory: payload.subcategory,
+    specifications: payload.specifications,
   };
   if (payload.category_id !== undefined) body.category_id = payload.category_id;
   if (payload.images) {

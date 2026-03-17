@@ -1,20 +1,32 @@
-"use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, X, Upload, Plus } from "lucide-react";
 import { createAd } from "@/services/ads.service";
 import { uploadImage } from "@/services/upload.service";
 import { useRouter } from "next/navigation";
+import { getFallbackArray, CategoryData } from "@/data/categoriesData";
 
 type Step = 1 | 2 | 3;
+
+interface CategoryItem {
+    id: string; // slug
+    catId: number;
+    title: string;
+    icon: string;
+    columns: { heading: string; items: string[] }[];
+    specifications_template: any[];
+}
 
 export default function AddProductForm() {
     const [step, setStep] = useState<Step>(1);
     const [showClearModal, setShowClearModal] = useState(false);
+    const [categories, setCategories] = useState<CategoryItem[]>([]);
     
     // Shared state for all steps
     const [formData, setFormData] = useState({
         title: "",
-        category: "",
+        category: "", // slug or id? I'll use numeric id for API but slug for UI if needed.
+        category_id: null as number | null,
+        subcategory: "",
         condition: "",
         brand: "",
         model: "",
@@ -25,13 +37,14 @@ export default function AddProductForm() {
         images: [] as string[],
         state: "",
         city: "",
-        screenSize: "",
-        ram: "",
-        mainCamera: "",
-        selfieCamera: "",
-        battery: "",
-        internalStorage: ""
+        specifications: {} as Record<string, any>
     });
+
+    useEffect(() => {
+        getFallbackArray().then(res => {
+            setCategories(res as any);
+        });
+    }, []);
 
     const updateFormData = (newData: Partial<typeof formData>) => {
         setFormData(prev => ({ ...prev, ...newData }));
@@ -39,6 +52,8 @@ export default function AddProductForm() {
 
     const nextStep = () => setStep((prev) => (Math.min(prev + 1, 3) as Step));
     const prevStep = () => setStep((prev) => (Math.max(prev - 1, 1) as Step));
+
+    const selectedCategory = categories.find(c => c.catId === formData.category_id);
 
     return (
         <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden">
@@ -74,13 +89,34 @@ export default function AddProductForm() {
                 </div>
 
                 {/* Step 1: Product Info */}
-                {step === 1 && <StepOne data={formData} updateData={updateFormData} onNext={nextStep} />}
+                {step === 1 && (
+                    <StepOne 
+                        data={formData} 
+                        updateData={updateFormData} 
+                        onNext={nextStep} 
+                        categories={categories} 
+                    />
+                )}
 
                 {/* Step 2: Pricing & Details */}
-                {step === 2 && <StepTwo data={formData} updateData={updateFormData} onNext={nextStep} onBack={prevStep} />}
+                {step === 2 && (
+                    <StepTwo 
+                        data={formData} 
+                        updateData={updateFormData} 
+                        onNext={nextStep} 
+                        onBack={prevStep} 
+                        selectedCategory={selectedCategory}
+                    />
+                )}
 
                 {/* Step 3: Photos & Location */}
-                {step === 3 && <StepThree data={formData} updateData={updateFormData} onBack={prevStep} />}
+                {step === 3 && (
+                    <StepThree 
+                        data={formData} 
+                        updateData={updateFormData} 
+                        onBack={prevStep} 
+                    />
+                )}
             </div>
 
             {/* Clear Modal */}
@@ -110,6 +146,8 @@ export default function AddProductForm() {
                                     setFormData({
                                         title: "",
                                         category: "",
+                                        category_id: null,
+                                        subcategory: "",
                                         condition: "",
                                         brand: "",
                                         model: "",
@@ -120,12 +158,7 @@ export default function AddProductForm() {
                                         images: [],
                                         state: "",
                                         city: "",
-                                        screenSize: "",
-                                        ram: "",
-                                        mainCamera: "",
-                                        selfieCamera: "",
-                                        battery: "",
-                                        internalStorage: ""
+                                        specifications: {}
                                     });
                                     setStep(1);
                                     setShowClearModal(false);
@@ -201,24 +234,63 @@ function ChevronDownIcon() {
     </svg>
 }
 
-function StepOne({ data, updateData, onNext }: { data: any, updateData: (d: any) => void, onNext: () => void }) {
+function StepOne({ data, updateData, onNext, categories }: { data: any, updateData: (d: any) => void, onNext: () => void, categories: CategoryItem[] }) {
+    const selectedCat = categories.find(c => c.catId === data.category_id);
+    const subcategoryOptions = selectedCat ? selectedCat.columns.flatMap(c => c.items) : [];
+
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <InputField label="Product Title" placeholder="e.g. washing machine" value={data.title} onChange={(v) => updateData({ title: v })} required />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="Category" options={["Electronics", "Phones", "Fashion"]} value={data.category} onChange={(v) => updateData({ category: v })} required />
-                <SelectField label="Condition" options={["New", "Used - Like New", "Used - Good"]} value={data.condition} onChange={(v) => updateData({ condition: v })} required />
+                <div className="flex flex-col gap-2">
+                    <label className="text-black font-black text-[15px]">Category<span className="text-[#E85A28] ml-1">*</span></label>
+                    <div className="relative">
+                        <select 
+                            value={data.category_id || ""}
+                            onChange={(e) => {
+                                const id = Number(e.target.value);
+                                const cat = categories.find(c => c.catId === id);
+                                updateData({ category_id: id, category: cat?.id || "", subcategory: "" });
+                            }}
+                            className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
+                        >
+                            <option value="" disabled>Select Category</option>
+                            {categories.map(c => <option key={c.catId} value={c.catId}>{c.title}</option>)}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                            <ChevronDownIcon />
+                        </div>
+                    </div>
+                </div>
+                <SelectField 
+                    label="Condition" 
+                    options={["New", "Used - Like New", "Used - Good", "Refurbished"]} 
+                    value={data.condition} 
+                    onChange={(v) => updateData({ condition: v })} 
+                    required 
+                />
             </div>
+
+            {subcategoryOptions.length > 0 && (
+                <SelectField 
+                    label="Subcategory" 
+                    options={subcategoryOptions} 
+                    value={data.subcategory} 
+                    onChange={(v) => updateData({ subcategory: v })} 
+                    required 
+                />
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="Brand" options={["Apple", "Samsung", "Nike"]} value={data.brand} onChange={(v) => updateData({ brand: v })} required />
-                <SelectField label="Model" options={["14 Pro Max", "S23 Ultra", "Air Force 1"]} value={data.model} onChange={(v) => updateData({ model: v })} required />
+                <InputField label="Brand" placeholder="e.g. Apple, Nike" value={data.brand} onChange={(v) => updateData({ brand: v })} required />
+                <InputField label="Model" placeholder="e.g. iPhone 15, Air Max" value={data.model} onChange={(v) => updateData({ model: v })} required />
             </div>
-            <SelectField label="Color" options={["Black", "White", "Silver", "Gold"]} value={data.color} onChange={(v) => updateData({ color: v })} required />
+            <InputField label="Color" placeholder="e.g. Black, White" value={data.color} onChange={(v) => updateData({ color: v })} required />
 
             <div className="flex justify-end pt-8">
                 <button
                     onClick={onNext}
-                    disabled={!data.title || !data.category || !data.condition}
+                    disabled={!data.title || !data.category_id || !data.condition}
                     className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
                 >
                     Next
@@ -228,25 +300,60 @@ function StepOne({ data, updateData, onNext }: { data: any, updateData: (d: any)
     )
 }
 
-function StepTwo({ data, updateData, onNext, onBack }: { data: any, updateData: (d: any) => void, onNext: () => void, onBack: () => void }) {
+function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data: any, updateData: (d: any) => void, onNext: () => void, onBack: () => void, selectedCategory?: CategoryItem }) {
+    const specs = selectedCategory?.specifications_template || [];
+
+    const handleSpecChange = (label: string, value: any) => {
+        updateData({
+            specifications: {
+                ...data.specifications,
+                [label]: value
+            }
+        });
+    };
+
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <InputField label="Price(₦)" placeholder="Enter price here" value={data.price} onChange={(v) => updateData({ price: v })} required />
                 <SelectField label="Negotiable" options={["Yes", "No"]} value={data.negotiable} onChange={(v) => updateData({ negotiable: v })} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="Screen size" options={["6.1 inch", "6.7 inch"]} value={data.screenSize} onChange={(v) => updateData({ screenSize: v })} />
-                <SelectField label="RAM" options={["4GB", "8GB", "12GB"]} value={data.ram} onChange={(v) => updateData({ ram: v })} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="Main Camera" options={["12MP", "48MP", "108MP"]} value={data.mainCamera} onChange={(v) => updateData({ mainCamera: v })} />
-                <SelectField label="Selfie Camera" options={["8MP", "12MP"]} value={data.selfieCamera} onChange={(v) => updateData({ selfieCamera: v })} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="Battery (mAh)" options={["4000", "5000"]} value={data.battery} onChange={(v) => updateData({ battery: v })} />
-                <SelectField label="Internal Storage" options={["64GB", "128GB", "256GB"]} value={data.internalStorage} onChange={(v) => updateData({ internalStorage: v })} required />
-            </div>
+
+            {specs.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {specs.map((s: any) => (
+                        <div key={s.label}>
+                            {s.type === "select" ? (
+                                <SelectField 
+                                    label={s.label} 
+                                    options={s.options} 
+                                    value={data.specifications[s.label] || ""} 
+                                    onChange={(v) => handleSpecChange(s.label, v)} 
+                                />
+                            ) : s.type === "number" ? (
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-black font-black text-[15px]">{s.label}</label>
+                                    <input
+                                        type="number"
+                                        value={data.specifications[s.label] || ""}
+                                        onChange={(e) => handleSpecChange(s.label, e.target.value)}
+                                        placeholder={s.placeholder || ""}
+                                        className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors"
+                                    />
+                                </div>
+                            ) : (
+                                <InputField 
+                                    label={s.label} 
+                                    placeholder={s.placeholder || ""} 
+                                    value={data.specifications[s.label] || ""} 
+                                    onChange={(v) => handleSpecChange(s.label, v)} 
+                                />
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <div className="flex flex-col gap-2">
                 <label className="text-black font-black text-[15px]">Description <span className="text-[#E85A28] ml-1">*</span></label>
                 <textarea
@@ -306,18 +413,15 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                 title: data.title, 
                 price: p, 
                 description: data.description, 
+                category_id: data.category_id,
+                subcategory: data.subcategory,
+                specifications: data.specifications,
                 images: data.images,
                 condition: data.condition,
                 brand: data.brand,
                 model: data.model,
                 color: data.color,
                 negotiable: data.negotiable,
-                screenSize: data.screenSize,
-                ram: data.ram,
-                mainCamera: data.mainCamera,
-                selfieCamera: data.selfieCamera,
-                battery: data.battery,
-                internalStorage: data.internalStorage,
                 state: data.state,
                 city: data.city
             });
@@ -332,12 +436,14 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
         <div className="space-y-12 animate-in slide-in-from-right-4 duration-300">
             <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 mb-8">
                 <h4 className="text-orange-800 font-black text-sm mb-1">Review your details:</h4>
-                <p className="text-orange-600 text-xs font-bold">{data.title} • ₦{Number(data.price).toLocaleString()} • {data.category}</p>
+                <p className="text-orange-600 text-xs font-bold">
+                    {data.title} • ₦{Number(data.price).toLocaleString()} • {data.category} {data.subcategory && `> ${data.subcategory}`}
+                </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="State" options={["Lagos", "Abuja", "Rivers"]} value={data.state || ""} onChange={(v) => updateData({ state: v })} required />
-                <SelectField label="City" options={["Ikeja", "Lekki", "Garki"]} value={data.city || ""} onChange={(v) => updateData({ city: v })} required />
+                <SelectField label="State" options={["Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"]} value={data.state || ""} onChange={(v) => updateData({ state: v })} required />
+                <InputField label="City" placeholder="e.g. Ikeja, Lekki" value={data.city || ""} onChange={(v) => updateData({ city: v })} required />
             </div>
 
             <div>

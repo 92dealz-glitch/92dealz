@@ -99,6 +99,14 @@ const Deal = sequelize.define('Deal', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  subcategory: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  specifications: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
 }, {
   tableName: 'deals',
   timestamps: true,

@@ -5,7 +5,7 @@ import { Edit2, CheckCircle, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
 import { listMyAds, deleteAd, markAdSold, updateAd } from "@/services/ads.service";
 
-type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string };
+type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any };
 
 export default function MyAdsList() {
     const [activeTab, setActiveTab] = useState<"published" | "draft" | "closed">("published");
@@ -83,8 +83,9 @@ export default function MyAdsList() {
                                 <div>
                                     <h3 className="text-black font-black text-lg mb-1">{ad.title}</h3>
                                     <div className="text-[#E85A28] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
-                                    <div className="flex items-center gap-4 text-zinc-500 text-sm font-bold">
+                                    <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
                                         <span className="bg-zinc-100 px-2 py-0.5 rounded text-xs">{new Date(ad.createdAt || Date.now()).toLocaleDateString()}</span>
+                                        {ad.subcategory && <span className="text-[#E85A28] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
                                     </div>
                                 </div>
                                 <span className="bg-[#10B981] text-white px-3 py-1 rounded-md text-[11px] font-black uppercase">

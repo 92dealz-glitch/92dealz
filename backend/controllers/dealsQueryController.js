@@ -88,7 +88,8 @@ exports.list = async (req, res, next) => {
     const baseSelectCols = ['id', 'title', 'description', 'price', '"createdAt"', '"userId"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
                     'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
-                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location',
+                    'subcategory', 'specifications'];
     for (const f of fields) {
       if (has(f)) {
         // Quote if it's camelCase (contains uppercase letters)
@@ -129,7 +130,8 @@ exports.getById = async (req, res, next) => {
     const selectCols = ['id', 'title', 'description', 'price', '"createdAt"', '"userId"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
                     'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
-                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location',
+                    'subcategory', 'specifications'];
     for (const f of fields) {
       if (has(f)) {
         const quoted = /[A-Z]/.test(f) ? `"${f}"` : f;
@@ -169,7 +171,7 @@ exports.create = async (req, res, next) => {
     if (has('expiry_date') && typeof expiry_date !== 'undefined') { idx += 1; cols.push('expiry_date'); vals.push(`$${idx}`); bind.push(expiry_date); }
     if (has('status') && typeof status !== 'undefined') { idx += 1; cols.push('status'); vals.push(`$${idx}`); bind.push(status); }
     
-    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location', 'subcategory', 'specifications'];
     for (const f of extraFields) {
       if (has(f) && typeof req.body[f] !== 'undefined') {
         idx += 1;
@@ -208,7 +210,7 @@ exports.update = async (req, res, next) => {
     if (has('images_json')) allowed.push('images_json');
     if (has('expiry_date')) allowed.push('expiry_date');
     if (has('status')) allowed.push('status');
-    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location', 'subcategory', 'specifications'];
     for (const f of extraFields) {
       if (has(f)) allowed.push(f);
     }
@@ -284,7 +286,8 @@ exports.trending = async (req, res, next) => {
     const selectCols = ['d.id', 'd.title', 'd.description', 'd.price', 'd."createdAt"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
                     'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
-                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location',
+                    'subcategory', 'specifications'];
     for (const f of fields) {
       if (has(f)) {
         const quoted = /[A-Z]/.test(f) ? `d."${f}"` : `d.${f}`;

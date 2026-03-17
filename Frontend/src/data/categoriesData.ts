@@ -6,9 +6,11 @@ export type Column = {
 };
 
 export type CategoryData = {
+  id: number;
   title: string;
   icon?: string;
   columns: Column[];
+  specifications_template: any[];
 };
 
 export type BackendCategory = {
@@ -17,6 +19,7 @@ export type BackendCategory = {
   slug: string;
   icon: string | null;
   mega_menu: { columns: Column[] } | null;
+  specifications_template: any[] | null;
 };
 
 let cachedCategories: Record<string, CategoryData> | null = null;
@@ -31,9 +34,11 @@ export async function getCategories(): Promise<Record<string, CategoryData>> {
       const result: Record<string, CategoryData> = {};
       json.data.forEach((cat: BackendCategory) => {
         result[cat.slug] = {
+          id: cat.id,
           title: cat.name,
           icon: cat.icon || "",
-          columns: cat.mega_menu?.columns || []
+          columns: cat.mega_menu?.columns || [],
+          specifications_template: cat.specifications_template || []
         };
       });
       cachedCategories = result;
@@ -53,9 +58,11 @@ export async function getCategory(key: string): Promise<CategoryData | undefined
 export async function getFallbackArray() {
   const all = await getCategories();
   return Object.keys(all).map((key) => ({
-    id: key,
+    id: key, // slug
+    catId: all[key].id,
     title: all[key].title,
     icon: all[key].icon || "/assets/images/tag.svg",
-    columns: all[key].columns
+    columns: all[key].columns,
+    specifications_template: all[key].specifications_template
   }));
 }
