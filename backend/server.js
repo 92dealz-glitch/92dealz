@@ -106,12 +106,10 @@ app.use(errorHandler);
 
 const START_PORT = Number(process.env.PORT || 5001);
 
-// Sync only if not on Vercel (local dev)
-if (!process.env.VERCEL) {
-  sequelize.sync({ alter: true })
-    .then(() => console.log('Database synchronized (local)'))
-    .catch(err => console.error('Database sync failed:', err));
-}
+// Sync all environments for now to ensure new tables exist
+sequelize.sync({ alter: true })
+  .then(() => console.log('Database synchronized'))
+  .catch(err => console.error('Database sync failed:', err));
 
 app.listen(START_PORT, () => {
   console.log(`Server listening on http://localhost:${START_PORT}`);
