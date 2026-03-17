@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser, loginUser } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
@@ -176,15 +176,13 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  import("react").then((React) => {
-    React.useEffect(() => {
-      let mounted = true;
-      getFallbackArray().then((res) => {
-        if (mounted) setCategories(res);
-      });
-      return () => { mounted = false; };
-    }, []);
-  });
+  useEffect(() => {
+    let mounted = true;
+    getFallbackArray().then((res) => {
+      if (mounted) setCategories(res as any);
+    });
+    return () => { mounted = false; };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
