@@ -503,6 +503,7 @@ export default function Navbar() {
                 {[
                   { icon: Bell, label: "Notifications", path: "/notifications" },
                   { icon: Mail, label: "Messages", path: "/messages" },
+                  { icon: Settings, label: "Account Settings", path: "/account-settings" },
                   { icon: Heart, label: "Favorites", path: "/favorites" },
                   { icon: HelpCircle, label: "Help & Support", path: "/contact" },
                   { icon: Shield, label: "Safety Tips", path: "/safety-tips" },
@@ -754,9 +755,9 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
                 <Heart size={16} />
                 Favorites
               </button>
-              <button onClick={() => go(vendor ? "/vendor-dashboard/settings" : "/dashboard")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go("/account-settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Settings size={16} />
-                Settings
+                Account Settings
               </button>
               <button 
                 onClick={signOut} 

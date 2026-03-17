@@ -139,3 +139,38 @@ exports.updateProfile = async (req, res, next) => {
     return next(err);
   }
 };
+
+// POST /api/user/upgrade-vendor
+exports.upgradeToVendor = async (req, res, next) => {
+  try {
+    const { businessName, businessCategory, businessAddress } = req.body;
+    if (!businessName || !businessCategory || !businessAddress) {
+      return res.status(400).json({ success: false, message: 'All business details are required' });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (user.role === 'vendor' || user.role === 'admin') {
+      return res.status(400).json({ success: false, message: 'Account is already a vendor or admin' });
+    }
+
+    user.role = 'vendor';
+    user.status = 'pending'; // Requires admin approval as per previous logic
+    user.businessName = businessName;
+    user.businessCategory = businessCategory;
+    user.businessAddress = businessAddress;
+
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: 'Upgrade request submitted. Your vendor account is pending approval.',
+      data: { role: user.role, status: user.status }
+    });
+  } catch (err) {
+    return next(err);
+  }
+};

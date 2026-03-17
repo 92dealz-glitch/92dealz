@@ -16,6 +16,7 @@ router.get('/', userController.getUsers);
 // Protected profile routes
 router.get('/profile', auth, userController.getProfile);
 router.put('/profile', auth, userController.updateProfile);
+router.post('/upgrade-vendor', auth, userController.upgradeToVendor);
 
 // Fetch user by id
 router.get('/:id', userController.getUserById);

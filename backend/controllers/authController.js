@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const validateEmail = require('../utils/validateEmail');
 const bcryptjs = require('bcryptjs');
+const { generateOtp } = require('../services/otpService');
 const { sendResetOtp, sendSignupOtp } = require('../services/emailService');
 const PendingRegistration = require('../models/PendingRegistration');
 

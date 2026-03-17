@@ -87,10 +87,24 @@ export async function getProfile() {
   );
 }
 
-export async function updateProfile(payload: { name?: string; phone?: string | null }) {
+export async function updateProfile(payload: { 
+  name?: string; 
+  phone?: string | null;
+  businessName?: string;
+  businessCategory?: string;
+  businessAddress?: string;
+  about?: string;
+}) {
   return apiFetch<{ success: boolean; data: unknown }>(
     "/users/profile",
     { method: "PUT", body: payload, auth: true }
+  );
+}
+
+export async function upgradeToVendor(payload: { businessName: string; businessCategory: string; businessAddress: string }) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/users/upgrade-vendor",
+    { method: "POST", body: payload, auth: true }
   );
 }
 
