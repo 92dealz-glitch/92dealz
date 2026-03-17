@@ -425,11 +425,10 @@ export default function Navbar() {
                 {[
                   { icon: Bell, label: "Notifications", path: "/dashboard" },
                   { icon: Mail, label: "Messages", path: "/messages" },
-                  { icon: HelpCircle, label: "Help Center", path: "/faq" },
-                  { icon: MessageSquare, label: "Chat With Us", path: "/contact" },
-                  { icon: Lock, label: "Update Password", path: "/vendor-dashboard/settings" },
-                  { icon: Shield, label: "Verify Account", path: "/vendor-dashboard/settings" },
-                  { icon: CreditCard, label: "Payment Details", path: "/vendor-dashboard/settings" },
+                  { icon: Heart, label: "Favorites", path: "/favorites" },
+                  { icon: HelpCircle, label: "Help & Support", path: "/contact" },
+                  { icon: Shield, label: "Safety Tips", path: "/safety-tips" },
+                  { icon: Settings, label: "Account Settings", path: "/vendor-dashboard/settings" },
                 ].map((item, idx) => (
                   <Link 
                     key={idx} 
