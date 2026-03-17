@@ -43,10 +43,10 @@ export default function Footer() {
           <div>
             <h5 className="text-sm font-semibold mb-4">POLICIES</h5>
             <ul className="space-y-3 text-sm text-gray-700">
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Cookie Policy</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Copyright Policy</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Billing Policy</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/cookie-policy" className="hover:text-orange-600 transition-colors">Cookie Policy</Link></li>
+              <li><Link href="/copyright-policy" className="hover:text-orange-600 transition-colors">Copyright Policy</Link></li>
+              <li><Link href="/billing-policy" className="hover:text-orange-600 transition-colors">Billing Policy</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-orange-600 transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
 
@@ -66,7 +66,9 @@ export default function Footer() {
                       </svg>
                     </Link>
                     <Link
-                      href="#"
+                      href="https://www.facebook.com/profile.php?id=61572818794677&mibextid=wwXIfr"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       aria-label="facebook"
                       className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-500 hover:text-orange-500 transition-all"
                     >
@@ -90,6 +92,17 @@ export default function Footer() {
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M20.5 3.5A11.9 11.9 0 0012 0C5.4 0 .4 5 0 11.6a11.7 11.7 0 001.6 5.6L0 24l6.9-1.8a11.7 11.7 0 005.6 1.6c6.6-.4 11.6-5.4 11.6-12 0-3.2-1.2-6.2-3.6-8.3zM12 21.8a9.9 9.9 0 01-5.3-1.5l-.4-.3-4.1 1.1 1.1-4.1-.3-.4A9.9 9.9 0 012.2 12 9.8 9.8 0 1112 21.8z" fill="currentColor" />
+                      </svg>
+                    </Link>
+                    <Link
+                      href="https://www.tiktok.com/@234deals.online?_r=1&_t=ZS-94k9ReRcEo1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="tiktok"
+                      className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-500 hover:text-orange-500 transition-all"
+                    >
+                      <svg width="14" height="16" viewBox="0 0 448 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31v89.89a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/>
                       </svg>
                     </Link>
                   </div>
