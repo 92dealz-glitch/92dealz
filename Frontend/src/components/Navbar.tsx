@@ -40,6 +40,10 @@ export default function Navbar() {
   const [mQuery, setMQuery] = useState("");
   const favorites = useFavorites();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [mSuggestions, setMSuggestions] = useState<string[]>([]);
+  const [showMSuggestions, setShowMSuggestions] = useState(false);
 
   const [topCats, setTopCats] = useState<{id: string; title: string}[]>([]);
 
@@ -64,6 +68,52 @@ export default function Navbar() {
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
   }, []);
+
+  // Suggestions Fetcher
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API_BASE}/search/suggestions?q=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        if (json.success) {
+          setSuggestions(json.data);
+          setShowSuggestions(json.data.length > 0);
+        }
+      } catch (err) {
+        console.error("Suggestions fetch failed", err);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Mobile Suggestions Fetcher
+  useEffect(() => {
+    const q = mQuery.trim();
+    if (q.length < 2) {
+      setMSuggestions([]);
+      setShowMSuggestions(false);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API_BASE}/search/suggestions?q=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        if (json.success) {
+          setMSuggestions(json.data);
+          setShowMSuggestions(json.data.length > 0);
+        }
+      } catch (err) {
+        console.error("Mobile suggestions fetch failed", err);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [mQuery]);
 
   return (
     <header className="w-full bg-white shadow-sm">
@@ -96,13 +146,34 @@ export default function Navbar() {
                   }}
                   className="flex items-center overflow-hidden rounded-md border border-orange-500 shadow-sm"
                 >
-                  <input
-                    type="text"
-                    placeholder="I am looking for..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="I am looking for..."
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                      className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
+                    />
+                    {showSuggestions && suggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-lg rounded-b-md z-[100] mt-px py-1 overflow-hidden">
+                        {suggestions.map((s, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => {
+                              setQuery(s);
+                              setShowSuggestions(false);
+                              router.push(`/search?search=${encodeURIComponent(s)}`);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-orange-50 hover:text-orange-600 transition-colors truncate"
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                   <button
                     type="submit"
                     className="flex items-center justify-center bg-orange-500 px-4 py-2.5 text-white hover:bg-orange-600 transition-colors"
@@ -195,13 +266,34 @@ export default function Navbar() {
               }}
               className="flex flex-1 items-center overflow-hidden rounded-lg border border-orange-500 bg-white h-[42px]"
             >
-              <input
-                type="text"
-                placeholder="Search..."
-                value={mQuery}
-                onChange={(e) => setMQuery(e.target.value)}
-                className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full min-w-0"
-              />
+              <div className="flex-1 relative h-full">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={mQuery}
+                  onChange={(e) => setMQuery(e.target.value)}
+                  onFocus={() => { if (mSuggestions.length > 0) setShowMSuggestions(true); }}
+                  className="w-full px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full min-w-0"
+                />
+                {showMSuggestions && mSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-b-lg z-[100] mt-1 py-1 overflow-hidden">
+                    {mSuggestions.map((s, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => {
+                          setMQuery(s);
+                          setShowMSuggestions(false);
+                          router.push(`/search?search=${encodeURIComponent(s)}`);
+                        }}
+                        className="w-full text-left px-4 py-3 text-sm text-zinc-700 hover:bg-orange-50 border-b last:border-0 border-zinc-100"
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 type="submit"
                 className="flex items-center justify-center bg-orange-500 px-3 h-full shrink-0"

@@ -95,3 +95,20 @@ exports.search = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.suggestions = async (req, res, next) => {
+  try {
+    const q = req.query.q || '';
+    if (!q.trim()) return res.json({ success: true, data: [] });
+    
+    // Simple ILIKE query for suggestions
+    const [rows] = await sequelize.query(
+      'SELECT DISTINCT title FROM deals WHERE title ILIKE :q AND status = \'active\' LIMIT 8',
+      { replacements: { q: `%${q}%` } }
+    );
+    
+    return res.json({ success: true, data: rows.map(r => r.title) });
+  } catch (err) {
+    return next(err);
+  }
+};

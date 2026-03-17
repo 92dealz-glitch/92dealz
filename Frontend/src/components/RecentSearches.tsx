@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const recent = [
   { id: 1, title: "JBL Speaker", img: "/assets/images/phone.svg" },
@@ -24,15 +25,19 @@ export default function RecentSearches() {
 
       <div className="flex gap-3 lg:gap-6 overflow-x-auto lg:overflow-visible no-scrollbar snap-x snap-mandatory px-1 lg:flex-wrap lg:items-start">
         {recent.map((it) => (
-          <div key={it.id} className="shrink-0 w-[110px] lg:w-[120px] flex flex-col items-center snap-start">
-            <div className="w-full max-w-[140px] lg:w-[100px] lg:h-[100px] rounded-md overflow-hidden border-4 border-[#FF6B35] p-1 bg-white shadow-sm">
+          <Link 
+            key={it.id} 
+            href={`/search?search=${encodeURIComponent(it.title)}`}
+            className="shrink-0 w-[110px] lg:w-[120px] flex flex-col items-center snap-start group transition-transform hover:scale-105 active:scale-95"
+          >
+            <div className="w-full max-w-[140px] lg:w-[100px] lg:h-[100px] rounded-md overflow-hidden border-4 border-[#FF6B35] p-1 bg-white shadow-sm group-hover:shadow-md transition-shadow">
               <div className="relative w-full pb-[100%] lg:pb-0 lg:h-full">
                 <Image src={it.img} alt={it.title} fill className="absolute inset-0 object-contain p-2" />
               </div>
             </div>
 
-            <div className="mt-2 text-sm text-gray-700 text-center font-medium line-clamp-1 w-full">{it.title}</div>
-          </div>
+            <div className="mt-2 text-sm text-gray-700 text-center font-medium line-clamp-1 w-full group-hover:text-[#FF6B35] transition-colors">{it.title}</div>
+          </Link>
         ))}
       </div>
     </section>
