@@ -501,7 +501,7 @@ export default function Navbar() {
 
               <div className="divide-y divide-zinc-100">
                 {[
-                  { icon: Bell, label: "Notifications", path: "/dashboard" },
+                  { icon: Bell, label: "Notifications", path: "/notifications" },
                   { icon: Mail, label: "Messages", path: "/messages" },
                   { icon: Heart, label: "Favorites", path: "/favorites" },
                   { icon: HelpCircle, label: "Help & Support", path: "/contact" },

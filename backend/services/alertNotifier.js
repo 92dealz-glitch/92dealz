@@ -1,5 +1,6 @@
 const sequelize = require('../config/database');
 const User = require('../models/userModel');
+const Notification = require('../models/Notification');
 
 async function findMatchingAlerts(deal) {
   const bind = [];
@@ -29,9 +30,19 @@ async function notifyAlertsForDeal(deal, sendMail) {
   const subject = `New deal: ${deal.title}`;
   const text = `A new deal may match your alert: ${deal.title}\nPrice: ${deal.price}\n` +
                `Visit the app to view details.`;
-  for (const email of emails) {
+  for (const user of users) {
     try {
-      await sendMail(email, subject, text);
+      if (user.email) {
+        await sendMail(user.email, subject, text);
+      }
+      // NEW: Create in-app notification
+      await Notification.create({
+        user_id: user.id,
+        type: 'DEAL_ALERT',
+        title: `New Deal Alert: ${deal.title}`,
+        message: `A new deal matches your alert: ${deal.title}. Price: ${deal.price}`,
+        link: `/product/${deal.id}`
+      });
     } catch (_) {}
   }
 }
