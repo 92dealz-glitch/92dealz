@@ -49,6 +49,7 @@ require('./models/PasswordReset');
 require('./models/Alert');
 require('./models/ClickEvent');
 require('./models/Submission');
+require('./models/PendingRegistration');
 require('./models/Message');
 require('./models/Order');
 require('./models/Notification');

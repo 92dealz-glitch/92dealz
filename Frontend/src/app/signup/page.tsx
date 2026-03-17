@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { registerUser, loginUser } from "@/lib/api";
+import { registerUser, loginUser, registerInitiate, registerVerify } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 
 type UserRole = "user" | "vendor";
@@ -175,6 +175,8 @@ export default function SignupPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [step, setStep] = useState(1); // 1 = signup, 2 = otp
+  const [otp, setOtp] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -206,7 +208,7 @@ export default function SignupPage() {
         return;
       }
       const email = formData.contact.trim().toLowerCase();
-      await registerUser({
+      await registerInitiate({
         name: formData.name,
         email,
         password: formData.password.trim(),
@@ -215,6 +217,22 @@ export default function SignupPage() {
         businessCategory: formData.businessCategory,
         businessAddress: formData.businessAddress,
       });
+      setStep(2);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const email = formData.contact.trim().toLowerCase();
+      await registerVerify({ email, otp: otp.trim() });
       const res = await loginUser({ email, password: formData.password.trim() });
       const r = String(res.user?.role || "").toLowerCase();
       if (r === "vendor") {
@@ -273,15 +291,39 @@ export default function SignupPage() {
 
           {error && <div className="mb-3 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{error}</div>}
 
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
-            {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
+          {step === 1 ? (
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
+              {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
-            <button type="submit" disabled={loading}
-              className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50 mt-2">
-              {loading ? "Creating Account..." : role === "vendor" ? "Register as Vendor" : "Create Account"}
-            </button>
-          </form>
+              <button type="submit" disabled={loading}
+                className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50 mt-2">
+                {loading ? "Sending Code..." : role === "vendor" ? "Register as Vendor" : "Create Account"}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleVerify} className="space-y-4">
+               <div>
+                <label className={labelCls}>Verification Code</label>
+                <input 
+                  type="text" 
+                  value={otp} 
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 6-digit code" 
+                  className={inputCls} 
+                  required
+                />
+                <p className="text-xs text-gray-400 mt-1">We sent a verification code to {formData.contact}</p>
+              </div>
+              <button type="submit" disabled={loading}
+                className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50">
+                {loading ? "Verifying..." : "Verify & Complete Signup"}
+              </button>
+              <button type="button" onClick={() => setStep(1)} className="w-full text-zinc-500 text-sm font-bold">
+                Go Back
+              </button>
+            </form>
+          )}
 
           <p className="mt-6 text-center text-gray-500 text-sm">
             Already have an account?{" "}
@@ -360,15 +402,39 @@ export default function SignupPage() {
 
             {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{error}</div>}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
-              {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
+            {step === 1 ? (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
+                {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
-              <button type="submit" disabled={loading}
-                className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">
-                {loading ? "Creating Account..." : role === "vendor" ? "Register as Vendor" : "Create Account"}
-              </button>
-            </form>
+                <button type="submit" disabled={loading}
+                  className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">
+                  {loading ? "Sending Code..." : role === "vendor" ? "Register as Vendor" : "Create Account"}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerify} className="space-y-5">
+                 <div>
+                  <label className={labelCls}>Verification Code</label>
+                  <input 
+                    type="text" 
+                    value={otp} 
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="Enter 6-digit code" 
+                    className={inputCls} 
+                    required
+                  />
+                  <p className="text-xs text-gray-400 mt-2 font-medium">We've sent a 6-digit verification code to {formData.contact}. Please check your inbox.</p>
+                </div>
+                <button type="submit" disabled={loading}
+                  className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">
+                  {loading ? "Verifying..." : "Verify & Complete Signup"}
+                </button>
+                <button type="button" onClick={() => setStep(1)} className="w-full text-zinc-500 text-sm font-bold hover:text-zinc-700">
+                  Go Back & Edit Details
+                </button>
+              </form>
+            )}
 
             <p className="mt-5 text-center text-sm text-gray-600">
               Already have an account?{" "}

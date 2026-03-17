@@ -8,10 +8,94 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const validateEmail = require('../utils/validateEmail');
 const bcryptjs = require('bcryptjs');
-const { generateOtp, upsertOtp, verifyOtp: verifyOtpSvc, clearOtp } = require('../services/otpService');
-const { sendResetOtp } = require('../services/emailService');
+const { sendResetOtp, sendSignupOtp } = require('../services/emailService');
+const PendingRegistration = require('../models/PendingRegistration');
 
-// POST /api/auth/register
+// POST /api/auth/register-initiate
+exports.registerInitiate = async (req, res, next) => {
+  try {
+    const { email, password, name, phone, role } = req.body;
+    if (!email || !password || !name) {
+      return res.status(400).json({ success: false, message: 'Name, email and password are required' });
+    }
+    if (!validateEmail(email)) {
+      return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      return res.status(409).json({ success: false, message: 'Email already registered' });
+    }
+
+    const otp = generateOtp();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+    // Hash password early or store as is? Better hash it now.
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
+
+    const signupData = { ...req.body, password: hashed };
+    
+    await PendingRegistration.destroy({ where: { email } });
+    await PendingRegistration.create({
+      email,
+      otp,
+      data: JSON.stringify(signupData),
+      expires_at: expiresAt
+    });
+
+    await sendSignupOtp(email, otp);
+    return res.json({ success: true, message: 'Verification code sent to email' });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// POST /api/auth/register-verify
+exports.registerVerify = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+    }
+
+    const pending = await PendingRegistration.findOne({ where: { email, otp } });
+    if (!pending || pending.expires_at < new Date()) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+
+    const signupData = JSON.parse(pending.data);
+    const { name, password, phone, role, businessName, businessCategory, businessAddress } = signupData;
+
+    const allowedRoles = new Set(['user', 'vendor']);
+    const roleToSave = role && allowedRoles.has(role) ? role : 'user';
+    const initialStatus = roleToSave === 'vendor' ? 'pending' : 'active';
+
+    const newUser = await User.create({
+      name,
+      email,
+      password, // Already hashed in registerInitiate
+      phone,
+      role: roleToSave,
+      status: initialStatus,
+      businessName: roleToSave === 'vendor' ? businessName : null,
+      businessCategory: roleToSave === 'vendor' ? businessCategory : null,
+      businessAddress: roleToSave === 'vendor' ? businessAddress : null,
+    });
+
+    await pending.destroy();
+
+    return res.status(201).json({ 
+      success: true, 
+      message: 'Registration successful', 
+      user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, status: newUser.status } 
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// Legacy register for backward compatibility or direct use if needed
 exports.register = async (req, res, next) => {
   try {
     const rawName = req.body.name;

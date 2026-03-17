@@ -49,6 +49,20 @@ export async function registerUser(payload: RegisterPayload) {
   );
 }
 
+export async function registerInitiate(payload: RegisterPayload) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/auth/register-initiate",
+    { method: "POST", body: payload }
+  );
+}
+
+export async function registerVerify(payload: { email: string; otp: string }) {
+  return apiFetch<{ success: boolean; message: string; user?: any }>(
+    "/auth/register-verify",
+    { method: "POST", body: payload }
+  );
+}
+
 export async function loginUser(payload: {
   email: string;
   password: string;
