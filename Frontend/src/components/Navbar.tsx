@@ -147,7 +147,7 @@ export default function Navbar() {
             </Link>
 
             <div className="ml-auto flex items-center gap-3">
-              <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-3">
                 {!isLoggedIn ? (
                   <>
                     <Link href="/login" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-orange-600">
@@ -363,7 +363,7 @@ export default function Navbar() {
                 <span className="text-[10px] mt-1 text-center">Favorite</span>
               </Link>
               <Link href="/vendor-dashboard/add-product" className="flex flex-col items-center text-sm text-[#FF6B35]">
-                <div className="bg-[#FF6B35] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white">
+                <div className="bg-[#FF6B35] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white relative z-50">
                   <Plus size={24} className="text-white" />
                 </div>
                 <span className="text-[10px] mt-1 text-center">Sell</span>

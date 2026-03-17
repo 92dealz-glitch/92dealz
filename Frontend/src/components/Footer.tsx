@@ -22,21 +22,21 @@ export default function Footer() {
           <div>
             <h5 className="text-sm font-semibold mb-4">OUR COMPANY</h5>
             <ul className="space-y-3 text-sm text-gray-700">
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">About 234Deals</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">We are Hiring</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Affiliates</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Pricing</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Terms and conditions</Link></li>
+              <li><Link href="/about" className="hover:text-orange-600 transition-colors">About 234Deals</Link></li>
+              <li><Link href="/signup" className="hover:text-orange-600 transition-colors">We are Hiring</Link></li>
+              <li><Link href="/affiliates" className="hover:text-orange-600 transition-colors">Affiliates</Link></li>
+              <li><Link href="/pricing" className="hover:text-orange-600 transition-colors">Pricing</Link></li>
+              <li><Link href="/terms" className="hover:text-orange-600 transition-colors">Terms and conditions</Link></li>
             </ul>
           </div>
 
           <div>
             <h5 className="text-sm font-semibold mb-4">SUPPORT</h5>
             <ul className="space-y-3 text-sm text-gray-700">
-              <li><a href="mailto:Support@234deals.com" className="hover:text-orange-600 transition-colors">Support@234deals.com</a></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Safety Tips</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">FAQ</Link></li>
-              <li><Link href="/" className="hover:text-orange-600 transition-colors">Contact Us</Link></li>
+              <li><a href="mailto:234deals@gmail.com" className="hover:text-orange-600 transition-colors">Support@234deals.com</a></li>
+              <li><Link href="/safety-tips" className="hover:text-orange-600 transition-colors">Safety Tips</Link></li>
+              <li><Link href="/faq" className="hover:text-orange-600 transition-colors">FAQ</Link></li>
+              <li><Link href="/contact" className="hover:text-orange-600 transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 
