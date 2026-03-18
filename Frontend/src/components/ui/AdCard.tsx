@@ -13,6 +13,7 @@ export type AdItem = {
   brand?: string;
   desc?: string;
   badge?: string;
+  img?: string;
   location?: string;
   likes?: number;
   rating?: number;
@@ -37,10 +38,10 @@ export default function AdCard({ item, className = "" }: Props) {
       >
         <div className="flex-none relative w-full rounded-md overflow-hidden border border-gray-100">
           <div className="w-full pb-[66%]"></div>
-          {item.badge ? (
+          {(item.badge || item.img) ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={item.badge}
+              src={item.badge || item.img}
               alt={item.title}
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
@@ -55,7 +56,7 @@ export default function AdCard({ item, className = "" }: Props) {
                 id: item.id,
                 title: item.title,
                 price: item.price,
-                img: item.badge,
+                img: item.badge || item.img,
                 desc: item.desc,
                 location: item.location,
                 likes: item.likes ?? 40,
