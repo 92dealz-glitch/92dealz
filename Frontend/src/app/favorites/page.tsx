@@ -3,6 +3,9 @@
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import Link from "next/link";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 import Image from "next/image";
 import { Heart as HeartIcon } from "lucide-react";
 import { useFavorites } from "../../context/FavoritesProvider";
@@ -95,9 +98,9 @@ export default function FavoritesPage() {
             {items.map((it) => (
               <article
                 key={it.id}
-                className="relative rounded-lg border-2 border-emerald-300 p-3 bg-white shadow-sm"
+                className="relative rounded-lg border-2 border-emerald-300 p-3 bg-white shadow-sm ring-inset hover:ring-2 hover:ring-orange-200 transition-all"
               >
-                <div className="absolute top-3 right-3">
+                <div className="absolute top-3 right-3 z-10">
                   <button
                     aria-label={
                       isFavorite(it.id)
@@ -105,7 +108,7 @@ export default function FavoritesPage() {
                         : "Add to favorites"
                     }
                     onClick={() => toggle(it)}
-                    className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm"
+                    className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-transform"
                   >
                     <HeartIcon
                       size={16}
@@ -116,50 +119,52 @@ export default function FavoritesPage() {
                   </button>
                 </div>
 
-                <div className="w-full h-44 rounded-md overflow-hidden mb-3 bg-gray-50">
-                  {it.img ? (
-                    <Image
-                      src={it.img}
-                      alt={String(it.title)}
-                      width={600}
-                      height={360}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      No image
-                    </div>
-                  )}
-                </div>
+                <Link href={`/product/${it.id}`} className="block group">
+                  <div className="w-full h-44 rounded-md overflow-hidden mb-3 bg-gray-50 relative">
+                    {it.img ? (
+                      <Image
+                        src={it.img}
+                        alt={String(it.title)}
+                        width={600}
+                        height={360}
+                        className="object-cover w-full h-full transition-transform group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        No image
+                      </div>
+                    )}
+                  </div>
 
-                <div className="text-sm text-gray-700">
-                  <div className="flex items-start gap-2">
-                    <p className="text-amber-600 font-extrabold">
-                      {it.price}
+                  <div className="text-sm text-gray-700">
+                    <div className="flex items-start gap-2">
+                      <p className="text-amber-600 font-extrabold">
+                        {it.price}
+                      </p>
+                    </div>
+
+                    <h3 className="mt-2 font-semibold text-lg text-gray-900 group-hover:text-orange-600 transition-colors">
+                      {it.title}
+                    </h3>
+
+                    <p className="mt-2 text-gray-600 text-sm line-clamp-3">
+                      {it.desc}
                     </p>
-                  </div>
 
-                  <h3 className="mt-2 font-semibold text-lg text-gray-900">
-                    {it.title}
-                  </h3>
+                    <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
+                      <div className="flex items-center gap-2">
+                        📍 <span>{it.location}</span>
+                      </div>
 
-                  <p className="mt-2 text-gray-600 text-sm line-clamp-3">
-                    {it.desc}
-                  </p>
-
-                  <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
-                    <div className="flex items-center gap-2">
-                      📍 <span>{it.location}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      👍{" "}
-                      <span className="font-semibold">
-                        {it.likes ?? 0}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        👍{" "}
+                        <span className="font-semibold">
+                          {it.likes ?? 0}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               </article>
             ))}
           </div>
