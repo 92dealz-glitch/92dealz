@@ -6,7 +6,7 @@ import AdCard, { AdItem } from "./ui/AdCard";
 export default function SearchResultsClient({ items, query }: { items: AdItem[]; query: string }) {
   const sp = useSearchParams();
   const effectiveQuery = (query || sp.get("search") || sp.get("q") || "").toString();
-  const [mode, setMode] = useState<"exact" | "contains">("exact");
+  const [mode, setMode] = useState<"exact" | "contains">("contains");
   const filtered = useMemo(() => {
     const q = (effectiveQuery || "").toLowerCase().trim();
     if (!q) return items;
