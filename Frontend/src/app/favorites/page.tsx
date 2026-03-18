@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 import Image from "next/image";
 import { Heart as HeartIcon } from "lucide-react";
 import { useFavorites } from "../../context/FavoritesProvider";
