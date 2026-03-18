@@ -4,31 +4,26 @@ let DEALS_COLUMNS = null;
 
 async function introspect() {
   if (!DEALS_COLUMNS) {
-    const [cols] = await sequelize.query(
-      `SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='deals'`
-    );
-    DEALS_COLUMNS = new Set(cols.map(c => c.column_name));
+    try {
+      const dialect = sequelize.getDialect();
+      let cols = [];
+      if (dialect === 'postgres') {
+        [cols] = await sequelize.query(
+          `SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='deals'`
+        );
+      } else if (dialect === 'sqlite') {
+        const [tableInfo] = await sequelize.query("PRAGMA table_info('deals')");
+        cols = tableInfo.map(c => ({ column_name: c.name }));
+      }
+      DEALS_COLUMNS = new Set(cols.map(c => c.column_name));
+    } catch (err) {
+      console.warn("Introspection failed, using safe defaults", err);
+      DEALS_COLUMNS = new Set(['id', 'title', 'description', 'price', 'category_id', 'store_id', 'image_url', 'status', 'userId', 'createdAt']);
+    }
   }
 }
 
-function has(col) {
-  return DEALS_COLUMNS && DEALS_COLUMNS.has(col);
-}
-
-function paging(req) {
-  const page = Math.max(parseInt(req.query.page || '1', 10), 1);
-  const limit = Math.min(Math.max(parseInt(req.query.limit || '20', 10), 1), 100);
-  const offset = (page - 1) * limit;
-  return { page, limit, offset };
-}
-
-function sortSql(sort) {
-  const key = String(sort || '').toLowerCase();
-  if (key === 'price_asc' || key === 'price_low_to_high' || key === 'low') return 'price ASC';
-  if (key === 'price_desc' || key === 'price_high_to_low' || key === 'high') return 'price DESC';
-  // newest
-  return '"createdAt" DESC';
-}
+// ... has function ...
 
 exports.search = async (req, res, next) => {
   try {
@@ -50,15 +45,24 @@ exports.search = async (req, res, next) => {
       bind.push(Number(req.query.max_price));
       where.push(`price <= $${bind.length}`);
     }
+    
+    // Improved category filtering
     const categoryParam = req.query.category_id ?? req.query.category;
-    if (categoryParam && has('category_id')) {
-      bind.push(Number(categoryParam));
-      where.push(`category_id = $${bind.length}`);
+    if (categoryParam && categoryParam !== 'undefined' && categoryParam !== 'null') {
+      const cid = Number(categoryParam);
+      if (!isNaN(cid) && cid > 0) {
+        bind.push(cid);
+        where.push(`category_id = $${bind.length}`);
+      }
     }
+
     const storeParam = req.query.store_id ?? req.query.store;
-    if (storeParam && has('store_id')) {
-      bind.push(Number(storeParam));
-      where.push(`store_id = $${bind.length}`);
+    if (storeParam && storeParam !== 'undefined' && storeParam !== 'null') {
+      const sid = Number(storeParam);
+      if (!isNaN(sid) && sid > 0) {
+        bind.push(sid);
+        where.push(`store_id = $${bind.length}`);
+      }
     }
 
     const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
