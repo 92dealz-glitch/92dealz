@@ -29,25 +29,15 @@ export default async function CategoryPage({ params }: Props) {
   try {
     const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
     if (catRes.success && catRes.data) {
-      categoryId = Number(catRes.data.id);
+      categoryId = catRes.data.id;
       categoryLabel = catRes.data.name;
-    } else {
-      console.warn(`Category not found for slug: ${slug}`);
     }
   } catch (err) {
     console.error("Failed to fetch category by slug:", err);
   }
 
-  // If we couldn't find the category ID, the backend search will return everything.
-  // We should only fetch if we have a valid ID to ensure category-specific results.
-  let items = [];
-  if (categoryId) {
-    const res = await searchDeals({ category_id: categoryId, page: 1, limit: 100 });
-    items = res.data || [];
-  } else {
-    // Optionally return empty or tell user category not found
-    items = [];
-  }
+  const res = await searchDeals({ category_id: categoryId, page: 1, limit: 50 });
+  const items = res.data || [];
 
   const brands = [
     "huawei",
