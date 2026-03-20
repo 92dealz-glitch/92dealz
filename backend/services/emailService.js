@@ -5,23 +5,29 @@ async function getTransport() {
   const port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT || 587);
   const user = process.env.SMTP_USER || process.env.EMAIL_USER;
   const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
-  const secure = port === 465;
+
   if (!host) {
     const testAccount = await nodemailer.createTestAccount();
     return nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
+      auth: { user: testAccount.user, pass: testAccount.pass },
     });
   }
+
+  // Use service shortcut for Gmail
+  if (host.includes('gmail.com')) {
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+    });
+  }
+
   return nodemailer.createTransport({
     host,
     port,
-    secure,
+    secure: port === 465,
     auth: user && pass ? { user, pass } : undefined,
   });
 }
