@@ -45,9 +45,22 @@ exports.registerInitiate = async (req, res, next) => {
       expires_at: expiresAt
     });
 
-    await sendSignupOtp(email, otp);
+    try {
+      await sendSignupOtp(email, otp);
+    } catch (mailErr) {
+      console.error('Email delivery failed:', mailErr);
+      // We still return success: true but with a warning, or return 400?
+      // If email fails at initiation, the user can't verify.
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Registration initiated but verification email could not be sent. Please contact support.',
+        debug: process.env.NODE_ENV === 'development' ? mailErr.message : undefined
+      });
+    }
+
     return res.json({ success: true, message: 'Verification code sent to email' });
   } catch (err) {
+    console.error('Registration initiate error:', err);
     return next(err);
   }
 };

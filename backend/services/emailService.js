@@ -28,7 +28,7 @@ async function getTransport() {
 
 async function sendSignupOtp(toEmail, otp) {
   const user = process.env.SMTP_USER || process.env.EMAIL_USER;
-  const from = process.env.FROM_EMAIL || process.env.EMAIL_FROM || user || 'no-reply@example.com';
+  const from = process.env.EMAIL_FROM || process.env.FROM_EMAIL || `"234Deals" <${user || 'no-reply@234deals.com'}>`;
   const transport = await getTransport();
   const subject = 'Verification Code - 234Deals';
   const text = `Welcome to 234Deals! Your verification code is: ${otp}\nThis code will expire in 10 minutes.`;
