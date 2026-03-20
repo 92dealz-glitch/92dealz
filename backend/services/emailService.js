@@ -16,20 +16,19 @@ async function getTransport() {
     });
   }
 
-  // Use service shortcut for Gmail
-  if (host.includes('gmail.com')) {
-    return nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user, pass },
-    });
-  }
-
-  return nodemailer.createTransport({
+  // Common service shortcuts
+  const options = {
     host,
     port,
     secure: port === 465,
     auth: user && pass ? { user, pass } : undefined,
-  });
+  };
+
+  if (host.includes('gmail.com')) {
+    return nodemailer.createTransport({ service: 'gmail', auth: { user, pass } });
+  }
+
+  return nodemailer.createTransport(options);
 }
 
 async function sendSignupOtp(toEmail, otp) {
