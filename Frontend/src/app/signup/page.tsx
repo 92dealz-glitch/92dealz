@@ -313,7 +313,11 @@ export default function SignupPage() {
                   className={inputCls} 
                   required
                 />
-                <p className="text-xs text-gray-400 mt-1">We sent a verification code to {formData.contact}</p>
+                <p className="text-[11px] text-gray-500 mt-2 leading-relaxed italic">
+                  We sent a 6-digit code to <strong>{formData.contact}</strong>.<br />
+                  If you don't see it, please <strong>check your spam/junk folder</strong>.<br />
+                  Code expires in <span className="text-orange-600 font-bold">10 minutes</span>.
+                </p>
               </div>
               <button type="submit" disabled={loading}
                 className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50">
@@ -424,7 +428,11 @@ export default function SignupPage() {
                     className={inputCls} 
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-2 font-medium">We've sent a 6-digit verification code to {formData.contact}. Please check your inbox.</p>
+                  <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic border-l-2 border-orange-200 pl-3">
+                    We've sent a 6-digit verification code to <strong>{formData.contact}</strong>.<br />
+                    If you don't see it in your inbox, please <strong>check your spam/junk folder</strong>.<br />
+                    This code will expire in <span className="text-orange-600 font-bold">10 minutes</span>.
+                  </p>
                 </div>
                 <button type="submit" disabled={loading}
                   className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">

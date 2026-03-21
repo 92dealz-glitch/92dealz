@@ -35,9 +35,30 @@ async function sendSignupOtp(toEmail, otp) {
   const user = process.env.SMTP_USER || process.env.EMAIL_USER;
   const from = process.env.EMAIL_FROM || process.env.FROM_EMAIL || `"234Deals" <${user || 'no-reply@234deals.com'}>`;
   const transport = await getTransport();
-  const subject = 'Verification Code - 234Deals';
-  const text = `Welcome to 234Deals! Your verification code is: ${otp}\nThis code will expire in 10 minutes.`;
-  await transport.sendMail({ from, to: toEmail, subject, text });
+  const subject = `${otp} is your 234Deals verification code`;
+  
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; rounded: 8px;">
+      <h2 style="color: #f97316;">Welcome to 234Deals!</h2>
+      <p style="font-size: 16px; color: #333;">To complete your registration, please enter the following verification code:</p>
+      <div style="background-color: #fff7ed; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+        <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #f97316;">${otp}</span>
+      </div>
+      <p style="font-size: 14px; color: #666;">This code will expire in <strong>10 minutes</strong>.</p>
+      <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;" />
+      <p style="font-size: 12px; color: #999;">If you didn't request this code, you can safely ignore this email.</p>
+      <p style="font-size: 12px; color: #999;">&copy; ${new Date().getFullYear()} 234Deals Marketplace</p>
+    </div>
+  `;
+
+  await transport.sendMail({ 
+    from, 
+    to: toEmail, 
+    subject, 
+    html,
+    text: `Your 234Deals verification code is: ${otp}. It expires in 10 minutes.`,
+    replyTo: '234deals@gmail.com'
+  });
 }
 
 async function sendResetOtp(toEmail, otp) {
