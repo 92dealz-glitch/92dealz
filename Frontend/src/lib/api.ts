@@ -1,5 +1,5 @@
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+  process.env.NEXT_PUBLIC_API_URL || "https://234deals-backend.vercel.app/api";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
