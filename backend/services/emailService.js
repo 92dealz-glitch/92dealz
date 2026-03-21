@@ -51,14 +51,15 @@ async function sendSignupOtp(toEmail, otp) {
     </div>
   `;
 
-  await transport.sendMail({ 
+  const info = await transport.sendMail({ 
     from, 
     to: toEmail, 
     subject, 
     html,
     text: `Your 234Deals verification code is: ${otp}. It expires in 10 minutes.`,
-    replyTo: '234deals@gmail.com'
+    replyTo: '234dealss@gmail.com'
   });
+  console.log('Signup OTP sent. MessageID:', info.messageId);
 }
 
 async function sendResetOtp(toEmail, otp) {
