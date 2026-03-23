@@ -1,0 +1,43 @@
+services:
+  # ------------------------------------------------------------------------
+  # 1. Backend Service (Express + PostgreSQL/Neon)
+  # ------------------------------------------------------------------------
+  - type: web
+    name: 234deals-backend
+    env: node
+    plan: free
+    region: ohio
+    rootDir: backend
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # IMPORTANT: You must add your sensitive variables (DB_URL, CLOUDINARY, SENDGRID, JWT_SECRET, etc.)
+      # manually via the Render web dashboard after the Blueprint is created!
+
+  # ------------------------------------------------------------------------
+  # 2. Frontend Service (Next.js Application)
+  # ------------------------------------------------------------------------
+  - type: web
+    name: 234deals-frontend
+    env: node
+    plan: free
+    region: ohio
+    rootDir: Frontend
+    buildCommand: "npm install && npm run build"
+    startCommand: "npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_BASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NEXTAUTH_URL
+        sync: false
+      # Automatically generate a secure token for NEXTAUTH_SECRET
+      - key: NEXTAUTH_SECRET
+        generateValue: true
