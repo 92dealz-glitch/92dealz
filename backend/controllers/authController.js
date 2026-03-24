@@ -77,7 +77,7 @@ exports.registerInitiate = async (req, res, next) => {
         return res.json({ success: true, message: 'Verification code sent to phone' });
       } catch (err) {
         console.error('Twilio SMS failed:', err);
-        return res.status(500).json({ success: false, message: 'Failed to send SMS OTP. Please check your number.' });
+        return res.status(500).json({ success: false, message: `Twilio Error: ${err.message}` });
       }
     } else {
       try {
