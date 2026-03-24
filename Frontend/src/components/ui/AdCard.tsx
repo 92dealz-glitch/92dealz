@@ -78,8 +78,17 @@ export default function AdCard({ item, className = "" }: Props) {
         </div>
 
         <div className="mt-4 flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-orange-400">
-            <span>⭐️⭐️⭐️⭐️☆</span>
+          <div className="flex items-center gap-1 text-xs">
+            {item.rating && item.rating > 0 ? (
+              <>
+                <span className="font-bold text-black mr-1">{Number(item.rating).toFixed(1)}</span>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className={i < Math.round(Number(item.rating)) ? "text-yellow-400" : "text-gray-300"}>★</span>
+                ))}
+              </>
+            ) : (
+              <span className="text-gray-400 italic">No reviews yet</span>
+            )}
           </div>
 
           <div className="text-xs text-gray-500">{item.condition ?? "Brand New"}</div>

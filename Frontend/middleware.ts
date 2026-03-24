@@ -41,7 +41,8 @@ export async function middleware(req: NextRequest) {
 // Statically list matchers so Next.js can statically analyze the config.
 export const config = {
   matcher: [
-    "/buyer/:path*",
-    "/seller/:path*",
+    "/user-dashboard/:path*",
+    "/vendor-dashboard/:path*",
+    "/dashboard/:path*",
   ],
 };

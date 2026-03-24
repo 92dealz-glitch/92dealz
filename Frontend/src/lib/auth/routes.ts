@@ -4,6 +4,6 @@
  */
 
 export const protectedRouteMap: Array<{ prefix: string; roles: string[] }> = [
-  { prefix: "/buyer", roles: ["buyer"] },
-  { prefix: "/seller", roles: ["seller"] },
+  { prefix: "/user-dashboard", roles: ["buyer", "seller", "vendor"] },
+  { prefix: "/vendor-dashboard", roles: ["seller", "vendor"] },
 ];
