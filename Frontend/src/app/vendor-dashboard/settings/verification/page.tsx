@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { Upload, Plus, CheckCircle2, Clock, AlertCircle, Loader2 } from "lucide-react";
 import { getMyProfile, requestVerification } from "@/lib/api";
