@@ -7,6 +7,7 @@ exports.sendTermiiOtp = async (phone) => {
   const payload = {
     api_key: TERMII_API_KEY,
     message_type: 'NUMERIC',
+    pin_type: 'NUMERIC',
     to: phone,
     from: 'N-Alert', // Standard DND-bypass sender ID for Nigerian OTPs
     channel: 'dnd',
