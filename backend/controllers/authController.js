@@ -12,7 +12,7 @@ const { generateOtp } = require('../services/otpService');
 const { sendResetOtp, sendSignupOtp } = require('../services/emailService');
 const PendingRegistration = require('../models/PendingRegistration');
 const { Op } = require('sequelize');
-const { sendTwilioOtp, verifyTwilioOtp } = require('../services/twilioService');
+const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
 
 function formatPhone(phoneInput) {
   if (!phoneInput) return phoneInput;
@@ -67,17 +67,22 @@ exports.registerInitiate = async (req, res, next) => {
 
     if (method === 'phone') {
       try {
+        const termiiRes = await sendTermiiOtp(contact);
+        if (!termiiRes.pinId) {
+          throw new Error('Termii failed to return a pinId');
+        }
+
         await PendingRegistration.create({
           contact,
-          otp: '', // Twilio handles actual OTP internal matching
+          otp: termiiRes.pinId, // Store pinId for verification
           data: JSON.stringify(signupData),
           expires_at: expiresAt
         });
-        await sendTwilioOtp(contact);
-        return res.json({ success: true, message: 'Verification code sent to phone' });
+        
+        return res.json({ success: true, message: 'Verification code sent to phone via Termii' });
       } catch (err) {
-        console.error('Twilio SMS failed:', err);
-        return res.status(500).json({ success: false, message: `Twilio Error: ${err.message}` });
+        console.error('Termii SMS failed:', err);
+        return res.status(500).json({ success: false, message: `Termii Error: ${err.message}` });
       }
     } else {
       try {
@@ -123,13 +128,14 @@ exports.registerVerify = async (req, res, next) => {
 
     if (method === 'phone') {
       try {
-        const verification = await verifyTwilioOtp(contact, otp);
-        if (verification.status !== 'approved') {
-          return res.status(400).json({ success: false, message: 'Invalid or expired Twilio OTP' });
+        const pinId = pending.otp;
+        const verification = await verifyTermiiOtp(pinId, otp);
+        if (String(verification.verified).toLowerCase() !== 'true') {
+          return res.status(400).json({ success: false, message: 'Invalid or expired Termii OTP' });
         }
       } catch (err) {
-        console.error('Twilio verify error:', err);
-        return res.status(400).json({ success: false, message: 'Invalid or expired Twilio OTP' });
+        console.error('Termii verify error:', err);
+        return res.status(400).json({ success: false, message: 'Invalid or expired Termii OTP' });
       }
     } else {
       if (pending.otp !== otp) {
