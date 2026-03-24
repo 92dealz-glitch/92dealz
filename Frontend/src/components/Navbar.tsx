@@ -19,6 +19,7 @@ import {
   LogOut,
   Plus,
   Grid,
+  Package,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -239,7 +240,11 @@ export default function Navbar() {
                   </Link>
                 </>
               ) : (
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-5">
+                  <Link href="/user-dashboard/orders" className="flex items-center gap-2 text-zinc-600 hover:text-orange-600 transition-colors" title="My Orders">
+                    <Package size={24} />
+                  </Link>
+
                   <div className="relative">
                     <button 
                       onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
@@ -331,18 +336,23 @@ export default function Navbar() {
               </div>
 
               {isLoggedIn && (
-                <Link href="/notifications" className="text-zinc-600 relative">
-                   <Bell size={24} />
-                   {unreadCount > 0 && (
-                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
-                       {unreadCount > 9 ? "9+" : unreadCount}
-                     </span>
-                   )}
-                </Link>
+                <>
+                  <Link href="/user-dashboard/orders" className="text-zinc-600 hover:text-orange-600 transition-colors" title="My Orders">
+                     <Package size={24} />
+                  </Link>
+                  <Link href="/notifications" className="text-zinc-600 relative hover:text-orange-600 transition-colors">
+                     <Bell size={24} />
+                     {unreadCount > 0 && (
+                       <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
+                         {unreadCount > 9 ? "9+" : unreadCount}
+                       </span>
+                     )}
+                  </Link>
+                </>
               )}
 
               <button
-                className="text-orange-600"
+                className="text-orange-600 ml-1"
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <Menu size={26} strokeWidth={2.5} />
@@ -507,6 +517,7 @@ export default function Navbar() {
 
               <div className="divide-y divide-zinc-100">
                 {[
+                  { icon: Package, label: "My Orders", path: "/user-dashboard/orders" },
                   { icon: Bell, label: "Notifications", path: "/notifications" },
                   { icon: Mail, label: "Messages", path: "/messages" },
                   { icon: Settings, label: "Account Settings", path: "/account-settings" },
@@ -753,6 +764,10 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
                 </button>
               )}
               <div className="h-px bg-zinc-100 my-1 mx-2" />
+              <button onClick={() => go("/user-dashboard/orders")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <Package size={16} />
+                Orders
+              </button>
               <button onClick={() => go("/messages")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Mail size={16} />
                 Messages

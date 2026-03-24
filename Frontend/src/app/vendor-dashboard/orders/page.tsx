@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { listOrders, confirmOrder, Order } from "@/services/orders.service";
+import { API_BASE } from "@/services/apiClient";
 import { Loader2, Package, CheckCircle, Clock, XCircle, Phone, Mail, User } from "lucide-react";
 
 export default function VendorOrdersPage() {
@@ -14,11 +15,24 @@ export default function VendorOrdersPage() {
 
     async function loadOrders() {
         try {
+            const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+            let currentUserId = null;
+            if (token) {
+                 const profileRes = await fetch(`${API_BASE}/users/profile`, {
+                     headers: { Authorization: `Bearer ${token}` }
+                 });
+                 const profileData = await profileRes.json();
+                 if (profileData?.data?.id) {
+                     currentUserId = profileData.data.id;
+                 }
+            }
+
             const res = await listOrders();
-            if (res.success) {
-                // Filter where current user is the vendor
-                // In a real app, the API might already filter, but listOrders returns both
-                setOrders(res.data.filter(o => o.vendor_phone)); // Simple check to see if we have vendor context
+            if (res.success && currentUserId) {
+                setOrders(res.data.filter(o => o.vendor_id === currentUserId));
+            } else if (res.success && !currentUserId) {
+                // Fallback
+                setOrders(res.data.filter(o => o.vendor_phone));
             }
         } catch (err) {
             console.error("Failed to load orders", err);

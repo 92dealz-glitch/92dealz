@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { listOrders, Order } from "@/services/orders.service";
+import { listOrders, confirmOrder, Order } from "@/services/orders.service";
+import { API_BASE } from "@/services/apiClient";
 import { Loader2, ShoppingBag, Package, Phone, Mail, User, Clock, CheckCircle } from "lucide-react";
 
 export default function BuyerOrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
+    const [actionLoading, setActionLoading] = useState<number | null>(null);
 
     useEffect(() => {
         loadOrders();
@@ -13,15 +15,43 @@ export default function BuyerOrdersPage() {
 
     async function loadOrders() {
         try {
+            const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+            let currentUserId = null;
+            if (token) {
+                 const profileRes = await fetch(`${API_BASE}/users/profile`, {
+                     headers: { Authorization: `Bearer ${token}` }
+                 });
+                 const profileData = await profileRes.json();
+                 if (profileData?.data?.id) {
+                     currentUserId = profileData.data.id;
+                 }
+            }
+
             const res = await listOrders();
-            if (res.success) {
-                // Filter where current user is the buyer
-                setOrders(res.data.filter(o => o.buyer_phone)); // Simple check to see if we have buyer context
+            if (res.success && currentUserId) {
+                setOrders(res.data.filter(o => o.buyer_id === currentUserId));
+            } else if (res.success && !currentUserId) {
+                // Fallback if profile fails
+                setOrders(res.data.filter(o => o.buyer_phone));
             }
         } catch (err) {
             console.error("Failed to load orders", err);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleConfirm(orderId: number) {
+        setActionLoading(orderId);
+        try {
+            const res = await confirmOrder(orderId);
+            if (res.success) {
+                setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: res.data.status as any } : o));
+            }
+        } catch (err) {
+            alert("Failed to update order");
+        } finally {
+            setActionLoading(null);
         }
     }
 
@@ -120,12 +150,33 @@ export default function BuyerOrdersPage() {
                                                  <div>
                                                      <p className="text-xs font-black text-zinc-900 uppercase tracking-tight">Current Step</p>
                                                      <p className="text-xs text-zinc-500 font-bold">
-                                                         {order.status === 'pending' ? 'Waiting for seller to confirm' : 
-                                                          order.status === 'vendor_confirmed' ? 'Seller confirmed! Awaiting delivery' :
-                                                          order.status === 'completed' ? 'Deal closed successfully' : 'Status updated'}
+                                                          {order.status === 'pending' ? 'Awaiting confirmation' : 
+                                                           order.status === 'vendor_confirmed' ? 'Seller confirmed! Awaiting your confirmation' :
+                                                           order.status === 'buyer_confirmed' ? 'You confirmed! Awaiting seller' :
+                                                           order.status === 'completed' ? 'Deal closed successfully' : 'Status updated'}
                                                      </p>
                                                  </div>
                                             </div>
+                                            {order.status === 'vendor_confirmed' && (
+                                                <button 
+                                                    onClick={() => handleConfirm(order.id)}
+                                                    disabled={!!actionLoading}
+                                                    className="w-full mt-3 bg-green-600 text-white font-black py-3 rounded-xl hover:bg-green-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                                                >
+                                                    {actionLoading === order.id ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
+                                                    Confirm Received
+                                                </button>
+                                            )}
+                                            {order.status === 'pending' && (
+                                                <button 
+                                                    onClick={() => handleConfirm(order.id)}
+                                                    disabled={!!actionLoading}
+                                                    className="w-full mt-3 bg-blue-600 text-white font-black py-3 rounded-xl hover:bg-blue-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                                                >
+                                                    {actionLoading === order.id ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
+                                                    Mark as Confirmed
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
