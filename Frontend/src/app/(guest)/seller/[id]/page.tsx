@@ -12,6 +12,7 @@ export default function SellerPage({ params }: Props) {
   const [loading, setLoading] = useState(true);
   const [seller, setSeller] = useState<any>(null);
   const [listings, setListings] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -51,6 +52,13 @@ export default function SellerPage({ params }: Props) {
             image: d.image_url || "/assets/images/bgphone.svg",
           })));
         }
+
+        // Fetch real reviews natively
+        const revRes = await fetch(`${API_BASE}/reviews/vendor/${id}`);
+        const revData = await revRes.json();
+        if (active && revData.success) {
+           setReviews(revData.data);
+        }
       } catch (err) {
         console.error("Failed to fetch seller profile", err);
       } finally {
@@ -62,30 +70,6 @@ export default function SellerPage({ params }: Props) {
 
   if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading profile...</div>;
   if (!seller) return <div className="p-20 text-center font-bold text-red-600 text-2xl">Seller not found.</div>;
-
-  const reviews = [
-    {
-      id: 1,
-      author: "Samuel James",
-      text: "Very polite and honest. Product was clean and in great condition.",
-      rating: 5,
-      date: "15-12-2025",
-    },
-    {
-      id: 2,
-      author: "Andrew Becky",
-      text: "Smooth transaction and quick meetup.",
-      rating: 4,
-      date: "17-01-2025",
-    },
-    {
-      id: 3,
-      author: "Samuel James",
-      text: "Very polite and honest. Product was clean and in great condition.",
-      rating: 5,
-      date: "15-12-2025",
-    },
-  ];
 
   const StarRating = ({
     rating,
@@ -583,12 +567,15 @@ export default function SellerPage({ params }: Props) {
               }}
             >
               <h2 style={{ fontWeight: 700, fontSize: 17, margin: "0 0 16px" }}>
-                Customer Reviews
+                Customer Reviews <span className="text-sm font-medium text-gray-500 ml-1">({reviews.length})</span>
               </h2>
+              {reviews.length === 0 ? (
+                 <div className="text-center italic text-gray-500 py-4">No reviews yet for this vendor.</div>
+              ) : (
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 14 }}
               >
-                {reviews.map((r) => (
+                {reviews.map((r: any) => (
                   <div
                     key={r.id}
                     style={{
@@ -609,16 +596,12 @@ export default function SellerPage({ params }: Props) {
                           alignItems: "center",
                           justifyContent: "center",
                           color: "#9ca3af",
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                          fontSize: "14px",
                         }}
                       >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-                        </svg>
+                       {(r.Reviewer?.name || "U").slice(0, 2)}
                       </div>
                       <div style={{ flex: 1 }}>
                         <p
@@ -629,7 +612,7 @@ export default function SellerPage({ params }: Props) {
                             lineHeight: 1.5,
                           }}
                         >
-                          {r.text}
+                          {r.comment}
                         </p>
                         <div
                           style={{ display: "flex", gap: 2, marginBottom: 6 }}
@@ -638,7 +621,7 @@ export default function SellerPage({ params }: Props) {
                             <span
                               key={i}
                               style={{
-                                color: i < r.rating ? "#f59e0b" : "#e5e7eb",
+                                color: i < Math.round(r.rating) ? "#f59e0b" : "#e5e7eb",
                                 fontSize: 14,
                               }}
                             >
@@ -647,13 +630,14 @@ export default function SellerPage({ params }: Props) {
                           ))}
                         </div>
                         <div style={{ fontSize: 12, color: "#9ca3af" }}>
-                          {r.date} by {r.author}
+                          {new Date(r.createdAt).toLocaleDateString()} by {r.Reviewer?.name || "Anonymous User"}
                         </div>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
+              )}
               <button
                 style={{
                   background: "none",

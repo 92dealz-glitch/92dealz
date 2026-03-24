@@ -90,7 +90,46 @@ export default function ProductPage({ params }: Props) {
     ? (product.images as string[])
     : (product.images ? [String(product.images)] : [])
   const [selected, setSelected] = useState(0)
-  const [activeTab, setActiveTab] = useState<'description' | 'features' | 'package' | 'specs'>('description')
+  const [activeTab, setActiveTab] = useState<'description' | 'specs'>('description')
+
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [submittingReview, setSubmittingReview] = useState(false);
+  
+  useEffect(() => {
+    if (product.sellerId) {
+      fetch(`${API_BASE}/reviews/vendor/${product.sellerId}`)
+        .then(res => res.json())
+        .then(data => { if(data.success) setReviews(data.data); })
+        .catch(console.error);
+    }
+  }, [product.sellerId]);
+
+  const submitReview = async () => {
+    if (!reviewText.trim()) return;
+    try {
+      setSubmittingReview(true);
+      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+      if (!token) { alert("Please login to leave a review."); return; }
+      
+      const res = await fetch(`${API_BASE}/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ vendor_id: product.sellerId, rating: reviewRating, comment: reviewText })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Review submitted!");
+        setReviewText("");
+        // Reload reviews locally
+        setReviews([data.data, ...reviews]);
+      } else {
+        alert(data.message || "Failed to submit review.");
+      }
+    } catch { alert("Error submitting review."); }
+    finally { setSubmittingReview(false); }
+  };
 
   const [messageModal, setMessageModal] = useState(false);
   const [messageText, setMessageText] = useState("");
@@ -397,8 +436,6 @@ export default function ProductPage({ params }: Props) {
                     className="w-full rounded-md border-gray-200 bg-white px-3 py-2 text-sm"
                   >
                     <option value="description">PRODUCT DESCRIPTION</option>
-                    <option value="features">KEY FEATURES</option>
-                    <option value="package">PACKAGE CONTENT</option>
                     <option value="specs">SPECIFICATIONS</option>
                   </select>
                 </div>
@@ -409,20 +446,6 @@ export default function ProductPage({ params }: Props) {
                     className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'description' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
                   >
                     PRODUCT DESCRIPTION
-                  </button>
-
-                  <button
-                    onClick={() => setActiveTab('features')}
-                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'features' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
-                  >
-                    KEY FEATURES
-                  </button>
-
-                  <button
-                    onClick={() => setActiveTab('package')}
-                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'package' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
-                  >
-                    PACKAGE CONTENT
                   </button>
 
                   <button
@@ -439,14 +462,6 @@ export default function ProductPage({ params }: Props) {
                   <div className="whitespace-pre-wrap">
                     {product.desc || "No description provided."}
                   </div>
-                )}
-
-                {activeTab === 'features' && (
-                  <div className="text-gray-500 italic">No features listed for this item.</div>
-                )}
-
-                {activeTab === 'package' && (
-                  <div className="text-gray-500 italic">No package content information available.</div>
                 )}
 
                 {activeTab === 'specs' && (
@@ -530,26 +545,48 @@ export default function ProductPage({ params }: Props) {
 
             <div className="mt-6 rounded-lg border border-orange-200 bg-white">
               <div className="p-4 border-b">
-                <h4 className="font-semibold">Customer Reviews</h4>
+                <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
+              </div>
+              
+              <div className="p-4 border-b bg-zinc-50">
+                  <h5 className="font-bold text-sm mb-2">Leave a Review for {product.sellerName}</h5>
+                  <div className="flex gap-1 mb-3">
+                    {[1,2,3,4,5].map(star => (
+                       <button key={star} type="button" onClick={() => setReviewRating(star)} className={`text-2xl hover:scale-110 transition-transform ${reviewRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
+                    ))}
+                  </div>
+                  <textarea 
+                     value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+                     placeholder="Share your experience with this vendor..."
+                     className="w-full text-sm border-gray-300 rounded-md shadow-sm p-3 focus:ring-orange-500 outline-none focus:border-orange-500 mb-3" rows={3}>
+                  </textarea>
+                  <Button disabled={submittingReview || !reviewText.trim()} onClick={submitReview} className="bg-orange-600 text-white min-w-[120px]">
+                     {submittingReview ? "Submitting..." : "Submit Review"}
+                  </Button>
               </div>
 
-              <div className="p-4 border-b flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">👤</div>
-                <div>
-                  <div className="font-medium">Very polite and honest. Product was clean and in great condition.</div>
-                  <div className="text-yellow-400 mt-2">★ ★ ★ ★ ★</div>
-                  <div className="text-xs text-gray-500 mt-2">15-12-2025 by Samuel James</div>
+              {reviews.length === 0 ? (
+                <div className="p-6 text-center text-gray-500 italic">No reviews yet for this vendor. Be the first!</div>
+              ) : (
+                <div className="max-h-[400px] overflow-y-auto">
+                {reviews.map((r: any) => (
+                  <div key={r.id} className="p-4 border-b flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 uppercase font-bold text-sm">
+                      {(r.Reviewer?.name || 'U').slice(0, 2)}
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-800">{r.comment}</div>
+                      <div className="text-yellow-400 mt-1 text-sm">
+                         {Array.from({length: 5}).map((_, i) => (<span key={i}>{i < Math.round(r.rating) ? '★' : '☆'}</span>))}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-2">
+                        {new Date(r.createdAt).toLocaleDateString()} by <span className="font-semibold">{r.Reviewer?.name || 'Anonymous User'}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
                 </div>
-              </div>
-
-              <div className="p-4 flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">👤</div>
-                <div>
-                  <div className="font-medium">Smooth transaction and quick meetup.</div>
-                  <div className="text-yellow-400 mt-2">★ ★ ★ ★ ☆</div>
-                  <div className="text-xs text-gray-500 mt-2">17-01-2025 by Andrew Becky</div>
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="mt-6 rounded-lg border border-orange-200 bg-white p-4 pb-8">
