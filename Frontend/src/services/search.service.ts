@@ -10,6 +10,7 @@ export interface SearchParams {
   sort?: "price_asc" | "price_desc" | "newest";
   page?: number;
   limit?: number;
+  userId?: number | string;
 }
 
 export async function searchDeals(params: SearchParams) {
@@ -22,6 +23,7 @@ export async function searchDeals(params: SearchParams) {
   if (params.sort) qs.set("sort", params.sort);
   if (params.page) qs.set("page", String(params.page));
   if (params.limit) qs.set("limit", String(params.limit));
+  if (params.userId) qs.set("userId", String(params.userId));
   const query = qs.toString();
   const path = `${ENDPOINTS.search}${query ? `?${query}` : ""}`;
   return apiFetch<{ success: boolean; data: any[]; meta: { page: number; limit: number; total: number; pages: number } }>(path);

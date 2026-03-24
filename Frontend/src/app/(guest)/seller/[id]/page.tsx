@@ -30,8 +30,10 @@ export default function SellerPage({ params }: Props) {
         setSeller({
           id: u.id,
           name: u.name || "Seller",
-          rating: u.rating || 4.5,
-          location: "Nigeria",
+          email: u.email,
+          about: u.about,
+          rating: u.rating || 0,
+          location: u.businessAddress || "Nigeria",
           memberSince,
           totalAds: u.total_ads || 0,
           responseTime: u.responseTime || "Within 1 hour",
@@ -368,15 +370,17 @@ export default function SellerPage({ params }: Props) {
                     margin: 0,
                   }}
                 >
-                  Welcome to Ola's Electronics! We are a premium retailer of
-                  authentic Apple products and other high-end electronics in
-                  Delta. With over 2 years of experience in the industry, we
-                  pride ourselves on providing only genuine, quality products
-                  backed by warranty and exceptional customer service. All our
-                  products are sourced directly from authorized distributors and
-                  come with full manufacturer warranty. We specialize in the
-                  latest smartphones, laptops, tablets, and accessories from top
-                  brands like Apple, Samsung, and more
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "#374151",
+                    lineHeight: 1.6,
+                    margin: 0,
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {seller.about || `Welcome to ${seller.name}'s profile! Here you can find a variety of quality listings at great prices.`}
+                </p>
                 </p>
               </div>
 
@@ -538,22 +542,30 @@ export default function SellerPage({ params }: Props) {
                 ))}
               </div>
 
-              <button
-                style={{
-                  width: "100%",
-                  marginTop: 18,
-                  background: "#f97316",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 8,
-                  padding: "12px",
-                  fontWeight: 700,
-                  fontSize: 15,
-                  cursor: "pointer",
-                }}
-              >
-                View all Listings
-              </button>
+              {listings.length > 0 && (
+                <Link
+                  href={`/search?userId=${seller.id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <button
+                    style={{
+                      width: "100%",
+                      marginTop: 18,
+                      background: "#f97316",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 8,
+                      padding: "12px",
+                      fontWeight: 700,
+                      fontSize: 15,
+                      cursor: "pointer",
+                      textAlign: "center",
+                    }}
+                  >
+                    View all Listings
+                  </button>
+                </Link>
+              )}
             </div>
 
             {/* Customer Reviews */}
@@ -684,42 +696,48 @@ export default function SellerPage({ params }: Props) {
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 10 }}
               >
-                <button
-                  style={{
-                    background: "#f97316",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    padding: "12px",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  <PhoneIcon /> View Phone Number
-                </button>
-                <button
-                  style={{
-                    background: "#22c55e",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    padding: "12px",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  <WAIcon /> Whatsapp
-                </button>
+                {seller.phone && (
+                  <>
+                    <button
+                      onClick={() => window.location.href = `tel:${seller.phone}`}
+                      style={{
+                        background: "#f97316",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "12px",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                      }}
+                    >
+                      <PhoneIcon /> Call Seller
+                    </button>
+                    <button
+                      onClick={() => window.open(`https://wa.me/${seller.phone.replace(/\D/g, '')}`, '_blank')}
+                      style={{
+                        background: "#22c55e",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "12px",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                      }}
+                    >
+                      <WAIcon /> Whatsapp
+                    </button>
+                  </>
+                )}
                 <button
                   style={{
                     background: "#fff",
@@ -738,24 +756,27 @@ export default function SellerPage({ params }: Props) {
                 >
                   <ChatIcon /> Chat Seller
                 </button>
-                <button
-                  style={{
-                    background: "#fff",
-                    color: "#374151",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 8,
-                    padding: "12px",
-                    fontWeight: 500,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  <EmailIcon /> Email
-                </button>
+                {seller.email && (
+                  <button
+                    onClick={() => window.location.href = `mailto:${seller.email}`}
+                    style={{
+                      background: "#fff",
+                      color: "#374151",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 8,
+                      padding: "12px",
+                      fontWeight: 500,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <EmailIcon /> Email
+                  </button>
+                )}
               </div>
               <button
                 style={{

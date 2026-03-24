@@ -26,7 +26,7 @@ exports.getUsers = async (req, res, next) => {
 
     const users = await User.findAll({ 
       where,
-      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime'],
+      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about'],
       order: [['id', 'ASC']] 
     });
 
@@ -55,7 +55,7 @@ exports.getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
