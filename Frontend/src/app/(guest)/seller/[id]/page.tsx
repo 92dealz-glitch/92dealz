@@ -738,24 +738,27 @@ export default function SellerPage({ params }: Props) {
                     </button>
                   </>
                 )}
-                <button
-                  style={{
-                    background: "#fff",
-                    color: "#374151",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 8,
-                    padding: "12px",
-                    fontWeight: 500,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  <ChatIcon /> Chat Seller
-                </button>
+                <Link href={`/messages?userId=${seller.id}`} className="w-full">
+                  <button
+                    style={{
+                      background: "#fff",
+                      color: "#374151",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 8,
+                      padding: "12px",
+                      fontWeight: 500,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      width: "100%",
+                    }}
+                  >
+                    <ChatIcon /> Chat Seller
+                  </button>
+                </Link>
                 {seller.email && (
                   <button
                     onClick={() => window.location.href = `mailto:${seller.email}`}

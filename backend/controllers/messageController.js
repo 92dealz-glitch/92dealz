@@ -33,9 +33,19 @@ exports.threads = async (req, res, next) => {
          SELECT other_id, COUNT(*)::INT AS unread_count
          FROM msgs WHERE to_user_id=$1 AND read_at IS NULL GROUP BY other_id
        )
-       SELECT l.other_id, l.id AS last_id, l.content AS last_content, l."createdAt" AS last_created_at, COALESCE(u.unread_count,0) AS unread_count, l.deal_id
+       SELECT 
+         l.other_id, 
+         l.id AS last_id, 
+         l.content AS last_content, 
+         l."createdAt" AS last_created_at, 
+         COALESCE(u.unread_count,0) AS unread_count, 
+         l.deal_id,
+         ou.name AS other_name,
+         d.title AS deal_title
        FROM last_msg l
        LEFT JOIN unread u ON u.other_id = l.other_id
+       LEFT JOIN users ou ON ou.id = l.other_id
+       LEFT JOIN deals d ON d.id = l.deal_id
        ORDER BY l."createdAt" DESC`,
       { bind: [me] }
     );

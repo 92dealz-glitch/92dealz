@@ -319,17 +319,16 @@ export default function ProductPage({ params }: Props) {
                 >
                   📞 Contact Seller
                 </Button>
-                <Button 
-                  onClick={() => {
-                    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-                    if (!token) { alert("Please login to chat"); return; }
-                    setMessageText("Hello! I would like to chat about this item.");
-                    setMessageModal(true);
-                  }} 
-                  className="w-full bg-orange-600 text-white py-3 font-bold"
+                <Link 
+                  href={`/messages?userId=${product.sellerId}&dealId=${product.id}`}
+                  className="w-full"
                 >
-                  💬 Chat Seller
-                </Button>
+                  <Button 
+                    className="w-full bg-orange-600 text-white py-3 font-bold"
+                  >
+                    💬 Chat Seller
+                  </Button>
+                </Link>
                 <Button 
                   disabled={placingOrder}
                   onClick={handlePlaceOrder}

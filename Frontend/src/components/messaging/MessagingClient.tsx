@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { Loader2, Send, User, Mail } from "lucide-react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
+import { Loader2, Send, User, Mail, ArrowLeft, ExternalLink, Calendar, Clock } from "lucide-react";
 import { listThreads, getThread, sendMessage, Thread } from "@/services/messages.service";
 import { apiFetch } from "@/services/apiClient";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function MessagingClient() {
   const [threads, setThreads] = useState<Thread[]>([]);
@@ -14,6 +16,9 @@ export default function MessagingClient() {
   const [newMsg, setNewMsg] = useState("");
   const [currentUser, setCurrentUser] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const userIdParam = searchParams.get("userId");
+  const dealIdParam = searchParams.get("dealId");
 
   useEffect(() => {
     async function init() {
@@ -22,13 +27,46 @@ export default function MessagingClient() {
           listThreads(),
           apiFetch<{ success: boolean; data: any }>("users/profile", { method: "GET" }, true)
         ]);
-        if (threadsRes.success) {
-          setThreads(threadsRes.data || []);
-          if (threadsRes.data && threadsRes.data.length > 0) {
-            handleSelectThread(threadsRes.data[0]);
-          }
-        }
+        
+        const fetchedThreads = threadsRes.data || [];
+        setThreads(fetchedThreads);
         if (userRes.success) setCurrentUser(userRes.data);
+
+        // Handle query params for auto-selection
+        if (userIdParam) {
+          const uId = Number(userIdParam);
+          const dId = dealIdParam ? Number(dealIdParam) : undefined;
+          
+          const existing = fetchedThreads.find(t => t.other_id === uId && (dId ? t.deal_id === dId : true));
+          if (existing) {
+            handleSelectThread(existing);
+          } else {
+            // Initiate a dummy thread to start chatting
+            const virtualThread: Thread = {
+              other_id: uId,
+              deal_id: dId || null,
+              last_id: 0,
+              last_content: "",
+              last_created_at: new Date().toISOString(),
+              unread_count: 0
+            };
+            // Fetch name for virtual thread if possible
+            try {
+              const uRes = await apiFetch<{success:boolean, data:any}>(`users/${uId}`);
+              if (uRes.success) virtualThread.other_name = uRes.data.name;
+              
+              if (dId) {
+                const dRes = await apiFetch<{success:boolean, data:any}>(`ads/${dId}`);
+                if (dRes.success) virtualThread.deal_title = dRes.data.title;
+              }
+            } catch {}
+            
+            setActiveThread(virtualThread);
+            setMessages([]);
+          }
+        } else if (fetchedThreads.length > 0) {
+          handleSelectThread(fetchedThreads[0]);
+        }
       } catch (err) {
         console.error("Messaging init failed", err);
       } finally {
@@ -36,7 +74,7 @@ export default function MessagingClient() {
       }
     }
     init();
-  }, []);
+  }, [userIdParam, dealIdParam]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -129,13 +167,29 @@ export default function MessagingClient() {
       <div className="flex-1 flex flex-col relative bg-zinc-50/10">
         {activeThread ? (
           <>
-            <div className="p-4 border-b border-zinc-100 flex items-center gap-3 bg-white">
-              <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-black">
-                {activeThread.other_name ? activeThread.other_name.slice(0, 1) : "?"}
+            <div className="p-4 border-b border-zinc-100 flex items-center justify-between gap-3 bg-white">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-orange-600 text-white flex items-center justify-center font-black shadow-inner">
+                  {activeThread.other_name ? activeThread.other_name.slice(0, 1) : "?"}
+                </div>
+                <div>
+                  <h3 className="font-black text-black leading-tight flex items-center gap-2">
+                    {activeThread.other_name || `User #${activeThread.other_id}`}
+                    <Link href={`/seller/${activeThread.other_id}`} className="p-1 hover:bg-zinc-100 rounded text-zinc-400 hover:text-orange-600 transition-all">
+                      <ExternalLink size={14} />
+                    </Link>
+                  </h3>
+                  {activeThread.deal_title && (
+                    <Link href={`/product/${activeThread.deal_id}`} className="text-[10px] text-orange-600 font-bold uppercase hover:underline flex items-center gap-1">
+                      Dealing with: {activeThread.deal_title}
+                    </Link>
+                  )}
+                </div>
               </div>
-              <div>
-                <h3 className="font-black text-black">{activeThread.other_name || `Chat with User #${activeThread.other_id}`}</h3>
-                {activeThread.deal_title && <p className="text-[10px] text-orange-600 font-black uppercase">{activeThread.deal_title}</p>}
+              <div className="flex gap-2">
+                 <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 bg-zinc-50 rounded-full text-[10px] font-bold text-zinc-500 border border-zinc-100">
+                    <Clock size={12} className="text-orange-500" /> Typically replies within 1hr
+                 </div>
               </div>
             </div>
 
@@ -148,13 +202,22 @@ export default function MessagingClient() {
               ) : (
                 messages.map((m, idx) => {
                   const isMe = m.from_user_id === currentUser?.id;
+                  const time = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                  const date = m.createdAt ? new Date(m.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '';
+                  
                   return (
-                    <div key={m.id || idx} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[75%] p-3 rounded-2xl text-sm font-bold shadow-sm ${isMe ? 'bg-orange-600 text-white rounded-tr-none' : 'bg-white text-black border border-zinc-100 rounded-tl-none'}`}>
+                    <div key={m.id || idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                      <div className={`group relative max-w-[85%] p-4 rounded-3xl text-sm font-semibold shadow-sm overflow-hidden ${isMe ? 'bg-orange-600 text-white rounded-tr-none' : 'bg-white text-zinc-800 border border-zinc-200 rounded-tl-none'}`}>
                         {m.content}
-                        <div className={`text-[9px] mt-1 opacity-70 ${isMe ? 'text-right' : 'text-left'}`}>
-                          {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </div>
+                        {!isMe && <div className="absolute top-0 left-0 w-1 h-full bg-orange-200/20" />}
+                      </div>
+                      <div className={`mt-1.5 flex items-center gap-2 px-1 text-[10px] font-bold uppercase tracking-widest ${isMe ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                        <span className="flex items-center gap-1">
+                          {isMe && <div className="w-1 h-1 rounded-full bg-orange-500" />}
+                          {time}
+                        </span>
+                        <span>•</span>
+                        <span>{date}</span>
                       </div>
                     </div>
                   );
