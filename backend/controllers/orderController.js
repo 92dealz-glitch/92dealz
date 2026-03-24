@@ -12,6 +12,16 @@ exports.createOrder = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'deal_id, vendor_id, and price are required' });
     }
 
+    // Check for duplicate order
+    const [existing] = await sequelize.query(
+      `SELECT id FROM orders WHERE buyer_id = $1 AND deal_id = $2 AND status != 'cancelled' LIMIT 1`,
+      { bind: [buyerId, Number(deal_id)] }
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ success: false, message: 'You have already placed an order for this item. Check your dashboard.' });
+    }
+
     const [rows] = await sequelize.query(
       `INSERT INTO orders (buyer_id, vendor_id, deal_id, price, buyer_notes, status, "createdAt", "updatedAt")
        VALUES ($1, $2, $3, $4, $5, 'pending', NOW(), NOW()) RETURNING id`,

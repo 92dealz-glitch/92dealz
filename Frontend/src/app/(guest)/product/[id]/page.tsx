@@ -138,6 +138,7 @@ export default function ProductPage({ params }: Props) {
   const [sendingMessage, setSendingMessage] = useState(false)
   const [orderMessage, setOrderMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
@@ -186,6 +187,7 @@ export default function ProductPage({ params }: Props) {
 
     setIsPlacingOrder(true);
     setOrderMessage(null);
+    setShowConfirmModal(false);
     try {
         const numericPrice = Number(product.price.toString().replace(/[^0-9.]/g, ''));
         const res = await createOrder({
@@ -201,7 +203,7 @@ export default function ProductPage({ params }: Props) {
                 router.push("/user-dashboard/orders");
             }, 2500);
         } else {
-            setOrderMessage({ type: 'error', text: "Failed to place order. Please try again." });
+            setOrderMessage({ type: 'error', text: res.message || "Failed to place order. Please try again." });
         }
     } catch (err) {
         setOrderMessage({ type: 'error', text: "An error occurred while placing your order." });
@@ -342,10 +344,14 @@ export default function ProductPage({ params }: Props) {
                 </Link>
                 <Button 
                   disabled={isPlacingOrder}
-                  onClick={handlePlaceOrder}
-                  className="w-full bg-black text-white py-3 font-bold flex items-center justify-center gap-2"
+                  onClick={() => {
+                    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+                    if (!token) { alert("Please login to place an order"); return; }
+                    setShowConfirmModal(true)
+                  }}
+                  className="w-full bg-black text-white py-3 font-extrabold flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors"
                 >
-                  {isPlacingOrder ? <Loader2 className="animate-spin" size={20} /> : "🛒 Order Now"}
+                  {isPlacingOrder ? <Loader2 className="animate-spin" size={20} /> : "🛒 Confirm Purchase"}
                 </Button>
               </div>
             </div>
@@ -405,6 +411,64 @@ export default function ProductPage({ params }: Props) {
           </aside>
         </div>
         
+        {/* Confirm Purchase Modal */}
+        {showConfirmModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 animate-in fade-in duration-300">
+            <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-orange-100 flex flex-col animate-in zoom-in-95 duration-300">
+              <div className="h-2 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500 w-full" />
+              
+              <div className="p-8">
+                <div className="flex justify-center mb-6">
+                  <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center text-orange-600 ring-8 ring-orange-50/50">
+                    <Package size={32} />
+                  </div>
+                </div>
+
+                <div className="text-center space-y-3 mb-8">
+                  <h3 className="text-2xl font-black text-zinc-900 tracking-tight">Confirm Your Purchase</h3>
+                  <div className="space-y-4">
+                    <div className="bg-orange-50/50 p-4 rounded-2xl border border-orange-100">
+                      <p className="text-sm font-bold text-orange-700 leading-relaxed italic">
+                        "234Deals Only Connects Buyers and Sellers. You must contact the seller for final confirmation."
+                      </p>
+                    </div>
+                    <p className="text-zinc-500 font-bold leading-relaxed px-4">
+                      Do you wish to proceed to directly confirm the item without further negotiation?
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => setShowConfirmModal(false)}
+                    className="py-4 px-6 border-2 border-zinc-100 rounded-2xl font-black text-zinc-400 hover:bg-zinc-50 hover:text-zinc-600 transition-all duration-200"
+                  >
+                    Not Yet
+                  </button>
+                  <button
+                    disabled={isPlacingOrder}
+                    onClick={handlePlaceOrder}
+                    className="py-4 px-6 bg-zinc-900 text-white rounded-2xl font-black hover:bg-black hover:shadow-lg hover:shadow-zinc-200 transition-all duration-200 flex items-center justify-center gap-2 group"
+                  >
+                    {isPlacingOrder ? <Loader2 className="animate-spin" size={20} /> : (
+                      <>
+                        Directly Confirm
+                        <CheckCircle2 size={18} className="group-hover:scale-110 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-zinc-50 p-4 text-center border-t border-zinc-100">
+                <p className="text-[10px] uppercase tracking-widest font-black text-zinc-400 flex items-center justify-center gap-2">
+                  <Shield size={12} /> Secure Connection via 234Deals
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Message Modal */}
         {messageModal && (
           <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">

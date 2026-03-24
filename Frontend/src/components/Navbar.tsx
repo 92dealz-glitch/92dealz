@@ -266,8 +266,8 @@ export default function Navbar() {
                             {unreadCount > 0 && <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">{unreadCount} New</span>}
                           </div>
                           <div className="max-h-[350px] overflow-y-auto">
-                            {notifications.length > 0 ? (
-                              notifications.slice(0, 3).map((n) => (
+                            {notifications.filter(n => !n.read_at).length > 0 ? (
+                              notifications.filter(n => !n.read_at).slice(0, 5).map((n) => (
                                 <div 
                                   key={n.id} 
                                   onClick={async () => {
@@ -275,9 +275,9 @@ export default function Navbar() {
                                     if (n.link) router.push(n.link);
                                     setShowNotificationDropdown(false);
                                   }}
-                                  className={`px-4 py-3 border-b border-zinc-50 hover:bg-zinc-50 transition-colors cursor-pointer relative ${!n.read_at ? "bg-orange-50/30" : ""}`}
+                                  className="px-4 py-3 border-b border-zinc-50 hover:bg-orange-50/30 transition-colors cursor-pointer relative bg-orange-50/30"
                                 >
-                                  {!n.read_at && <div className="absolute left-1 top-4 w-1.5 h-1.5 bg-orange-500 rounded-full" />}
+                                  <div className="absolute left-1 top-4 w-1.5 h-1.5 bg-orange-500 rounded-full" />
                                   <p className="text-xs font-bold text-zinc-900 mb-0.5">{n.title}</p>
                                   <p className="text-[11px] text-zinc-500 line-clamp-2 leading-relaxed">{n.message}</p>
                                   <p className="text-[10px] text-zinc-400 mt-1.5">{new Date(n.createdAt).toLocaleDateString()} at {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
@@ -286,7 +286,7 @@ export default function Navbar() {
                             ) : (
                               <div className="p-8 text-center">
                                 <Bell className="mx-auto text-zinc-200 mb-2" size={32} />
-                                <p className="text-sm text-zinc-400">No notifications yet</p>
+                                <p className="text-sm text-zinc-400">No new notifications</p>
                               </div>
                             )}
                           </div>
