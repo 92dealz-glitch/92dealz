@@ -53,7 +53,7 @@ export default function AddProductForm() {
     const nextStep = () => setStep((prev) => (Math.min(prev + 1, 3) as Step));
     const prevStep = () => setStep((prev) => (Math.max(prev - 1, 1) as Step));
 
-    const selectedCategory = categories.find(c => c.catId === formData.category_id);
+    const selectedCategory = categories.find(c => Number(c.catId) === formData.category_id);
 
     return (
         <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden">
@@ -235,7 +235,7 @@ function ChevronDownIcon() {
 }
 
 function StepOne({ data, updateData, onNext, categories }: { data: any, updateData: (d: any) => void, onNext: () => void, categories: CategoryItem[] }) {
-    const selectedCat = categories.find(c => c.catId === data.category_id);
+    const selectedCat = categories.find(c => Number(c.catId) === data.category_id);
     const subcategoryOptions = selectedCat ? selectedCat.columns.flatMap(c => c.items) : [];
     const specs = selectedCat?.specifications_template || [];
 
@@ -258,7 +258,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                         value={data.category_id || ""}
                         onChange={(e) => {
                             const id = Number(e.target.value);
-                            const cat = categories.find(c => c.catId === id);
+                            const cat = categories.find(c => Number(c.catId) === id);
                             updateData({ category_id: id, category: cat?.id || "", subcategory: "" });
                         }}
                         className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"

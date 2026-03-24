@@ -30,7 +30,7 @@ export async function getCategories(): Promise<Record<string, CategoryData>> {
       const result: Record<string, CategoryData> = {};
       json.data.forEach((cat: BackendCategory) => {
         result[cat.slug] = {
-          id: cat.id,
+          id: Number(cat.id),
           title: cat.name,
           icon: cat.icon || "",
           columns: cat.mega_menu?.columns || [],
