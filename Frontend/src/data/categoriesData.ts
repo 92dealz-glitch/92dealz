@@ -22,11 +22,7 @@ export type BackendCategory = {
   specifications_template: any[] | null;
 };
 
-let cachedCategories: Record<string, CategoryData> | null = null;
-
-// Provider functions: dynamically fetch from API
 export async function getCategories(): Promise<Record<string, CategoryData>> {
-  if (cachedCategories) return cachedCategories;
   try {
     const res = await fetch(`${API_BASE}/categories`, { cache: 'no-store' });
     const json = await res.json();
@@ -41,7 +37,6 @@ export async function getCategories(): Promise<Record<string, CategoryData>> {
           specifications_template: cat.specifications_template || []
         };
       });
-      cachedCategories = result;
       return result;
     }
   } catch (err) {

@@ -237,6 +237,16 @@ function ChevronDownIcon() {
 function StepOne({ data, updateData, onNext, categories }: { data: any, updateData: (d: any) => void, onNext: () => void, categories: CategoryItem[] }) {
     const selectedCat = categories.find(c => c.catId === data.category_id);
     const subcategoryOptions = selectedCat ? selectedCat.columns.flatMap(c => c.items) : [];
+    const specs = selectedCat?.specifications_template || [];
+
+    const handleSpecChange = (label: string, value: any) => {
+        updateData({
+            specifications: {
+                ...data.specifications,
+                [label]: value
+            }
+        });
+    };
 
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
@@ -272,6 +282,44 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                 />
             )}
 
+            {specs.length > 0 && (
+                <div className="bg-zinc-50 border border-zinc-100 rounded-xl p-6 mt-4">
+                    <h4 className="text-black font-black text-[17px] mb-6">Product Specifications <span className="text-[#E85A28] ml-1">*</span></h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {specs.map((s: any) => (
+                        <div key={s.label}>
+                            {s.type === "select" ? (
+                                <SelectField 
+                                    label={s.label} 
+                                    options={s.options} 
+                                    value={data.specifications[s.label] || ""} 
+                                    onChange={(v) => handleSpecChange(s.label, v)} 
+                                />
+                            ) : s.type === "number" ? (
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-black font-black text-[15px]">{s.label}</label>
+                                    <input
+                                        type="number"
+                                        value={data.specifications[s.label] || ""}
+                                        onChange={(e) => handleSpecChange(s.label, e.target.value)}
+                                        placeholder={s.placeholder || ""}
+                                        className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
+                                    />
+                                </div>
+                            ) : (
+                                <InputField 
+                                    label={s.label} 
+                                    placeholder={s.placeholder || ""} 
+                                    value={data.specifications[s.label] || ""} 
+                                    onChange={(v) => handleSpecChange(s.label, v)} 
+                                />
+                            )}
+                        </div>
+                    ))}
+                    </div>
+                </div>
+            )}
+
 
 
             <div className="flex flex-col items-end gap-2 pt-8">
@@ -293,16 +341,6 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
 }
 
 function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data: any, updateData: (d: any) => void, onNext: () => void, onBack: () => void, selectedCategory?: CategoryItem }) {
-    const specs = selectedCategory?.specifications_template || [];
-
-    const handleSpecChange = (label: string, value: any) => {
-        updateData({
-            specifications: {
-                ...data.specifications,
-                [label]: value
-            }
-        });
-    };
 
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
@@ -310,44 +348,6 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                 <InputField label="Price(₦)" placeholder="Enter price here" value={data.price} onChange={(v) => updateData({ price: v })} required />
                 <SelectField label="Negotiable" options={["Yes", "No"]} value={data.negotiable} onChange={(v) => updateData({ negotiable: v })} />
             </div>
-
-            {specs.length > 0 && (
-                <>
-                    <h4 className="text-black font-black text-[17px] pt-4 mb-2">Product Specifications</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {specs.map((s: any) => (
-                        <div key={s.label}>
-                            {s.type === "select" ? (
-                                <SelectField 
-                                    label={s.label} 
-                                    options={s.options} 
-                                    value={data.specifications[s.label] || ""} 
-                                    onChange={(v) => handleSpecChange(s.label, v)} 
-                                />
-                            ) : s.type === "number" ? (
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-black font-black text-[15px]">{s.label}</label>
-                                    <input
-                                        type="number"
-                                        value={data.specifications[s.label] || ""}
-                                        onChange={(e) => handleSpecChange(s.label, e.target.value)}
-                                        placeholder={s.placeholder || ""}
-                                        className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors"
-                                    />
-                                </div>
-                            ) : (
-                                <InputField 
-                                    label={s.label} 
-                                    placeholder={s.placeholder || ""} 
-                                    value={data.specifications[s.label] || ""} 
-                                    onChange={(v) => handleSpecChange(s.label, v)} 
-                                />
-                            )}
-                        </div>
-                    ))}
-                    </div>
-                </>
-            )}
 
             <div className="flex flex-col gap-2">
                 <label className="text-black font-black text-[15px]">Description <span className="text-[#E85A28] ml-1">*</span></label>
