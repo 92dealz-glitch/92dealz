@@ -27,9 +27,10 @@ async function main() {
         ]
       },
       specifications_template: [
-        { label: "Size", type: "select", options: ["S", "M", "L", "XL", "XXL", "38", "39", "40", "41", "42", "43", "44", "45"] },
-        { label: "Material", type: "text", placeholder: "e.g. Cotton, Leather" },
-        { label: "Gender", type: "select", options: ["Men", "Women", "Unisex", "Kids"] }
+        { label: "Size", type: "select", options: ["XXS", "XS", "S", "M", "L", "XL", "XXL", "38", "39", "40", "41", "42", "43", "44", "45"] },
+        { label: "Material", type: "text", placeholder: "e.g. Cotton, Leather, Polyester" },
+        { label: "Gender", type: "select", options: ["Men", "Women", "Unisex", "Boys", "Girls"] },
+        { label: "Style/Occasion", type: "text", placeholder: "e.g. Casual, Formal, Sport" }
       ]
     },
     {
@@ -48,9 +49,10 @@ async function main() {
       specifications_template: [
         { label: "RAM", type: "select", options: ["2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"] },
         { label: "Internal Storage", type: "select", options: ["16GB", "32GB", "64GB", "128GB", "256GB", "512GB", "1TB"] },
-        { label: "Screen Size", type: "text", placeholder: "e.g. 6.1 inch" },
-        { label: "Battery", type: "text", placeholder: "e.g. 5000 mAh" },
-        { label: "Main Camera", type: "text", placeholder: "e.g. 48MP" }
+        { label: "Screen Size (inches)", type: "number", placeholder: "e.g. 6.1" },
+        { label: "Battery (mAh)", type: "number", placeholder: "e.g. 5000" },
+        { label: "Main Camera (MP)", type: "number", placeholder: "e.g. 48" },
+        { label: "Operating System", type: "select", options: ["iOS", "Android", "Windows", "Other"] }
       ]
     },
     {
@@ -65,10 +67,12 @@ async function main() {
         ]
       },
       specifications_template: [
-        { label: "RAM", type: "select", options: ["8GB", "16GB", "32GB", "64GB"] },
-        { label: "Storage Capacity", type: "text", placeholder: "e.g. 512GB SSD" },
-        { label: "Processor", type: "text", placeholder: "e.g. Intel i7, Apple M2" },
-        { label: "Graphics Card", type: "text", placeholder: "e.g. RTX 4060" }
+        { label: "RAM", type: "select", options: ["4GB", "8GB", "16GB", "32GB", "64GB", "128GB"] },
+        { label: "Storage Capacity", type: "text", placeholder: "e.g. 512GB SSD, 1TB HDD" },
+        { label: "Processor", type: "text", placeholder: "e.g. Intel Core i7, Apple M2" },
+        { label: "Graphics Card", type: "text", placeholder: "e.g. NVIDIA RTX 4060" },
+        { label: "Screen Size (inches)", type: "number", placeholder: "e.g. 15.6" },
+        { label: "Operating System", type: "select", options: ["Windows", "macOS", "Linux", "ChromeOS", "DOS"] }
       ]
     },
     {
@@ -77,10 +81,14 @@ async function main() {
       icon: '/assets/images/car.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Year", type: "text", placeholder: "e.g. 2022" },
-        { label: "Mileage", type: "text", placeholder: "e.g. 20,000 km" },
+        { label: "Year of Manufacture", type: "number", placeholder: "e.g. 2022" },
+        { label: "Mileage (km)", type: "number", placeholder: "e.g. 45000" },
+        { label: "Transmission", type: "select", options: ["Automatic", "Manual", "CVT", "Semi-Auto"] },
         { label: "Fuel Type", type: "select", options: ["Petrol", "Diesel", "Electric", "Hybrid"] },
-        { label: "Transmission", type: "select", options: ["Automatic", "Manual"] }
+        { label: "Body Type", type: "select", options: ["Sedan", "SUV", "Hatchback", "Coupe", "Convertible", "Pickup", "Van", "Bus"] },
+        { label: "Registered Status", type: "select", options: ["Registered", "Unregistered (Tokunbo)"] },
+        { label: "Engine Size (cc)", type: "number", placeholder: "e.g. 2000" },
+        { label: "Number of Seats", type: "select", options: ["2", "4", "5", "7", "8+"] }
       ]
     },
     {
@@ -89,10 +97,13 @@ async function main() {
       icon: '/assets/images/house.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Type", type: "select", options: ["House", "Apartment", "Land", "Commercial"] },
-        { label: "Bedrooms", type: "number", placeholder: "0" },
-        { label: "Bathrooms", type: "number", placeholder: "0" },
-        { label: "Square Footage", type: "text", placeholder: "e.g. 2500 sqft" }
+        { label: "Property Type", type: "select", options: ["House", "Apartment/Flat", "Land", "Commercial Space", "Office", "Warehouse"] },
+        { label: "Bedrooms", type: "select", options: ["0 (Studio)", "1", "2", "3", "4", "5", "6+"] },
+        { label: "Bathrooms", type: "select", options: ["1", "2", "3", "4", "5+"] },
+        { label: "Property Size (sqft/sqm)", type: "text", placeholder: "e.g. 450 sqm" },
+        { label: "Furnishing", type: "select", options: ["Furnished", "Semi-Furnished", "Unfurnished"] },
+        { label: "Parking Space", type: "select", options: ["Yes", "No"] },
+        { label: "Pets Allowed", type: "select", options: ["Yes", "No", "Negotiable"] }
       ]
     },
     {
@@ -106,9 +117,11 @@ async function main() {
         ]
       },
       specifications_template: [
-        { label: "Skin/Hair Type", type: "select", options: ["All", "Oily", "Dry", "Combination", "Sensitive"] },
-        { label: "Formulation", type: "select", options: ["Liquid", "Cream", "Powder", "Gel", "Solid"] },
-        { label: "Volume (ml/g)", type: "number", placeholder: "e.g. 150" }
+        { label: "Skin/Hair Type", type: "select", options: ["All", "Oily", "Dry", "Combination", "Sensitive", "Damaged"] },
+        { label: "Formulation", type: "select", options: ["Liquid", "Cream", "Powder", "Gel", "Solid", "Oil", "Serum"] },
+        { label: "Target Gender", type: "select", options: ["Women", "Men", "Unisex"] },
+        { label: "Volume/Weight", type: "text", placeholder: "e.g. 150ml, 50g" },
+        { label: "Expiration Date", type: "text", placeholder: "e.g. MM/YYYY" }
       ]
     },
     {
@@ -117,9 +130,10 @@ async function main() {
       icon: '/assets/images/furniture.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Material", type: "text", placeholder: "e.g. Wood, Leather, Steel" },
-        { label: "Brand", type: "text", placeholder: "e.g. LG, Samsung" },
-        { label: "Color", type: "text", placeholder: "e.g. Black, White" }
+        { label: "Primary Material", type: "text", placeholder: "e.g. Mahogany Wood, Stainless Steel, Leather" },
+        { label: "Room Type", type: "select", options: ["Living Room", "Bedroom", "Kitchen", "Dining", "Office", "Outdoor/Patio"] },
+        { label: "Dimensions (L x W x H)", type: "text", placeholder: "e.g. 200 x 150 x 80 cm" },
+        { label: "Power Rating (Watts)", type: "text", placeholder: "e.g. 1500W (for appliances)" }
       ]
     },
     {
@@ -130,7 +144,7 @@ async function main() {
       specifications_template: [
         { label: "Age Range", type: "select", options: ["0-6 Months", "6-12 Months", "1-3 Years", "4-7 Years", "8-12 Years", "13+ Years"] },
         { label: "Gender", type: "select", options: ["Boy", "Girl", "Unisex"] },
-        { label: "Material", type: "text", placeholder: "e.g. Cotton, Plastic" }
+        { label: "Material/Fabric", type: "text", placeholder: "e.g. 100% Cotton, BPA-Free Plastic" }
       ]
     },
     {
@@ -139,9 +153,11 @@ async function main() {
       icon: '/assets/images/foodbaasket.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Type", type: "select", options: ["Crops & Seeds", "Livestock & Poultry", "Farm Machinery", "Feeds & Supplements", "Fertilizers"] },
-        { label: "Quantity", type: "text", placeholder: "e.g. 50 kg, 100 birds" },
-        { label: "Packaging", type: "select", options: ["Bag", "Carton", "Bulk", "Pcs"] }
+        { label: "Category Type", type: "select", options: ["Crops & Seeds", "Livestock & Poultry", "Farm Machinery", "Feeds & Supplements", "Fertilizers/Chemicals", "Processed Food"] },
+        { label: "Quantity/Weight", type: "text", placeholder: "e.g. 50 kg, 100 birds, 1 Ton" },
+        { label: "Packaging Type", type: "select", options: ["Bag", "Carton", "Bulk", "Pcs", "Bottle", "Can", "Crate"] },
+        { label: "Organic/Non-Organic", type: "select", options: ["Organic", "Non-Organic", "N/A"] },
+        { label: "Shelf Life", type: "text", placeholder: "e.g. 6 Months, Fresh" }
       ]
     },
     {
@@ -150,9 +166,10 @@ async function main() {
       icon: '/assets/images/engineer.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Service Type", type: "select", options: ["Consulting", "Cleaning", "Catering", "Event Planning", "Digital Services", "Educational", "Legal"] },
-        { label: "Duration", type: "text", placeholder: "e.g. 1 hour, 1 day, Project Based" },
-        { label: "Location Form", type: "select", options: ["Remote", "On-site", "Hybrid"] }
+        { label: "Service Area", type: "select", options: ["Consulting", "Cleaning", "Catering", "Event Planning", "Digital/IT Services", "Educational/Tutors", "Legal", "Handyman/Repairs", "Beauty/Spa"] },
+        { label: "Delivery Format", type: "select", options: ["Remote/Online", "On-site/In-person", "Hybrid"] },
+        { label: "Estimated Duration", type: "text", placeholder: "e.g. 1 Hour, 1 Day, Project Based" },
+        { label: "Availability", type: "select", options: ["Weekdays", "Weekends", "24/7", "By Appointment Only"] }
       ]
     },
     {
@@ -166,9 +183,10 @@ async function main() {
         ]
       },
       specifications_template: [
-        { label: "Brand", type: "text", placeholder: "e.g. Sony, LG, JBL" },
-        { label: "Warranty", type: "select", options: ["None", "3 Months", "6 Months", "1 Year", "2 Years+"] },
-        { label: "Screen/Driver Size", type: "text", placeholder: "e.g. 55 inch, 40mm driver" }
+        { label: "Warranty Period", type: "select", options: ["No Warranty", "3 Months", "6 Months", "1 Year", "2 Years+"] },
+        { label: "Connectivity", type: "text", placeholder: "e.g. Bluetooth, Wi-Fi, HDMI, USB" },
+        { label: "Screen/Driver Size", type: "text", placeholder: "e.g. 55 inches, 40mm driver" },
+        { label: "Power Configuration", type: "text", placeholder: "e.g. Rechargeable, AC Powered, Battery" }
       ]
     },
     {
@@ -177,9 +195,10 @@ async function main() {
       icon: '/assets/images/equipment.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Industry", type: "select", options: ["Restaurant/Catering", "Medical", "Manufacturing", "Office", "Retail"] },
+        { label: "Industry Focus", type: "select", options: ["Restaurant/Catering", "Medical/Clinical", "Heavy Manufacturing", "Office", "Retail/POS", "Logistics"] },
         { label: "Power Source", type: "select", options: ["Electric", "Gas", "Diesel", "Solar", "Manual"] },
-        { label: "Brand", type: "text", placeholder: "e.g. Caterpillar" }
+        { label: "Year Manufactured", type: "number", placeholder: "e.g. 2018" },
+        { label: "Operating Capacity", type: "text", placeholder: "e.g. 500 liters/hr, 2 Tons" }
       ]
     },
     {
@@ -188,9 +207,9 @@ async function main() {
       icon: '/assets/images/equipmentbaket.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Item Group", type: "select", options: ["Power Tools", "Hand Tools", "Building Materials", "Safety Gear", "Electrical", "Plumbing"] },
-        { label: "Material", type: "text", placeholder: "e.g. Steel, PVC, Cement" },
-        { label: "Voltage/Power", type: "text", placeholder: "e.g. 220V, 1500W" }
+        { label: "Item Classification", type: "select", options: ["Power Tools", "Hand Tools", "Building Materials", "Safety Gear (PPE)", "Electrical", "Plumbing", "Paints/Finishes"] },
+        { label: "Material Composition", type: "text", placeholder: "e.g. Stainless Steel, PVC, Cement" },
+        { label: "Voltage/Power Spec", type: "text", placeholder: "e.g. 220V, 1500W, N/A" }
       ]
     },
     {
@@ -199,10 +218,11 @@ async function main() {
       icon: '/assets/images/pet.svg',
       mega_menu: { columns: [] },
       specifications_template: [
-        { label: "Pet Type", type: "select", options: ["Dogs", "Cats", "Birds", "Fish", "Reptiles", "Farm Animals"] },
-        { label: "Breed", type: "text", placeholder: "e.g. German Shepherd, Persian" },
+        { label: "Animal Category", type: "select", options: ["Dogs", "Cats", "Birds", "Fish", "Reptiles", "Farm Animals/Livestock"] },
+        { label: "Breed/Species", type: "text", placeholder: "e.g. German Shepherd, Persian Cat" },
         { label: "Age", type: "text", placeholder: "e.g. 2 Months, 3 Years" },
-        { label: "Gender", type: "select", options: ["Male", "Female", "Unknown"] }
+        { label: "Gender", type: "select", options: ["Male", "Female", "Unknown"] },
+        { label: "Vaccination Status", type: "select", options: ["Fully Vaccinated", "Partially Vaccinated", "Not Vaccinated"] }
       ]
     }
   ];
