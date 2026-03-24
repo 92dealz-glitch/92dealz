@@ -91,6 +91,7 @@ export async function getProfile() {
 export async function updateProfile(payload: { 
   name?: string; 
   phone?: string | null;
+  profile_image_url?: string | null;
   businessName?: string;
   businessCategory?: string;
   businessAddress?: string;

@@ -262,7 +262,7 @@ export default function Navbar() {
                           </div>
                           <div className="max-h-[350px] overflow-y-auto">
                             {notifications.length > 0 ? (
-                              notifications.map((n) => (
+                              notifications.slice(0, 3).map((n) => (
                                 <div 
                                   key={n.id} 
                                   onClick={async () => {
@@ -285,11 +285,6 @@ export default function Navbar() {
                               </div>
                             )}
                           </div>
-                          {notifications.length > 0 && (
-                            <Link href="/dashboard" className="block py-2.5 text-center text-xs font-bold text-orange-600 hover:bg-orange-50 transition-colors border-t border-zinc-100">
-                              View All Notifications
-                            </Link>
-                          )}
                         </div>
                       </>
                     )}
@@ -334,6 +329,17 @@ export default function Navbar() {
                   <NavUserMenu signOut={signOut} />
                 )}
               </div>
+
+              {isLoggedIn && (
+                <Link href="/notifications" className="text-zinc-600 relative">
+                   <Bell size={24} />
+                   {unreadCount > 0 && (
+                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
+                       {unreadCount > 9 ? "9+" : unreadCount}
+                     </span>
+                   )}
+                </Link>
+              )}
 
               <button
                 className="text-orange-600"

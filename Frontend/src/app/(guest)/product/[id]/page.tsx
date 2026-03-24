@@ -74,6 +74,7 @@ export default function ProductPage({ params }: Props) {
           subcategory: d.subcategory || '',
           sellerPhone: seller.phone || '',
           sellerEmail: seller.email || '',
+          sellerImage: seller.profile_image_url || null,
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -347,7 +348,12 @@ export default function ProductPage({ params }: Props) {
 
               <div className="border-t border-b border-gray-100 py-3">
                 <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold">{(product.sellerName || 'S').slice(0,1)}</div>
+                    <div className="w-10 h-10 rounded-full bg-orange-505 text-white flex items-center justify-center font-bold overflow-hidden">
+                      {product.sellerImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={product.sellerImage} alt="" className="w-full h-full object-cover" />
+                      ) : (product.sellerName || 'S').slice(0,1)}
+                    </div>
                     <div>
                       <div className="font-semibold">
                         <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link> <span className="text-green-600">✔</span>
@@ -610,7 +616,7 @@ export default function ProductPage({ params }: Props) {
                 <a href={`mailto:${product.sellerEmail}`} className="w-full border border-gray-300 py-3 rounded flex items-center justify-center gap-2 font-bold">✉️ Email</a>
               </div>
 
-              <div className="mt-4 text-sm text-gray-600">📍 Off Deco Road, Crystals Layout, Delta State, Warri.</div>
+              <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
 
               <button className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded">🚩 Report this seller</button>
             </div>

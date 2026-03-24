@@ -182,7 +182,10 @@ export default function MessagingClient() {
                 >
                   <div className="relative shrink-0">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center border border-zinc-200 uppercase font-black text-zinc-500 shadow-sm overflow-hidden group-hover:scale-105 transition-transform duration-300">
-                      {t.other_name ? t.other_name.slice(0, 1) : <User size={28} />}
+                      {t.other_image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={t.other_image} alt="" className="w-full h-full object-cover" />
+                      ) : t.other_name ? t.other_name.slice(0, 1) : <User size={28} />}
                     </div>
                     {t.unread_count > 0 && (
                        <div className="absolute -top-1 -right-1 min-w-[22px] h-[22px] rounded-full bg-orange-600 text-white text-[10px] flex items-center justify-center border-4 border-white font-black">
@@ -228,8 +231,11 @@ export default function MessagingClient() {
                 >
                   <ChevronLeft size={24} />
                 </button>
-                <div className="w-12 h-12 rounded-2xl bg-orange-600 text-white flex items-center justify-center font-black shadow-lg shadow-orange-600/20 shrink-0">
-                  {activeThread.other_name ? activeThread.other_name.slice(0, 1) : "?"}
+                <div className="w-12 h-12 rounded-2xl bg-orange-600 text-white flex items-center justify-center font-black shadow-lg shadow-orange-600/20 shrink-0 overflow-hidden">
+                  {activeThread.other_image ? (
+                     // eslint-disable-next-line @next/next/no-img-element
+                     <img src={activeThread.other_image} alt="" className="w-full h-full object-cover" />
+                  ) : activeThread.other_name ? activeThread.other_name.slice(0, 1) : "?"}
                 </div>
                 <div>
                   <h3 className="font-black text-black leading-tight flex items-center gap-2 text-lg">

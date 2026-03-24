@@ -1,7 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { User, Phone, MapPin, ShoppingBag, Save, TrendingUp, AlertCircle, CheckCircle } from "lucide-react";
+import { 
+  User, 
+  Phone, 
+  MapPin, 
+  ShoppingBag, 
+  Save, 
+  TrendingUp, 
+  AlertCircle, 
+  CheckCircle, 
+  Plus, 
+  Settings, 
+  LogOut 
+} from "lucide-react";
 import { getMyProfile, updateProfile, upgradeToVendor } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 
@@ -46,6 +58,7 @@ export default function AccountSettingsPage() {
       await updateProfile({
         name: profile.name,
         phone: profile.phone,
+        profile_image_url: profile.profile_image_url,
         // Also include vendor fields if they exist
         ...(profile.role === 'vendor' && {
             businessName: profile.businessName,
@@ -68,13 +81,23 @@ export default function AccountSettingsPage() {
     setMessage(null);
     try {
       await upgradeToVendor(upgradeData);
-      setMessage({ type: "success", text: "Upgrade request submitted! Please wait for admin approval." });
+      setMessage({ 
+        type: "success", 
+        text: "Upgrade request submitted! Your role change requires a fresh login to take effect. Please logout and login again." 
+      });
       setUpgradeMode(false);
-      loadData();
+      // We don't call loadData here because the token is stale anyway
     } catch (err: any) {
       setMessage({ type: "error", text: err.message || "Failed to upgrade" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleLogout = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.clear();
+      window.location.href = "/login";
     }
   };
 
@@ -96,11 +119,72 @@ export default function AccountSettingsPage() {
 
           <div className="p-6 sm:p-10">
             {message && (
-              <div className={`mb-8 p-4 rounded-xl flex items-center gap-3 ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
-                {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
-                <p className="text-sm font-medium">{message.text}</p>
+              <div className={`mb-8 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                <div className="flex items-center gap-3">
+                  {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+                  <p className="text-sm font-medium">{message.text}</p>
+                </div>
+                {message.type === 'success' && message.text.includes("re-login") && (
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold h-fit hover:bg-green-700 transition"
+                  >
+                    <LogOut size={16} />
+                    Logout Now
+                  </button>
+                )}
               </div>
             )}
+
+            <div className="mb-10 flex flex-col items-center sm:flex-row gap-6 p-6 bg-zinc-50 rounded-2xl border border-zinc-100">
+              <div className="relative group">
+                <div className="w-24 h-24 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden border-4 border-white shadow-md">
+                   {profile?.profile_image_url ? (
+                     // eslint-disable-next-line @next/next/no-img-element
+                     <img src={profile.profile_image_url} alt="Profile" className="w-full h-full object-cover" />
+                   ) : (
+                     <User size={40} className="text-orange-400" />
+                   )}
+                </div>
+                <label className="absolute bottom-0 right-0 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-orange-700 transition shadow-lg border-2 border-white">
+                  <Plus size={16} />
+                  <input 
+                    type="file" 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const formData = new FormData();
+                      formData.append("image", file);
+                      setSaving(true);
+                      try {
+                        const token = localStorage.getItem("token");
+                        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/upload/image`, {
+                          method: "POST",
+                          headers: { Authorization: `Bearer ${token}` },
+                          body: formData
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                          setProfile({ ...profile, profile_image_url: data.url });
+                          localStorage.setItem("profile_image_url", data.url);
+                          setMessage({ type: "success", text: "Photo uploaded! Save changes to finalize." });
+                        }
+                      } catch (err) {
+                        setMessage({ type: "error", text: "Upload failed" });
+                      } finally {
+                        setSaving(false);
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+              <div className="text-center sm:text-left">
+                <h3 className="font-bold text-zinc-900">Profile Picture</h3>
+                <p className="text-xs text-zinc-500 mt-1 max-w-[200px]">JPG or PNG, max 5MB.</p>
+              </div>
+            </div>
 
             <form onSubmit={handleUpdateProfile} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

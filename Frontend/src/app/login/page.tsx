@@ -25,10 +25,28 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      const { signIn } = await import("next-auth/react");
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: formData.email.trim(),
+        password: formData.password.trim(),
+      });
+
+      if (result?.error) {
+        setError(result.error === "CredentialsSignin" ? "Invalid email/phone or password" : result.error);
+        setLoading(false);
+        return;
+      }
+
+      // If success, we still want to store the token for non-NextAuth API calls if needed, 
+      // but NextAuth will handle the session cookie for middleware.
+      // We need to fetch the user info to know where to redirect and store role.
+      const { loginUser } = await import("@/lib/api");
       const res = await loginUser({
         email: formData.email.trim(),
         password: formData.password.trim(),
       });
+
       const role = String(res.user?.role || "").toLowerCase();
       if (role === "vendor") {
         router.push("/vendor-dashboard");

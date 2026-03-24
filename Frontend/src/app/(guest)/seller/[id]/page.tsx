@@ -38,6 +38,7 @@ export default function SellerPage({ params }: Props) {
           totalAds: u.total_ads || 0,
           responseTime: u.responseTime || "Within 1 hour",
           phone: u.phone,
+          profile_image_url: u.profile_image_url,
         });
 
         // Fetch active ads for this user
@@ -230,25 +231,25 @@ export default function SellerPage({ params }: Props) {
                 overflow: "hidden",
                 flexShrink: 0,
                 background: "#fde8d4",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "4px solid white",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
               }}
             >
-              <img
-                src="/assets/images/avatar-placeholder.png"
-                alt="avatar"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                onError={(e) => {
-                  const t = e.target as HTMLImageElement;
-                  t.style.display = "none";
-                  const parent = t.parentElement!;
-                  parent.style.display = "flex";
-                  parent.style.alignItems = "center";
-                  parent.style.justifyContent = "center";
-                  parent.style.fontSize = "28px";
-                  parent.style.fontWeight = "800";
-                  parent.style.color = "#f97316";
-                  parent.innerHTML = "OG";
-                }}
-              />
+              {seller.profile_image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={seller.profile_image_url}
+                  alt={seller.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <span style={{ fontSize: 32, fontWeight: 900, color: "#f97316" }}>
+                  {seller.name.slice(0, 1).toUpperCase()}
+                </span>
+              )}
             </div>
 
             {/* Info */}
@@ -362,15 +363,7 @@ export default function SellerPage({ params }: Props) {
                 <h3 style={{ fontWeight: 700, fontSize: 15, marginBottom: 10 }}>
                   About the Seller
                 </h3>
-                <p
-                  style={{
-                    fontSize: 13,
-                    color: "#374151",
-                    lineHeight: 1.6,
-                    margin: 0,
-                  }}
-                >
-                <p
+                <div
                   style={{
                     fontSize: 13,
                     color: "#374151",
@@ -379,9 +372,8 @@ export default function SellerPage({ params }: Props) {
                     whiteSpace: "pre-wrap",
                   }}
                 >
-                  {seller.about || `Welcome to ${seller.name}'s profile! Here you can find a variety of quality listings at great prices.`}
-                </p>
-                </p>
+                  {seller.about || "No additional information provided by the vendor."}
+                </div>
               </div>
 
               <div

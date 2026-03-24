@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
         const password = String((credentials as Record<string, unknown>).password ?? "").trim();
 
         try {
-          const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api").replace(/\/$/, "");
+          const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").replace(/\/$/, "");
           const res = await fetch(`${base}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

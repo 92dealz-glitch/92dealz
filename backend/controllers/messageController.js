@@ -58,6 +58,7 @@ exports.threads = async (req, res, next) => {
          COALESCE(u.unread_count,0) AS unread_count, 
          l.deal_id,
          ou.name AS other_name,
+         ou.profile_image_url AS other_image,
          d.title AS deal_title
        FROM last_msg l
        LEFT JOIN unread u ON u.other_id = l.other_id
