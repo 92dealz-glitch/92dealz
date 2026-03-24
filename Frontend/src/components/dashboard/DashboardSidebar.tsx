@@ -8,7 +8,8 @@ import {
     BarChart2,
     MessageSquare,
     Settings,
-    ChevronDown
+    ChevronDown,
+    ShoppingCart
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { listThreads } from "@/services/messages.service";
@@ -29,6 +30,7 @@ const baseItems: MenuItem[] = [
     { id: "add-product", label: "Add Product", icon: PlusSquare, href: "/vendor-dashboard/add-product" },
     { id: "sales-stats", label: "Sales Stats", icon: BarChart2, href: "/vendor-dashboard/analytics" },
     { id: "messages", label: "Messages", icon: MessageSquare, href: "/vendor-dashboard/messages" },
+    { id: "orders", label: "Orders", icon: ShoppingCart, href: "/vendor-dashboard/orders" },
     { id: "settings", label: "Settings", icon: Settings, href: "/vendor-dashboard/settings/personal-details", hasSubmenu: true },
 ];
 
@@ -44,18 +46,37 @@ export default function DashboardSidebar() {
             } catch {}
         })();
     }, []);
-    const menuItems: MenuItem[] = baseItems.map(it => it.id === "messages" ? { ...it, badge: unread || undefined } : it);
+    const isUserDashboard = pathname.startsWith("/user-dashboard");
+    
+    // Filter items based on dashboard type
+    const filteredBaseItems = baseItems.filter(item => {
+        if (isUserDashboard) {
+            // Buyers only see these
+            return ["overview", "messages", "orders", "settings"].includes(item.id);
+        }
+        // Vendors see everything
+        return true;
+    });
+
+    const menuItems: MenuItem[] = filteredBaseItems.map(it => {
+        let label = it.label;
+        if (isUserDashboard && it.id === "orders") label = "My Purchases";
+        
+        return it.id === "messages" ? { ...it, label, badge: unread || undefined } : { ...it, label };
+    });
 
     return (
         <div className="w-full bg-white rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-zinc-200 p-2 py-4">
             <ul className="space-y-1">
                 {menuItems.map((item) => {
-                    const isActive = pathname === item.href || (item.id === "settings" && pathname.startsWith("/vendor-dashboard/settings"));
+                    const isUserDashboard = pathname.startsWith("/user-dashboard");
+                    const itemHref = isUserDashboard ? item.href.replace("/vendor-dashboard", "/user-dashboard") : item.href;
+                    const isActive = pathname === itemHref || (item.id === "settings" && pathname.startsWith(isUserDashboard ? "/user-dashboard/settings" : "/vendor-dashboard/settings"));
 
                     return (
                         <li key={item.id}>
                             <Link
-                                href={item.href}
+                                href={itemHref}
                                 className={`w-full flex items-center justify-between px-4 py-3 rounded-md transition-all duration-200 ${isActive
                                     ? "bg-[#E85A28] text-white"
                                     : "text-zinc-600 hover:bg-zinc-50 hover:text-black"

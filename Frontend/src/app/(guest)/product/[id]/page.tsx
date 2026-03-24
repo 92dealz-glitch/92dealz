@@ -7,8 +7,9 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2 } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { createOrder } from "@/services/orders.service"
 
 type Props = {
   params: Promise<{ id: string }>
@@ -134,7 +135,9 @@ export default function ProductPage({ params }: Props) {
 
   const [messageModal, setMessageModal] = useState(false);
   const [messageText, setMessageText] = useState("");
-  const [sendingMessage, setSendingMessage] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false)
+  const [orderMessage, setOrderMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
@@ -173,37 +176,37 @@ export default function ProductPage({ params }: Props) {
     }
   };
 
-  const [placingOrder, setPlacingOrder] = useState(false);
+
   const handlePlaceOrder = async () => {
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+    if (!token) {
+        alert("Please login to place an order");
+        return;
+    }
+
+    setIsPlacingOrder(true);
+    setOrderMessage(null);
     try {
-      setPlacingOrder(true);
-      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-      if (!token) { alert("Please login to place an order"); return; }
-      
-      const res = await fetch(`${API_BASE}/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          deal_id: product.id,
-          vendor_id: product.sellerId,
-          price: parseFloat(product.price.replace(/[^\d.]/g, '')),
-          notes: "I want to buy this item."
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("Order placed successfully! Please check your Dashboard -> Orders for confirmation.");
-        router.push("/dashboard/orders");
-      } else {
-        alert(data.message || "Failed to place order");
-      }
+        const numericPrice = Number(product.price.toString().replace(/[^0-9.]/g, ''));
+        const res = await createOrder({
+            deal_id: Number(product.id),
+            vendor_id: Number(product.sellerId),
+            price: numericPrice,
+            notes: "I am a serious buyer and want to proceed with this purchase immediately."
+        });
+
+        if (res.success) {
+            setOrderMessage({ type: 'success', text: "Order placed successfully! Redirecting..." });
+            setTimeout(() => {
+                router.push("/user-dashboard/orders");
+            }, 2500);
+        } else {
+            setOrderMessage({ type: 'error', text: "Failed to place order. Please try again." });
+        }
     } catch (err) {
-      alert("An error occurred while placing the order");
+        setOrderMessage({ type: 'error', text: "An error occurred while placing your order." });
     } finally {
-      setPlacingOrder(false);
+        setIsPlacingOrder(false);
     }
   };
 
@@ -300,13 +303,20 @@ export default function ProductPage({ params }: Props) {
 
           {/* Right: Price box + Seller Info */}
           <aside className="space-y-4">
-            <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative lg:sticky lg:top-24">
+            <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
               <div className="absolute top-4 right-4">
                 <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">{product.condition}</span>
               </div>
 
               <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>
               <div className="mt-2 inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm">Negotiable</div>
+
+              {orderMessage && (
+                <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 text-sm font-bold ${orderMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                   {orderMessage.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                   {orderMessage.text}
+                </div>
+              )}
 
               <div className="mt-6 space-y-3">
                 <Button 
@@ -331,11 +341,11 @@ export default function ProductPage({ params }: Props) {
                   </Button>
                 </Link>
                 <Button 
-                  disabled={placingOrder}
+                  disabled={isPlacingOrder}
                   onClick={handlePlaceOrder}
                   className="w-full bg-black text-white py-3 font-bold flex items-center justify-center gap-2"
                 >
-                  {placingOrder ? "Placing..." : "🛒 Order Now"}
+                  {isPlacingOrder ? <Loader2 className="animate-spin" size={20} /> : "🛒 Order Now"}
                 </Button>
               </div>
             </div>
