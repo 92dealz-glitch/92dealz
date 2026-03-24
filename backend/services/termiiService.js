@@ -9,7 +9,7 @@ exports.sendTermiiOtp = async (phone) => {
     message_type: 'NUMERIC',
     to: phone,
     from: 'N-Alert', // Standard DND-bypass sender ID for Nigerian OTPs
-    channel: 'generic',
+    channel: 'dnd',
     pin_attempts: 10,
     pin_time_to_live: 10,
     pin_length: 6,
