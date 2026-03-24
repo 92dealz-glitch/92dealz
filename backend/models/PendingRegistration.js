@@ -7,14 +7,14 @@ const PendingRegistration = sequelize.define('PendingRegistration', {
     primaryKey: true,
     autoIncrement: true,
   },
-  email: {
+  contact: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
   },
   otp: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   data: {
     type: DataTypes.TEXT, // JSON string of signup data

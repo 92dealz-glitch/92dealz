@@ -33,7 +33,8 @@ async function apiFetch<T>(
 
 export interface RegisterPayload {
   name: string;
-  email: string;
+  contact: string;
+  method: string;
   password: string;
   phone?: string | null;
   role?: "user" | "vendor" | "admin";
@@ -56,7 +57,7 @@ export async function registerInitiate(payload: RegisterPayload) {
   );
 }
 
-export async function registerVerify(payload: { email: string; otp: string }) {
+export async function registerVerify(payload: { contact: string; method: string; otp: string }) {
   return apiFetch<{ success: boolean; message: string; user?: any }>(
     "/auth/register-verify",
     { method: "POST", body: payload }

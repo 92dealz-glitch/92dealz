@@ -24,13 +24,12 @@ const User = sequelize.define('User', {
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     unique: {
       name: 'unique_email',
       msg: 'Email already exists',
     },
     validate: {
-      notEmpty: { msg: 'Email is required' },
       isEmail: { msg: 'Email is not valid' },
       len: { args: [3, 255], msg: 'Email must be between 3 and 255 characters' },
     },
@@ -38,6 +37,10 @@ const User = sequelize.define('User', {
   phone: {
     type: DataTypes.STRING,
     allowNull: true,
+    unique: {
+      name: 'unique_phone',
+      msg: 'Phone already exists',
+    },
     validate: {
       len: { args: [0, 30], msg: 'Phone must be at most 30 characters' },
     },

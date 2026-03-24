@@ -202,15 +202,11 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      if (method !== "email") {
-        setError("Please select Email and provide a valid email address");
-        setLoading(false);
-        return;
-      }
-      const email = formData.contact.trim().toLowerCase();
+      const contactVal = method === "email" ? formData.contact.trim().toLowerCase() : formData.contact.trim();
       await registerInitiate({
         name: formData.name,
-        email,
+        contact: contactVal,
+        method,
         password: formData.password.trim(),
         role,
         businessName: formData.businessName,
@@ -231,9 +227,9 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const email = formData.contact.trim().toLowerCase();
-      await registerVerify({ email, otp: otp.trim() });
-      const res = await loginUser({ email, password: formData.password.trim() });
+      const contactVal = method === "email" ? formData.contact.trim().toLowerCase() : formData.contact.trim();
+      await registerVerify({ contact: contactVal, method, otp: otp.trim() });
+      const res = await loginUser({ email: contactVal, password: formData.password.trim() });
       const r = String(res.user?.role || "").toLowerCase();
       if (r === "vendor") {
         router.push("/vendor-dashboard");
