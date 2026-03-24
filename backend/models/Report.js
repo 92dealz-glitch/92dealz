@@ -50,8 +50,8 @@ const Report = sequelize.define('Report', {
   timestamps: true,
 });
 
-Report.belongsTo(User, { as: 'Reporter', foreignKey: 'reporter_id' });
-Report.belongsTo(Deal, { as: 'Product', foreignKey: 'product_id' });
-Report.belongsTo(User, { as: 'Vendor', foreignKey: 'vendor_id' });
+Report.belongsTo(User, { as: 'Reporter', foreignKey: 'reporter_id', onDelete: 'CASCADE' });
+Report.belongsTo(Deal, { as: 'Product', foreignKey: 'product_id', onDelete: 'CASCADE' });
+Report.belongsTo(User, { as: 'Vendor', foreignKey: 'vendor_id', onDelete: 'CASCADE' });
 
 module.exports = Report;

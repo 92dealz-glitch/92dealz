@@ -38,9 +38,9 @@ const Review = sequelize.define('Review', {
   timestamps: true,
 });
 
-Review.belongsTo(User, { as: 'Reviewer', foreignKey: 'reviewer_id' });
-Review.belongsTo(User, { as: 'Vendor', foreignKey: 'vendor_id' });
-User.hasMany(Review, { as: 'ReceivedReviews', foreignKey: 'vendor_id' });
-User.hasMany(Review, { as: 'GivenReviews', foreignKey: 'reviewer_id' });
+Review.belongsTo(User, { as: 'Reviewer', foreignKey: 'reviewer_id', onDelete: 'CASCADE' });
+Review.belongsTo(User, { as: 'Vendor', foreignKey: 'vendor_id', onDelete: 'CASCADE' });
+User.hasMany(Review, { as: 'ReceivedReviews', foreignKey: 'vendor_id', onDelete: 'CASCADE' });
+User.hasMany(Review, { as: 'GivenReviews', foreignKey: 'reviewer_id', onDelete: 'CASCADE' });
 
 module.exports = Review;

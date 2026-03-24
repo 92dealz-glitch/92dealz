@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { API_BASE } from "@/services/apiClient";
+import ReportModal from "@/components/ReportModal";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -13,6 +14,7 @@ export default function SellerPage({ params }: Props) {
   const [seller, setSeller] = useState<any>(null);
   const [listings, setListings] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -774,6 +776,7 @@ export default function SellerPage({ params }: Props) {
                 )}
               </div>
               <button
+                onClick={() => setShowReportModal(true)}
                 style={{
                   marginTop: 14,
                   background: "none",
@@ -1003,6 +1006,12 @@ export default function SellerPage({ params }: Props) {
             </div>
           </aside>
         </div>
+        <ReportModal
+          isOpen={showReportModal}
+          onClose={() => setShowReportModal(false)}
+          vendorId={seller.id}
+          itemName={seller.name}
+        />
       </main>
 
       <Footer />

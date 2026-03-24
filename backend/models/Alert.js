@@ -27,4 +27,7 @@ const Alert = sequelize.define('Alert', {
   ],
 });
 
+const User = require('./userModel');
+Alert.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+
 module.exports = Alert;

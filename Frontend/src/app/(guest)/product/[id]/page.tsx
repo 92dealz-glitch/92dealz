@@ -143,6 +143,7 @@ export default function ProductPage({ params }: Props) {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; itemName: string }>({ itemName: "" });
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
@@ -412,7 +413,10 @@ export default function ProductPage({ params }: Props) {
                 <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">🔎 View Seller Profile</Link>
                 <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">📋 See All Ads from Seller</Link>
                 <button 
-                  onClick={() => setShowReportModal(true)}
+                  onClick={() => {
+                    setReportTarget({ productId: product.id, itemName: product.title });
+                    setShowReportModal(true);
+                  }}
                   className="w-full flex items-center justify-center gap-2 py-2 text-red-500 font-bold text-sm hover:bg-red-50 rounded border border-red-100 transition-colors mt-2"
                 >
                   🚩 Report this Ad
@@ -703,7 +707,15 @@ export default function ProductPage({ params }: Props) {
 
               <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
 
-              <button className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded">🚩 Report this seller</button>
+              <button 
+                onClick={() => {
+                  setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
+                  setShowReportModal(true);
+                }}
+                className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors font-bold"
+              >
+                🚩 Report this seller
+              </button>
             </div>
 
             <div className="rounded-lg border border-orange-200 bg-white p-4">
@@ -728,17 +740,18 @@ export default function ProductPage({ params }: Props) {
               </div>
             </div>
           </aside>
-          <ReportModal 
+        </div>
+
+        <ReportModal 
           isOpen={showReportModal} 
           onClose={() => setShowReportModal(false)} 
-          productId={product.id}
-          itemName={product.title}
+          productId={reportTarget.productId}
+          vendorId={reportTarget.vendorId}
+          itemName={reportTarget.itemName}
         />
-        </div>
       </main>
 
       <SimilarItems />
-
       <Footer />
     </div>
   )

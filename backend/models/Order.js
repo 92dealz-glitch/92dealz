@@ -37,4 +37,11 @@ const Order = sequelize.define('Order', {
   timestamps: true,
 });
 
+const User = require('./userModel');
+const Deal = require('./Deal');
+
+Order.belongsTo(User, { as: 'Buyer', foreignKey: 'buyer_id', onDelete: 'CASCADE' });
+Order.belongsTo(User, { as: 'Vendor', foreignKey: 'vendor_id', onDelete: 'CASCADE' });
+Order.belongsTo(Deal, { foreignKey: 'deal_id', onDelete: 'CASCADE' });
+
 module.exports = Order;

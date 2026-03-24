@@ -14,5 +14,12 @@ const Message = sequelize.define('Message', {
   underscored: false,
 });
 
+const User = require('./userModel');
+const Deal = require('./Deal');
+
+Message.belongsTo(User, { as: 'Sender', foreignKey: 'from_user_id', onDelete: 'CASCADE' });
+Message.belongsTo(User, { as: 'Recipient', foreignKey: 'to_user_id', onDelete: 'CASCADE' });
+Message.belongsTo(Deal, { foreignKey: 'deal_id', onDelete: 'CASCADE' });
+
 module.exports = Message;
 
