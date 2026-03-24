@@ -21,7 +21,7 @@ export interface Order {
 }
 
 export async function createOrder(data: { deal_id: number; vendor_id: number; price: number; notes?: string }) {
-  return apiFetch<{ success: boolean; data: { id: number } }>("orders", {
+  return apiFetch<{ success: boolean; data: { id: number }; message?: string }>("orders", {
     method: "POST",
     body: JSON.stringify(data),
   }, true);

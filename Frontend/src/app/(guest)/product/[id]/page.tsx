@@ -7,7 +7,7 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2, CheckCircle2, AlertCircle } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle, Shield, Package } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 
@@ -205,8 +205,8 @@ export default function ProductPage({ params }: Props) {
         } else {
             setOrderMessage({ type: 'error', text: res.message || "Failed to place order. Please try again." });
         }
-    } catch (err) {
-        setOrderMessage({ type: 'error', text: "An error occurred while placing your order." });
+    } catch (err: any) {
+        setOrderMessage({ type: 'error', text: err.message || "An error occurred while placing your order." });
     } finally {
         setIsPlacingOrder(false);
     }
