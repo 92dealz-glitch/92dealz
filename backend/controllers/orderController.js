@@ -1,4 +1,6 @@
 const sequelize = require('../config/database');
+const Notification = require('../models/Notification');
+const Deal = require('../models/Deal'); // To get title for notification
 
 exports.createOrder = async (req, res, next) => {
   try {
@@ -16,7 +18,23 @@ exports.createOrder = async (req, res, next) => {
       { bind: [buyerId, Number(vendor_id), Number(deal_id), Number(price), notes || null] }
     );
 
-    return res.status(201).json({ success: true, data: { id: rows[0].id } });
+    const orderId = rows[0].id;
+
+    // Create notification for vendor
+    try {
+      const deal = await Deal.findByPk(deal_id);
+      await Notification.create({
+        user_id: vendor_id,
+        type: 'ORDER',
+        title: 'New Order Received',
+        message: `You have received a new order for "${deal ? deal.title : 'your product'}". View details in your orders dashboard.`,
+        link: '/vendor-dashboard/orders'
+      });
+    } catch (err) {
+      console.error("Failed to create vendor notification", err);
+    }
+
+    return res.status(201).json({ success: true, data: { id: orderId } });
   } catch (err) {
     return next(err);
   }
@@ -73,6 +91,24 @@ exports.confirmOrder = async (req, res, next) => {
       `UPDATE orders SET status = $1, "updatedAt" = NOW() WHERE id = $2`,
       { bind: [newStatus, orderId] }
     );
+
+    // Create notification for the other party
+    try {
+      const deal = await Deal.findByPk(order.deal_id);
+      const isVendorUpdate = order.vendor_id === userId;
+      const notificationUserId = isVendorUpdate ? order.buyer_id : order.vendor_id;
+      const roleName = isVendorUpdate ? 'Vendor' : 'Buyer';
+      
+      await Notification.create({
+        user_id: notificationUserId,
+        type: 'ORDER',
+        title: 'Order Status Updated',
+        message: `The ${roleName} has updated the status of your order for "${deal ? deal.title : 'the product'}" to "${newStatus.replace('_', ' ')}".`,
+        link: isVendorUpdate ? '/user-dashboard/orders' : '/vendor-dashboard/orders'
+      });
+    } catch (err) {
+      console.error("Failed to create status update notification", err);
+    }
 
     return res.json({ success: true, data: { id: orderId, status: newStatus } });
   } catch (err) {

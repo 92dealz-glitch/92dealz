@@ -61,10 +61,17 @@ export default function VendorOrdersPage() {
     const vendorOrders = orders; // The API should be returning what's relevant
 
     return (
-        <div className="p-4 sm:p-6 lg:p-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-black text-zinc-900 mb-2">Manage Orders</h1>
-                <p className="text-zinc-500 font-bold">Track and fulfill your incoming sales</p>
+        <div className="p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
+            <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <div className="flex items-center gap-3 mb-2">
+                         <h1 className="text-4xl font-black text-zinc-900">Manage Orders</h1>
+                         <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-black ring-1 ring-orange-200">
+                             {vendorOrders.length} {vendorOrders.length === 1 ? 'Order' : 'Orders'}
+                         </span>
+                    </div>
+                    <p className="text-zinc-500 font-bold text-lg">Track and fulfill your incoming sales</p>
+                </div>
             </div>
 
             {vendorOrders.length === 0 ? (
