@@ -9,7 +9,7 @@ exports.sendTermiiOtp = async (phone) => {
     message_type: 'NUMERIC',
     pin_type: 'NUMERIC',
     to: phone,
-    from: 'N-Alert', // Standard DND-bypass sender ID for Nigerian OTPs
+    from: process.env.TERMII_SENDER_ID || 'N-Alert',
     channel: 'dnd',
     pin_attempts: 10,
     pin_time_to_live: 10,
