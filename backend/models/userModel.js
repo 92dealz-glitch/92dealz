@@ -51,7 +51,7 @@ const User = sequelize.define('User', {
     defaultValue: 'user',
   },
   status: {
-    type: DataTypes.ENUM('pending', 'active', 'rejected'),
+    type: DataTypes.ENUM('pending', 'active', 'rejected', 'suspended'),
     allowNull: false,
     defaultValue: 'active',
   },
@@ -94,6 +94,18 @@ const User = sequelize.define('User', {
   responseTime: {
     type: DataTypes.STRING,
     defaultValue: 'Within 1 hour',
+  },
+  government_id_url: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  is_verified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  verification_status: {
+    type: DataTypes.ENUM('none', 'pending', 'approved', 'rejected'),
+    defaultValue: 'none',
   },
 }, {
   tableName: 'users',

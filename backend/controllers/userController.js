@@ -26,7 +26,7 @@ exports.getUsers = async (req, res, next) => {
 
     const users = await User.findAll({ 
       where,
-      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about'],
+      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified'],
       order: [['id', 'ASC']] 
     });
 
@@ -55,7 +55,7 @@ exports.getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -67,7 +67,6 @@ exports.getUserById = async (req, res, next) => {
       { bind: [id] }
     );
 
-    // Mocking response time and rating for now as they are not in schema
     const data = {
       ...user.toJSON(),
       total_ads: adsRow.total_ads || 0,
@@ -98,7 +97,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getProfile = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'verification_status', 'government_id_url'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -121,7 +120,6 @@ exports.updateProfile = async (req, res, next) => {
     if (typeof phone === 'string' || phone === null) user.phone = phone || null;
     if (typeof profile_image_url === 'string' || profile_image_url === null) user.profile_image_url = profile_image_url || null;
     
-    // Vendor profile updates
     if (typeof businessName === 'string' || businessName === null) user.businessName = businessName || null;
     if (typeof businessCategory === 'string' || businessCategory === null) user.businessCategory = businessCategory || null;
     if (typeof businessAddress === 'string' || businessAddress === null) user.businessAddress = businessAddress || null;
@@ -132,7 +130,8 @@ exports.updateProfile = async (req, res, next) => {
       success: true,
       data: { 
         id: user.id, name: user.name, email: user.email, phone: user.phone, profile_image_url: user.profile_image_url,
-        businessName: user.businessName, businessCategory: user.businessCategory, businessAddress: user.businessAddress, about: user.about
+        businessName: user.businessName, businessCategory: user.businessCategory, businessAddress: user.businessAddress, about: user.about,
+        is_verified: user.is_verified
       },
     });
   } catch (err) {
@@ -158,7 +157,7 @@ exports.upgradeToVendor = async (req, res, next) => {
     }
 
     user.role = 'vendor';
-    user.status = 'pending'; // Requires admin approval as per previous logic
+    user.status = 'pending';
     user.businessName = businessName;
     user.businessCategory = businessCategory;
     user.businessAddress = businessAddress;
@@ -169,6 +168,33 @@ exports.upgradeToVendor = async (req, res, next) => {
       success: true,
       message: 'Upgrade request submitted. Your vendor account is pending approval.',
       data: { role: user.role, status: user.status }
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// PUT /api/user/request-verification
+exports.requestVerification = async (req, res, next) => {
+  try {
+    const { government_id_url } = req.body;
+    if (!government_id_url) {
+      return res.status(400).json({ success: false, message: 'Government ID is required' });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.government_id_url = government_id_url;
+    user.verification_status = 'pending';
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: 'Verification request submitted. An admin will review it shortly.',
+      data: { status: user.verification_status }
     });
   } catch (err) {
     return next(err);

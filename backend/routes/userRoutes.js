@@ -24,4 +24,8 @@ router.get('/:id', userController.getUserById);
 // Delete user by id
 router.delete('/:id', userController.deleteUser);
 
+// Verification
+router.put('/request-verification', auth, userController.requestVerification);
+router.post('/reports', auth, require('../controllers/reportController').submitReport);
+
 module.exports = router;

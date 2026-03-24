@@ -37,8 +37,17 @@ router.get('/analytics/clicks-by-day', analytics.clicksByDay);
 
 // Vendors
 router.get('/vendors', ctrl.getVendors);
-router.put('/vendors/:id/status', ctrl.updateVendorStatus);
 router.post('/vendors', ctrl.createVendor);
+router.put('/vendors/:id/status', ctrl.updateVendorStatus);
 router.delete('/vendors/:id', ctrl.deleteVendor);
+
+// Verification
+router.get('/verifications', ctrl.getVerificationRequests);
+router.put('/verifications/:id/review', ctrl.reviewVerification);
+
+// Reports
+const reportCtrl = require('../controllers/reportController');
+router.get('/reports', reportCtrl.getReports);
+router.put('/reports/:id', reportCtrl.updateReportStatus);
 
 module.exports = router;

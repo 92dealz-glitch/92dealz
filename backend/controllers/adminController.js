@@ -3,6 +3,7 @@ const Deal = require('../models/Deal');
 const Category = require('../models/Category');
 const Store = require('../models/Store');
 const Submission = require('../models/Submission');
+const Notification = require('../models/Notification');
 const { notifyAlertsForDeal } = require('../services/alertNotifier');
 const { sendGeneric } = require('../services/emailService');
 
@@ -13,6 +14,14 @@ exports.getDeals = async (req, res, next) => {
     const limit = Math.max(parseInt(req.query.limit || '100', 10), 1);
     const offset = (page - 1) * limit;
 
+    const search = req.query.search || '';
+    const bind = [limit, offset];
+    let whereClause = '';
+    if (search) {
+      whereClause = `WHERE d.title ILIKE $3`;
+      bind.push(`%${search}%`);
+    }
+
     const [rows] = await sequelize.query(
       `SELECT d.id, d.title, d.price, d.status, d."updatedAt",
               u.name as merchant,
@@ -21,12 +30,13 @@ exports.getDeals = async (req, res, next) => {
        FROM deals d
        LEFT JOIN users u ON u.id = d."userId"
        LEFT JOIN categories c ON c.id = d.category_id
+       ${whereClause}
        ORDER BY d.id DESC
        LIMIT $1 OFFSET $2`,
-      { bind: [limit, offset] }
+      { bind: bind }
     );
 
-    const [[{ count }]] = await sequelize.query(`SELECT COUNT(*)::INT as count FROM deals`);
+    const [[{ count }]] = await sequelize.query(`SELECT COUNT(*)::INT as count FROM deals d ${search ? 'WHERE d.title ILIKE $1' : ''}`, { bind: search ? [`%${search}%`] : [] });
 
     return res.json({ 
       success: true, 
@@ -79,10 +89,25 @@ exports.updateDeal = async (req, res, next) => {
 exports.deleteDeal = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
+    const { reason } = req.body;
     const deal = await Deal.findByPk(id);
     if (!deal) return res.status(404).json({ success: false, message: 'Deal not found' });
+    
+    // Notify vendor before deletion
+    try {
+      await Notification.create({
+        user_id: deal.userId,
+        type: 'DEAL_REMOVED',
+        title: 'Your Deal was Removed by Admin',
+        message: `Your deal "${deal.title}" has been removed. Reason: ${reason || 'Violation of platform policies.'}`,
+        link: '/vendor-dashboard/my-ads'
+      });
+    } catch (err) {
+      console.error("Failed to notify vendor about deal removal", err);
+    }
+
     await deal.destroy();
-    return res.json({ success: true, message: 'Deal deleted' });
+    return res.json({ success: true, message: 'Deal deleted and vendor notified' });
   } catch (err) {
     return next(err);
   }
@@ -286,7 +311,7 @@ exports.updateVendorStatus = async (req, res, next) => {
     const id = Number(req.params.id);
     const { status } = req.body;
     
-    if (!['pending', 'active', 'rejected'].includes(status)) {
+    if (!['pending', 'active', 'rejected', 'suspended'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid status' });
     }
     
@@ -298,9 +323,22 @@ exports.updateVendorStatus = async (req, res, next) => {
     vendor.status = status;
     await vendor.save();
     
-    // Optionally: Send an email to the vendor notifying them of approval/rejection
+    // Notify vendor
+    try {
+      await Notification.create({
+        user_id: vendor.id,
+        type: 'ACCOUNT_STATUS',
+        title: `Account ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+        message: status === 'active' 
+          ? "Your vendor account has been activated/restored. You can now manage your deals."
+          : `Your vendor account has been ${status}. Please contact support for more information.`,
+        link: '/vendor-dashboard'
+      });
+    } catch (err) {
+      console.error("Failed to create vendor status notification", err);
+    }
     
-    return res.json({ success: true, message: 'Vendor status updated', data: { id: vendor.id, status: vendor.status } });
+    return res.json({ success: true, message: `Vendor status updated to ${status}`, data: { id: vendor.id, status: vendor.status } });
   } catch (err) {
     return next(err);
   }
@@ -348,6 +386,66 @@ exports.createVendor = async (req, res, next) => {
       status: 'active' // Admin-created vendors are active by default
     });
     return res.status(201).json({ success: true, data: { id: vendor.id, name: vendor.name, email: vendor.email } });
+  } catch (err) {
+    return next(err);
+  }
+};
+exports.getVerificationRequests = async (req, res, next) => {
+  try {
+    const requests = await User.findAll({
+      where: { verification_status: 'pending' },
+      attributes: ['id', 'name', 'email', 'phone', 'businessName', 'government_id_url', 'createdAt'],
+      order: [['createdAt', 'DESC']]
+    });
+    return res.json({ success: true, data: requests });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.reviewVerification = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const { status } = req.body; // 'approved' or 'rejected'
+    
+    if (!['approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status' });
+    }
+    
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    
+    user.verification_status = status;
+    if (status === 'approved') {
+      user.is_verified = true;
+    } else {
+      user.is_verified = false;
+    }
+    
+    await user.save();
+    
+    // Notify vendor
+    try {
+      await Notification.create({
+        user_id: user.id,
+        type: 'VERIFICATION',
+        title: `Identity Verification ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+        message: status === 'approved' 
+          ? "Congratulations! Your identity has been verified. You now have a Verified Vendor badge."
+          : "Your identity verification was rejected. Please ensure your ID is clear and valid, and try again.",
+        link: '/vendor-dashboard/settings/verification'
+      });
+    } catch (err) {
+      console.error("Failed to create verification notification", err);
+    }
+    
+    return res.json({ 
+      success: true, 
+      message: `Verification ${status}`, 
+      data: { id: user.id, verification_status: user.verification_status, is_verified: user.is_verified } 
+    });
   } catch (err) {
     return next(err);
   }

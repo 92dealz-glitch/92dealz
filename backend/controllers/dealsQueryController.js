@@ -99,7 +99,9 @@ exports.list = async (req, res, next) => {
     }
 
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals ${whereSql}`;
-    const dataSql = `SELECT ${baseSelectCols.join(', ')}, (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating
+    const dataSql = `SELECT ${baseSelectCols.join(', ')}, 
+                     (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating,
+                     (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified
                      FROM deals
                      ${whereSql}
                      ${orderSql}
@@ -138,7 +140,10 @@ exports.getById = async (req, res, next) => {
         selectCols.push(quoted);
       }
     }
-    const sql = `SELECT ${selectCols.join(', ')}, (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating FROM deals WHERE id = $1`;
+    const sql = `SELECT ${selectCols.join(', ')}, 
+                 (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating,
+                 (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified
+                 FROM deals WHERE id = $1`;
     const [rows] = await sequelize.query(sql, { bind: [id] });
     if (!rows.length) {
       return res.status(404).json({ success: false, message: 'Deal not found' });
@@ -326,7 +331,9 @@ exports.trending = async (req, res, next) => {
     if (HAS_CLICK_EVENTS) {
       const groupBy = selectCols.map((_, i) => i + 1).join(',');
       const [rows] = await sequelize.query(
-        `SELECT ${selectCols.join(', ')}, COUNT(c.id)::INT AS clicks, (SELECT rating FROM users u WHERE u.id = d."userId") AS rating
+        `SELECT ${selectCols.join(', ')}, COUNT(c.id)::INT AS clicks, 
+                (SELECT rating FROM users u WHERE u.id = d."userId") AS rating,
+                (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
          FROM deals d
          JOIN click_events c ON c.deal_id = d.id
          WHERE c.clicked_at > NOW() - INTERVAL '7 days'
@@ -337,7 +344,9 @@ exports.trending = async (req, res, next) => {
       return res.json({ success: true, data: rows });
     }
     const [rows] = await sequelize.query(
-      `SELECT ${selectCols.join(', ')}, (SELECT rating FROM users u WHERE u.id = d."userId") AS rating
+      `SELECT ${selectCols.join(', ')}, 
+              (SELECT rating FROM users u WHERE u.id = d."userId") AS rating,
+              (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
        FROM deals d
        ORDER BY d."createdAt" DESC
        LIMIT 20`

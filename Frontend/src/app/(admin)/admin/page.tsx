@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { 
-  Package, 
-  CheckCircle2, 
-  FileEdit, 
-  Calendar, 
+import {
+  Package,
+  CheckCircle2,
+  FileEdit,
+  Calendar,
   MousePointer2,
   Download,
   Bell
@@ -14,14 +14,17 @@ import StatCard from "@/components/admin/StatCard";
 import { API_BASE } from "@/services/apiClient";
 import VendorManagement from "@/components/admin/VendorManagement";
 import VendorApplications from "@/components/admin/VendorApplications";
+import VendorVerificationRequests from "@/components/admin/VendorVerificationRequests";
+import ProductManagement from "@/components/admin/ProductManagement";
+import AdminReportManagement from "@/components/admin/AdminReportManagement";
 
-import { 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
   BarChart,
   Bar,
@@ -153,37 +156,37 @@ export default function AdminDashboardPage() {
               <AreaChart data={clicksTrend}>
                 <defs>
                   <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#E85A28" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#E85A28" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#E85A28" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#E85A28" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 12, fill: '#9CA3AF' }}
                   dy={10}
                 />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 12, fill: '#9CA3AF' }}
                 />
-                <Tooltip 
-                  contentStyle={{ 
-                    borderRadius: '12px', 
-                    border: 'none', 
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
-                  }} 
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: '12px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                  }}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="clicks" 
-                  stroke="#E85A28" 
+                <Area
+                  type="monotone"
+                  dataKey="clicks"
+                  stroke="#E85A28"
                   strokeWidth={2}
-                  fillOpacity={1} 
-                  fill="url(#colorClicks)" 
+                  fillOpacity={1}
+                  fill="url(#colorClicks)"
                   dot={{ r: 4, fill: '#E85A28', strokeWidth: 2, stroke: '#fff' }}
                   activeDot={{ r: 6, fill: '#E85A28', strokeWidth: 2, stroke: '#fff' }}
                 />
@@ -200,24 +203,24 @@ export default function AdminDashboardPage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data?.categories || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 10, fill: '#9CA3AF' }}
                   dy={10}
                 />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 12, fill: '#9CA3AF' }}
                 />
-                <Tooltip 
-                  contentStyle={{ 
-                    borderRadius: '12px', 
-                    border: 'none', 
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
-                  }} 
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: '12px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                  }}
                 />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={30}>
                   {(data?.categories || []).map((entry: any, index: number) => (
@@ -232,52 +235,9 @@ export default function AdminDashboardPage() {
 
       <VendorManagement />
       <VendorApplications />
-
-      {/* Recent Deals Table Placeholder */}
-      <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
-          <div>
-            <h3 className="font-bold text-zinc-900">Recent Deals</h3>
-            <p className="text-zinc-500 text-xs mt-0.5">Latest deals added to the platform</p>
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-zinc-50 text-zinc-500 text-[12px] font-bold uppercase tracking-wider">
-                <th className="px-6 py-4">Deal Title</th>
-                <th className="px-6 py-4">Merchant</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Clicks</th>
-                <th className="px-6 py-4 text-right">Last Updated</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {(data?.recentDeals || []).map((deal: any) => (
-                <tr key={deal.id} className="hover:bg-zinc-50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-semibold text-zinc-900">{deal.title}</td>
-                  <td className="px-6 py-4 text-sm text-zinc-600">{deal.merchant || "Unknown"}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 text-white text-[11px] font-bold rounded ${
-                      deal.status === 'active' ? 'bg-[#10B981]' : 
-                      deal.status === 'draft' ? 'bg-[#FACC15]' : 'bg-[#A855F7]'
-                    }`}>
-                      {deal.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-zinc-600 text-right">{deal.views?.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-sm text-zinc-600 text-right">{new Date(deal.updatedAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
-              {(!data?.recentDeals || data.recentDeals.length === 0) && (
-                <tr>
-                  <td colSpan={5} className="py-20 text-center text-zinc-400 font-bold">No deals recorded yet.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <VendorVerificationRequests />
+      <ProductManagement />
+      <AdminReportManagement />
     </div>
   );
 }

@@ -118,9 +118,91 @@ export async function updateProfileImage(url: string | null) {
 }
 
 export async function getMyProfile() {
-  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string } }>(
+  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string; is_verified?: boolean; verification_status?: 'none' | 'pending' | 'approved' | 'rejected'; government_id_url?: string | null } }>(
     "/users/profile",
     { method: "GET", auth: true }
+  );
+}
+
+export async function requestVerification(government_id_url: string) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/users/request-verification",
+    { method: "PUT", body: { government_id_url }, auth: true }
+  );
+}
+
+export async function getAdminVerifications() {
+  return apiFetch<{ success: boolean; data: any[] }>(
+    "/admin/verifications",
+    { method: "GET", auth: true }
+  );
+}
+
+export async function getVendorsAdmin() {
+  return apiFetch<{ success: boolean; data: any[] }>(
+    "/admin/vendors",
+    { method: "GET", auth: true }
+  );
+}
+
+export async function reviewAdminVerification(id: number, status: 'approved' | 'rejected') {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/verifications/${id}/review`,
+    { method: "PUT", body: { status }, auth: true }
+  );
+}
+
+export async function updateVendorStatusAdmin(id: number, status: string) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/vendors/${id}/status`,
+    { method: "PUT", body: { status }, auth: true }
+  );
+}
+
+export async function deleteVendorAdmin(id: number) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/vendors/${id}`,
+    { method: "DELETE", auth: true }
+  );
+}
+
+export async function getDealsAdmin(page = 1, limit = 20, search = "") {
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    search
+  }).toString();
+  return apiFetch<{ success: boolean; data: any[]; meta: any }>(
+    `/admin/deals?${query}`,
+    { method: "GET", auth: true }
+  );
+}
+
+export async function deleteDealAdmin(id: number, reason?: string) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/deals/${id}`,
+    { method: "DELETE", body: { reason }, auth: true }
+  );
+}
+
+export async function submitReport(data: { product_id?: number; vendor_id?: number; reason: string; details: string }) {
+  return apiFetch<{ success: boolean; data: any }>(
+    "/users/reports",
+    { method: "POST", body: data, auth: true }
+  );
+}
+
+export async function getAdminReports() {
+  return apiFetch<{ success: boolean; data: any[] }>(
+    "/admin/reports",
+    { method: "GET", auth: true }
+  );
+}
+
+export async function updateReportStatusAdmin(id: number, status: 'resolved' | 'dismissed') {
+  return apiFetch<{ success: boolean; data: any }>(
+    `/admin/reports/${id}`,
+    { method: "PUT", body: { status }, auth: true }
   );
 }
 

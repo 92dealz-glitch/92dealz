@@ -10,6 +10,8 @@ import { logAdView, logContactView } from "@/services/analytics.service"
 import { Loader2, CheckCircle2, AlertCircle, Shield, Package } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
+import VerifiedBadge from "@/components/VerifiedBadge"
+import ReportModal from "@/components/ReportModal";
 
 type Props = {
   params: Promise<{ id: string }>
@@ -21,7 +23,7 @@ export default function ProductPage({ params }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
-    id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: 'Brand New', specifications: {}, subcategory: ''
+    id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: 'Brand New', specifications: {}, subcategory: '', isVerified: false
   })
   useEffect(() => {
     let active = true
@@ -76,6 +78,7 @@ export default function ProductPage({ params }: Props) {
           sellerPhone: seller.phone || '',
           sellerEmail: seller.email || '',
           sellerImage: seller.profile_image_url || null,
+          isVerified: seller.is_verified || false,
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -139,6 +142,7 @@ export default function ProductPage({ params }: Props) {
   const [orderMessage, setOrderMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
@@ -371,8 +375,9 @@ export default function ProductPage({ params }: Props) {
                       ) : (product.sellerName || 'S').slice(0,1)}
                     </div>
                     <div>
-                      <div className="font-semibold">
-                        <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link> <span className="text-green-600">✔</span>
+                      <div className="font-semibold flex items-center gap-1.5">
+                        <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link>
+                        {product.isVerified && <VerifiedBadge size={16} showText />}
                       </div>
                       <div className="text-yellow-400">
                         {Array.from({ length: 5 }).map((_, i) => (
@@ -406,6 +411,12 @@ export default function ProductPage({ params }: Props) {
               <div className="mt-4 space-y-2">
                 <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">🔎 View Seller Profile</Link>
                 <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">📋 See All Ads from Seller</Link>
+                <button 
+                  onClick={() => setShowReportModal(true)}
+                  className="w-full flex items-center justify-center gap-2 py-2 text-red-500 font-bold text-sm hover:bg-red-50 rounded border border-red-100 transition-colors mt-2"
+                >
+                  🚩 Report this Ad
+                </button>
               </div>
             </div>
           </aside>
@@ -717,6 +728,12 @@ export default function ProductPage({ params }: Props) {
               </div>
             </div>
           </aside>
+          <ReportModal 
+          isOpen={showReportModal} 
+          onClose={() => setShowReportModal(false)} 
+          productId={product.id}
+          itemName={product.title}
+        />
         </div>
       </main>
 

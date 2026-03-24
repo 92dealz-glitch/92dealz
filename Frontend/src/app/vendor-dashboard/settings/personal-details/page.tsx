@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Camera } from "lucide-react";
 import { uploadImage } from "@/services/upload.service";
-import { getMyProfile, updateProfileImage } from "@/lib/api";
+import { getMyProfile, updateProfileImage, updateProfile } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 
 export default function PersonalDetailsPage() {
@@ -68,10 +68,7 @@ export default function PersonalDetailsPage() {
         setSaving(true);
         setMessage({ text: "", type: "" });
         try {
-            // using the new updateMyProfile function imported via api.ts
-            // Note: email cannot be changed via this profile update usually, but we keep it readOnly or send it.
-            const { updateMyProfile } = require("@/lib/api");
-            await updateMyProfile({
+            await updateProfile({
                 name: profile.name,
                 phone: profile.phone,
                 businessName: profile.businessName,

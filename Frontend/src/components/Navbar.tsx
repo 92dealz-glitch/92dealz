@@ -30,6 +30,7 @@ import { useFavorites } from "../context/FavoritesProvider";
 import { API_BASE } from "@/services/apiClient";
 import { getFallbackArray } from "../data/categoriesData";
 import { getNotifications, markAsRead, AppNotification } from "@/services/notification.service";
+import VerifiedBadge from "./VerifiedBadge";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -690,12 +691,15 @@ export default function Navbar() {
   );
 }
 
-function useNavProfileImage() {
-  const [url, setUrl] = useState<string | null>(null);
+function useNavUserDetails() {
+  const [data, setData] = useState<{ url: string | null; isVerified: boolean }>({ url: null, isVerified: false });
   useEffect(() => {
     try {
       const cached = typeof window !== "undefined" ? window.localStorage.getItem("profile_image_url") : null;
-      if (cached) setUrl(cached);
+      const cachedVerified = typeof window !== "undefined" ? window.localStorage.getItem("is_verified") === "true" : false;
+      if (cached) setData(prev => ({ ...prev, url: cached }));
+      setData(prev => ({ ...prev, isVerified: cachedVerified }));
+
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
       if (!token) return;
       fetch(`${API_BASE}/users/profile`, {
@@ -705,20 +709,22 @@ function useNavProfileImage() {
         .then((r) => r.json())
         .then((d) => {
           const u = d?.data?.profile_image_url;
-          if (u) {
-            setUrl(u);
-            if (typeof window !== "undefined") window.localStorage.setItem("profile_image_url", u);
+          const v = !!d?.data?.is_verified;
+          setData({ url: u || null, isVerified: v });
+          if (typeof window !== "undefined") {
+            if (u) window.localStorage.setItem("profile_image_url", u);
+            window.localStorage.setItem("is_verified", String(v));
           }
         })
         .catch(() => {});
     } catch {}
   }, []);
-  return url;
+  return data;
 }
 
 function NavUserMenu({ signOut }: { signOut: () => void }) {
   const [open, setOpen] = useState(false);
-  const url = useNavProfileImage();
+  const { url, isVerified } = useNavUserDetails();
   const role = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
   const router = useRouter();
 
@@ -748,7 +754,10 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
           <div className="absolute right-0 mt-3 w-56 bg-white border border-zinc-100 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="bg-zinc-50 px-4 py-3 border-b border-zinc-100 mb-1">
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Account Role</p>
-              <p className="text-sm font-bold text-orange-600 capitalize">{role}</p>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-sm font-black text-orange-600 capitalize">{role}</p>
+                {isVerified && <VerifiedBadge size={14} />}
+              </div>
             </div>
             <div className="p-1.5 space-y-0.5">
               {role !== "user" && (
@@ -796,7 +805,7 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
 }
 
 function UserAvatarCircle({ small = false }: { small?: boolean }) {
-  const url = useNavProfileImage();
+  const { url } = useNavUserDetails();
   const size = small ? "w-6 h-6" : "w-10 h-10";
   return (
     <div className={`${size} rounded-full bg-orange-500 flex items-center justify-center text-white overflow-hidden border border-white shadow-sm`}>
