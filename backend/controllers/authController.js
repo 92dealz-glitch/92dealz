@@ -14,12 +14,32 @@ const PendingRegistration = require('../models/PendingRegistration');
 const { Op } = require('sequelize');
 const { sendTwilioOtp, verifyTwilioOtp } = require('../services/twilioService');
 
+function formatPhone(phoneInput) {
+  if (!phoneInput) return phoneInput;
+  let clean = phoneInput.replace(/[\s-()]/g, '');
+  if (clean.startsWith('0') && clean.length === 11) {
+    return '+234' + clean.substring(1);
+  }
+  if (clean.startsWith('234') && clean.length === 13) {
+    return '+' + clean;
+  }
+  if (!clean.startsWith('+')) {
+    if (clean.length === 10) return '+234' + clean;
+    return '+' + clean;
+  }
+  return clean;
+}
+
 // POST /api/auth/register-initiate
 exports.registerInitiate = async (req, res, next) => {
   try {
     const { password, name, phone, role } = req.body;
     const method = req.body.method || 'email';
-    const contact = req.body.contact ? req.body.contact.trim().toLowerCase() : req.body.email?.trim().toLowerCase();
+    let contact = req.body.contact ? req.body.contact.trim().toLowerCase() : req.body.email?.trim().toLowerCase();
+
+    if (method === 'phone') {
+      contact = formatPhone(contact);
+    }
 
     if (!contact || !password || !name) {
       return res.status(400).json({ success: false, message: 'Name, contact (email/phone) and password are required' });
@@ -85,8 +105,12 @@ exports.registerInitiate = async (req, res, next) => {
 exports.registerVerify = async (req, res, next) => {
   try {
     const method = req.body.method || 'email';
-    const contact = req.body.contact ? req.body.contact.trim().toLowerCase() : req.body.email?.trim().toLowerCase();
+    let contact = req.body.contact ? req.body.contact.trim().toLowerCase() : req.body.email?.trim().toLowerCase();
     const otp = req.body.otp;
+
+    if (method === 'phone') {
+      contact = formatPhone(contact);
+    }
 
     if (!contact || !otp) {
       return res.status(400).json({ success: false, message: 'Contact and OTP are required' });
@@ -172,7 +196,10 @@ exports.resetPassword = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const rawEmail = req.body.email;
-    const emailInput = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : rawEmail;
+    let emailInput = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : rawEmail;
+    
+    // Attempt format assuming it might be a phone number
+    const formattedPhone = formatPhone(emailInput);
     const password = req.body.password;
     if (!emailInput || !password) {
       return res.status(400).json({ success: false, message: 'Email/Phone and password are required' });
@@ -182,6 +209,7 @@ exports.login = async (req, res, next) => {
       where: { 
         [Op.or]: [
           { email: emailInput },
+          { phone: formattedPhone },
           { phone: emailInput }
         ]
       } 
