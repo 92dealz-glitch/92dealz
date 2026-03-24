@@ -105,35 +105,55 @@ async function main() {
           { heading: "HEALTH", items: ["Supplements", "Medical Supplies", "Wellness"] },
         ]
       },
-      specifications_template: []
+      specifications_template: [
+        { label: "Skin/Hair Type", type: "select", options: ["All", "Oily", "Dry", "Combination", "Sensitive"] },
+        { label: "Formulation", type: "select", options: ["Liquid", "Cream", "Powder", "Gel", "Solid"] },
+        { label: "Volume (ml/g)", type: "number", placeholder: "e.g. 150" }
+      ]
     },
     {
       name: 'Furniture & appliances',
       slug: 'furniture',
       icon: '/assets/images/furniture.svg',
       mega_menu: { columns: [] },
-      specifications_template: []
+      specifications_template: [
+        { label: "Material", type: "text", placeholder: "e.g. Wood, Leather, Steel" },
+        { label: "Brand", type: "text", placeholder: "e.g. LG, Samsung" },
+        { label: "Color", type: "text", placeholder: "e.g. Black, White" }
+      ]
     },
     {
       name: 'Babies & kids',
       slug: 'babies',
       icon: '/assets/images/girl.svg',
       mega_menu: { columns: [] },
-      specifications_template: []
+      specifications_template: [
+        { label: "Age Range", type: "select", options: ["0-6 Months", "6-12 Months", "1-3 Years", "4-7 Years", "8-12 Years", "13+ Years"] },
+        { label: "Gender", type: "select", options: ["Boy", "Girl", "Unisex"] },
+        { label: "Material", type: "text", placeholder: "e.g. Cotton, Plastic" }
+      ]
     },
     {
       name: 'Agriculture & food',
       slug: 'agriculture',
       icon: '/assets/images/foodbaasket.svg',
       mega_menu: { columns: [] },
-      specifications_template: []
+      specifications_template: [
+        { label: "Type", type: "select", options: ["Crops & Seeds", "Livestock & Poultry", "Farm Machinery", "Feeds & Supplements", "Fertilizers"] },
+        { label: "Quantity", type: "text", placeholder: "e.g. 50 kg, 100 birds" },
+        { label: "Packaging", type: "select", options: ["Bag", "Carton", "Bulk", "Pcs"] }
+      ]
     },
     {
       name: 'Services',
       slug: 'services',
       icon: '/assets/images/engineer.svg',
       mega_menu: { columns: [] },
-      specifications_template: []
+      specifications_template: [
+        { label: "Service Type", type: "select", options: ["Consulting", "Cleaning", "Catering", "Event Planning", "Digital Services", "Educational", "Legal"] },
+        { label: "Duration", type: "text", placeholder: "e.g. 1 hour, 1 day, Project Based" },
+        { label: "Location Form", type: "select", options: ["Remote", "On-site", "Hybrid"] }
+      ]
     },
     {
       name: 'Electronics',
@@ -145,28 +165,45 @@ async function main() {
           { heading: "AUDIO", items: ["Speakers", "Headphones", "Home Audio"] },
         ]
       },
-      specifications_template: []
+      specifications_template: [
+        { label: "Brand", type: "text", placeholder: "e.g. Sony, LG, JBL" },
+        { label: "Warranty", type: "select", options: ["None", "3 Months", "6 Months", "1 Year", "2 Years+"] },
+        { label: "Screen/Driver Size", type: "text", placeholder: "e.g. 55 inch, 40mm driver" }
+      ]
     },
     {
       name: 'Commercial equipment',
       slug: 'commercial',
       icon: '/assets/images/equipment.svg',
       mega_menu: { columns: [] },
-      specifications_template: []
+      specifications_template: [
+        { label: "Industry", type: "select", options: ["Restaurant/Catering", "Medical", "Manufacturing", "Office", "Retail"] },
+        { label: "Power Source", type: "select", options: ["Electric", "Gas", "Diesel", "Solar", "Manual"] },
+        { label: "Brand", type: "text", placeholder: "e.g. Caterpillar" }
+      ]
     },
     {
       name: 'Repair and construction',
       slug: 'repair',
       icon: '/assets/images/equipmentbaket.svg',
       mega_menu: { columns: [] },
-      specifications_template: []
+      specifications_template: [
+        { label: "Item Group", type: "select", options: ["Power Tools", "Hand Tools", "Building Materials", "Safety Gear", "Electrical", "Plumbing"] },
+        { label: "Material", type: "text", placeholder: "e.g. Steel, PVC, Cement" },
+        { label: "Voltage/Power", type: "text", placeholder: "e.g. 220V, 1500W" }
+      ]
     },
     {
       name: 'Pets and animals',
       slug: 'pets',
       icon: '/assets/images/pet.svg',
       mega_menu: { columns: [] },
-      specifications_template: []
+      specifications_template: [
+        { label: "Pet Type", type: "select", options: ["Dogs", "Cats", "Birds", "Fish", "Reptiles", "Farm Animals"] },
+        { label: "Breed", type: "text", placeholder: "e.g. German Shepherd, Persian" },
+        { label: "Age", type: "text", placeholder: "e.g. 2 Months, 3 Years" },
+        { label: "Gender", type: "select", options: ["Male", "Female", "Unknown"] }
+      ]
     }
   ];
 
