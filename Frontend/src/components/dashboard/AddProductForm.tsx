@@ -274,7 +274,12 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
 
 
 
-            <div className="flex justify-end pt-8">
+            <div className="flex flex-col items-end gap-2 pt-8">
+                {(!data.title || !data.category_id) && (
+                    <p className="text-red-500 font-bold text-sm">
+                        ⚠️ Product Title and Category are compulsory.
+                    </p>
+                )}
                 <button
                     onClick={onNext}
                     disabled={!data.title || !data.category_id}
@@ -307,8 +312,10 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
             </div>
 
             {specs.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {specs.map((s: any) => (
+                <>
+                    <h4 className="text-black font-black text-[17px] pt-4 mb-2">Product Specifications</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {specs.map((s: any) => (
                         <div key={s.label}>
                             {s.type === "select" ? (
                                 <SelectField 
@@ -338,7 +345,8 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                             )}
                         </div>
                     ))}
-                </div>
+                    </div>
+                </>
             )}
 
             <div className="flex flex-col gap-2">
@@ -352,20 +360,27 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                 />
             </div>
 
-            <div className="flex justify-between pt-8 gap-4">
-                <button
-                    onClick={onBack}
-                    className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
-                >
-                    Back
-                </button>
-                <button
-                    onClick={onNext}
-                    disabled={!data.price || !data.description}
-                    className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
-                >
-                    Next
-                </button>
+            <div className="flex flex-col gap-4 pt-8">
+                {(!data.price || !data.description) && (
+                    <p className="text-red-500 font-bold text-sm text-right">
+                        ⚠️ Price and Description are compulsory.
+                    </p>
+                )}
+                <div className="flex justify-between gap-4">
+                    <button
+                        onClick={onBack}
+                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
+                    >
+                        Back
+                    </button>
+                    <button
+                        onClick={onNext}
+                        disabled={!data.price || !data.description}
+                        className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
     )
@@ -479,21 +494,28 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                 </div>
             </div>
 
-            <div className="flex flex-wrap justify-between pt-8 gap-4">
-                <button
-                    onClick={onBack}
-                    className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
-                >
-                    Back
-                </button>
-                <div className="flex gap-4 w-full sm:w-auto">
-                    <button 
-                        onClick={postAd} 
-                        disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
-                        className="flex-1 sm:flex-none bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[180px]"
+            <div className="flex flex-col gap-4 pt-8">
+                {(data.images.length === 0 || !data.title || !data.price) && (
+                    <p className="text-red-500 font-bold text-sm text-right">
+                        ⚠️ {data.images.length === 0 ? "A product picture is compulsory to list your deal." : "Missing required product details."}
+                    </p>
+                )}
+                <div className="flex flex-wrap justify-between gap-4">
+                    <button
+                        onClick={onBack}
+                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
                     >
-                        {submitting ? "Posting..." : "Post Ad"}
+                        Back
                     </button>
+                    <div className="flex gap-4 w-full sm:w-auto">
+                        <button 
+                            onClick={postAd} 
+                            disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
+                            className="flex-1 sm:flex-none bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[180px]"
+                        >
+                            {submitting ? "Posting..." : "Post Ad"}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
