@@ -38,10 +38,25 @@ export default function MessagingClient() {
           const uId = Number(userIdParam);
           const dId = dealIdParam ? Number(dealIdParam) : undefined;
           
-          const existing = fetchedThreads.find(t => t.other_id === uId && (dId ? t.deal_id === dId : true));
+          // Look for any existing thread with this user
+          const existing = fetchedThreads.find(t => t.other_id === uId);
+          
           if (existing) {
-            handleSelectThread(existing);
+            // If we found a thread with this user but it was for a different deal (or no deal),
+            // and the user provided a dId in the URL, we "re-purpose" this thread for the new deal.
+            if (dId && existing.deal_id !== dId) {
+              const updatedThread = { ...existing, deal_id: dId };
+              // Fetch the title for the new deal if possible
+              try {
+                const dRes = await apiFetch<{success:boolean, data:any}>(`ads/${dId}`);
+                if (dRes.success) updatedThread.deal_title = dRes.data.title;
+              } catch {}
+              handleSelectThread(updatedThread);
+            } else {
+              handleSelectThread(existing);
+            }
           } else {
+            // Initiate a dummy thread to start chatting (completely new interaction)
             const virtualThread: Thread = {
               other_id: uId,
               deal_id: dId || null,

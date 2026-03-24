@@ -1,4 +1,6 @@
 const sequelize = require('../config/database');
+const Notification = require('../models/Notification');
+const User = require('../models/userModel'); // or wherever User is defined
 
 exports.send = async (req, res, next) => {
   try {
@@ -11,6 +13,21 @@ exports.send = async (req, res, next) => {
        VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
       { bind: [fromId, Number(to_user_id), deal_id ? Number(deal_id) : null, String(content)] }
     );
+
+    // Create notification for the recipient
+    try {
+      const sender = await User.findByPk(fromId);
+      await Notification.create({
+        user_id: to_user_id,
+        type: 'MESSAGE',
+        title: `New Message from ${sender ? sender.name : 'User'}`,
+        message: content.length > 50 ? content.substring(0, 47) + '...' : content,
+        link: `/messages?userId=${fromId}${deal_id ? `&dealId=${deal_id}` : ''}`,
+      });
+    } catch (notifErr) {
+      console.error("Failed to create message notification:", notifErr);
+    }
+
     return res.status(201).json({ success: true, data: { id: rows[0].id } });
   } catch (err) { return next(err); }
 };
