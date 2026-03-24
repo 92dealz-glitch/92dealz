@@ -41,9 +41,11 @@ interface BaseFieldsProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   showPassword: boolean;
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  showConfirmPassword: boolean;
+  setShowConfirmPassword: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const BaseFields = ({ role, method, formData, handleChange, showPassword, setShowPassword }: BaseFieldsProps) => (
+const BaseFields = ({ role, method, formData, handleChange, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword }: BaseFieldsProps) => (
   <>
     <div>
       <label className={labelCls}>{role === "vendor" ? "Owner / Contact Name" : "Full Name"}</label>
@@ -69,9 +71,12 @@ const BaseFields = ({ role, method, formData, handleChange, showPassword, setSho
     </div>
     <div>
       <label className={labelCls}>Confirm Password</label>
-      <input name="confirmPassword" required type="password"
-        value={formData.confirmPassword} onChange={handleChange}
-        placeholder="Re-enter your password" className={inputCls} />
+      <div className="relative">
+        <input name="confirmPassword" required type={showConfirmPassword ? "text" : "password"}
+          value={formData.confirmPassword} onChange={handleChange}
+          placeholder="Re-enter your password" className={`${inputCls} pr-11`} />
+        <EyeIcon showPassword={showConfirmPassword} setShowPassword={setShowConfirmPassword} />
+      </div>
     </div>
   </>
 );
@@ -162,6 +167,7 @@ export default function SignupPage() {
   const [role, setRole] = useState<UserRole>("user");
   const [method, setMethod] = useState<ContactMethod>("email");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [categories, setCategories] = useState<{id: string, title: string}[]>([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -289,7 +295,7 @@ export default function SignupPage() {
 
           {step === 1 ? (
             <form onSubmit={handleSubmit} className="space-y-3.5">
-              <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
+              <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} />
               {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
               <button type="submit" disabled={loading}
@@ -404,7 +410,7 @@ export default function SignupPage() {
 
             {step === 1 ? (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} />
+                <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} />
                 {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
                 <button type="submit" disabled={loading}

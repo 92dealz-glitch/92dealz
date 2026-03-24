@@ -37,3 +37,9 @@ button,
 .clickable {
   cursor: pointer;
 }
+
+/* Hide Microsoft Edge native password reveal icon to prevent double icons */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
