@@ -241,34 +241,25 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <InputField label="Product Title" placeholder="e.g. washing machine" value={data.title} onChange={(v) => updateData({ title: v })} required />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="flex flex-col gap-2">
-                    <label className="text-black font-black text-[15px]">Category<span className="text-[#E85A28] ml-1">*</span></label>
-                    <div className="relative">
-                        <select 
-                            value={data.category_id || ""}
-                            onChange={(e) => {
-                                const id = Number(e.target.value);
-                                const cat = categories.find(c => c.catId === id);
-                                updateData({ category_id: id, category: cat?.id || "", subcategory: "" });
-                            }}
-                            className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
-                        >
-                            <option value="" disabled>Select Category</option>
-                            {categories.map(c => <option key={c.catId} value={c.catId}>{c.title}</option>)}
-                        </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
-                            <ChevronDownIcon />
-                        </div>
+            <div className="flex flex-col gap-2">
+                <label className="text-black font-black text-[15px]">Category<span className="text-[#E85A28] ml-1">*</span></label>
+                <div className="relative">
+                    <select 
+                        value={data.category_id || ""}
+                        onChange={(e) => {
+                            const id = Number(e.target.value);
+                            const cat = categories.find(c => c.catId === id);
+                            updateData({ category_id: id, category: cat?.id || "", subcategory: "" });
+                        }}
+                        className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
+                    >
+                        <option value="" disabled>Select Category</option>
+                        {categories.map(c => <option key={c.catId} value={c.catId}>{c.title}</option>)}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                        <ChevronDownIcon />
                     </div>
                 </div>
-                <SelectField 
-                    label="Condition" 
-                    options={["New", "Used - Like New", "Used - Good", "Refurbished"]} 
-                    value={data.condition} 
-                    onChange={(v) => updateData({ condition: v })} 
-                    required 
-                />
             </div>
 
             {subcategoryOptions.length > 0 && (
@@ -281,16 +272,12 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                 />
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InputField label="Brand" placeholder="e.g. Apple, Nike" value={data.brand} onChange={(v) => updateData({ brand: v })} required />
-                <InputField label="Model" placeholder="e.g. iPhone 15, Air Max" value={data.model} onChange={(v) => updateData({ model: v })} required />
-            </div>
-            <InputField label="Color" placeholder="e.g. Black, White" value={data.color} onChange={(v) => updateData({ color: v })} required />
+
 
             <div className="flex justify-end pt-8">
                 <button
                     onClick={onNext}
-                    disabled={!data.title || !data.category_id || !data.condition}
+                    disabled={!data.title || !data.category_id}
                     className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
                 >
                     Next

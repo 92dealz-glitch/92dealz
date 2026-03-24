@@ -27,6 +27,9 @@ async function main() {
         ]
       },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good"] },
+        { label: "Brand", type: "text", placeholder: "e.g. Gucci, Nike, Zara" },
+        { label: "Color", type: "text", placeholder: "e.g. Black, White, Red" },
         { label: "Size", type: "select", options: ["XXS", "XS", "S", "M", "L", "XL", "XXL", "38", "39", "40", "41", "42", "43", "44", "45"] },
         { label: "Material", type: "text", placeholder: "e.g. Cotton, Leather, Polyester" },
         { label: "Gender", type: "select", options: ["Men", "Women", "Unisex", "Boys", "Girls"] },
@@ -47,6 +50,10 @@ async function main() {
         ]
       },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good", "Refurbished"] },
+        { label: "Brand", type: "text", placeholder: "e.g. Apple, Samsung, Xiaomi" },
+        { label: "Model", type: "text", placeholder: "e.g. iPhone 15 Pro, Galaxy S24" },
+        { label: "Color", type: "text", placeholder: "e.g. Titanium, Black, Blue" },
         { label: "RAM", type: "select", options: ["2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"] },
         { label: "Internal Storage", type: "select", options: ["16GB", "32GB", "64GB", "128GB", "256GB", "512GB", "1TB"] },
         { label: "Screen Size (inches)", type: "number", placeholder: "e.g. 6.1" },
@@ -67,6 +74,10 @@ async function main() {
         ]
       },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good", "Refurbished"] },
+        { label: "Brand", type: "text", placeholder: "e.g. HP, Dell, Apple, Lenovo" },
+        { label: "Model", type: "text", placeholder: "e.g. MacBook Pro M3, ThinkPad X1" },
+        { label: "Color", type: "text", placeholder: "e.g. Silver, Space Gray" },
         { label: "RAM", type: "select", options: ["4GB", "8GB", "16GB", "32GB", "64GB", "128GB"] },
         { label: "Storage Capacity", type: "text", placeholder: "e.g. 512GB SSD, 1TB HDD" },
         { label: "Processor", type: "text", placeholder: "e.g. Intel Core i7, Apple M2" },
@@ -81,12 +92,16 @@ async function main() {
       icon: '/assets/images/car.svg',
       mega_menu: { columns: [] },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["Brand New", "Foreign Used (Tokunbo)", "Locally Used"] },
+        { label: "Make/Brand", type: "text", placeholder: "e.g. Toyota, Honda, Mercedes-Benz" },
+        { label: "Model", type: "text", placeholder: "e.g. Camry, Accord, C-Class" },
+        { label: "Color", type: "text", placeholder: "e.g. Black, White, Red" },
         { label: "Year of Manufacture", type: "number", placeholder: "e.g. 2022" },
         { label: "Mileage (km)", type: "number", placeholder: "e.g. 45000" },
         { label: "Transmission", type: "select", options: ["Automatic", "Manual", "CVT", "Semi-Auto"] },
         { label: "Fuel Type", type: "select", options: ["Petrol", "Diesel", "Electric", "Hybrid"] },
         { label: "Body Type", type: "select", options: ["Sedan", "SUV", "Hatchback", "Coupe", "Convertible", "Pickup", "Van", "Bus"] },
-        { label: "Registered Status", type: "select", options: ["Registered", "Unregistered (Tokunbo)"] },
+        { label: "Registered Status", type: "select", options: ["Registered", "Unregistered"] },
         { label: "Engine Size (cc)", type: "number", placeholder: "e.g. 2000" },
         { label: "Number of Seats", type: "select", options: ["2", "4", "5", "7", "8+"] }
       ]
@@ -117,6 +132,7 @@ async function main() {
         ]
       },
       specifications_template: [
+        { label: "Brand", type: "text", placeholder: "e.g. L'Oreal, Nivea, MAC" },
         { label: "Skin/Hair Type", type: "select", options: ["All", "Oily", "Dry", "Combination", "Sensitive", "Damaged"] },
         { label: "Formulation", type: "select", options: ["Liquid", "Cream", "Powder", "Gel", "Solid", "Oil", "Serum"] },
         { label: "Target Gender", type: "select", options: ["Women", "Men", "Unisex"] },
@@ -130,6 +146,9 @@ async function main() {
       icon: '/assets/images/furniture.svg',
       mega_menu: { columns: [] },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good", "Refurbished"] },
+        { label: "Brand", type: "text", placeholder: "e.g. LG, Samsung, Sony" },
+        { label: "Color", type: "text", placeholder: "e.g. Black, White, Silver" },
         { label: "Primary Material", type: "text", placeholder: "e.g. Mahogany Wood, Stainless Steel, Leather" },
         { label: "Room Type", type: "select", options: ["Living Room", "Bedroom", "Kitchen", "Dining", "Office", "Outdoor/Patio"] },
         { label: "Dimensions (L x W x H)", type: "text", placeholder: "e.g. 200 x 150 x 80 cm" },
@@ -142,6 +161,8 @@ async function main() {
       icon: '/assets/images/girl.svg',
       mega_menu: { columns: [] },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good"] },
+        { label: "Brand", type: "text", placeholder: "e.g. Mothercare, Pampers" },
         { label: "Age Range", type: "select", options: ["0-6 Months", "6-12 Months", "1-3 Years", "4-7 Years", "8-12 Years", "13+ Years"] },
         { label: "Gender", type: "select", options: ["Boy", "Girl", "Unisex"] },
         { label: "Material/Fabric", type: "text", placeholder: "e.g. 100% Cotton, BPA-Free Plastic" }
@@ -183,6 +204,10 @@ async function main() {
         ]
       },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good", "Refurbished"] },
+        { label: "Brand", type: "text", placeholder: "e.g. Sony, LG, JBL" },
+        { label: "Model", type: "text", placeholder: "e.g. Bravia, X Boom" },
+        { label: "Color", type: "text", placeholder: "e.g. Black, Silver" },
         { label: "Warranty Period", type: "select", options: ["No Warranty", "3 Months", "6 Months", "1 Year", "2 Years+"] },
         { label: "Connectivity", type: "text", placeholder: "e.g. Bluetooth, Wi-Fi, HDMI, USB" },
         { label: "Screen/Driver Size", type: "text", placeholder: "e.g. 55 inches, 40mm driver" },
@@ -195,6 +220,8 @@ async function main() {
       icon: '/assets/images/equipment.svg',
       mega_menu: { columns: [] },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good", "Refurbished"] },
+        { label: "Brand", type: "text", placeholder: "e.g. Caterpillar, Mikano, Siemens" },
         { label: "Industry Focus", type: "select", options: ["Restaurant/Catering", "Medical/Clinical", "Heavy Manufacturing", "Office", "Retail/POS", "Logistics"] },
         { label: "Power Source", type: "select", options: ["Electric", "Gas", "Diesel", "Solar", "Manual"] },
         { label: "Year Manufactured", type: "number", placeholder: "e.g. 2018" },
@@ -207,6 +234,8 @@ async function main() {
       icon: '/assets/images/equipmentbaket.svg',
       mega_menu: { columns: [] },
       specifications_template: [
+        { label: "Condition", type: "select", options: ["New", "Used", "Refurbished"] },
+        { label: "Brand", type: "text", placeholder: "e.g. Bosch, Makita" },
         { label: "Item Classification", type: "select", options: ["Power Tools", "Hand Tools", "Building Materials", "Safety Gear (PPE)", "Electrical", "Plumbing", "Paints/Finishes"] },
         { label: "Material Composition", type: "text", placeholder: "e.g. Stainless Steel, PVC, Cement" },
         { label: "Voltage/Power Spec", type: "text", placeholder: "e.g. 220V, 1500W, N/A" }
@@ -221,6 +250,7 @@ async function main() {
         { label: "Animal Category", type: "select", options: ["Dogs", "Cats", "Birds", "Fish", "Reptiles", "Farm Animals/Livestock"] },
         { label: "Breed/Species", type: "text", placeholder: "e.g. German Shepherd, Persian Cat" },
         { label: "Age", type: "text", placeholder: "e.g. 2 Months, 3 Years" },
+        { label: "Color", type: "text", placeholder: "e.g. Brown, White, Bi-Color" },
         { label: "Gender", type: "select", options: ["Male", "Female", "Unknown"] },
         { label: "Vaccination Status", type: "select", options: ["Fully Vaccinated", "Partially Vaccinated", "Not Vaccinated"] }
       ]
