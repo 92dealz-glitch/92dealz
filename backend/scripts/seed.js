@@ -10,6 +10,7 @@ const Deal = require('../models/Deal');
 
 async function main() {
   await sequelize.authenticate();
+  await sequelize.sync({ alter: true });
 
   const categories = [
     {
