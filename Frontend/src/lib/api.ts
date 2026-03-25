@@ -298,3 +298,10 @@ export async function getAdminCategories() {
     { method: "GET", auth: true }
   );
 }
+
+export async function changePassword(payload: any) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/auth/change-password",
+    { method: "PUT", body: payload, auth: true }
+  );
+}

@@ -196,8 +196,28 @@ exports.register = async (req, res, next) => {
 
 // POST /api/auth/forgot-password
 exports.forgotPassword = async (req, res, next) => {
-  // Skipping extensive modification, keep original behavior assuming email only
-  return res.json({ success: false, message: 'Not implemented for mixed auth yet' });
+  try {
+    const { contact, method } = req.body;
+    if (!contact) return res.status(400).json({ success: false, message: 'Contact is required' });
+
+    const where = method === 'phone' ? { phone: contact } : { email: contact.trim().toLowerCase() };
+    const user = await User.findOne({ where });
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    // Block admins from using public forgot password flow
+    if (user.role === 'admin') {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Admin password reset is restricted. Please contact the system owner or reset from the dashboard.' 
+      });
+    }
+
+    // Original behavior simulation or implementation
+    return res.json({ success: false, message: 'Forgot password flow not fully connected for production yet' });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 // POST /api/auth/verify-otp
@@ -259,6 +279,32 @@ exports.login = async (req, res, next) => {
       token,
       user: { id: user.id, name: user.name, email: user.email, role: user.role, status: user.status, phone: user.phone },
     });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// PUT /api/auth/change-password
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Current and new passwords are required' });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Incorrect current password' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    return res.json({ success: true, message: 'Password changed successfully' });
   } catch (err) {
     return next(err);
   }

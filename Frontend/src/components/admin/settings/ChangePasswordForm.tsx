@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Lock } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { useNotification } from "@/context/NotificationContext";
+import { changePassword } from "@/lib/api";
 
 export default function ChangePasswordForm() {
   const { showNotification } = useNotification();
@@ -12,8 +13,9 @@ export default function ChangePasswordForm() {
     confirm: ""
   });
   const [isChanging, setIsChanging] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.current || !formData.new || !formData.confirm) {
       showNotification("error", "All fields are required.");
@@ -28,10 +30,20 @@ export default function ChangePasswordForm() {
       return;
     }
     
-    // Success simulation
-    showNotification("success", "Password changed successfully.");
-    setFormData({ current: "", new: "", confirm: "" });
-    setIsChanging(false);
+    setIsLoading(true);
+    try {
+      await changePassword({ 
+        currentPassword: formData.current, 
+        newPassword: formData.new 
+      });
+      showNotification("success", "Password changed successfully.");
+      setFormData({ current: "", new: "", confirm: "" });
+      setIsChanging(false);
+    } catch (err: any) {
+      showNotification("error", err.message || "Failed to change password");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isChanging) {
@@ -99,9 +111,11 @@ export default function ChangePasswordForm() {
           </button>
           <button 
             type="submit"
-            className="px-6 py-2 bg-[#E85A28] text-white rounded-lg hover:bg-[#D14F23] transition-colors shadow-sm"
+            disabled={isLoading}
+            className="px-6 py-2 bg-[#E85A28] text-white rounded-lg hover:bg-[#D14F23] transition-colors shadow-sm disabled:opacity-50 inline-flex items-center gap-2"
           >
-            Change Password
+            {isLoading && <Loader2 size={16} className="animate-spin" />}
+            {isLoading ? "Changing..." : "Change Password"}
           </button>
         </div>
       </form>

@@ -8,7 +8,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<"user" | "vendor" | "admin">("user");
+  const [role, setRole] = useState<"user" | "vendor">("user");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -57,10 +57,16 @@ export default function LoginPage() {
       });
 
       const role = String(res.user?.role || "").toLowerCase();
+      if (role === "admin") {
+        setError("Admin login is restricted. Please use the official administrator portal.");
+        setLoading(false);
+        // Clear NextAuth session if possible or just prevent redirect
+        window.localStorage.removeItem("token");
+        return;
+      }
+
       if (role === "vendor") {
         router.push("/vendor-dashboard");
-      } else if (role === "admin") {
-        router.push("/admin-dashboard");
       } else {
         router.push("/");
       }
@@ -120,14 +126,14 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit}>
             {/* Role Toggle */}
             <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1 mb-4">
-              {(["user", "vendor", "admin"] as const).map((r) => (
+              {(["user", "vendor"] as const).map((r) => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => setRole(r)}
                   className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${role === r ? "bg-white text-orange-500 shadow-sm" : "text-gray-500"}`}
                 >
-                  {r === "user" ? "User" : r === "vendor" ? "Vendor" : "Admin"}
+                  {r === "user" ? "User" : "Vendor"}
                 </button>
               ))}
             </div>
@@ -241,14 +247,14 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Role Toggle */}
               <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1">
-                {(["user", "vendor", "admin"] as const).map((r) => (
+                {(["user", "vendor"] as const).map((r) => (
                   <button
                     key={r}
                     type="button"
                     onClick={() => setRole(r)}
                     className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${role === r ? "bg-white text-orange-500 shadow-sm" : "text-gray-500"}`}
                   >
-                    {r === "user" ? "User" : r === "vendor" ? "Vendor" : "Admin"}
+                    {r === "user" ? "User" : "Vendor"}
                   </button>
                 ))}
               </div>
