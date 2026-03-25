@@ -34,7 +34,7 @@ const Deal = sequelize.define('Deal', {
     allowNull: true,
   },
   status: {
-    type: DataTypes.ENUM('active', 'sold', 'draft', 'closed'),
+    type: DataTypes.ENUM('active', 'sold', 'draft', 'closed', 'scheduled'),
     allowNull: true,
     defaultValue: 'active',
   },

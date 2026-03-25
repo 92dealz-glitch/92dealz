@@ -30,9 +30,9 @@ exports.logContact = async (req, res, next) => {
 exports.summary = async (_req, res, next) => {
   try {
     const [[deals]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_deals FROM deals`);
-    const [[published]] = await sequelize.query(`SELECT COUNT(*)::INT AS published FROM deals WHERE status='active'`);
-    const [[drafts]] = await sequelize.query(`SELECT COUNT(*)::INT AS drafts FROM deals WHERE status='draft'`);
-    const [[scheduled]] = await sequelize.query(`SELECT COUNT(*)::INT AS scheduled FROM deals WHERE status='scheduled'`);
+    const [[published]] = await sequelize.query(`SELECT COUNT(*)::INT AS published FROM deals WHERE status::TEXT='active'`);
+    const [[drafts]] = await sequelize.query(`SELECT COUNT(*)::INT AS drafts FROM deals WHERE status::TEXT='draft'`);
+    const [[scheduled]] = await sequelize.query(`SELECT COUNT(*)::INT AS scheduled FROM deals WHERE status::TEXT='scheduled'`);
     const [[views]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_views FROM click_events WHERE type='view'`);
     const [[contacts]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_contacts FROM click_events WHERE type='contact'`);
     
@@ -59,14 +59,14 @@ exports.summary = async (_req, res, next) => {
     return res.json({ 
       success: true, 
       data: { 
-        total_deals: deals.total_deals || 0, 
-        published: published.published || 0,
-        drafts: drafts.drafts || 0,
-        scheduled: scheduled.scheduled || 0,
-        total_views: views.total_views || 0, 
-        total_contacts: contacts.total_contacts || 0,
-        categories,
-        recentDeals
+        total_deals: deals?.total_deals || 0, 
+        published: published?.published || 0,
+        drafts: drafts?.drafts || 0,
+        scheduled: scheduled?.scheduled || 0,
+        total_views: views?.total_views || 0, 
+        total_contacts: contacts?.total_contacts || 0,
+        categories: categories || [],
+        recentDeals: recentDeals || []
       } 
     });
   } catch (err) { return next(err); }

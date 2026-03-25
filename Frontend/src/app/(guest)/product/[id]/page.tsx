@@ -7,7 +7,7 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2, CheckCircle2, AlertCircle, Shield, Package } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
@@ -144,6 +144,31 @@ export default function ProductPage({ params }: Props) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; itemName: string }>({ itemName: "" });
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    if (typeof window === "undefined") return;
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShare = async () => {
+    if (typeof window === "undefined") return;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.title,
+          text: product.desc,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log("Share cancelled or failed", err);
+      }
+    } else {
+      handleCopyLink();
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
@@ -722,21 +747,26 @@ export default function ProductPage({ params }: Props) {
               <button className="w-full bg-orange-600 text-white py-3 rounded">🔎 View all Reviews</button>
             </div>
 
-            <div className="rounded-lg border border-orange-200 bg-white p-4">
-              <h5 className="font-semibold mb-2">Share With Friends</h5>
-              <div className="flex gap-3 text-orange-600">
-                <a href="#" aria-label="Share on Instagram" className="w-8 h-8 rounded-full border flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5z" stroke="#EF6B2B" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" stroke="#EF6B2B" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="17.5" cy="6.5" r="0.5" fill="#EF6B2B"/></svg>
-                </a>
-                <a href="#" aria-label="Share on Facebook" className="w-8 h-8 rounded-full border flex items-center justify-center">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 12a10 10 0 10-11.5 9.9v-7H8.9v-2.9h1.6V9.1c0-1.6.9-2.7 2.4-2.7.7 0 1.4.1 1.4.1v1.6h-.8c-.7 0-.9.4-.9.9v1.1h1.6l-.3 2.9h-1.3v7A10 10 0 0022 12z" stroke="#EF6B2B" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </a>
-                <a href="#" aria-label="Share on Twitter" className="w-8 h-8 rounded-full border flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0016.5 2c-2.5 0-4.5 2.2-4 4.6A12.94 12.94 0 013 4s-4 9 5 13a13 13 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" stroke="#EF6B2B" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </a>
-                <a href="#" aria-label="Share on WhatsApp" className="w-8 h-8 rounded-full border flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 11.5a9 9 0 10-2.3 5.7L21 22l-3.9-1.1A9 9 0 0021 11.5z" stroke="#EF6B2B" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"/><path d="M16 12.5c-.1-.2-.6-.3-1-.5-.3-.2-.6-.2-.9.2-.3.5-1 .6-1.3.6-.3 0-.6-.1-.9-.4-.4-.3-.9-.9-.9-1.3 0-.4.3-.6.6-.9.2-.2.3-.5.5-.8.1-.3 0-.5-.1-.6-.2-.2-.9-2-1.3-2.7-.3-.6-.7-.5-1-.5-.3 0-.6 0-.9 0s-.8.1-1.2.6c-.4.5-1.6 1.7-1.6 4.1s1.7 4.8 1.9 5.1c.2.3 3.4 5.2 8.3 6.1 4.5.8 4.5-3.1 4.5-3.6 0-.6-.4-.9-.8-1.3z" stroke="#EF6B2B" strokeWidth="0.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </a>
+            <div className="rounded-lg border border-orange-200 bg-white p-5 shadow-sm">
+              <h5 className="font-bold text-zinc-900 mb-4 flex items-center gap-2">
+                <Share2 size={18} className="text-orange-600" />
+                Share With Friends
+              </h5>
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  onClick={handleCopyLink}
+                  className="flex items-center justify-center gap-2 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition-all group"
+                >
+                  {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-zinc-400 group-hover:text-orange-500" />}
+                  {copied ? "Copied!" : "Copy Link"}
+                </button>
+                <button 
+                  onClick={handleShare}
+                  className="flex items-center justify-center gap-2 py-2.5 bg-orange-600 border border-orange-500 rounded-xl text-sm font-bold text-white hover:bg-orange-700 transition-all shadow-sm shadow-orange-100"
+                >
+                  <Share2 size={16} />
+                  Share
+                </button>
               </div>
             </div>
           </aside>

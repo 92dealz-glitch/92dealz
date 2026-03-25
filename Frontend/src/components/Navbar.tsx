@@ -51,7 +51,7 @@ export default function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
 
-  const [topCats, setTopCats] = useState<{id: string; title: string}[]>([]);
+  const [topCats, setTopCats] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
     getFallbackArray().then(res => setTopCats(res.slice(0, 5)));
@@ -184,9 +184,9 @@ export default function Navbar() {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
-                      onBlur={() => { 
+                      onBlur={() => {
                         // Small delay to allow clicking suggestions
-                        setTimeout(() => setShowSuggestions(false), 200); 
+                        setTimeout(() => setShowSuggestions(false), 200);
                       }}
                       className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
                     />
@@ -242,7 +242,7 @@ export default function Navbar() {
                   </Link>
 
                   <div className="relative">
-                    <button 
+                    <button
                       onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
                       className="p-2 text-zinc-600 hover:text-orange-600 transition-colors relative"
                     >
@@ -264,8 +264,8 @@ export default function Navbar() {
                           <div className="max-h-[350px] overflow-y-auto">
                             {notifications.filter(n => !n.read_at).length > 0 ? (
                               notifications.filter(n => !n.read_at).slice(0, 5).map((n) => (
-                                <div 
-                                  key={n.id} 
+                                <div
+                                  key={n.id}
                                   onClick={async () => {
                                     if (!n.read_at) await markAsRead(n.id);
                                     if (n.link) router.push(n.link);
@@ -334,15 +334,15 @@ export default function Navbar() {
               {isLoggedIn && (
                 <>
                   <Link href="/user-dashboard/orders" className="text-zinc-600 hover:text-orange-600 transition-colors" title="My Orders">
-                     <Package size={24} />
+                    <Package size={24} />
                   </Link>
                   <Link href="/notifications" className="text-zinc-600 relative hover:text-orange-600 transition-colors">
-                     <Bell size={24} />
-                     {unreadCount > 0 && (
-                       <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
-                         {unreadCount > 9 ? "9+" : unreadCount}
-                       </span>
-                     )}
+                    <Bell size={24} />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                      </span>
+                    )}
                   </Link>
                 </>
               )}
@@ -507,7 +507,7 @@ export default function Navbar() {
                   className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                 >
                   <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Plus size={16} /></span>
-                  { (typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals" }
+                  {(typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals"}
                 </button>
               </div>
 
@@ -521,8 +521,8 @@ export default function Navbar() {
                   { icon: HelpCircle, label: "Help & Support", path: "/contact" },
                   { icon: Shield, label: "Safety Tips", path: "/safety-tips" },
                 ].map((item, idx) => (
-                  <Link 
-                    key={idx} 
+                  <Link
+                    key={idx}
                     href={item.path}
                     onClick={() => setMobileMenuOpen(false)}
                     className="px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-zinc-700"
@@ -531,7 +531,7 @@ export default function Navbar() {
                     <div className="text-sm font-medium">{item.label}</div>
                   </Link>
                 ))}
-                <button 
+                <button
                   onClick={() => {
                     signOut();
                     setMobileMenuOpen(false);
@@ -711,8 +711,8 @@ function useNavUserDetails() {
             window.localStorage.setItem("is_verified", String(v));
           }
         })
-        .catch(() => {});
-    } catch {}
+        .catch(() => { });
+    } catch { }
   }, []);
   return data;
 }
@@ -732,8 +732,8 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
 
   return (
     <div className="relative" id="nav-user-menu">
-      <button 
-        onClick={() => setOpen(v => !v)} 
+      <button
+        onClick={() => setOpen(v => !v)}
         className="flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-600 transition-colors w-10 h-10 overflow-hidden border-2 border-white shadow-sm"
       >
         {url ? (
@@ -784,8 +784,8 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
                 <Settings size={16} />
                 Account Settings
               </button>
-              <button 
-                onClick={signOut} 
+              <button
+                onClick={signOut}
                 className="w-full text-left px-3 py-2 text-sm hover:bg-red-50 text-red-600 rounded-lg transition-colors flex items-center gap-3 mt-1 pt-2 border-t border-zinc-100"
               >
                 <LogOut size={16} />
