@@ -1,4 +1,5 @@
 const sequelize = require('../config/database');
+const Visitor = require('../models/Visitor');
 
 exports.logView = async (req, res, next) => {
   try {
@@ -26,6 +27,30 @@ exports.logContact = async (req, res, next) => {
   } catch (err) { return next(err); }
 };
 
+exports.logVisit = async (req, res, next) => {
+  try {
+    const { visitor_id } = req.body;
+    if (!visitor_id) return res.status(400).json({ success: false, message: 'visitor_id required' });
+    
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const ua = req.get('User-Agent');
+
+    const [visitor, created] = await Visitor.findOrCreate({
+      where: { visitor_id },
+      defaults: { ip_address: ip, user_agent: ua }
+    });
+
+    if (!created) {
+      visitor.last_visited_at = new Date();
+      if (ip) visitor.ip_address = ip;
+      if (ua) visitor.user_agent = ua;
+      await visitor.save();
+    }
+
+    return res.json({ success: true });
+  } catch (err) { return next(err); }
+};
+
 // Admin analytics endpoints (used by adminRoutes)
 exports.summary = async (_req, res, next) => {
   try {
@@ -35,6 +60,7 @@ exports.summary = async (_req, res, next) => {
     const [[scheduled]] = await sequelize.query(`SELECT COUNT(*)::INT AS scheduled FROM deals WHERE status::TEXT='scheduled'`);
     const [[views]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_views FROM click_events WHERE type='view'`);
     const [[contacts]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_contacts FROM click_events WHERE type='contact'`);
+    const [[visitors]] = await sequelize.query(`SELECT COUNT(*)::INT AS total_visitors FROM visitors`);
     
     // Get deals by category
     const [categories] = await sequelize.query(
@@ -65,6 +91,7 @@ exports.summary = async (_req, res, next) => {
         scheduled: scheduled?.scheduled || 0,
         total_views: views?.total_views || 0, 
         total_contacts: contacts?.total_contacts || 0,
+        total_visitors: visitors?.total_visitors || 0,
         categories: categories || [],
         recentDeals: recentDeals || []
       } 

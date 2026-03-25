@@ -444,7 +444,7 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="State" options={["Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"]} value={data.state || ""} onChange={(v) => updateData({ state: v })} required />
+                <SelectField label="State" options={["Nigeria", "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"]} value={data.state || ""} onChange={(v) => updateData({ state: v })} required />
                 <InputField label="City" placeholder="e.g. Ikeja, Lekki" value={data.city || ""} onChange={(v) => updateData({ city: v })} required />
             </div>
 

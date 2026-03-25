@@ -8,7 +8,8 @@ import {
   Calendar,
   MousePointer2,
   Download,
-  Bell
+  Bell,
+  Users
 } from "lucide-react";
 import StatCard from "@/components/admin/StatCard";
 import { API_BASE } from "@/services/apiClient";
@@ -96,7 +97,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
         <StatCard
           label="Total Deals"
           value={String(data?.total_deals || 0)}
@@ -129,6 +130,15 @@ export default function AdminDashboardPage() {
           trend={{ value: "2 upcoming", isUp: true }}
           color="purple"
           bgColor="bg-[#A855F7]"
+          iconColor="text-white"
+        />
+        <StatCard
+          label="Total Visitors"
+          value={String(data?.total_visitors || 0)}
+          icon={Users}
+          trend={{ value: "+5%", isUp: true }}
+          color="blue"
+          bgColor="bg-[#3B82F6]"
           iconColor="text-white"
         />
         <StatCard

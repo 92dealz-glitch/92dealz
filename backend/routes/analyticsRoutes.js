@@ -5,6 +5,7 @@ const ctrl = require('../controllers/analyticsController');
 
 router.post('/view', ctrl.logView); // optional auth
 router.post('/contact', auth, ctrl.logContact);
+router.post('/log-visit', ctrl.logVisit);
 
 module.exports = router;
 

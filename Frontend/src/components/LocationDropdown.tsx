@@ -69,7 +69,7 @@ export default function LocationDropdown({
       </button>
 
       {open && (
-        <div className="absolute left-0 mt-2 w-[220px] rounded-md bg-white shadow-md ring-1 ring-black/5 z-50 overflow-auto">
+        <div className="absolute left-0 mt-2 w-[220px] rounded-md bg-white shadow-md ring-1 ring-black/5 z-50 max-h-[300px] overflow-y-auto overflow-x-hidden">
           <ul className="divide-y">
             {LOCATIONS.map((l) => (
               <li key={l}>

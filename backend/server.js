@@ -55,6 +55,7 @@ require('./models/Order');
 require('./models/Notification');
 require('./models/Review');
 require('./models/Report');
+require('./models/Visitor');
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
