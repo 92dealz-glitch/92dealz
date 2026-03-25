@@ -8,7 +8,8 @@ const userController = require('../controllers/userController');
 const auth = require('../middleware/authMiddleware');
 
 // Create a new user
-router.post('/create', userController.createUser);
+// Create a new user (Disabled - use /api/auth/register-initiate)
+// router.post('/create', userController.createUser);
 
 // Fetch all users
 router.get('/', userController.getUsers);

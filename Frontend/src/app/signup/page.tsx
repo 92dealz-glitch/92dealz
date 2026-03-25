@@ -254,6 +254,12 @@ export default function SignupPage() {
       // We don't need to call loginUser separately (which would require a second reCAPTCHA).
       const res = verifyRes as any; 
       
+      if (typeof window !== "undefined" && res.token) {
+        window.localStorage.setItem("token", res.token);
+        if (res.user?.id) window.localStorage.setItem("user_id", String(res.user.id));
+        if (res.user?.role) window.localStorage.setItem("role", String(res.user.role));
+      }
+      
       const r = String(res.user?.role || "").toLowerCase();
       if (r === "vendor") {
         router.push("/vendor-dashboard");
