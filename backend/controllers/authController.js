@@ -13,6 +13,7 @@ const { sendResetOtp, sendSignupOtp } = require('../services/emailService');
 const PendingRegistration = require('../models/PendingRegistration');
 const { Op } = require('sequelize');
 const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
+const verifyRecaptcha = require('../utils/verifyRecaptcha');
 
 function formatPhone(phoneInput) {
   if (!phoneInput) return phoneInput;
@@ -33,7 +34,14 @@ function formatPhone(phoneInput) {
 // POST /api/auth/register-initiate
 exports.registerInitiate = async (req, res, next) => {
   try {
-    const { password, name, phone, role } = req.body;
+    const { password, name, phone, role, captchaToken } = req.body;
+    
+    // Verify reCAPTCHA
+    const isValidCaptcha = await verifyRecaptcha(captchaToken);
+    if (!isValidCaptcha) {
+      return res.status(400).json({ success: false, message: 'Invalid reCAPTCHA. Please try again.' });
+    }
+
     const method = req.body.method || 'email';
     let contact = req.body.contact ? req.body.contact.trim().toLowerCase() : req.body.email?.trim().toLowerCase();
 
@@ -206,7 +214,14 @@ exports.login = async (req, res, next) => {
     
     // Attempt format assuming it might be a phone number
     const formattedPhone = formatPhone(emailInput);
-    const password = req.body.password;
+    const { password, captchaToken } = req.body;
+
+    // Verify reCAPTCHA
+    const isValidCaptcha = await verifyRecaptcha(captchaToken);
+    if (!isValidCaptcha) {
+      return res.status(400).json({ success: false, message: 'Invalid reCAPTCHA. Please try again.' });
+    }
+
     if (!emailInput || !password) {
       return res.status(400).json({ success: false, message: 'Email/Phone and password are required' });
     }

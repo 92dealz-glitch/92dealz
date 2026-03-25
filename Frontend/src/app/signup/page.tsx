@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser, loginUser, registerInitiate, registerVerify } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
+import ReCAPTCHA from "react-google-recaptcha";
 
 type UserRole = "user" | "vendor";
 type ContactMethod = "phone" | "email";
@@ -183,6 +184,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [step, setStep] = useState(1); // 1 = signup, 2 = otp
   const [otp, setOtp] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -205,6 +207,17 @@ export default function SignupPage() {
       return;
     }
 
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setError("Password must be at least 8 characters long and contain both letters and numbers.");
+      return;
+    }
+
+    if (!captchaToken) {
+      setError("Please complete the reCAPTCHA verification.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -218,6 +231,7 @@ export default function SignupPage() {
         businessName: formData.businessName,
         businessCategory: formData.businessCategory,
         businessAddress: formData.businessAddress,
+        captchaToken,
       });
       setStep(2);
     } catch (err: any) {
@@ -297,6 +311,13 @@ export default function SignupPage() {
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} />
               {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
+
+              <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+                  onChange={(token) => setCaptchaToken(token)}
+                />
+              </div>
 
               <button type="submit" disabled={loading}
                 className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50 mt-2">
@@ -412,6 +433,13 @@ export default function SignupPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} />
                 {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
+
+                <div className="py-2">
+                  <ReCAPTCHA
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+                    onChange={(token) => setCaptchaToken(token)}
+                  />
+                </div>
 
                 <button type="submit" disabled={loading}
                   className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">

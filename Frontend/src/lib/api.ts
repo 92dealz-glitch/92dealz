@@ -50,7 +50,7 @@ export async function registerUser(payload: RegisterPayload) {
   );
 }
 
-export async function registerInitiate(payload: RegisterPayload) {
+export async function registerInitiate(payload: RegisterPayload & { captchaToken?: string }) {
   return apiFetch<{ success: boolean; message: string }>(
     "/auth/register-initiate",
     { method: "POST", body: payload }
@@ -67,6 +67,7 @@ export async function registerVerify(payload: { contact: string; method: string;
 export async function loginUser(payload: {
   email: string;
   password: string;
+  captchaToken?: string;
 }) {
   const data = await apiFetch<{
     success: boolean;

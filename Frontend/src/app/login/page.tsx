@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/lib/api";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,6 +24,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    
+    if (!captchaToken) {
+      setError("Please complete the reCAPTCHA verification.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -45,6 +53,7 @@ export default function LoginPage() {
       const res = await loginUser({
         email: formData.email.trim(),
         password: formData.password.trim(),
+        captchaToken,
       });
 
       const role = String(res.user?.role || "").toLowerCase();
@@ -184,6 +193,13 @@ export default function LoginPage() {
               </Link>
             </div>
 
+            <div className="py-2 mb-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+                onChange={(token) => setCaptchaToken(token)}
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -287,6 +303,13 @@ export default function LoginPage() {
                 <Link href="/forgot-password" className="text-sm text-orange-500 hover:underline font-medium">
                   Forgot password?
                 </Link>
+              </div>
+
+              <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+                  onChange={(token) => setCaptchaToken(token)}
+                />
               </div>
 
               <button
