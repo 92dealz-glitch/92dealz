@@ -19,6 +19,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
+        captchaToken: { label: "Captcha Token", type: "text" },
       },
       async authorize(credentials): Promise<AppUser | null> {
         if (!credentials) return null;
@@ -31,7 +32,11 @@ export const authOptions: NextAuthOptions = {
           const res = await fetch(`${base}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ 
+              email, 
+              password, 
+              captchaToken: (credentials as Record<string, unknown>).captchaToken 
+            }),
           });
 
           const data = await res.json();

@@ -38,6 +38,7 @@ export default function LoginPage() {
         redirect: false,
         email: formData.email.trim(),
         password: formData.password.trim(),
+        captchaToken,
       });
 
       if (result?.error) {

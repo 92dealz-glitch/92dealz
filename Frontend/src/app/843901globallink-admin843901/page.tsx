@@ -37,6 +37,7 @@ export default function AdminLoginPage() {
         redirect: false,
         email: formData.email.trim(),
         password: formData.password.trim(),
+        captchaToken,
       });
 
       if (result?.error) {
