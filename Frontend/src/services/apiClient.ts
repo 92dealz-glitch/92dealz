@@ -15,6 +15,15 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}, auth 
   const res = await fetch(url, { ...options, headers, cache: "no-store" });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
+    if (res.status === 401) {
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("token");
+        window.localStorage.removeItem("role");
+        window.localStorage.removeItem("user_id");
+        // Optionally reload or redirect to login
+        // window.location.href = "/login";
+      }
+    }
     const message = (data && (data.message || data.error)) || `Request failed with status ${res.status}`;
     throw new Error(message);
   }

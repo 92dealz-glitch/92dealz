@@ -703,15 +703,24 @@ function useNavUserDetails() {
       })
         .then((r) => r.json())
         .then((d) => {
-          const u = d?.data?.profile_image_url;
-          const v = !!d?.data?.is_verified;
-          setData({ url: u || null, isVerified: v });
-          if (typeof window !== "undefined") {
-            if (u) window.localStorage.setItem("profile_image_url", u);
-            window.localStorage.setItem("is_verified", String(v));
+          if (d?.success === false && (d?.message === "User not found" || d?.message === "Invalid or expired token")) {
+            if (typeof window !== "undefined") {
+              window.localStorage.removeItem("token");
+              window.localStorage.removeItem("role");
+            }
+          } else {
+            const u = d?.data?.profile_image_url;
+            const v = !!d?.data?.is_verified;
+            setData({ url: u || null, isVerified: v });
+            if (typeof window !== "undefined") {
+              if (u) window.localStorage.setItem("profile_image_url", u);
+              window.localStorage.setItem("is_verified", String(v));
+            }
           }
         })
-        .catch(() => { });
+        .catch((err) => { 
+          console.error("Profile fetch error:", err);
+        });
     } catch { }
   }, []);
   return data;

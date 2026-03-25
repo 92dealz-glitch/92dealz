@@ -15,9 +15,15 @@ module.exports = async function authMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Check if user is suspended
+    if (!decoded || !decoded.id) {
+      console.error('[AUTH] Token decoded but no ID found:', decoded);
+      return res.status(401).json({ success: false, message: 'Invalid token payload' });
+    }
+
+    // Check if user exists and is not suspended
     const user = await User.findByPk(decoded.id, { attributes: ['id', 'status'] });
     if (!user) {
+      console.error(`[AUTH] User not found for ID: ${decoded.id}`);
       return res.status(401).json({ success: false, message: 'User not found' });
     }
     if (user.status === 'suspended') {
@@ -27,6 +33,7 @@ module.exports = async function authMiddleware(req, res, next) {
     req.user = { id: decoded.id, userId: decoded.id, email: decoded.email, role: decoded.role };
     return next();
   } catch (err) {
+    console.error('[AUTH] JWT verification failed:', err.message);
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
 };
