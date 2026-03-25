@@ -25,10 +25,10 @@ export async function middleware(req: NextRequest) {
 
   const role =
     token && typeof token === "object" && "role" in token
-      ? (token as { role?: string }).role?.toLowerCase()
+      ? (token as { role?: string }).role
       : undefined;
 
-  if (!role || !rule.roles.map(r => r.toLowerCase()).includes(role)) {
+  if (!role || !rule.roles.includes(role)) {
     // Signed in but wrong role -> redirect to unauthorized page
     const url = req.nextUrl.clone();
     url.pathname = "/unauthorized";
