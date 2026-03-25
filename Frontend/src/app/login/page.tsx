@@ -52,10 +52,12 @@ export default function LoginPage() {
       const session = await getSession();
       
       const role = String((session?.user as any)?.role || "").toLowerCase();
+      const token = (session?.user as any)?.accessToken;
       
       // Update localStorage for other components
       if (typeof window !== "undefined") {
         if (role) window.localStorage.setItem("role", role);
+        if (token) window.localStorage.setItem("token", token);
         if ((session?.user as any)?.id) window.localStorage.setItem("user_id", String((session?.user as any).id));
       }
 

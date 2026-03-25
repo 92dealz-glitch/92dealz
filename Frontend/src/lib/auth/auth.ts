@@ -9,6 +9,7 @@ interface AppUser {
   name: string;
   email: string;
   role: string;
+  accessToken?: string;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -51,6 +52,7 @@ export const authOptions: NextAuthOptions = {
             name: data.user.name,
             email: data.user.email,
             role: data.user.role || ROLES.BUYER,
+            accessToken: data.token,
           };
         } catch (error) {
           console.error("Login error:", error);
@@ -60,15 +62,17 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: JWT & { role?: string }; user?: any }) {
-      // On sign in, attach role from the user to token
+    async jwt({ token, user }: { token: JWT & { role?: string; accessToken?: string }; user?: any }) {
+      // On sign in, attach role and token from the user to token
       if (user?.role) token.role = user.role;
+      if (user?.accessToken) token.accessToken = user.accessToken;
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT & { role?: string } }) {
-      // Expose role on the session's user object
+    async session({ session, token }: { session: Session; token: JWT & { role?: string; accessToken?: string } }) {
+      // Expose role and token on the session's user object
       if (session.user) {
-        (session.user as unknown as { role?: string }).role = token.role ?? ROLES.GUEST;
+        (session.user as any).role = token.role ?? ROLES.GUEST;
+        (session.user as any).accessToken = token.accessToken;
       }
       return session;
     },
