@@ -243,11 +243,20 @@ exports.login = async (req, res, next) => {
     // Verify reCAPTCHA
     const isValidCaptcha = await verifyRecaptcha(captchaToken);
     if (!isValidCaptcha) {
-      return res.status(400).json({ success: false, message: 'Invalid reCAPTCHA. Please try again.' });
+      console.error(`[AUTH_LOGIN_FAIL] reCAPTCHA verification failed for email: ${emailInput}`);
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid reCAPTCHA. Please try again.',
+        debug: process.env.NODE_ENV === 'development' ? 'reCAPTCHA failed' : undefined
+      });
     }
 
     if (!emailInput || !password) {
-      return res.status(400).json({ success: false, message: 'Email/Phone and password are required' });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Email/Phone and password are required',
+        debug: !emailInput ? 'email missing' : 'password missing'
+      });
     }
 
     let user = await User.findOne({ 

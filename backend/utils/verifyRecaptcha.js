@@ -4,7 +4,11 @@ const verifyRecaptcha = async (token) => {
     return false;
   }
 
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  let secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  if (secretKey) {
+    secretKey = secretKey.replace(/\s/g, '');
+  }
+
   if (!secretKey) {
     console.error('RECAPTCHA_SECRET_KEY is not defined in environment variables');
     // In development, you might want to skip this or allow it
@@ -17,6 +21,9 @@ const verifyRecaptcha = async (token) => {
     });
 
     const data = await response.json();
+    if (!data.success) {
+      console.error('[RECAPTCHA_ERROR]', data['error-codes']);
+    }
     return data.success;
   } catch (error) {
     console.error('reCAPTCHA verification error:', error);

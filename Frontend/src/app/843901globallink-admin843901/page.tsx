@@ -140,7 +140,7 @@ export default function AdminLoginPage() {
             {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
               <ReCAPTCHA
                 theme="dark"
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
                 onChange={(token) => setCaptchaToken(token)}
               />
             ) : (

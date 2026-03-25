@@ -202,7 +202,7 @@ export default function LoginPage() {
             <div className="py-2 mb-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
               {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
                 <ReCAPTCHA
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
                   onChange={(token) => setCaptchaToken(token)}
                 />
               ) : (
@@ -318,7 +318,7 @@ export default function LoginPage() {
               <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
                 {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
                   <ReCAPTCHA
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
                     onChange={(token) => setCaptchaToken(token)}
                   />
                 ) : (
