@@ -44,5 +44,7 @@ export const config = {
     "/user-dashboard/:path*",
     "/vendor-dashboard/:path*",
     "/dashboard/:path*",
+    "/admin-dashboard/:path*",
+    "/admin/:path*",
   ],
 };

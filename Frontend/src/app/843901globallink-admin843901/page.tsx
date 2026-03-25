@@ -46,26 +46,8 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // After successful signIn, get the user role from session
-      const { getSession } = await import("next-auth/react");
-      const session = await getSession();
-      
-      const role = String((session?.user as any)?.role || "").toLowerCase();
-      const token = (session?.user as any)?.accessToken;
-      
-      // Update localStorage for other components
-      if (typeof window !== "undefined") {
-        if (role) window.localStorage.setItem("role", role);
-        if (token) window.localStorage.setItem("token", token);
-        if ((session?.user as any)?.id) window.localStorage.setItem("user_id", String((session?.user as any).id));
-      }
-
-      if (role !== "admin") {
-        setError("Unauthorized access. This portal is for administrators only.");
-        setLoading(false);
-        return;
-      }
-
+      // After successful signIn, the SessionSync component will handle 
+      // the localStorage synchronization automatically in the background.
       router.push("/admin-dashboard");
     } catch (err: any) {
       setError(err.message || "Login failed");

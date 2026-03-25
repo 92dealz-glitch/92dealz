@@ -49,14 +49,9 @@ export default function AdminSidebar() {
       });
   }, []);
 
-  const handleSignOut = () => {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("role");
-      window.localStorage.removeItem("user_id");
-      window.localStorage.removeItem("profile_image_url");
-    }
-    router.push("/login");
+  const handleSignOut = async () => {
+    const { signOut } = await import("next-auth/react");
+    await signOut({ callbackUrl: "/login" });
   };
 
   return (

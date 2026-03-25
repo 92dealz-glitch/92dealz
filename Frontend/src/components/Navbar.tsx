@@ -141,14 +141,9 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, [isLoggedIn]);
 
-  function signOut() {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("role");
-      window.localStorage.removeItem("profile_image_url");
-    }
-    router.push("/login");
-    window.location.reload();
+  async function signOut() {
+    const { signOut: nextAuthSignOut } = await import("next-auth/react");
+    await nextAuthSignOut({ callbackUrl: "/login" });
   }
 
   return (

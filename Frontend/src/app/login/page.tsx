@@ -47,19 +47,13 @@ export default function LoginPage() {
         return;
       }
 
-      // After successful signIn, get the user role from session
+      // After successful signIn, the SessionSync component will handle 
+      // the localStorage synchronization automatically in the background.
+      
+      // We still need to know the role for the initial redirect if it's not a reload
       const { getSession } = await import("next-auth/react");
       const session = await getSession();
-      
       const role = String((session?.user as any)?.role || "").toLowerCase();
-      const token = (session?.user as any)?.accessToken;
-      
-      // Update localStorage for other components
-      if (typeof window !== "undefined") {
-        if (role) window.localStorage.setItem("role", role);
-        if (token) window.localStorage.setItem("token", token);
-        if ((session?.user as any)?.id) window.localStorage.setItem("user_id", String((session?.user as any).id));
-      }
 
       if (role === "admin") {
         setError("Admin login is restricted. Please use the official administrator portal.");
@@ -67,10 +61,10 @@ export default function LoginPage() {
         return;
       }
 
-      if (role === "vendor") {
+      if (role === "vendor" || role === "seller") {
         router.push("/vendor-dashboard");
       } else {
-        router.push("/");
+        router.push("/user-dashboard");
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Login failed";
