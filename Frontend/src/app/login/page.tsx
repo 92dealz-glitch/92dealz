@@ -47,22 +47,21 @@ export default function LoginPage() {
         return;
       }
 
-      // If success, we still want to store the token for non-NextAuth API calls if needed, 
-      // but NextAuth will handle the session cookie for middleware.
-      // We need to fetch the user info to know where to redirect and store role.
-      const { loginUser } = await import("@/lib/api");
-      const res = await loginUser({
-        email: formData.email.trim(),
-        password: formData.password.trim(),
-        captchaToken,
-      });
+      // After successful signIn, get the user role from session
+      const { getSession } = await import("next-auth/react");
+      const session = await getSession();
+      
+      const role = String((session?.user as any)?.role || "").toLowerCase();
+      
+      // Update localStorage for other components
+      if (typeof window !== "undefined") {
+        if (role) window.localStorage.setItem("role", role);
+        if ((session?.user as any)?.id) window.localStorage.setItem("user_id", String((session?.user as any).id));
+      }
 
-      const role = String(res.user?.role || "").toLowerCase();
       if (role === "admin") {
         setError("Admin login is restricted. Please use the official administrator portal.");
         setLoading(false);
-        // Clear NextAuth session if possible or just prevent redirect
-        window.localStorage.removeItem("token");
         return;
       }
 

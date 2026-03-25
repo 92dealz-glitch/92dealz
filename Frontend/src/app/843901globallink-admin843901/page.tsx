@@ -46,19 +46,21 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Explicitly login via API to check role and set token/localStorage
-      const res = await loginUser({
-        email: formData.email.trim(),
-        password: formData.password.trim(),
-        captchaToken,
-      });
+      // After successful signIn, get the user role from session
+      const { getSession } = await import("next-auth/react");
+      const session = await getSession();
+      
+      const role = String((session?.user as any)?.role || "").toLowerCase();
+      
+      // Update localStorage for other components
+      if (typeof window !== "undefined") {
+        if (role) window.localStorage.setItem("role", role);
+        if ((session?.user as any)?.id) window.localStorage.setItem("user_id", String((session?.user as any).id));
+      }
 
-      const role = String(res.user?.role || "").toLowerCase();
       if (role !== "admin") {
         setError("Unauthorized access. This portal is for administrators only.");
         setLoading(false);
-        // Clear tokens if not admin
-        window.localStorage.removeItem("token");
         return;
       }
 
