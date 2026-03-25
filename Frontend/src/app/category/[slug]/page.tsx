@@ -47,25 +47,20 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     page: 1, 
     limit: 50 
   });
+  
   let items = res.data || [];
   let isFallback = false;
 
   if (items.length === 0) {
     isFallback = true;
-    const fallbackRes = await searchDeals({ page: 1, limit: 20 });
-    items = fallbackRes.data || [];
+    try {
+      // Fetch trending deals as fallback
+      const trendingRes = await searchDeals({ page: 1, limit: 12 });
+      items = trendingRes.data || [];
+    } catch (err) {
+      console.error("[CategoryPage] Fallback fetch failed:", err);
+    }
   }
-
-  const brands = [
-    "huawei",
-    "redmi",
-    "samsung",
-    "oppo",
-    "lg",
-    "apple",
-    "infinix",
-    "tecno",
-  ];
 
   const displayItems = items.map((l: any) => ({
     id: l.id,
@@ -79,65 +74,48 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   }));
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 mt-6">
+      <main className="flex-grow max-w-[1200px] mx-auto w-full px-4 sm:px-6 mt-8 pb-16">
         {/* Breadcrumb & Header */}
-        <div className="mb-6">
-          <div className="text-sm text-gray-600 mb-2">
-            <Link href="/" className="text-gray-600 hover:underline">Home</Link>
-            <span className="mx-2">&gt;</span>
-            <span className="font-medium">{displayTitle}</span>
-          </div>
+        <div className="mb-8">
+          <nav className="flex items-center text-sm text-gray-500 mb-4 bg-white/50 w-fit px-3 py-1.5 rounded-full border border-gray-100 shadow-sm">
+            <Link href="/" className="hover:text-orange-600 transition-colors">Home</Link>
+            <span className="mx-2 text-gray-300">/</span>
+            <span className="font-semibold text-gray-900">{isFallback ? "Exclusive Deals" : categoryLabel}</span>
+          </nav>
 
-          <h1 className="text-3xl font-extrabold text-orange-600">
-            {isFallback ? "Trending Deals" : displayTitle}
-          </h1>
-
-          <div className="text-sm text-gray-600 mt-1">
-            {isFallback ? `No results found in "${displayTitle}". Showing trending items:` : `${displayItems.length} items found`}
-          </div>
-        </div>
-
-        {/* Brand Strip */}
-        <div className="w-full bg-white border border-orange-200 rounded-md p-3 mb-6 shadow-sm">
-          <div className="flex items-center gap-8 py-2 px-2 justify-start flex-nowrap overflow-x-auto">
-            {brands.map((b) => {
-              const label = b.charAt(0).toUpperCase() + b.slice(1);
-              return (
-                <div
-                  key={b}
-                  className="flex flex-col items-center flex-none w-[80px] sm:w-[96px] md:w-[110px] p-1"
-                >
-                  <div className="w-full h-10 sm:h-12 md:h-14 flex items-center justify-center bg-white rounded">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`/assets/images/brand/${b}.svg`}
-                      alt={b}
-                      className="max-h-7 sm:max-h-9 md:max-h-11 object-contain"
-                    />
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-zinc-700 mt-1 text-center">
-                    {label}
-                  </div>
-                </div>
-              );
-            })}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-black text-gray-900 tracking-tight">
+                {isFallback ? (
+                  <>
+                    <span className="text-orange-600">Trending</span> deals for you
+                  </>
+                ) : (
+                  <>
+                    Explore <span className="text-orange-600">{categoryLabel}</span>
+                  </>
+                )}
+              </h1>
+              <p className="text-gray-500 mt-2 font-medium">
+                {isFallback 
+                  ? `We couldn't find items in "${displayTitle}", but check these out:` 
+                  : `Browse our curated collection of ${displayItems.length} items in ${categoryLabel}`}
+              </p>
+            </div>
           </div>
         </div>
 
         <CategoryListingClient
           items={displayItems}
           title={categoryLabel}
-          brands={brands}
           isFallback={isFallback}
         />
       </main>
 
-      <div className="mt-12">
-        <Footer />
-      </div>
-    </>
+      <Footer />
+    </div>
   );
-}
+}
