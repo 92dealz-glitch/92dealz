@@ -248,8 +248,12 @@ export default function SignupPage() {
 
     try {
       const contactVal = method === "email" ? formData.contact.trim().toLowerCase() : formData.contact.trim();
-      await registerVerify({ contact: contactVal, method, otp: otp.trim() });
-      const res = await loginUser({ email: contactVal, password: formData.password.trim() });
+      const verifyRes = await registerVerify({ contact: contactVal, method, otp: otp.trim() });
+      
+      // The backend now returns a token on successful verification.
+      // We don't need to call loginUser separately (which would require a second reCAPTCHA).
+      const res = verifyRes as any; 
+      
       const r = String(res.user?.role || "").toLowerCase();
       if (r === "vendor") {
         router.push("/vendor-dashboard");

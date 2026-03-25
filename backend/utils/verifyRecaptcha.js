@@ -1,6 +1,7 @@
 const verifyRecaptcha = async (token) => {
   if (!token) {
-    throw new Error('reCAPTCHA token is missing');
+    console.warn('reCAPTCHA token is missing');
+    return false;
   }
 
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;

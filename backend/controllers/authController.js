@@ -175,9 +175,13 @@ exports.registerVerify = async (req, res, next) => {
 
     await pending.destroy();
 
+    const payload = { id: newUser.id, email: newUser.email, role: newUser.role, status: newUser.status };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+
     return res.status(201).json({ 
       success: true, 
       message: 'Registration successful', 
+      token,
       user: { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone, role: newUser.role, status: newUser.status } 
     });
   } catch (err) {
