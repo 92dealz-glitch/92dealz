@@ -80,10 +80,12 @@ export default function CategoryListingClient({
   items,
   title,
   brands,
+  isFallback = false,
 }: {
   items: AdItem[];
   title: string;
   brands: string[];
+  isFallback?: boolean;
 }) {
   type ListingItem = AdItem & { priceRaw?: number; rating?: number; brand?: string };
 
@@ -399,6 +401,24 @@ export default function CategoryListingClient({
 
       {/* ── Listings ── */}
       <section className="md:col-span-9">
+        {isFallback && (
+          <div className="mb-8 p-6 bg-orange-50 border border-orange-200 rounded-xl shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="p-2 bg-orange-100 rounded-full">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-orange-900">No product found in "{title}"</h3>
+                <p className="text-orange-700 mt-1">We couldn't find any listings for this specific category right now, but here are some other trending deals you might like!</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
           <div className="text-sm text-gray-700">
             Items found: <span className="font-semibold">{filtered.length}</span>

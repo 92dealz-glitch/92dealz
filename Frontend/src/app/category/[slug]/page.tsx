@@ -37,7 +37,14 @@ export default async function CategoryPage({ params }: Props) {
   }
 
   const res = await searchDeals({ category_id: categoryId, page: 1, limit: 50 });
-  const items = res.data || [];
+  let items = res.data || [];
+  let isFallback = false;
+
+  if (items.length === 0) {
+    isFallback = true;
+    const fallbackRes = await searchDeals({ page: 1, limit: 20 });
+    items = fallbackRes.data || [];
+  }
 
   const brands = [
     "huawei",
@@ -54,6 +61,7 @@ export default async function CategoryPage({ params }: Props) {
     id: l.id,
     title: l.title,
     price: `₦${Number(l.price).toLocaleString()}`,
+    priceRaw: Number(l.price),
     desc: l.description || undefined,
     badge: l.image_url || "/assets/images/bgphone.svg",
     location: l.location || l.city || "Nigeria",
@@ -109,6 +117,7 @@ export default async function CategoryPage({ params }: Props) {
           items={displayItems}
           title={categoryLabel}
           brands={brands}
+          isFallback={isFallback}
         />
       </main>
 
