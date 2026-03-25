@@ -9,10 +9,12 @@ import { searchDeals } from "@/services/search.service";
 
 type Props = {
   params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params, searchParams }: Props) {
   const slug = params?.slug ?? "";
+  const sub = typeof searchParams?.sub === "string" ? searchParams.sub : undefined;
 
   const formatSlug = (s: string) => {
     if (!s) return "";
@@ -33,10 +35,18 @@ export default async function CategoryPage({ params }: Props) {
       categoryLabel = catRes.data.name;
     }
   } catch (err) {
-    console.error("Failed to fetch category by slug:", err);
+    console.error(`[CategoryPage] Failed to fetch category for slug "${slug}":`, err);
   }
 
-  const res = await searchDeals({ category_id: categoryId, page: 1, limit: 50 });
+  // If subcategory is present, we might want to append it to the label
+  const displayTitle = sub ? `${categoryLabel} - ${sub}` : categoryLabel;
+
+  const res = await searchDeals({ 
+    category_id: categoryId, 
+    q: sub, // Using 'q' for subcategory keyword search if sub exists
+    page: 1, 
+    limit: 50 
+  });
   let items = res.data || [];
   let isFallback = false;
 
@@ -78,12 +88,16 @@ export default async function CategoryPage({ params }: Props) {
           <div className="text-sm text-gray-600 mb-2">
             <Link href="/" className="text-gray-600 hover:underline">Home</Link>
             <span className="mx-2">&gt;</span>
-            <span className="font-medium">{categoryLabel}</span>
+            <span className="font-medium">{displayTitle}</span>
           </div>
 
-          <h1 className="text-3xl font-extrabold text-orange-600">All Listings</h1>
+          <h1 className="text-3xl font-extrabold text-orange-600">
+            {isFallback ? "Trending Deals" : displayTitle}
+          </h1>
 
-          <div className="text-sm text-gray-600 mt-1">{displayItems.length} items found</div>
+          <div className="text-sm text-gray-600 mt-1">
+            {isFallback ? `No results found in "${displayTitle}". Showing trending items:` : `${displayItems.length} items found`}
+          </div>
         </div>
 
         {/* Brand Strip */}

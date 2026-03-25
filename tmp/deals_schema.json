@@ -1,0 +1,110 @@
+[
+  {
+    "column_name": "id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "title",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "description",
+    "data_type": "text"
+  },
+  {
+    "column_name": "price",
+    "data_type": "double precision"
+  },
+  {
+    "column_name": "category_id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "image_url",
+    "data_type": "text"
+  },
+  {
+    "column_name": "images_json",
+    "data_type": "text"
+  },
+  {
+    "column_name": "status",
+    "data_type": "USER-DEFINED"
+  },
+  {
+    "column_name": "userId",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "condition",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "brand",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "model",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "color",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "negotiable",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "screenSize",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "ram",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "mainCamera",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "selfieCamera",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "battery",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "internalStorage",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "state",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "city",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "location",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "subcategory",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "specifications",
+    "data_type": "json"
+  },
+  {
+    "column_name": "createdAt",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "updatedAt",
+    "data_type": "timestamp with time zone"
+  }
+]

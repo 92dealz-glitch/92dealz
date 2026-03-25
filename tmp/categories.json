@@ -1,0 +1,72 @@
+[
+  {
+    "id": "3",
+    "name": "Computer & accessories",
+    "slug": "computer"
+  },
+  {
+    "id": "5",
+    "name": "Properties",
+    "slug": "properties"
+  },
+  {
+    "id": "7",
+    "name": "Furniture & appliances",
+    "slug": "furniture"
+  },
+  {
+    "id": "9",
+    "name": "Agriculture & food",
+    "slug": "agriculture"
+  },
+  {
+    "id": "10",
+    "name": "Services",
+    "slug": "services"
+  },
+  {
+    "id": "12",
+    "name": "Commercial equipment",
+    "slug": "commercial"
+  },
+  {
+    "id": "13",
+    "name": "Repair and construction",
+    "slug": "repair"
+  },
+  {
+    "id": "14",
+    "name": "Pets and animals",
+    "slug": "pets"
+  },
+  {
+    "id": "8",
+    "name": "Babies & kids",
+    "slug": "babies"
+  },
+  {
+    "id": "1",
+    "name": "Fashion",
+    "slug": "fashion"
+  },
+  {
+    "id": "2",
+    "name": "Phones & tablets",
+    "slug": "phones"
+  },
+  {
+    "id": "4",
+    "name": "Vehicle",
+    "slug": "vehicle"
+  },
+  {
+    "id": "6",
+    "name": "Health & beauty",
+    "slug": "health"
+  },
+  {
+    "id": "11",
+    "name": "Electronics",
+    "slug": "electronics"
+  }
+]

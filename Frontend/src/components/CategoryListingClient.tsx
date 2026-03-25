@@ -402,18 +402,21 @@ export default function CategoryListingClient({
       {/* ── Listings ── */}
       <section className="md:col-span-9">
         {isFallback && (
-          <div className="mb-8 p-6 bg-orange-50 border border-orange-200 rounded-xl shadow-sm">
-            <div className="flex items-start gap-4">
-              <div className="p-2 bg-orange-100 rounded-full">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2.5">
+          <div className="mb-8 p-6 bg-orange-50 border-2 border-orange-200 rounded-2xl shadow-md animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="flex items-start gap-5">
+              <div className="p-3 bg-orange-100 rounded-full shadow-inner">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2.5">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-orange-900">No product found in "{title}"</h3>
-                <p className="text-orange-700 mt-1">We couldn't find any listings for this specific category right now, but here are some other trending deals you might like!</p>
+              <div className="flex-1">
+                <h3 className="text-xl font-black text-orange-900 mb-1">Items not found in "{title}"</h3>
+                <p className="text-orange-800 text-sm leading-relaxed">
+                  We currently don't have any listings specifically under <strong>{title}</strong>. 
+                  Don't worry! We've gathered some of our most <strong>trending and exclusive deals</strong> below for you to explore instead.
+                </p>
               </div>
             </div>
           </div>
