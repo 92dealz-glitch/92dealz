@@ -37,6 +37,9 @@ export default function Footer() {
               <li><Link href="/safety-tips" className="hover:text-orange-600 transition-colors">Safety Tips</Link></li>
               <li><Link href="/faq" className="hover:text-orange-600 transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-orange-600 transition-colors">Contact Us</Link></li>
+              <li className="pt-2 text-xs text-gray-500 italic border-t border-gray-100 mt-2">
+                Plot 1907 Katampe Road, Jahi.<br />FCT, Abuja Nigeria
+              </li>
             </ul>
           </div>
 
