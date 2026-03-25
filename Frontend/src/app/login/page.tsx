@@ -194,10 +194,14 @@ export default function LoginPage() {
             </div>
 
             <div className="py-2 mb-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-              <ReCAPTCHA
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-                onChange={(token) => setCaptchaToken(token)}
-              />
+              {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  onChange={(token) => setCaptchaToken(token)}
+                />
+              ) : (
+                <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing. Please check ENV vars.</p>
+              )}
             </div>
 
             <button
@@ -306,10 +310,14 @@ export default function LoginPage() {
               </div>
 
               <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-                <ReCAPTCHA
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-                  onChange={(token) => setCaptchaToken(token)}
-                />
+                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                  <ReCAPTCHA
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                    onChange={(token) => setCaptchaToken(token)}
+                  />
+                ) : (
+                  <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing.</p>
+                )}
               </div>
 
               <button
