@@ -37,9 +37,8 @@ export default function CategoryBar() {
       <Image
         src={c.icon}
         alt={c.title}
-        width={84}
-        height={84}
-        className="object-contain"
+        fill
+        className="object-contain p-2"
         onError={() => handleImageError(c.id)}
       />
     );
@@ -72,7 +71,7 @@ export default function CategoryBar() {
                   className="flex-none w-[100px] snap-center"
                 >
                   <div
-                    className="w-[90px] h-[90px] mx-auto rounded-2xl p-2 flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90"
+                    className="relative w-[90px] h-[90px] mx-auto rounded-2xl flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90 overflow-hidden"
                   >
                     {c.id === "post-ad" ? (
                       <PlusCircle size={48} className="text-orange-600" />
