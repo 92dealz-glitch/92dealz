@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { PlusCircle, Package } from "lucide-react";
+import Link from "next/link";
 import { getFallbackArray } from "../data/categoriesData";
 
 type CategoryItem = {
@@ -65,7 +66,11 @@ export default function CategoryBar() {
           <div key={idx} className="overflow-x-auto pb-2 scrollbar-hide">
             <div className="flex gap-4 snap-x snap-mandatory">
               {row.map((c) => (
-                <div key={c.id} className="flex-none w-[100px] snap-center">
+                <Link 
+                  key={c.id} 
+                   href={c.id === "post-ad" ? "/vendor-dashboard/add-product" : `/category/${c.id}`}
+                  className="flex-none w-[100px] snap-center"
+                >
                   <div
                     className="w-[90px] h-[90px] mx-auto rounded-2xl p-2 flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90"
                   >
@@ -78,7 +83,7 @@ export default function CategoryBar() {
                   <div className="mt-2 text-center text-[11px] font-bold text-zinc-700 leading-tight">
                     {c.title}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

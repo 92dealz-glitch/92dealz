@@ -255,10 +255,10 @@ export default function CategoryListingClient({
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-black text-orange-900 mb-1">Items not found in "{title}"</h3>
+                <h3 className="text-xl font-black text-orange-900 mb-1">No product found for "{title}"</h3>
                 <p className="text-orange-800 text-sm leading-relaxed">
                   We currently don't have any listings specifically under <strong>{title}</strong>. 
-                  Don't worry! We've gathered some of our most <strong>trending and exclusive deals</strong> below for you to explore instead.
+                  But don't worry! We've gathered some of our other <strong>trending and exclusive deals</strong> below for you to explore.
                 </p>
               </div>
             </div>
