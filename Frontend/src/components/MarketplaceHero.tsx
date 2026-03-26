@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function MarketplaceHero() {
   return (
@@ -32,12 +33,12 @@ export default function MarketplaceHero() {
             </p>
 
             <div className="mt-6 lg:mt-8">
-              <a
-                href="#"
+              <Link
+                href="/vendor-dashboard/add-product"
                 className="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 sm:px-6 sm:py-3 rounded-md shadow-md"
               >
                 Start Today!
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -17,8 +17,8 @@ export default function VendorDashboardLayout({
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const role = window.localStorage.getItem("role") || "";
-            if (role.toLowerCase() !== "vendor" && role.toLowerCase() !== "admin") {
+            const role = (window.localStorage.getItem("role") || "").toLowerCase();
+            if (role !== "vendor" && role !== "admin") {
                 setStatus("upgrade_required");
                 return;
             }
@@ -47,8 +47,8 @@ export default function VendorDashboardLayout({
         return (
             <div className="min-h-screen bg-zinc-50 flex flex-col">
                 <Navbar />
-                <main className="flex-1 flex items-center justify-center p-6">
-                    <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-sm border border-zinc-200 max-w-lg w-full text-center">
+                <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
+                    <div className="bg-white p-6 sm:p-12 rounded-2xl shadow-sm border border-zinc-200 max-w-lg w-full text-center">
                         <div className={`w-16 h-16 ${isUpgrade ? 'bg-orange-50' : 'bg-amber-50'} rounded-full flex items-center justify-center mx-auto mb-6`}>
                             {isUpgrade ? (
                                 <TrendingUp size={32} className="text-orange-500" />
@@ -61,7 +61,7 @@ export default function VendorDashboardLayout({
                         </h2>
                         <p className="text-zinc-500 mb-8">
                             {isUpgrade 
-                                ? "You need to UPgrade your account inorder to Post an Add. Once upgraded to a vendor, you can start listing products."
+                                ? "Please Upgrade your account into vendor inorder to add a product."
                                 : status === "pending" 
                                     ? "Your vendor account is currently under review by our team. You will be able to access your dashboard and start selling once approved." 
                                     : "Your vendor account has been rejected or suspended. Please contact support for more information."}
@@ -93,7 +93,7 @@ export default function VendorDashboardLayout({
         <div className="min-h-screen bg-zinc-50 flex flex-col">
             <Navbar />
 
-            <main className="flex-1 max-w-[1400px] mx-auto w-full px-6 lg:px-12 py-8 lg:py-12">
+            <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-12 py-6 lg:py-12">
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Left Sidebar */}
                     <aside className="w-full lg:w-72 flex-shrink-0">

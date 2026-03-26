@@ -68,11 +68,11 @@ export default function AddProductForm() {
                 </button>
             </div>
 
-            <div className="p-8 lg:p-12 max-w-4xl mx-auto">
+            <div className="p-5 sm:p-8 lg:p-12 max-w-4xl mx-auto">
                 {/* Progress Bar */}
                 <div className="mb-12">
                     <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-[24px] font-black text-black">
+                        <h3 className="text-xl sm:text-[24px] font-black text-black">
                             {step === 1 && "Product Info"}
                             {step === 2 && "Pricing & Details"}
                             {step === 3 && "Photos & Location"}
@@ -331,7 +331,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                 <button
                     onClick={onNext}
                     disabled={!data.title || !data.category_id}
-                    className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
+                    className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                 >
                     Next
                 </button>
@@ -366,17 +366,17 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                         ⚠️ Price and Description are compulsory.
                     </p>
                 )}
-                <div className="flex justify-between gap-4">
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={onBack}
-                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
+                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Back
                     </button>
                     <button
                         onClick={onNext}
                         disabled={!data.price || !data.description}
-                        className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
+                        className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Next
                     </button>
@@ -500,10 +500,10 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                         ⚠️ {data.images.length === 0 ? "A product picture is compulsory to list your deal." : "Missing required product details."}
                     </p>
                 )}
-                <div className="flex flex-wrap justify-between gap-4">
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={onBack}
-                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]"
+                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Back
                     </button>
@@ -511,7 +511,7 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                         <button 
                             onClick={postAd} 
                             disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
-                            className="flex-1 sm:flex-none bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[180px]"
+                            className="w-full sm:w-auto bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
                         >
                             {submitting ? "Posting..." : "Post Ad"}
                         </button>

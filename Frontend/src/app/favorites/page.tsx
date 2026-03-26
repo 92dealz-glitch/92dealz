@@ -18,10 +18,10 @@ export default function FavoritesPage() {
     <>
       <Navbar />
 
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 mt-6">
-        <div className="mb-6 flex items-center justify-between">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-extrabold text-[#FF6B35]">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#FF6B35]">
               My Favourites
             </h1>
             <p className="text-sm text-gray-600 mt-1">
@@ -29,18 +29,18 @@ export default function FavoritesPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <button className="px-4 py-2 rounded-md border border-orange-300 text-orange-600 font-semibold">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <button className="px-3 sm:px-4 py-2 rounded-md border border-orange-300 text-orange-600 font-semibold text-sm sm:text-base whitespace-nowrap">
               Bulk Select
             </button>
-
+            
             {/* SORT DROPDOWN */}
             <div className="flex items-center gap-2 relative">
-              <span className="text-sm text-gray-600">Sort By:</span>
-
+              <span className="text-xs sm:text-sm text-gray-600 hidden sm:inline">Sort By:</span>
+              
               <button
                 onClick={() => setSortOpen(!sortOpen)}
-                className="bg-orange-500 text-white px-4 py-2 rounded-md"
+                className="bg-orange-500 text-white px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base whitespace-nowrap"
               >
                 {sortOption}
               </button>
@@ -77,9 +77,9 @@ export default function FavoritesPage() {
                 <Image
                   src="/assets/images/emptyiconforfavoritepage.svg"
                   alt="No favourites"
-                  width={320}
-                  height={320}
-                  className="object-contain"
+                  width={240}
+                  height={240}
+                  className="object-contain sm:w-[320px] sm:h-[320px]"
                 />
               </div>
 

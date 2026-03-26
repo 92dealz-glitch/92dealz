@@ -77,7 +77,7 @@ export default function Hero() {
 
               {/* CTA (Reduced Width on Mobile) */}
               <Link
-                href="/signup"
+                href="/vendor-dashboard/add-product"
                 className="
                   w-auto
                   bg-[#FF6B35] hover:bg-[#E85A28]
