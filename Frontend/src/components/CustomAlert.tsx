@@ -1,36 +1,96 @@
-'use client';
-
-import React from 'react';
+import React, { useState } from 'react';
 
 interface CustomAlertProps {
   message: string;
   title?: string;
-  onClose: () => void;
+  type?: 'alert' | 'confirm' | 'prompt';
+  initialValue?: string;
+  onClose: (value?: any) => void;
 }
 
-const CustomAlert: React.FC<CustomAlertProps> = ({ message, title = 'Alert', onClose }) => {
+const CustomAlert: React.FC<CustomAlertProps> = ({ 
+  message, 
+  title = 'Alert', 
+  type = 'alert', 
+  initialValue = '', 
+  onClose 
+}) => {
+  const [inputValue, setInputValue] = useState(initialValue);
+
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-orange-100 dark:bg-orange-950/30 p-2 rounded-full text-orange-600">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bell ring-orange-500">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-zinc-900/40 backdrop-blur-[2px] p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200 border border-zinc-100">
+        <div className="p-8">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="bg-orange-50 p-3 rounded-2xl text-orange-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
                 <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">{title}</h3>
+            <h3 className="text-2xl font-black text-zinc-900 tracking-tight">{title}</h3>
           </div>
-          <p className="text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
+          
+          <p className="text-zinc-600 font-bold mb-8 leading-relaxed">
             {message}
           </p>
-          <button
-            onClick={onClose}
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-lg transition-colors focus:ring-2 focus:ring-orange-500 focus:outline-none"
-          >
-            Go Back
-          </button>
+
+          {type === 'prompt' && (
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="w-full bg-zinc-50 border-2 border-zinc-100 rounded-xl px-4 py-3 mb-6 outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-bold"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') onClose(inputValue);
+                if (e.key === 'Escape') onClose(null);
+              }}
+            />
+          )}
+
+          <div className="flex gap-3">
+            {type === 'alert' && (
+              <button
+                onClick={() => onClose()}
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
+              >
+                Continue
+              </button>
+            )}
+            {type === 'confirm' && (
+              <>
+                <button
+                  onClick={() => onClose(false)}
+                  className="flex-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 font-black py-4 rounded-xl transition-all active:scale-[0.98]"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => onClose(true)}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
+                >
+                  Confirm
+                </button>
+              </>
+            )}
+            {type === 'prompt' && (
+              <>
+                <button
+                  onClick={() => onClose(null)}
+                  className="flex-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 font-black py-4 rounded-xl transition-all active:scale-[0.98]"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => onClose(inputValue)}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
+                >
+                  Save Changes
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

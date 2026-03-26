@@ -9,7 +9,7 @@ import { useAlert } from "@/context/AlertContext";
 type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any };
 
 export default function MyAdsList() {
-    const { showAlert } = useAlert();
+    const { showAlert, showConfirm, showPrompt } = useAlert();
     const [activeTab, setActiveTab] = useState<"published" | "draft" | "closed">("published");
     const [items, setItems] = useState<Ad[]>([]);
     const [loading, setLoading] = useState(false);
@@ -98,8 +98,8 @@ export default function MyAdsList() {
                             <div className="mt-6 flex flex-wrap items-center gap-3">
                                 <button
                                     onClick={async () => {
-                                        const newTitle = prompt("Title", ad.title) ?? ad.title;
-                                        const newPriceStr = prompt("Price", String(ad.price)) ?? String(ad.price);
+                                        const newTitle = await showPrompt("Enter new title", ad.title, "Edit Title") ?? ad.title;
+                                        const newPriceStr = await showPrompt("Enter new price", String(ad.price), "Edit Price") ?? String(ad.price);
                                         const newPrice = Number(newPriceStr);
                                         if (Number.isNaN(newPrice)) return;
                                         try {
@@ -127,7 +127,7 @@ export default function MyAdsList() {
                                 </button>
                                 <button
                                     onClick={async () => {
-                                        if (!confirm("Delete this ad?")) return;
+                                        if (!await showConfirm("Are you sure you want to delete this ad?", "Confirm Deletion")) return;
                                         try {
                                             await deleteAd(ad.id);
                                             await load();

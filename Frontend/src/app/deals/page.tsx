@@ -6,7 +6,7 @@ import { addFavorite, removeFavorite } from "@/services/favorites.service";
 import { useAlert } from "@/context/AlertContext";
 
 export default function DealsPage() {
-  const { showAlert } = useAlert();
+  const { showAlert, showConfirm, showPrompt } = useAlert();
   const [items, setItems] = useState<any[]>([]);
   const [meta, setMeta] = useState<{ page: number; limit: number; total: number; pages: number } | null>(null);
   const [title, setTitle] = useState("");
@@ -65,9 +65,9 @@ export default function DealsPage() {
   async function onUpdate(id: number) {
     const item = items.find((i) => i.id === id);
     if (!item) return;
-    const newTitle = prompt("Title", item.title) ?? item.title;
-    const newDesc = prompt("Description", item.description || "") ?? item.description;
-    const newPriceStr = prompt("Price", String(item.price)) ?? String(item.price);
+    const newTitle = await showPrompt("Enter new title", item.title, "Edit Title") ?? item.title;
+    const newDesc = await showPrompt("Enter new description", item.description || "", "Edit Description") ?? item.description;
+    const newPriceStr = await showPrompt("Enter new price", String(item.price), "Edit Price") ?? String(item.price);
     const newPrice = Number(newPriceStr);
     if (Number.isNaN(newPrice)) return;
     try {
@@ -79,7 +79,7 @@ export default function DealsPage() {
   }
 
   async function onDelete(id: number) {
-    if (!confirm("Delete this deal?")) return;
+    if (!await showConfirm("Are you sure you want to delete this deal?", "Confirm Deletion")) return;
     try {
       await deleteDeal(id);
       await load();
