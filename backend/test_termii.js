@@ -5,13 +5,13 @@ async function testTermii() {
     message_type: 'NUMERIC',
     pin_type: 'NUMERIC',
     to: "2348109077743", 
-    from: 'Termii', 
-    channel: 'generic',
+    from: 'N-Alert', 
+    channel: 'dnd',
     pin_attempts: 10,
-    pin_time_to_live: 10,
+    pin_time_to_live: 5,
     pin_length: 6,
-    pin_placeholder: '< 1234 >',
-    message_text: 'Your verification pin is < 1234 >'
+    pin_placeholder: '< 123456 >',
+    message_text: 'Your 234Deals verification pin is < 123456 >. It expires in 5 minutes. Do not share this code with anyone.'
   };
 
   try {

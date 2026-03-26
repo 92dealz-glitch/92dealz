@@ -9,13 +9,13 @@ exports.sendTermiiOtp = async (phone) => {
     message_type: 'NUMERIC',
     pin_type: 'NUMERIC',
     to: phone,
-    from: process.env.TERMII_SENDER_ID || 'N-Alert',
+    from: 'N-Alert',
     channel: 'dnd',
     pin_attempts: 10,
-    pin_time_to_live: 10,
+    pin_time_to_live: 5,
     pin_length: 6,
-    pin_placeholder: '< 1234 >',
-    message_text: 'Your 234Deals verification code is < 1234 >. Valid for 10 minutes.',
+    pin_placeholder: '< 123456 >',
+    message_text: 'Your 234Deals verification pin is < 123456 >. It expires in 5 minutes. Do not share this code with anyone.',
   };
 
   const res = await fetch(`${BASE_URL}/sms/otp/send`, {
