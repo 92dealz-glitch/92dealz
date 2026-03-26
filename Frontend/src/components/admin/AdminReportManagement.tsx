@@ -7,7 +7,7 @@ import { useAlert } from "@/context/AlertContext";
 import Link from "next/link";
 
 export default function AdminReportManagement() {
-  const { showAlert } = useAlert();
+  const { showAlert, showPrompt } = useAlert();
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
@@ -45,7 +45,7 @@ export default function AdminReportManagement() {
   };
 
   const handleQuickAction = async (reportId: number, type: 'product' | 'vendor', targetId: number, title: string) => {
-    const reason = prompt(`Reason for removing this ${type}? (Vendor will be notified)`);
+    const reason = await showPrompt(`Reason for removing this ${type}? (Vendor will be notified)`, "", "Moderation Reason");
     if (!reason) return;
 
     setActionLoading(reportId);

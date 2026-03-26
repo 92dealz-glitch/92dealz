@@ -16,7 +16,7 @@ interface Vendor {
 }
 
 export default function VendorManagement() {
-  const { showAlert } = useAlert();
+  const { showAlert, showConfirm } = useAlert();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -81,7 +81,7 @@ export default function VendorManagement() {
 
   const handleStatusUpdate = async (id: number, currentStatus: string) => {
     const newStatus = currentStatus === 'suspended' ? 'active' : 'suspended';
-    if (!confirm(`Are you sure you want to ${newStatus === 'suspended' ? 'SUSPEND' : 'ACTIVATE'} this vendor?`)) return;
+    if (!await showConfirm(`Are you sure you want to ${newStatus === 'suspended' ? 'SUSPEND' : 'ACTIVATE'} this vendor?`, "Confirm Status Change")) return;
 
     setActionLoading(id);
     try {
@@ -99,7 +99,7 @@ export default function VendorManagement() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure? This will delete the vendor AND all their deals PERMANENTLY.")) return;
+    if (!await showConfirm("Are you sure? This will delete the vendor AND all their deals PERMANENTLY.", "Confirm Deletion")) return;
 
     setActionLoading(id);
     try {

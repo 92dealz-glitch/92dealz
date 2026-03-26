@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useAlert } from "@/context/AlertContext";
 
 export default function OrdersPage() {
-  const { showAlert } = useAlert();
+  const { showAlert, showConfirm } = useAlert();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -33,7 +33,7 @@ export default function OrdersPage() {
   }, []);
 
   async function handleConfirm(orderId: number) {
-    if (!confirm("Confirm this sale/purchase?")) return;
+    if (!await showConfirm("Are you sure you want to confirm this sale/purchase?", "Confirm Order")) return;
     try {
       const res = await apiFetch<{ success: boolean; data: any }>(`orders/${orderId}/confirm`, {
         method: "PATCH"

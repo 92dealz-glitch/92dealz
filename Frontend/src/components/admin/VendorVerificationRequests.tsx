@@ -16,7 +16,7 @@ interface VerificationRequest {
 }
 
 export default function VendorVerificationRequests() {
-  const { showAlert } = useAlert();
+  const { showAlert, showConfirm } = useAlert();
   const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -43,7 +43,7 @@ export default function VendorVerificationRequests() {
   }, []);
 
   const handleReview = async (id: number, status: 'approved' | 'rejected') => {
-    if (!confirm(`Are you sure you want to ${status} this verification?`)) return;
+    if (!await showConfirm(`Are you sure you want to ${status} this verification?`, "Confirm Review")) return;
     
     setProcessingId(id);
     try {

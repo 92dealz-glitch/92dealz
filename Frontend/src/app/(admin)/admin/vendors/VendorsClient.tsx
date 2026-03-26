@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { Search, Loader2, Store, CheckCircle, XCircle, Clock, Trash2 } from "lucide-react";
 import { getAdminVendors, updateAdminVendorStatus, deleteAdminVendor } from "@/lib/api";
 import { useNotification } from "@/context/NotificationContext";
+import { useAlert } from "@/context/AlertContext";
 
 interface Vendor {
   id: number;
@@ -17,6 +18,7 @@ interface Vendor {
 
 export default function VendorsManagement() {
   const { showNotification } = useNotification();
+  const { showConfirm } = useAlert();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -50,7 +52,7 @@ export default function VendorsManagement() {
   };
 
   const handleDelete = async (id: number, name: string) => {
-    if (!window.confirm(`Are you absolutely sure you want to permanently delete the vendor "${name}" and all of their deals/products? This action cannot be undone.`)) {
+    if (!await showConfirm(`Are you absolutely sure you want to permanently delete the vendor "${name}" and all of their deals/products? This action cannot be undone.`, "Confirm Permanent Deletion")) {
       return;
     }
     

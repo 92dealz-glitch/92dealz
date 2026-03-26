@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import { Bell, CheckCircle, Trash2, ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getNotifications, markAsRead, markAllRead, deleteNotification, AppNotification } from "@/services/notification.service";
+import { useAlert } from "@/context/AlertContext";
 
 export default function NotificationsPage() {
+  const { showConfirm } = useAlert();
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -36,7 +38,7 @@ export default function NotificationsPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      if (!confirm("Are you sure you want to delete this notification?")) return;
+      if (!await showConfirm("Are you sure you want to delete this notification?", "Confirm Deletion")) return;
       await deleteNotification(id);
       setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (err) {
