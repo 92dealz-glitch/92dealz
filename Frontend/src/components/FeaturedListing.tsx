@@ -9,7 +9,7 @@ export default function FeaturedListing() {
 
             {/* Text block */}
             <div className="w-full md:w-[65%] p-6 md:p-8 md:pl-12 md:pr-6">
-              <h2 className="text-2xl sm:text-3xl md:text-[56px] font-extrabold leading-[1.05] text-black drop-shadow-[0_6px_6px_rgba(0,0,0,0.25)]">
+              <h2 className="text-2xl sm:text-3xl md:text-[56px] font-extrabold leading-[1.2] text-black drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
                 <span className="block md:whitespace-nowrap pr-0 sm:pr-2">Let&apos;s get one thing straight:</span>
 
                 <span className="block md:whitespace-nowrap">
@@ -18,11 +18,11 @@ export default function FeaturedListing() {
 
                 <span className="block md:whitespace-nowrap">is worth your time.</span>
 
-                <span className="block mt-3 md:mt-4 md:whitespace-nowrap">There&apos;s truly no such thing</span>
+                <span className="block mt-4 md:mt-2 md:whitespace-nowrap">There&apos;s truly no such thing</span>
 
                 <span className="block relative md:whitespace-nowrap">
                   as a bad find!
-                  <span className="absolute left-0 -bottom-3 w-32 sm:w-40 md:w-56 h-3 bg-[#FF6B35] rounded-sm opacity-95 -skew-x-6"></span>
+                  <span className="absolute left-0 -bottom-2 w-32 sm:w-40 md:w-56 h-1.5 bg-[#FF6B35] rounded-full opacity-90 -skew-x-6"></span>
                 </span>
               </h2>
             </div>
