@@ -21,7 +21,7 @@ const recent = [
 export default function RecommendedSearches() {
   return (
     <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-16 mt-8">
-      <h3 className="text-3xl font-extrabold text-[#FF6B35] mb-6">Recommended Searches</h3>
+      <h3 className="text-3xl font-extrabold text-[#FF6B35] mb-6">Try Search For</h3>
 
       <div className="flex gap-3 lg:gap-6 overflow-x-auto lg:overflow-visible no-scrollbar snap-x snap-mandatory px-1 lg:flex-wrap lg:items-start">
         {recent.map((it) => (
