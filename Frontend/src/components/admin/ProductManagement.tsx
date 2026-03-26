@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { Search, Trash2, Loader2, ChevronLeft, ChevronRight, Package, AlertCircle } from "lucide-react";
 import { getDealsAdmin, deleteDealAdmin } from "@/lib/api";
+import { useAlert } from "@/context/AlertContext";
 
 export default function ProductManagement() {
+  const { showAlert } = useAlert();
   const [deals, setDeals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -57,7 +59,7 @@ export default function ProductManagement() {
         fetchDeals(page, search);
       }
     } catch (err) {
-      alert("Failed to delete deal");
+      showAlert("Failed to delete deal", "Delete Error");
     } finally {
       setDeleting(false);
     }

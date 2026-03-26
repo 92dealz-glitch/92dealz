@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { AlertTriangle, X, Loader2, Send } from "lucide-react";
 import { submitReport } from "@/lib/api";
+import { useAlert } from "@/context/AlertContext";
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ const REASONS = [
 ];
 
 export default function ReportModal({ isOpen, onClose, productId, vendorId, itemName }: ReportModalProps) {
+  const { showAlert } = useAlert();
   const [reason, setReason] = useState("");
   const [details, setDetails] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,7 +53,7 @@ export default function ReportModal({ isOpen, onClose, productId, vendorId, item
         }, 2000);
       }
     } catch (err) {
-      alert("Failed to submit report. Please try again.");
+      showAlert("Failed to submit report. Please try again.", "Report Error");
     } finally {
       setLoading(false);
     }

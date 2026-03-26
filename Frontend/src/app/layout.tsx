@@ -16,6 +16,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { AlertProvider } from "../context/AlertContext";
+
 export const metadata: Metadata = {
   title: "234 Deals",
   description: "Marketplace platform",
@@ -33,9 +35,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased pb-20 md:pb-0`}>
         <Providers>
-          <NotificationProvider>
-            <FavoritesProvider>{children}</FavoritesProvider>
-          </NotificationProvider>
+          <AlertProvider>
+            <NotificationProvider>
+              <FavoritesProvider>{children}</FavoritesProvider>
+            </NotificationProvider>
+          </AlertProvider>
         </Providers>
       </body>
     </html>

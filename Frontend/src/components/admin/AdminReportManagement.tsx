@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { Flag, Loader2, CheckCircle, XCircle, ExternalLink, Trash2, UserX } from "lucide-react";
 import { getAdminReports, updateReportStatusAdmin, deleteDealAdmin, updateVendorStatusAdmin } from "@/lib/api";
+import { useAlert } from "@/context/AlertContext";
 import Link from "next/link";
 
 export default function AdminReportManagement() {
+  const { showAlert } = useAlert();
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
@@ -36,7 +38,7 @@ export default function AdminReportManagement() {
         setReports(prev => prev.map(r => r.id === id ? { ...r, status } : r));
       }
     } catch (err) {
-      alert("Failed to update status");
+      showAlert("Failed to update status", "Report Error");
     } finally {
       setActionLoading(null);
     }
@@ -60,10 +62,10 @@ export default function AdminReportManagement() {
       if (res.success) {
         await updateReportStatusAdmin(reportId, 'resolved');
         setReports(prev => prev.map(r => r.id === reportId ? { ...r, status: 'resolved' } : r));
-        alert(`${type.charAt(0).toUpperCase() + type.slice(1)} removed and vendor notified.`);
+        showAlert(`${type.charAt(0).toUpperCase() + type.slice(1)} removed and vendor notified.`, "Action Successful");
       }
     } catch (err) {
-      alert("Action failed.");
+      showAlert("Action failed.", "Report Error");
     } finally {
       setActionLoading(null);
     }

@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { listOrders, confirmOrder, Order } from "@/services/orders.service";
 import { API_BASE } from "@/services/apiClient";
 import { Loader2, ShoppingBag, Package, Phone, Mail, User, Clock, CheckCircle } from "lucide-react";
+import { useAlert } from "@/context/AlertContext";
 
 export default function BuyerOrdersPage() {
+    const { showAlert } = useAlert();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState<number | null>(null);
@@ -49,7 +51,7 @@ export default function BuyerOrdersPage() {
                 setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: res.data.status as any } : o));
             }
         } catch (err) {
-            alert("Failed to update order");
+            showAlert("Failed to update order", "Order Error");
         } finally {
             setActionLoading(null);
         }

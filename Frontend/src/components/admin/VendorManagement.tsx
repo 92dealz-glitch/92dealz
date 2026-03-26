@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { UserPlus, Loader2, X, Trash2, ShieldAlert, CheckCircle, ShieldOff, User } from "lucide-react";
 import { getVendorsAdmin, updateVendorStatusAdmin, deleteVendorAdmin } from "@/lib/api";
+import { useAlert } from "@/context/AlertContext";
 
 interface Vendor {
   id: number;
@@ -15,6 +16,7 @@ interface Vendor {
 }
 
 export default function VendorManagement() {
+  const { showAlert } = useAlert();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -90,7 +92,7 @@ export default function VendorManagement() {
         throw new Error(res.message);
       }
     } catch (err: any) {
-      alert(err.message);
+      showAlert(err.message, "Status Update Error");
     } finally {
       setActionLoading(null);
     }
@@ -108,7 +110,7 @@ export default function VendorManagement() {
         throw new Error(res.message);
       }
     } catch (err: any) {
-      alert(err.message);
+      showAlert(err.message, "Deletion Error");
     } finally {
       setActionLoading(null);
     }

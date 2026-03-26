@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
 import ReportModal from "@/components/ReportModal";
+import { useAlert } from "@/context/AlertContext";
 
 type Props = {
   params: Promise<{ id: string }>
@@ -20,6 +21,7 @@ type Props = {
 export default function ProductPage({ params }: Props) {
   // Unwrap params using use()
   const { id } = use(params);
+  const { showAlert } = useAlert();
   const router = useRouter();
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
@@ -116,7 +118,7 @@ export default function ProductPage({ params }: Props) {
     try {
       setSubmittingReview(true);
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-      if (!token) { alert("Please login to leave a review."); return; }
+      if (!token) { showAlert("Please login to leave a review.", "Authentication Required"); return; }
       
       const res = await fetch(`${API_BASE}/reviews`, {
         method: "POST",
@@ -125,14 +127,14 @@ export default function ProductPage({ params }: Props) {
       });
       const data = await res.json();
       if (data.success) {
-        alert("Review submitted!");
+        showAlert("Review submitted!", "Review Success");
         setReviewText("");
         // Reload reviews locally
         setReviews([data.data, ...reviews]);
       } else {
-        alert(data.message || "Failed to submit review.");
+        showAlert(data.message || "Failed to submit review.");
       }
-    } catch { alert("Error submitting review."); }
+    } catch { showAlert("Error submitting review."); }
     finally { setSubmittingReview(false); }
   };
 
@@ -176,7 +178,7 @@ export default function ProductPage({ params }: Props) {
       setSendingMessage(true);
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
       if (!token) {
-        alert("Please login to send a message");
+        showAlert("Please login to send a message", "Authentication Required");
         return;
       }
       const res = await fetch(`${API_BASE}/messages`, {
@@ -193,15 +195,15 @@ export default function ProductPage({ params }: Props) {
       });
       const data = await res.json();
       if (data.success) {
-        alert("Message sent successfully!");
+        showAlert("Message sent successfully!", "Message Sent");
         setMessageModal(false);
         setMessageText("");
         try { await logContactView(Number(product.id)); } catch {}
       } else {
-        alert(data.message || "Failed to send message");
+        showAlert(data.message || "Failed to send message");
       }
     } catch (err) {
-      alert("An error occurred while sending the message");
+      showAlert("An error occurred while sending the message");
     } finally {
       setSendingMessage(false);
     }
@@ -211,7 +213,7 @@ export default function ProductPage({ params }: Props) {
   const handlePlaceOrder = async () => {
     const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
     if (!token) {
-        alert("Please login to place an order");
+        showAlert("Please login to place an order", "Authentication Required");
         return;
     }
 
@@ -353,9 +355,9 @@ export default function ProductPage({ params }: Props) {
               <div className="mt-6 space-y-3">
                 <Button 
                   onClick={() => {
-                    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-                    if (!token) { alert("Please login to contact seller"); return; }
-                    setMessageText("I'm interested in your ad.");
+                  const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+                  if (!token) { showAlert("Please login to contact seller", "Authentication Required"); return; }
+                  setMessageText("I'm interested in your ad.");
                     setMessageModal(true);
                   }} 
                   className="w-full bg-orange-600 text-white py-3"
@@ -376,7 +378,7 @@ export default function ProductPage({ params }: Props) {
                   disabled={isPlacingOrder}
                   onClick={() => {
                     const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-                    if (!token) { alert("Please login to place an order"); return; }
+                    if (!token) { showAlert("Please login to place an order", "Authentication Required"); return; }
                     setShowConfirmModal(true)
                   }}
                   className="w-full bg-black text-white py-3 font-extrabold flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors"
@@ -720,7 +722,7 @@ export default function ProductPage({ params }: Props) {
             <div className="rounded-lg border border-orange-200 bg-white p-4">
               <h4 className="font-semibold mb-3">Contact Options</h4>
               <div className="space-y-3">
-                <button type="button" onClick={() => alert(`Call: ${product.sellerPhone || 'Not available'}`)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
+                <button type="button" onClick={() => showAlert(`Call: ${product.sellerPhone || 'Not available'}`, "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
                 <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
                 <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
                 {/* Email button removed */}

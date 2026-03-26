@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { createDeal, deleteDeal, updateDeal } from "@/lib/api";
 import { searchDeals } from "@/services/search.service";
 import { addFavorite, removeFavorite } from "@/services/favorites.service";
+import { useAlert } from "@/context/AlertContext";
 
 export default function DealsPage() {
+  const { showAlert } = useAlert();
   const [items, setItems] = useState<any[]>([]);
   const [meta, setMeta] = useState<{ page: number; limit: number; total: number; pages: number } | null>(null);
   const [title, setTitle] = useState("");
@@ -72,7 +74,7 @@ export default function DealsPage() {
       await updateDeal(id, { title: newTitle, description: newDesc, price: newPrice });
       await load();
     } catch (e: any) {
-      alert(e.message || "Failed to update deal");
+      showAlert(e.message || "Action failed");
     }
   }
 
@@ -82,7 +84,7 @@ export default function DealsPage() {
       await deleteDeal(id);
       await load();
     } catch (e: any) {
-      alert(e.message || "Failed to delete deal");
+      showAlert(e.message || "Failed to delete deal");
     }
   }
 
@@ -176,7 +178,7 @@ export default function DealsPage() {
                   try {
                     await addFavorite(d.id);
                   } catch (e: any) {
-                    alert(e.message || "Failed to save favorite");
+                    showAlert(e.message || "Failed to save favorite");
                   }
                 }}
                 className="px-3 py-1 rounded border"

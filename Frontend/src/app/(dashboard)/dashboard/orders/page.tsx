@@ -6,8 +6,10 @@ import Footer from "@/components/Footer";
 import { apiFetch } from "@/services/apiClient";
 import { Loader2, ShoppingBag, CheckCircle, Clock, XCircle } from "lucide-react";
 import Link from "next/link";
+import { useAlert } from "@/context/AlertContext";
 
 export default function OrdersPage() {
+  const { showAlert } = useAlert();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -38,11 +40,11 @@ export default function OrdersPage() {
       }, true);
       if (res.success) {
         setOrders(orders.map(o => o.id === orderId ? { ...o, status: res.data.status } : o));
-        alert("Status updated!");
+        showAlert("Status updated!", "Order Status");
       }
     } catch (err) {
       console.error("Failed to confirm order", err);
-      alert("Failed to update status");
+      showAlert("Failed to update status", "Order Error");
     }
   }
 

@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import { Edit2, CheckCircle, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
 import { listMyAds, deleteAd, markAdSold, updateAd } from "@/services/ads.service";
+import { useAlert } from "@/context/AlertContext";
 
 type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any };
 
 export default function MyAdsList() {
+    const { showAlert } = useAlert();
     const [activeTab, setActiveTab] = useState<"published" | "draft" | "closed">("published");
     const [items, setItems] = useState<Ad[]>([]);
     const [loading, setLoading] = useState(false);
@@ -104,7 +106,7 @@ export default function MyAdsList() {
                                             await updateAd(ad.id, { title: newTitle, price: newPrice });
                                             await load();
                                         } catch (e: any) {
-                                            alert(e.message || "Failed to update ad");
+                                            showAlert(e.message || "Action failed");
                                         }
                                     }}
                                     className="flex items-center gap-2 border border-zinc-300 hover:border-[#E85A28] hover:text-[#E85A28] text-zinc-700 font-bold py-1.5 px-4 rounded-md text-sm transition-all">
@@ -117,7 +119,7 @@ export default function MyAdsList() {
                                             await markAdSold(ad.id);
                                             await load();
                                         } catch (e: any) {
-                                            alert(e.message || "Failed to mark as sold");
+                                            showAlert(e.message || "Failed to mark as sold");
                                         }
                                     }}
                                     className="flex items-center gap-2 border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white font-bold py-1.5 px-4 rounded-md text-sm transition-all">
@@ -130,7 +132,7 @@ export default function MyAdsList() {
                                             await deleteAd(ad.id);
                                             await load();
                                         } catch (e: any) {
-                                            alert(e.message || "Failed to delete ad");
+                                            showAlert(e.message || "Failed to delete ad");
                                         }
                                     }}
                                     className="flex items-center gap-2 border border-zinc-300 hover:border-red-500 hover:text-red-500 text-zinc-700 font-bold py-1.5 px-4 rounded-md text-sm transition-all">

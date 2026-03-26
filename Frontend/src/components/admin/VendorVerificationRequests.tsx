@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle, XCircle, Clock, Loader2, ExternalLink, ShieldCheck, User } from "lucide-react";
 import { getAdminVerifications, reviewAdminVerification } from "@/lib/api";
+import { useAlert } from "@/context/AlertContext";
 
 interface VerificationRequest {
   id: number;
@@ -15,6 +16,7 @@ interface VerificationRequest {
 }
 
 export default function VendorVerificationRequests() {
+  const { showAlert } = useAlert();
   const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -52,7 +54,7 @@ export default function VendorVerificationRequests() {
         throw new Error(res.message || "Action failed");
       }
     } catch (err: any) {
-      alert(err.message);
+      showAlert(err.message, "Verification Error");
     } finally {
       setProcessingId(null);
     }

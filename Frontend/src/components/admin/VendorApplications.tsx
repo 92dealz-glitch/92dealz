@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle, XCircle, Clock, Loader2, ExternalLink } from "lucide-react";
 import { API_BASE } from "@/services/apiClient";
+import { useAlert } from "@/context/AlertContext";
 
 interface Submission {
   id: number;
@@ -14,6 +15,7 @@ interface Submission {
 }
 
 export default function VendorApplications() {
+  const { showAlert } = useAlert();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -63,7 +65,7 @@ export default function VendorApplications() {
         throw new Error(data.message || "Update failed");
       }
     } catch (err: any) {
-      alert(err.message);
+      showAlert(err.message, "Update Error");
     } finally {
       setProcessingId(null);
     }
