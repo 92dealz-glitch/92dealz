@@ -169,7 +169,9 @@ export default function AccountSettingsPage() {
                         if (data.success) {
                           setProfile({ ...profile, profile_image_url: data.url });
                           localStorage.setItem("profile_image_url", data.url);
-                          setMessage({ type: "success", text: "Photo uploaded! Save changes to finalize." });
+                          // Auto-save to database
+                          await updateProfile({ ...profile, profile_image_url: data.url });
+                          setMessage({ type: "success", text: "Profile photo updated and saved!" });
                         }
                       } catch (err) {
                         setMessage({ type: "error", text: "Upload failed" });

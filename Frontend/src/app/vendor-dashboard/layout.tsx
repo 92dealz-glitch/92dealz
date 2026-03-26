@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { useRouter } from "next/navigation";
 import { getMyProfile } from "@/lib/api";
-import { Clock, Store } from "lucide-react";
+import { Clock, Store, TrendingUp } from "lucide-react";
 
 export default function VendorDashboardLayout({
     children,
@@ -18,8 +18,8 @@ export default function VendorDashboardLayout({
     useEffect(() => {
         if (typeof window !== "undefined") {
             const role = window.localStorage.getItem("role") || "";
-            if (role.toLowerCase() !== "vendor") {
-                router.replace("/login");
+            if (role.toLowerCase() !== "vendor" && role.toLowerCase() !== "admin") {
+                setStatus("upgrade_required");
                 return;
             }
             
@@ -42,27 +42,46 @@ export default function VendorDashboardLayout({
         return <div className="min-h-screen bg-zinc-50 flex items-center justify-center">Loading...</div>;
     }
 
-    if (status === "pending" || status === "rejected") {
+    if (status === "pending" || status === "rejected" || status === "upgrade_required") {
+        const isUpgrade = status === "upgrade_required";
         return (
             <div className="min-h-screen bg-zinc-50 flex flex-col">
                 <Navbar />
                 <main className="flex-1 flex items-center justify-center p-6">
                     <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-sm border border-zinc-200 max-w-lg w-full text-center">
-                        <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Clock size={32} className="text-amber-500" />
+                        <div className={`w-16 h-16 ${isUpgrade ? 'bg-orange-50' : 'bg-amber-50'} rounded-full flex items-center justify-center mx-auto mb-6`}>
+                            {isUpgrade ? (
+                                <TrendingUp size={32} className="text-orange-500" />
+                            ) : (
+                                <Clock size={32} className="text-amber-500" />
+                            )}
                         </div>
-                        <h2 className="text-2xl font-bold text-zinc-900 mb-2">Account {status === "pending" ? "Pending Approval" : "Suspended"}</h2>
+                        <h2 className="text-2xl font-bold text-zinc-900 mb-2">
+                            {isUpgrade ? "Post an Ad" : `Account ${status === "pending" ? "Pending Approval" : "Suspended"}`}
+                        </h2>
                         <p className="text-zinc-500 mb-8">
-                            {status === "pending" 
-                                ? "Your vendor account is currently under review by our team. You will be able to access your dashboard and start selling once approved." 
-                                : "Your vendor account has been rejected or suspended. Please contact support for more information."}
+                            {isUpgrade 
+                                ? "You need to UPgrade your account inorder to Post an Add. Once upgraded to a vendor, you can start listing products."
+                                : status === "pending" 
+                                    ? "Your vendor account is currently under review by our team. You will be able to access your dashboard and start selling once approved." 
+                                    : "Your vendor account has been rejected or suspended. Please contact support for more information."}
                         </p>
-                        <button 
-                            onClick={() => router.push("/")}
-                            className="px-6 py-3 bg-[#E85A28] text-white font-bold rounded-xl hover:bg-[#D14F23] transition-colors"
-                        >
-                            Return to Homepage
-                        </button>
+                        <div className="flex flex-col gap-3">
+                            <button 
+                                onClick={() => router.push(isUpgrade ? "/account-settings" : "/")}
+                                className="px-6 py-3 bg-[#E85A28] text-white font-bold rounded-xl hover:bg-[#D14F23] transition-colors"
+                            >
+                                {isUpgrade ? "Go to Account Settings" : "Return to Homepage"}
+                            </button>
+                            {isUpgrade && (
+                                <button 
+                                    onClick={() => router.push("/")}
+                                    className="px-6 py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-zinc-200 transition-colors"
+                                >
+                                    Return to Homepage
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </main>
                 <Footer />
