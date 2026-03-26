@@ -115,8 +115,8 @@ export default function Hero() {
           </div>
 
           {/* DESKTOP IMAGE (UNCHANGED) */}
-          <div className="absolute left-[20%] top-[-40px] w-auto h-auto pointer-events-none hidden lg:block">
-            <div className="relative w-[800px] h-[520px] bg-white overflow-hidden rounded-md">
+          <div className="absolute left-[25%] top-[-40px] w-auto h-auto pointer-events-none hidden lg:block bg-white">
+            <div className="relative w-[700px] h-[520px] bg-white overflow-hidden rounded-md">
               <Image
                 src="/images/heroimage.svg"
                 alt="Happy shopper with shopping bags"
@@ -124,10 +124,7 @@ export default function Hero() {
                 priority
                 className="object-contain object-top"
               />
-              {/* Left-to-right fade to merge with white background */}
-              <div className="absolute inset-y-0 left-0 w-[250px] bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10" />
-              {/* Bottom fade */}
-              <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10" />
+              <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
             </div>
           </div>
 
