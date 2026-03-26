@@ -16,6 +16,16 @@ interface CategoryItem {
     specifications_template: any[];
 }
 
+const formatWithCommas = (val: string) => {
+    if (!val) return "";
+    const clean = val.replace(/\D/g, "");
+    return new Intl.NumberFormat().format(Number(clean));
+};
+
+const stripCommas = (val: string) => {
+    return val.replace(/\D/g, "");
+};
+
 export default function AddProductForm() {
     const [step, setStep] = useState<Step>(1);
     const [showClearModal, setShowClearModal] = useState(false);
@@ -345,7 +355,13 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InputField label="Price(₦)" placeholder="Enter price here" value={data.price} onChange={(v) => updateData({ price: v })} required type="number" />
+                <InputField 
+                    label="Price(₦)" 
+                    placeholder="Enter price here" 
+                    value={formatWithCommas(data.price)} 
+                    onChange={(v) => updateData({ price: stripCommas(v) })} 
+                    required 
+                />
                 <SelectField label="Negotiable" options={["Yes", "No"]} value={data.negotiable} onChange={(v) => updateData({ negotiable: v })} />
             </div>
 
