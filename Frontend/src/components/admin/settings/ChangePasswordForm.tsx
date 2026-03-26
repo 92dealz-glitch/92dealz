@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2, Eye, EyeOff } from "lucide-react";
 import { useNotification } from "@/context/NotificationContext";
 import { changePassword } from "@/lib/api";
 
@@ -12,6 +12,9 @@ export default function ChangePasswordForm() {
     new: "",
     confirm: ""
   });
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,30 +78,57 @@ export default function ChangePasswordForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2 text-sm md:col-span-2">
             <label className="text-zinc-600">Current Password</label>
-            <input
-              type="password"
-              value={formData.current}
-              onChange={(e) => setFormData({ ...formData, current: e.target.value })}
-              className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-orange-500 text-zinc-700 transition-colors"
-            />
+            <div className="relative">
+              <input
+                type={showCurrent ? "text" : "password"}
+                value={formData.current}
+                onChange={(e) => setFormData({ ...formData, current: e.target.value })}
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-orange-500 text-zinc-700 transition-colors pr-11"
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrent(!showCurrent)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+              >
+                {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
           <div className="space-y-2 text-sm">
             <label className="text-zinc-600">New Password</label>
-            <input
-              type="password"
-              value={formData.new}
-              onChange={(e) => setFormData({ ...formData, new: e.target.value })}
-              className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-orange-500 text-zinc-700 transition-colors"
-            />
+            <div className="relative">
+              <input
+                type={showNew ? "text" : "password"}
+                value={formData.new}
+                onChange={(e) => setFormData({ ...formData, new: e.target.value })}
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-orange-500 text-zinc-700 transition-colors pr-11"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNew(!showNew)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+              >
+                {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
           <div className="space-y-2 text-sm">
             <label className="text-zinc-600">Confirm New Password</label>
-            <input
-              type="password"
-              value={formData.confirm}
-              onChange={(e) => setFormData({ ...formData, confirm: e.target.value })}
-              className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-orange-500 text-zinc-700 transition-colors"
-            />
+            <div className="relative">
+              <input
+                type={showConfirm ? "text" : "password"}
+                value={formData.confirm}
+                onChange={(e) => setFormData({ ...formData, confirm: e.target.value })}
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-orange-500 text-zinc-700 transition-colors pr-11"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirm(!showConfirm)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+              >
+                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-end gap-3 text-sm">

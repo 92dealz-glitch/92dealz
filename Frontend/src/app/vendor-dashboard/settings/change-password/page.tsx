@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { Eye } from "lucide-react";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function ChangePasswordPage() {
     return (
@@ -22,17 +22,22 @@ export default function ChangePasswordPage() {
 }
 
 function PasswordField({ label, placeholder }: { label: string, placeholder: string }) {
+    const [show, setShow] = useState(false);
     return (
         <div className="flex flex-col gap-2">
             <label className="text-black font-black text-[15px]">{label}</label>
             <div className="relative">
                 <input
-                    type="password"
+                    type={show ? "text" : "password"}
                     placeholder={placeholder}
                     className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors pr-12"
                 />
-                <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors">
-                    <Eye size={20} />
+                <button 
+                    type="button" 
+                    onClick={() => setShow(!show)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                >
+                    {show ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
             </div>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { UserPlus, Loader2, X, Trash2, ShieldAlert, CheckCircle, ShieldOff, User } from "lucide-react";
+import { UserPlus, Loader2, X, Trash2, ShieldAlert, CheckCircle, ShieldOff, User, Eye, EyeOff } from "lucide-react";
 import { getVendorsAdmin, updateVendorStatusAdmin, deleteVendorAdmin } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 
@@ -23,6 +23,7 @@ export default function VendorManagement() {
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -260,15 +261,24 @@ export default function VendorManagement() {
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Password
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Set account password"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Set account password"
+                    className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition pr-11"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
 
               <div>

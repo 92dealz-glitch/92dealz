@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
-import { Eye } from "lucide-react";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function DeleteAccountPage() {
+    const [showPassword, setShowPassword] = useState(false);
     return (
         <div className="animate-in fade-in duration-500 flex flex-col md:flex-row gap-8">
             <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden p-8 lg:p-12 max-w-2xl flex-1">
@@ -16,11 +17,15 @@ export default function DeleteAccountPage() {
                         <label className="text-black font-black text-lg">Enter your password to confirm</label>
                         <div className="relative max-w-sm">
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors pr-12"
                             />
-                            <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors">
-                                <Eye size={20} />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
                         </div>
                     </div>
