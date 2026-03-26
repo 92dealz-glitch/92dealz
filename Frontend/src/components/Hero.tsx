@@ -24,9 +24,25 @@ export default function Hero() {
 
         {/* CONTENT */}
         <div className="relative flex items-center min-h-[420px] lg:min-h-[520px]">
+          
+          {/* DESKTOP HERO IMAGE (BACKGROUND LAYER) */}
+          <div className="absolute left-[25%] top-[-40px] w-auto h-auto pointer-events-none hidden lg:block z-0">
+            <div className="relative w-[750px] h-[520px] overflow-hidden">
+              <Image
+                src="/images/heroimage.svg"
+                alt="Happy shopper with shopping bags"
+                fill
+                priority
+                className="object-contain object-top"
+              />
+              {/* Subtle left-to-right gradient to blend with background behind text */}
+              <div className="absolute inset-y-0 left-0 w-[200px] bg-gradient-to-r from-white via-white/50 to-transparent pointer-events-none z-10" />
+              {/* Bottom ground merge gradient */}
+              <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10" />
+            </div>
+          </div>
 
           <div className="relative z-10 max-w-[680px] mx-auto text-center lg:mx-0 lg:text-left">
-
             {/* HEADING */}
             <h1
               className="
@@ -114,22 +130,6 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* DESKTOP IMAGE (UNCHANGED) */}
-          <div className="absolute left-[25%] top-[-40px] w-auto h-auto pointer-events-none hidden lg:block">
-            <div className="relative w-[700px] h-[520px] overflow-hidden">
-              <Image
-                src="/images/heroimage.svg"
-                alt="Happy shopper with shopping bags"
-                fill
-                priority
-                className="object-contain object-top"
-              />
-              {/* Left edge soft gradient to merge with text area */}
-              <div className="absolute inset-y-0 left-0 w-[200px] bg-gradient-to-r from-white via-white/50 to-transparent pointer-events-none z-10" />
-              {/* Bottom edge soft gradient */}
-              <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10" />
-            </div>
-          </div>
 
         </div>
       </div>
