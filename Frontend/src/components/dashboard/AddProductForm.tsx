@@ -192,12 +192,12 @@ function TrashIcon() {
     )
 }
 
-function InputField({ label, placeholder, value, onChange, required = false }: { label: string, placeholder: string, value: string, onChange: (v: string) => void, required?: boolean }) {
+function InputField({ label, placeholder, value, onChange, required = false, type = "text" }: { label: string, placeholder: string, value: string, onChange: (v: string) => void, required?: boolean, type?: string }) {
     return (
         <div className="flex flex-col gap-2">
             <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#E85A28] ml-1">*</span>}</label>
             <input
-                type="text"
+                type={type}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
@@ -345,7 +345,7 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InputField label="Price(₦)" placeholder="Enter price here" value={data.price} onChange={(v) => updateData({ price: v })} required />
+                <InputField label="Price(₦)" placeholder="Enter price here" value={data.price} onChange={(v) => updateData({ price: v })} required type="number" />
                 <SelectField label="Negotiable" options={["Yes", "No"]} value={data.negotiable} onChange={(v) => updateData({ negotiable: v })} />
             </div>
 

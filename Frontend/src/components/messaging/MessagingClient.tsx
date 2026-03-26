@@ -330,21 +330,21 @@ export default function MessagingClient() {
             </div>
 
             {/* Input Bar */}
-            <form onSubmit={handleSendMessage} className="p-6 border-t border-zinc-50 bg-white">
-              <div className="flex gap-3 bg-zinc-50 rounded-[2rem] p-2 pr-2 border border-border-zinc-100 shadow-inner focus-within:ring-2 focus-within:ring-orange-500/20 focus-within:border-orange-500/30 transition-all duration-300">
+            <form onSubmit={handleSendMessage} className="p-3 sm:p-6 border-t border-zinc-50 bg-white">
+              <div className="flex gap-2 sm:gap-3 bg-zinc-50 rounded-[2rem] p-1 sm:p-2 pr-1 sm:pr-2 border border-border-zinc-100 shadow-inner focus-within:ring-2 focus-within:ring-orange-500/20 focus-within:border-orange-500/30 transition-all duration-300">
                 <input
                   type="text"
                   value={newMsg}
                   onChange={(e) => setNewMsg(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 bg-transparent px-5 py-3 text-sm font-bold outline-none text-zinc-800 placeholder:text-zinc-400"
+                  className="flex-1 min-w-0 bg-transparent px-3 sm:px-5 py-2 sm:py-3 text-sm font-bold outline-none text-zinc-800 placeholder:text-zinc-400"
                 />
                 <button 
                   type="submit" 
                   disabled={!newMsg.trim()}
-                  className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/30 active:scale-90 disabled:opacity-20 disabled:grayscale"
+                  className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-600 text-white rounded-full flex items-center justify-center hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/30 active:scale-90 disabled:opacity-20 disabled:grayscale shrink-0"
                 >
-                  <Send size={22} className={newMsg.trim() ? "translate-x-0.5" : ""} />
+                  <Send size={18} className={`sm:w-[22px] sm:h-[22px] ${newMsg.trim() ? "translate-x-0.5" : ""}`} />
                 </button>
               </div>
             </form>
