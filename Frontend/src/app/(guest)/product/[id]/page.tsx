@@ -426,11 +426,7 @@ export default function ProductPage({ params }: Props) {
                       <div>Phone:</div><div className="font-medium text-orange-600 select-all">{product.sellerPhone}</div>
                     </>
                   )}
-                  {product.sellerEmail && (
-                    <>
-                      <div>Email:</div><div className="font-medium text-zinc-600 truncate max-w-[150px]">{product.sellerEmail}</div>
-                    </>
-                  )}
+                  {/* Email hidden per request */}
                 </div>
               </div>
 
@@ -727,7 +723,7 @@ export default function ProductPage({ params }: Props) {
                 <button type="button" onClick={() => alert(`Call: ${product.sellerPhone || 'Not available'}`)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
                 <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
                 <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
-                <a href={`mailto:${product.sellerEmail}`} className="w-full border border-gray-300 py-3 rounded flex items-center justify-center gap-2 font-bold">✉️ Email</a>
+                {/* Email button removed */}
               </div>
 
               <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>

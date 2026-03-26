@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -32,7 +32,7 @@ export default function SellerPage({ params }: Props) {
         setSeller({
           id: u.id,
           name: u.name || "Seller",
-          email: u.email,
+          // email: u.email, // Hidden per request
           about: u.about,
           rating: u.rating || 0,
           location: u.businessAddress || "Nigeria",
@@ -131,20 +131,6 @@ export default function SellerPage({ params }: Props) {
       strokeWidth="2"
     >
       <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-    </svg>
-  );
-
-  const EmailIcon = () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-      <polyline points="22,6 12,13 2,6" />
     </svg>
   );
 
@@ -753,27 +739,7 @@ export default function SellerPage({ params }: Props) {
                     <ChatIcon /> Chat Seller
                   </button>
                 </Link>
-                {seller.email && (
-                  <button
-                    onClick={() => window.location.href = `mailto:${seller.email}`}
-                    style={{
-                      background: "#fff",
-                      color: "#374151",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 8,
-                      padding: "12px",
-                      fontWeight: 500,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                    }}
-                  >
-                    <EmailIcon /> Email
-                  </button>
-                )}
+                {/* Email hidden per request */}
               </div>
               <button
                 onClick={() => setShowReportModal(true)}
@@ -861,7 +827,7 @@ export default function SellerPage({ params }: Props) {
                     bg: "#dcfce7",
                     color: "#16a34a",
                     label: "Identity Verified",
-                    sub: "Phone & Email confirmed",
+                    sub: "Phone confirmed",
                   },
                   {
                     icon: "★",
@@ -997,6 +963,7 @@ export default function SellerPage({ params }: Props) {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      gap: 0,
                     }}
                   >
                     {s.icon}
