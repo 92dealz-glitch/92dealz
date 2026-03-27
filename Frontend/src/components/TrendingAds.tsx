@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import AdCard, { AdItem } from "./ui/AdCard";
-import { listActiveAds } from "@/services/ads.service";
+import { listTrendingAds } from "@/services/ads.service";
 
 export default function TrendingAds() {
   const [list, setList] = useState<AdItem[]>([]);
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds();
-        const mapped: AdItem[] = (res.data || []).map((d: any) => ({
+        const res = await listTrendingAds();
+        const mapped: AdItem[] = (res.data || []).slice(0, 8).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,
           title: d.title,
@@ -19,7 +19,9 @@ export default function TrendingAds() {
           condition: d.condition || "Brand New",
         }));
         setList(mapped);
-      } catch {}
+      } catch (err) {
+        console.error("Failed to fetch trending ads:", err);
+      }
     })();
   }, []);
   return (

@@ -4,6 +4,7 @@ const auth = require('../middleware/authMiddleware');
 const ctrl = require('../controllers/adsController');
 
 router.get('/', ctrl.listActive);
+router.get('/trending', ctrl.trending);
 router.get('/vendor', auth, ctrl.listMine);
 router.get('/:id', ctrl.getById);
 router.post('/', auth, ctrl.create);

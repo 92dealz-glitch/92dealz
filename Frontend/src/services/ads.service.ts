@@ -42,6 +42,10 @@ export async function listActiveAds(params?: { limit?: number; page?: number; so
   return apiFetch<{ success: boolean; data: any[] }>(url, { method: "GET" }, false);
 }
 
+export async function listTrendingAds() {
+  return apiFetch<{ success: boolean; data: any[] }>(`${BASE}/trending`, { method: "GET" }, false);
+}
+
 export async function listMyAds() {
   return apiFetch<{ success: boolean; data: any[] }>(`${BASE}/vendor`, { method: "GET" }, true);
 }

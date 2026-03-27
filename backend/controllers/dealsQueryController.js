@@ -336,7 +336,7 @@ exports.trending = async (req, res, next) => {
                 (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
          FROM deals d
          JOIN click_events c ON c.deal_id = d.id
-         WHERE c.clicked_at > NOW() - INTERVAL '7 days'
+         WHERE d.status = 'active' AND c.clicked_at > NOW() - INTERVAL '12 hours'
          GROUP BY ${groupBy}
          ORDER BY clicks DESC
          LIMIT 20`
