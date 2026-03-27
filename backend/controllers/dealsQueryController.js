@@ -335,41 +335,14 @@ exports.trending = async (req, res, next) => {
                 (SELECT rating FROM users u WHERE u.id = d."userId") AS rating,
                 (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
          FROM deals d
-         JOIN click_events c ON c.deal_id = d.id
-         WHERE d.status = 'active' AND c.clicked_at > NOW() - INTERVAL '12 hours'
+         LEFT JOIN click_events c ON c.deal_id = d.id AND c.clicked_at > NOW() - INTERVAL '1 hour'
+         WHERE d.status = 'active'
          GROUP BY ${groupBy}
-         ORDER BY clicks DESC
+         ORDER BY clicks DESC, d."createdAt" DESC
          LIMIT 20`
       );
-      if (rows.length > 0) {
-        return res.json({ success: true, data: rows });
-      }
-
-      // Fallback to 7 days if 12 hours is empty
-      const [fallback7d] = await sequelize.query(
-        `SELECT ${selectCols.join(', ')}, COUNT(c.id)::INT AS clicks, 
-                (SELECT rating FROM users u WHERE u.id = d."userId") AS rating,
-                (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
-         FROM deals d
-         JOIN click_events c ON c.deal_id = d.id
-         WHERE d.status = 'active' AND c.clicked_at > NOW() - INTERVAL '7 days'
-         GROUP BY ${groupBy}
-         ORDER BY clicks DESC
-         LIMIT 20`
-      );
-      if (fallback7d.length > 0) {
-        return res.json({ success: true, data: fallback7d });
-      }
+      return res.json({ success: true, data: rows });
     }
-    const [rows] = await sequelize.query(
-      `SELECT ${selectCols.join(', ')}, 
-              (SELECT rating FROM users u WHERE u.id = d."userId") AS rating,
-              (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
-       FROM deals d
-       ORDER BY d."createdAt" DESC
-       LIMIT 20`
-    );
-    return res.json({ success: true, data: rows });
   } catch (err) {
     return next(err);
   }
