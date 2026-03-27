@@ -87,7 +87,7 @@ export default function PromoBanner() {
             <div className="w-full lg:absolute lg:bottom-0 lg:right-0 lg:w-[105%] lg:h-full -right-0">
               <div className="relative w-full pb-[66%] lg:pb-0 lg:h-full">
                 <Image
-                  src="/assets/images/advertlady.svg"
+                  src="/assets/images/advertladynew.png"
                   alt="Professional woman pointing and smiling, promoting featured products"
                   fill
                   className="absolute inset-0 object-contain object-bottom"

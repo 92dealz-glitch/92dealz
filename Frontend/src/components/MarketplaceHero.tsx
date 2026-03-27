@@ -9,7 +9,7 @@ export default function MarketplaceHero() {
           <div className="w-full relative rounded-lg overflow-hidden">
             <div className="relative w-full pb-[56%] lg:pb-0 lg:h-[420px] rounded-lg overflow-hidden">
               <Image
-                src="/images/marketplace.png"
+                src="/images/marketplacenew.png"
                 alt="234Deals marketplace hero"
                 fill
                 className="absolute inset-0 object-cover object-center"

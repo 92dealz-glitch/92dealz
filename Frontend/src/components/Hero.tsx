@@ -10,7 +10,7 @@ export default function Hero() {
         {/* MOBILE BACKGROUND IMAGE */}
         <div className="absolute inset-0 flex justify-center lg:hidden pointer-events-none">
           <Image
-            src="/images/heroimage.svg"
+            src="/images/heroimagenew.png"
             alt="Happy shopper"
             width={460}
             height={460}
@@ -29,7 +29,7 @@ export default function Hero() {
           <div className="absolute left-[25%] top-[-40px] w-auto h-auto pointer-events-none hidden lg:block z-0">
             <div className="relative w-[750px] h-[520px] overflow-hidden">
               <Image
-                src="/images/heroimage.svg"
+                src="/images/heroimagenew.png"
                 alt="Happy shopper with shopping bags"
                 fill
                 priority
