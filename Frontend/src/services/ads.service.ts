@@ -27,8 +27,19 @@ export interface AdPayload {
   specifications?: Record<string, any>;
 }
 
-export async function listActiveAds() {
-  return apiFetch<{ success: boolean; data: any[] }>(BASE, { method: "GET" }, false);
+export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number }) {
+  let url = BASE;
+  if (params) {
+    const q = new URLSearchParams();
+    if (params.limit) q.set("limit", params.limit.toString());
+    if (params.page) q.set("page", params.page.toString());
+    if (params.sort) q.set("sort", params.sort);
+    if (params.dir) q.set("dir", params.dir);
+    if (params.category_id) q.set("category_id", params.category_id.toString());
+    const qs = q.toString();
+    if (qs) url += `?${qs}`;
+  }
+  return apiFetch<{ success: boolean; data: any[] }>(url, { method: "GET" }, false);
 }
 
 export async function listMyAds() {

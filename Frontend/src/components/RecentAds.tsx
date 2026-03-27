@@ -8,7 +8,7 @@ export default function RecentAds() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds();
+        const res = await listActiveAds({ limit: 8, sort: "created_at", dir: "desc" });
         const mapped: AdItem[] = (res.data || []).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,
@@ -19,7 +19,9 @@ export default function RecentAds() {
           newLabel: d.condition || "Brand New",
         }));
         setList(mapped);
-      } catch {}
+      } catch (err) {
+        console.error("Failed to fetch recent ads:", err);
+      }
     })();
   }, []);
   if (!list.length) return null;
