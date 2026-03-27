@@ -18,6 +18,7 @@ export default function TrendingAds() {
           location: d.location || d.city || "Nigeria",
           condition: d.condition || "Brand New",
           likes: d.clicks || 0,
+          rating: Number(d.rating || 0),
         }));
         setList(mapped);
       } catch (err) {
