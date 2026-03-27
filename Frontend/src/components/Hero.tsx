@@ -15,7 +15,7 @@ export default function Hero() {
             width={460}
             height={460}
             priority
-            className="-translate-y-26 object-contain"
+            className="translate-y-8 object-contain"
           />
 
           {/* Softer fade (less blur effect) */}
@@ -23,9 +23,9 @@ export default function Hero() {
         </div>
 
         {/* CONTENT */}
-        <div className="relative flex flex-col lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 min-h-[420px] lg:min-h-[520px]">
+        <div className="relative flex flex-col lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 min-h-[500px] lg:min-h-[520px]">
           
-          <div className="relative z-10 max-w-[680px] mx-auto text-center lg:mx-0 lg:text-left order-2 lg:order-1">
+          <div className="relative z-10 max-w-[680px] mx-auto text-center lg:mx-0 lg:text-left order-2 lg:order-1 pt-40 sm:pt-48 lg:pt-0">
             {/* HEADING */}
             <h1
               className="
