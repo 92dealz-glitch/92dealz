@@ -16,7 +16,8 @@ export default function RecentAds() {
           desc: d.description || "",
           badge: d.image_url || "/assets/images/bgphone.svg",
           location: d.location || d.city || "Nigeria",
-          newLabel: d.condition || "Brand New",
+          condition: d.condition || "Brand New",
+          likes: d.clicks || 0,
         }));
         setList(mapped);
       } catch (err) {

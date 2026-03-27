@@ -101,7 +101,8 @@ exports.list = async (req, res, next) => {
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals ${whereSql}`;
     const dataSql = `SELECT ${baseSelectCols.join(', ')}, 
                      (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating,
-                     (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified
+                     (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified,
+                     (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = deals.id) AS clicks
                      FROM deals
                      ${whereSql}
                      ${orderSql}
@@ -142,7 +143,8 @@ exports.getById = async (req, res, next) => {
     }
     const sql = `SELECT ${selectCols.join(', ')}, 
                  (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating,
-                 (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified
+                 (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified,
+                 (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = deals.id) AS clicks
                  FROM deals WHERE id = $1`;
     const [rows] = await sequelize.query(sql, { bind: [id] });
     if (!rows.length) {

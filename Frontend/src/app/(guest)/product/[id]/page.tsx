@@ -25,7 +25,7 @@ export default function ProductPage({ params }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
-    id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: 'Brand New', specifications: {}, subcategory: '', isVerified: false
+    id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', isVerified: false
   })
   useEffect(() => {
     let active = true
@@ -81,6 +81,7 @@ export default function ProductPage({ params }: Props) {
           sellerEmail: seller.email || '',
           sellerImage: seller.profile_image_url || null,
           isVerified: seller.is_verified || false,
+          likes: d.clicks || 0,
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -593,12 +594,6 @@ export default function ProductPage({ params }: Props) {
                       <div className="flex justify-between border-b border-gray-100 pb-2">
                         <span className="text-gray-500">Model</span>
                         <span className="font-semibold">{product.model}</span>
-                      </div>
-                    )}
-                    {product.condition && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Condition</span>
-                        <span className="font-semibold">{product.condition}</span>
                       </div>
                     )}
                     {product.color && (
