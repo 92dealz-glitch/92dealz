@@ -6,7 +6,7 @@ import { listTrendingAds } from "@/services/ads.service";
 export default function TrendingAds() {
   const [list, setList] = useState<AdItem[]>([]);
   useEffect(() => {
-    (async () => {
+    const fetchTrending = async () => {
       try {
         const res = await listTrendingAds();
         const mapped: AdItem[] = (res.data || []).slice(0, 8).map((d: any) => ({
@@ -24,7 +24,12 @@ export default function TrendingAds() {
       } catch (err) {
         console.error("Failed to fetch trending ads:", err);
       }
-    })();
+    };
+
+    fetchTrending();
+    // Refresh every 5 minutes to keep it "live"
+    const interval = setInterval(fetchTrending, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
   return (
     <>

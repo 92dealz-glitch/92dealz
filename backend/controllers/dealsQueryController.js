@@ -319,7 +319,7 @@ exports.remove = async (req, res, next) => {
 exports.trending = async (req, res, next) => {
   try {
     await introspect();
-    const selectCols = ['d.id', 'd.title', 'd.description', 'd.price', 'd."createdAt"'];
+    const selectCols = ['d.id', 'd.title', 'd.description', 'd.price', 'd."createdAt"', 'd."userId"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
                     'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
                     'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location',
@@ -337,7 +337,7 @@ exports.trending = async (req, res, next) => {
                 (SELECT rating FROM users u WHERE u.id = d."userId") AS rating,
                 (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
          FROM deals d
-         LEFT JOIN click_events c ON c.deal_id = d.id AND c.clicked_at > NOW() - INTERVAL '1 hour'
+         LEFT JOIN click_events c ON c.deal_id = d.id AND c.clicked_at > NOW() - INTERVAL '24 hours'
          WHERE d.status = 'active'
          GROUP BY ${groupBy}
          ORDER BY clicks DESC, d."createdAt" DESC

@@ -38,7 +38,7 @@ export default function Footer() {
               <li><Link href="/faq" className="hover:text-orange-600 transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-orange-600 transition-colors">Contact Us</Link></li>
               <li className="pt-2 text-xs text-gray-500 italic border-t border-gray-100 mt-2">
-                Plot 1907 Katampe Road, Jahi.<br />FCT, Abuja Nigeria
+                Abuja, Nigeria
               </li>
             </ul>
           </div>
@@ -123,7 +123,7 @@ export default function Footer() {
                 <div className="text-sm font-semibold text-gray-800">
                   234Deals
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs text-gray-600 italic">
                   The Marketplace By Us For Us
                 </div>
               </div>

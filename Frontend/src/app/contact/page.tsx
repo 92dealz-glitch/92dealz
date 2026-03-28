@@ -58,7 +58,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">Visit Us</p>
-                <p className="text-gray-600 text-sm">Plot 1907 Katampe Road, Jahi. FCT, Abuja Nigeria</p>
+                <p className="text-gray-600 text-sm">Abuja, Nigeria</p>
               </div>
             </div>
             
