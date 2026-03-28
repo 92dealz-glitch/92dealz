@@ -36,15 +36,22 @@ export default function CategoryBar() {
     const speed = 0.5; // pixels per frame
 
     const animate = () => {
-      [scrollRef1, scrollRef2].forEach((ref) => {
-        if (ref.current) {
-          ref.current.scrollLeft += speed;
-          // If we've scrolled half way (since we duplicated items), reset to start
-          if (ref.current.scrollLeft >= ref.current.scrollWidth / 2) {
-            ref.current.scrollLeft = 0;
-          }
+      // First row: scroll right
+      if (scrollRef1.current) {
+        scrollRef1.current.scrollLeft += speed;
+        if (scrollRef1.current.scrollLeft >= scrollRef1.current.scrollWidth / 2) {
+          scrollRef1.current.scrollLeft = 0;
         }
-      });
+      }
+      
+      // Second row: scroll left
+      if (scrollRef2.current) {
+        scrollRef2.current.scrollLeft -= speed;
+        if (scrollRef2.current.scrollLeft <= 0) {
+          scrollRef2.current.scrollLeft = scrollRef2.current.scrollWidth / 2;
+        }
+      }
+      
       animationFrameId = requestAnimationFrame(animate);
     };
 
@@ -52,12 +59,16 @@ export default function CategoryBar() {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isInteracting, categories]);
 
-  const handleInteraction = () => {
+  const stopInteraction = () => {
     setIsInteracting(true);
     if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+  };
+
+  const resumeInteraction = () => {
+    // Small delay to ensure smooth transition
     interactionTimeout.current = setTimeout(() => {
       setIsInteracting(false);
-    }, 3000); // Resume after 3 seconds of no interaction
+    }, 500);
   };
 
   const handleImageError = (id: string) => {
@@ -100,15 +111,18 @@ export default function CategoryBar() {
       {/* Rows Container */}
       <div className="flex flex-col gap-4">
         {[
-          { items: firstRow, ref: scrollRef1 },
-          { items: secondRow, ref: scrollRef2 }
+          { items: firstRow, ref: scrollRef1, label: 'fwd' },
+          { items: secondRow, ref: scrollRef2, label: 'bwd' }
         ].map((row, idx) => (
           <div 
             key={idx} 
             ref={row.ref}
             className="overflow-x-auto pb-2 scrollbar-hide"
-            onTouchStart={handleInteraction}
-            onMouseDown={handleInteraction}
+            onTouchStart={stopInteraction}
+            onTouchEnd={resumeInteraction}
+            onMouseDown={stopInteraction}
+            onMouseUp={resumeInteraction}
+            onMouseLeave={resumeInteraction}
           >
             <div className="flex gap-4 w-max">
               {row.items.map((c, i) => (
