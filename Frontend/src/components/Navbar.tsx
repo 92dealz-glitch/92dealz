@@ -166,7 +166,7 @@ export default function Navbar() {
               </Link>
 
               <div className="flex items-center gap-3">
-                <LocationDropdown value="Lagos" onChange={() => { }} />
+                <LocationDropdown value="All" onChange={() => { }} />
 
                 <form
                   onSubmit={(e) => {
@@ -359,7 +359,7 @@ export default function Navbar() {
           {/* Mobile Search Row */}
           <div className="flex w-full items-center gap-2">
             <div className="flex-shrink-0 w-auto min-w-[100px] max-w-[130px]">
-              <LocationDropdown value="Lagos" onChange={() => { }} />
+              <LocationDropdown value="All" onChange={() => { }} />
             </div>
 
             <form
@@ -445,7 +445,7 @@ export default function Navbar() {
 
               <div className="flex w-full items-stretch gap-2 pb-4">
                 <div className="flex-shrink-0 w-auto min-w-[100px] max-w-[130px]">
-                  <LocationDropdown value="Lagos" onChange={() => { }} />
+                  <LocationDropdown value="All" onChange={() => { }} />
                 </div>
 
                 <form

@@ -3,20 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 const LOCATIONS = [
-  "Lagos",
-  "Abuja",
-  "Port Harcourt",
-  "Kano",
-  "Ibadan",
-  "Benin City",
-  "Enugu",
-  "Owerri",
-  "Uyo",
-  "Jos",
+  "All",
+  "Nigeria 🇳🇬",
+  "China 🇨🇳",
 ];
 
 export default function LocationDropdown({
-  value = "Lagos",
+  value = "All",
   onChange,
   className,
   openOnMount,

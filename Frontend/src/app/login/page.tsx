@@ -64,7 +64,7 @@ export default function LoginPage() {
       if (role === "vendor" || role === "seller") {
         router.push("/vendor-dashboard");
       } else {
-        router.push("/user-dashboard");
+        router.push("/");
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Login failed";
