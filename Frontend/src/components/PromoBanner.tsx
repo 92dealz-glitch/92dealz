@@ -42,7 +42,7 @@ export default function PromoBanner() {
   }, []);
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-0 lg:px-8 py-4 lg:py-8 overflow-hidden">
+    <section className="w-full max-w-full mx-auto px-0 lg:px-8 py-4 lg:py-8 overflow-hidden">
       <div className="relative w-full h-[220px] sm:h-[300px] lg:h-[453px] rounded-none lg:rounded-[32px] overflow-hidden bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
         
         {/* Slides Container */}
@@ -72,7 +72,7 @@ export default function PromoBanner() {
                 </>
               ) : (
                 <>
-                  <div className="absolute top-10 left-10 z-10 hidden lg:flex gap-4 opacity-30">
+                  <div className="absolute top-10 right-10 z-10 hidden lg:flex gap-4 opacity-30">
                      <div className="w-4 h-4 bg-[#FFD700] rounded-sm rotate-45" />
                   </div>
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden lg:grid grid-cols-3 gap-3 opacity-40">
@@ -81,20 +81,36 @@ export default function PromoBanner() {
                     ))}
                   </div>
                   <div 
-                    className="absolute inset-0 lg:left-[45%] left-[38%] sm:left-[42%]"
+                    className="absolute inset-0 lg:right-[45%] right-[38%] sm:right-[42%]"
                     style={{
                       background: "linear-gradient(135deg, #22C55E 0%, #16A34A 50%, #15803D 100%)",
-                      clipPath: "polygon(15% 0, 100% 0, 100% 100%, 0% 100%)",
+                      clipPath: "polygon(0 0, 85% 0, 100% 100%, 0 100%)",
                     }}
                   />
                 </>
               )}
 
               {/* Slide Content */}
-              <div className="relative grid grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.1fr_0.9fr] h-full items-center">
+              <div className={`relative grid h-full items-center ${banner.theme === 'orange' ? 'grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.1fr_0.9fr]' : 'grid-cols-[0.85fr_1.15fr] lg:grid-cols-[0.9fr_1.1fr]'}`}>
                 
-                {/* Left Side: Content */}
-                <div className="flex flex-col justify-center items-start text-left pl-6 pr-2 lg:pl-16 z-10 h-full">
+                {/* Image Section (Calculated order/position) */}
+                <div className={`relative w-full h-full z-20 overflow-visible ${banner.theme === 'green' ? 'order-1' : 'order-2'}`}>
+                   <div className={`absolute inset-0 flex items-end justify-center ${banner.theme === 'orange' ? 'lg:justify-end translate-x-2 lg:translate-x-0' : 'lg:justify-start -translate-x-4 lg:translate-x-0'}`}>
+                      <div className="relative w-[140%] h-[115%] lg:w-[110%] lg:h-[105%]">
+                        <Image
+                          src={banner.image}
+                          alt="Banner Promotional"
+                          fill
+                          className="object-contain object-bottom pointer-events-none select-none"
+                          priority
+                          quality={98}
+                        />
+                      </div>
+                   </div>
+                </div>
+
+                {/* Text Content Section */}
+                <div className={`flex flex-col justify-center text-left pl-6 pr-4 lg:pl-16 z-10 h-full ${banner.theme === 'green' ? 'order-2 items-start lg:items-center lg:text-center lg:pr-16 ml-auto' : 'order-1 items-start'}`}>
                   {banner.theme === 'orange' ? (
                     <h1 className="mb-2 lg:mb-6">
                       <span className="block font-black text-[1.2rem] sm:text-[2.2rem] lg:text-[4.2rem] leading-[1.05] tracking-tight text-gray-900">
@@ -143,21 +159,6 @@ export default function PromoBanner() {
                   </Link>
                 </div>
 
-                {/* Right Side: Image */}
-                <div className="relative w-full h-full z-20 overflow-visible">
-                   <div className="absolute inset-0 flex items-end justify-center lg:justify-end translate-x-4 lg:translate-x-0">
-                      <div className="relative w-[140%] h-[115%] lg:w-[110%] lg:h-[105%]">
-                        <Image
-                          src={banner.image}
-                          alt="Banner Promotional"
-                          fill
-                          className="object-contain object-bottom pointer-events-none select-none"
-                          priority
-                          quality={98}
-                        />
-                      </div>
-                   </div>
-                </div>
               </div>
             </div>
           ))}

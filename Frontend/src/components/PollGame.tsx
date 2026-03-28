@@ -1,24 +1,42 @@
 export default function PollGame() {
   return (
-    <section className="w-full bg-[#F5F5F5] py-16 px-4">
+    <section className="relative w-full bg-[#F5F5F5] py-16 px-4 overflow-hidden">
+      {/* Animation Styles */}
+      <style jsx>{`
+        @keyframes float {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(10px, -15px) rotate(5deg); }
+          50% { transform: translate(-15px, 10px) rotate(-10deg); }
+          75% { transform: translate(15px, 5px) rotate(8deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        .animate-float-slow {
+          animation: float 8s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float 10s ease-in-out infinite;
+          animation-delay: 2s;
+        }
+      `}</style>
+
       <div className="max-w-[1200px] mx-auto">
         {/* Title */}
         <h2 className="text-center text-[42px] md:text-[52px] font-bold mb-12">
           Let&apos;s Play a Quick {" "}
           <span className="text-[#FF6B35]">Poll Game</span>{" "}
-          <span className="inline-block">🎮</span>
+          <span className="inline-block animate-bounce">🎮</span>
         </h2>
 
         {/* Poll Cards Container */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[1100px] mx-auto">
           {/* Left Card */}
           <div className="relative">
-            {/* Decorative gamepad */}
-            <div className="absolute -left-8 top-1/2 -translate-y-1/2 text-[80px] opacity-20 pointer-events-none hidden md:block">
+            {/* Decorative gamepad - Now visible on all devices and animated */}
+            <div className="absolute -left-6 md:-left-8 top-1/4 md:top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-10 md:opacity-20 pointer-events-none z-0 animate-float-slow">
               🎮
             </div>
             
-            <div className="bg-[#FF6B35] rounded-[28px] p-8 shadow-lg h-full">
+            <div className="relative bg-[#FF6B35] rounded-[28px] p-8 shadow-lg h-full z-10">
               <h3 className="text-white text-[20px] font-semibold mb-6 leading-tight">
                 If you could shop only ONE category this week, which would it be?
               </h3>
@@ -63,12 +81,12 @@ export default function PollGame() {
 
           {/* Right Card */}
           <div className="relative">
-            {/* Decorative gamepad */}
-            <div className="absolute -right-8 top-1/2 -translate-y-1/2 text-[80px] opacity-20 pointer-events-none hidden md:block">
+            {/* Decorative gamepad - Now visible on all devices and animated */}
+            <div className="absolute -right-6 md:-right-8 top-3/4 md:top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-10 md:opacity-20 pointer-events-none z-0 animate-float-delayed">
               🎮
             </div>
             
-            <div className="bg-[#FF6B35] rounded-[28px] p-8 shadow-lg h-full">
+            <div className="relative bg-[#FF6B35] rounded-[28px] p-8 shadow-lg h-full z-10">
               <h3 className="text-white text-[20px] font-semibold mb-6 leading-tight">
                 What makes you click a product the fastest?
               </h3>
