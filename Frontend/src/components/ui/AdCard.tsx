@@ -18,6 +18,7 @@ export type AdItem = {
   likes?: number;
   rating?: number;
   condition?: string;
+  views?: number;
 };
 
 type Props = {
@@ -97,7 +98,7 @@ export default function AdCard({ item, className = "" }: Props) {
         <div className="mt-3 flex items-center justify-between text-xs text-gray-600">
           <div>{item.location ?? "Delta, Warri"}</div>
           <div className="flex items-center gap-2">
-            <span className="text-orange-500 font-semibold">{item.likes ?? 0}</span>
+            <span className="text-orange-500 font-semibold">{item.views ?? item.likes ?? 0} views</span>
           </div>
         </div>
       </article>

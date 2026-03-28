@@ -36,6 +36,8 @@ export default function Recommended() {
           badge: d.image_url || "/assets/images/bgphone.svg",
           location: d.location || d.city || "Nigeria",
           condition: d.condition || "Brand New",
+          views: d.clicks || 0,
+          rating: d.rating || 0,
         }));
         setItems(mapped);
       } catch (err) {
