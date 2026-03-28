@@ -25,7 +25,7 @@ export default function HomePage() {
       <HotDeals />
       <TrendingAds />
       <MarketplaceHero />
-      <PollGame />
+{/* <PollGame /> */}
       <FeaturedListing />
       <WhyChooseUs />
       <NewsletterCTA />
