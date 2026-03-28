@@ -12,11 +12,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 body {
   background: var(--background) !important;
   color: var(--foreground) !important;
@@ -24,7 +19,7 @@ body {
 }
 
 input::placeholder {
-  color: black/50 !important;
+  color: rgba(0, 0, 0, 0.5) !important;
   opacity: 1;
 }
 input:focus::placeholder {
