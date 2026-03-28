@@ -1,3 +1,5 @@
+"use client";
+
 export default function PollGame() {
   return (
     <section className="relative w-full bg-[#F5F5F5] py-16 px-4 overflow-hidden">
