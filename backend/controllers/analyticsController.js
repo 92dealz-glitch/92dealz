@@ -82,6 +82,14 @@ exports.summary = async (_req, res, next) => {
        LIMIT 5`
     );
 
+    // Get poll analytics
+    const [pollAnalytics] = await sequelize.query(
+      `SELECT poll_choice as name, COUNT(*)::INT as value 
+       FROM users 
+       WHERE poll_choice IS NOT NULL 
+       GROUP BY poll_choice`
+    );
+
     return res.json({ 
       success: true, 
       data: { 
@@ -93,7 +101,8 @@ exports.summary = async (_req, res, next) => {
         total_contacts: contacts?.total_contacts || 0,
         total_visitors: visitors?.total_visitors || 0,
         categories: categories || [],
-        recentDeals: recentDeals || []
+        recentDeals: recentDeals || [],
+        pollAnalytics: pollAnalytics || []
       } 
     });
   } catch (err) { return next(err); }

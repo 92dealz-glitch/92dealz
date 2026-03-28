@@ -200,3 +200,48 @@ exports.requestVerification = async (req, res, next) => {
     return next(err);
   }
 };
+
+// POST /api/users/poll
+exports.submitPoll = async (req, res, next) => {
+  try {
+    const { category, choice } = req.body;
+    if (!category || !choice) {
+      return res.status(400).json({ success: false, message: 'All poll fields are required' });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Check reset logic (7 days)
+    if (user.last_poll_date) {
+      const now = new Date();
+      const last = new Date(user.last_poll_date);
+      const diffTime = Math.abs(now - last);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays < 7) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'You have already participated this week. Please try again later.',
+          nextAvailableDate: new Date(last.getTime() + 7 * 24 * 60 * 60 * 1000)
+        });
+      }
+    }
+
+    user.poll_category = category;
+    user.poll_choice = choice;
+    user.last_poll_date = new Date();
+
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: 'Poll submitted successfully!',
+      data: { poll_category: user.poll_category, last_poll_date: user.last_poll_date }
+    });
+  } catch (err) {
+    return next(err);
+  }
+};

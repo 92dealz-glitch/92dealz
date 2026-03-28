@@ -73,6 +73,11 @@ exports.list = async (req, res, next) => {
       params.push(Number(req.query.store_id));
       where.push('store_id = $' + params.length);
     }
+    if (req.query.category_name && has('category_id')) {
+      // Join with categories table to filter by name
+      where.push(`category_id IN (SELECT id FROM categories WHERE name ILIKE $${params.length + 1})`);
+      params.push(String(req.query.category_name));
+    }
     if (req.query.status && has('status')) {
       params.push(String(req.query.status));
       where.push('status = $' + params.length);

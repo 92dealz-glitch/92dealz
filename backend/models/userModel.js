@@ -107,6 +107,18 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('none', 'pending', 'approved', 'rejected'),
     defaultValue: 'none',
   },
+  poll_category: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  poll_choice: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  last_poll_date: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: true,

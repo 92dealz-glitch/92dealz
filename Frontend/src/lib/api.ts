@@ -305,3 +305,10 @@ export async function changePassword(payload: any) {
     { method: "PUT", body: payload, auth: true }
   );
 }
+
+export async function submitPoll(payload: { category: string; choice: string }) {
+  return apiFetch<{ success: boolean; message: string; data: any }>(
+    "/users/poll",
+    { method: "POST", body: payload, auth: true }
+  );
+}

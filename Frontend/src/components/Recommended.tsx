@@ -2,14 +2,32 @@
 import { useEffect, useState } from "react";
 import AdCard, { AdItem } from "./ui/AdCard";
 import { listActiveAds } from "@/services/ads.service";
+import { getMyProfile } from "@/lib/api";
 
 export default function Recommended() {
   const [items, setItems] = useState<AdItem[]>([]);
+  const [title, setTitle] = useState("Recommended for you.");
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds();
+        let categoryName = undefined;
+        // Try to get user preferences
+        try {
+          const profile = await getMyProfile();
+          const profileData = profile.data as any;
+          if (profile.success && profileData.poll_category) {
+            categoryName = profileData.poll_category;
+            setTitle(`Recommended ${categoryName} for you.`);
+          }
+        } catch (_) {
+          // Fallback to general recommendations if not logged in
+        }
+
+        const res = await listActiveAds({ 
+          limit: 8, 
+          category_name: categoryName 
+        });
         const mapped: AdItem[] = (res.data || []).slice(0, 8).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,
