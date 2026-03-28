@@ -331,15 +331,18 @@ exports.trending = async (req, res, next) => {
       }
     }
     if (HAS_CLICK_EVENTS) {
-      const groupBy = selectCols.map((_, i) => i + 1).join(',');
       const [rows] = await sequelize.query(
-        `SELECT ${selectCols.join(', ')}, COUNT(c.id)::INT AS clicks, 
+        `SELECT ${selectCols.join(', ')}, COALESCE(counts.clicks, 0) AS clicks,
                 (SELECT rating FROM users u WHERE u.id = d."userId") AS rating,
                 (SELECT is_verified FROM users u WHERE u.id = d."userId") AS is_verified
          FROM deals d
-         LEFT JOIN click_events c ON c.deal_id = d.id AND c.clicked_at > NOW() - INTERVAL '24 hours'
+         LEFT JOIN (
+           SELECT deal_id, COUNT(id) AS clicks
+           FROM click_events
+           WHERE clicked_at > NOW() - INTERVAL '24 hours'
+           GROUP BY deal_id
+         ) counts ON counts.deal_id = d.id
          WHERE d.status = 'active'
-         GROUP BY ${groupBy}
          ORDER BY clicks DESC, d."createdAt" DESC
          LIMIT 20`
       );
