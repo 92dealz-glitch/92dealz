@@ -3,24 +3,6 @@
 export default function PollGame() {
   return (
     <section className="relative w-full bg-[#F5F5F5] py-16 px-4 overflow-hidden">
-      {/* Animation Styles */}
-      <style jsx>{`
-        @keyframes float {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(10px, -15px) rotate(5deg); }
-          50% { transform: translate(-15px, 10px) rotate(-10deg); }
-          75% { transform: translate(15px, 5px) rotate(8deg); }
-          100% { transform: translate(0, 0) rotate(0deg); }
-        }
-        .animate-float-slow {
-          animation: float 8s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float 10s ease-in-out infinite;
-          animation-delay: 2s;
-        }
-      `}</style>
-
       <div className="max-w-[1200px] mx-auto">
         {/* Title */}
         <h2 className="text-center text-[42px] md:text-[52px] font-bold mb-12">
