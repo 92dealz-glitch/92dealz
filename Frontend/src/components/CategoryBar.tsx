@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { PlusCircle, Package } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +14,10 @@ type CategoryItem = {
 export default function CategoryBar() {
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
+  const scrollRef1 = useRef<HTMLDivElement>(null);
+  const scrollRef2 = useRef<HTMLDivElement>(null);
+  const [isInteracting, setIsInteracting] = useState(false);
+  const interactionTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -24,6 +28,37 @@ export default function CategoryBar() {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (isInteracting || categories.length === 0) return;
+
+    let animationFrameId: number;
+    const speed = 0.5; // pixels per frame
+
+    const animate = () => {
+      [scrollRef1, scrollRef2].forEach((ref) => {
+        if (ref.current) {
+          ref.current.scrollLeft += speed;
+          // If we've scrolled half way (since we duplicated items), reset to start
+          if (ref.current.scrollLeft >= ref.current.scrollWidth / 2) {
+            ref.current.scrollLeft = 0;
+          }
+        }
+      });
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isInteracting, categories]);
+
+  const handleInteraction = () => {
+    setIsInteracting(true);
+    if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+    interactionTimeout.current = setTimeout(() => {
+      setIsInteracting(false);
+    }, 3000); // Resume after 3 seconds of no interaction
+  };
 
   const handleImageError = (id: string) => {
     setBrokenImages((prev) => ({ ...prev, [id]: true }));
@@ -48,12 +83,15 @@ export default function CategoryBar() {
   const postAdItem = { id: "post-ad", title: "Post ad", icon: "" };
   const allItems = [postAdItem, ...categories];
 
-  // Split items into two rows
-  const firstRow = allItems.slice(0, 5);
-  const secondRow = allItems.slice(5);
+  // Split items into two rows and duplicate for infinite scroll
+  const firstRowRaw = allItems.slice(0, Math.ceil(allItems.length / 2));
+  const secondRowRaw = allItems.slice(Math.ceil(allItems.length / 2));
+  
+  const firstRow = [...firstRowRaw, ...firstRowRaw];
+  const secondRow = [...secondRowRaw, ...secondRowRaw];
 
   return (
-    <div className="lg:hidden px-4 py-4 bg-white">
+    <div className="lg:hidden px-4 py-4 bg-white overflow-hidden">
       {/* Title */}
       <h2 className="text-orange-600 font-bold text-lg mb-3">
         Browse by category
@@ -61,14 +99,23 @@ export default function CategoryBar() {
 
       {/* Rows Container */}
       <div className="flex flex-col gap-4">
-        {[firstRow, secondRow].map((row, idx) => (
-          <div key={idx} className="overflow-x-auto pb-2 scrollbar-hide">
-            <div className="flex gap-4 snap-x snap-mandatory">
-              {row.map((c) => (
+        {[
+          { items: firstRow, ref: scrollRef1 },
+          { items: secondRow, ref: scrollRef2 }
+        ].map((row, idx) => (
+          <div 
+            key={idx} 
+            ref={row.ref}
+            className="overflow-x-auto pb-2 scrollbar-hide"
+            onTouchStart={handleInteraction}
+            onMouseDown={handleInteraction}
+          >
+            <div className="flex gap-4 w-max">
+              {row.items.map((c, i) => (
                 <Link 
-                  key={c.id} 
+                  key={`${c.id}-${idx}-${i}`} 
                    href={c.id === "post-ad" ? "/vendor-dashboard/add-product" : `/category/${c.id}`}
-                  className="flex-none w-[100px] snap-center"
+                  className="flex-none w-[100px]"
                 >
                   <div
                     className="relative w-[90px] h-[90px] mx-auto rounded-2xl flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90 overflow-hidden"

@@ -237,9 +237,6 @@ export default function Navbar() {
                 </>
               ) : (
                 <div className="flex items-center gap-5">
-                  <Link href="/user-dashboard/orders" className="flex items-center gap-2 text-zinc-600 hover:text-orange-600 transition-colors" title="My Orders">
-                    <Package size={24} />
-                  </Link>
 
                   <div className="relative">
                     <button
@@ -333,9 +330,6 @@ export default function Navbar() {
 
               {isLoggedIn && (
                 <>
-                  <Link href="/user-dashboard/orders" className="text-zinc-600 hover:text-orange-600 transition-colors" title="My Orders">
-                    <Package size={24} />
-                  </Link>
                   <Link href="/notifications" className="text-zinc-600 relative hover:text-orange-600 transition-colors">
                     <Bell size={24} />
                     {unreadCount > 0 && (
@@ -513,7 +507,6 @@ export default function Navbar() {
 
               <div className="divide-y divide-zinc-100">
                 {[
-                  { icon: Package, label: "My Orders", path: "/user-dashboard/orders" },
                   { icon: Bell, label: "Notifications", path: "/notifications" },
                   { icon: Mail, label: "Messages", path: "/messages" },
                   { icon: Settings, label: "Account Settings", path: "/account-settings" },
@@ -777,10 +770,6 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
                 </button>
               )}
               <div className="h-px bg-zinc-100 my-1 mx-2" />
-              <button onClick={() => go("/user-dashboard/orders")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
-                <Package size={16} />
-                Orders
-              </button>
               <button onClick={() => go("/messages")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Mail size={16} />
                 Messages

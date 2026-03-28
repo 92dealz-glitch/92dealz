@@ -2,7 +2,6 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Recommended from "@/components/Recommended";
 import RecentAds from "@/components/RecentAds";
-import RecommendedSearches from "@/components/RecommendedSearches";
 import FeaturedAds from "@/components/FeaturedAds";
 import HotDeals from "@/components/HotDeals";
 import PromoBanner from "@/components/PromoBanner";
@@ -21,7 +20,6 @@ export default function HomePage() {
       <Hero />
       <RecentAds />
       <Recommended />
-      <RecommendedSearches />
       <FeaturedAds />
       <PromoBanner />
       <HotDeals />

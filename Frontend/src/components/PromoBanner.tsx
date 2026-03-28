@@ -6,9 +6,9 @@ import React from 'react'
 
 export default function PromoBanner() {
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+    <section className="w-full max-w-[1440px] mx-auto px-0 lg:px-8 py-6 lg:py-8">
       {/* Mobile-first: auto height on small screens, preserve exact 453px on lg */}
-      <div className="relative w-full h-auto lg:h-[453px] rounded-[24px] overflow-hidden bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
+      <div className="relative w-full h-auto lg:h-[453px] rounded-none lg:rounded-[24px] overflow-hidden bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
         
         {/* Decorative orange dots - top left */}
         <div className="absolute top-8 left-8 z-10 grid grid-cols-5 gap-2 hidden lg:grid">
