@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "234deals-backend.vercel.app", pathname: "/uploads/**" },
     ],
   },
+  turbopack: {
+    resolveAlias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
 };
 
 export default nextConfig;
