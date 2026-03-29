@@ -82,13 +82,24 @@ exports.summary = async (_req, res, next) => {
        LIMIT 5`
     );
 
-    // Get poll analytics
-    const [pollAnalytics] = await sequelize.query(
+    // Get poll analytics with default options for Question 2
+    const [pollResults] = await sequelize.query(
       `SELECT poll_choice as name, COUNT(*)::INT as value 
        FROM users 
        WHERE poll_choice IS NOT NULL 
        GROUP BY poll_choice`
     );
+
+    const defaultOptions = [
+      { name: 'Fine pictures', value: 0 },
+      { name: 'Popular items', value: 0 },
+      { name: 'Good descriptions', value: 0 }
+    ];
+
+    const pollAnalytics = defaultOptions.map(opt => {
+      const match = pollResults.find(r => r.name === opt.name);
+      return match ? match : opt;
+    });
 
     return res.json({ 
       success: true, 

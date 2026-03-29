@@ -246,11 +246,7 @@ export default function AdminDashboardPage() {
         </div>
         <div className="h-[300px] w-full min-h-[300px]">
           <ResponsiveContainer width="99%" height="100%">
-            <BarChart data={data?.pollAnalytics && data.pollAnalytics.length > 0 ? data.pollAnalytics : [
-              {name: 'Fine pictures', value: 0},
-              {name: 'Popular items', value: 0},
-              {name: 'Good descriptions', value: 0}
-            ]} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+            <BarChart data={data?.pollAnalytics || []} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#F3F4F6" />
               <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
               <YAxis 
