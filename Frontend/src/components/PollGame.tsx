@@ -19,7 +19,7 @@ export default function PollGame() {
         if (res.success) {
           setUser(res.data);
           // Check if poll was done recently
-          if (res.data.last_poll_date) {
+          if (res.data?.last_poll_date) {
             const now = new Date();
             const last = new Date(res.data.last_poll_date);
             const diffDays = Math.floor(Math.abs(now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));

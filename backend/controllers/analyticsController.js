@@ -82,22 +82,41 @@ exports.summary = async (_req, res, next) => {
        LIMIT 5`
     );
 
-    // Get poll analytics with default options for Question 2
-    const [pollResults] = await sequelize.query(
+    // Get poll analytics with default options for Question 1 (Category)
+    const [q1Results] = await sequelize.query(
+      `SELECT poll_category as name, COUNT(*)::INT as value 
+       FROM users 
+       WHERE poll_category IS NOT NULL 
+       GROUP BY poll_category`
+    );
+
+    const q1Defaults = [
+      { name: 'Electronics', value: 0 },
+      { name: 'Fashion', value: 0 },
+      { name: 'Phones', value: 0 }
+    ];
+
+    const pollQ1Analytics = q1Defaults.map(opt => {
+      const match = q1Results.find(r => r.name === opt.name);
+      return match ? match : opt;
+    });
+
+    // Get poll analytics with default options for Question 2 (Feature)
+    const [q2Results] = await sequelize.query(
       `SELECT poll_choice as name, COUNT(*)::INT as value 
        FROM users 
        WHERE poll_choice IS NOT NULL 
        GROUP BY poll_choice`
     );
 
-    const defaultOptions = [
+    const q2Defaults = [
       { name: 'Fine pictures', value: 0 },
       { name: 'Popular items', value: 0 },
       { name: 'Good descriptions', value: 0 }
     ];
 
-    const pollAnalytics = defaultOptions.map(opt => {
-      const match = pollResults.find(r => r.name === opt.name);
+    const pollQ2Analytics = q2Defaults.map(opt => {
+      const match = q2Results.find(r => r.name === opt.name);
       return match ? match : opt;
     });
 
@@ -113,7 +132,8 @@ exports.summary = async (_req, res, next) => {
         total_visitors: visitors?.total_visitors || 0,
         categories: categories || [],
         recentDeals: recentDeals || [],
-        pollAnalytics: pollAnalytics || []
+        pollQ1: pollQ1Analytics,
+        pollQ2: pollQ2Analytics
       } 
     });
   } catch (err) { return next(err); }

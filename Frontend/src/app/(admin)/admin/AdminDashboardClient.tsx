@@ -21,18 +21,16 @@ import ProductManagement from "@/components/admin/ProductManagement";
 import AdminReportManagement from "@/components/admin/AdminReportManagement";
 
 // ─── Dynamic Recharts Imports (SSR-Safe) ──────────────────────────────────────
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  BarChart,
-  Bar,
-  Cell
-} from "recharts";
+const ResponsiveContainer = nextDynamic(() => import("recharts").then(m => m.ResponsiveContainer), { ssr: false });
+const AreaChart = nextDynamic(() => import("recharts").then(m => m.AreaChart), { ssr: false });
+const Area = nextDynamic(() => import("recharts").then(m => m.Area), { ssr: false });
+const XAxis = nextDynamic(() => import("recharts").then(m => m.XAxis), { ssr: false });
+const YAxis = nextDynamic(() => import("recharts").then(m => m.YAxis), { ssr: false });
+const CartesianGrid = nextDynamic(() => import("recharts").then(m => m.CartesianGrid), { ssr: false });
+const Tooltip = nextDynamic(() => import("recharts").then(m => m.Tooltip), { ssr: false });
+const BarChart = nextDynamic(() => import("recharts").then(m => m.BarChart), { ssr: false });
+const Bar = nextDynamic(() => import("recharts").then(m => m.Bar), { ssr: false });
+const Cell = nextDynamic(() => import("recharts").then(m => m.Cell), { ssr: false });
 
 export default function AdminDashboardPage() {
   const [isMounted, setIsMounted] = useState(false);
@@ -239,38 +237,75 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Poll Game Analytics Section */}
-      <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-bold text-zinc-900">Poll Game Insights: What makes users click?</h3>
-          <span className="text-xs text-zinc-500 font-medium">Weekly Poll Results</span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-zinc-900">Poll Question 1: Favorite Categories</h3>
+            <span className="text-xs text-zinc-500 font-medium">Weekly Insights</span>
+          </div>
+          <div className="h-[300px] w-full min-h-[300px]">
+            <ResponsiveContainer width="99%" height="100%">
+              <BarChart data={data?.pollQ1 || []} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#F3F4F6" />
+                <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+                <YAxis 
+                  type="category" 
+                  dataKey="name" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 12, fill: '#4B5563', fontWeight: 500 }}
+                  width={120}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: '12px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                  }}
+                />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={40}>
+                  {(data?.pollQ1 || []).map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#FF6B35" : "#E85A28"} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-        <div className="h-[300px] w-full min-h-[300px]">
-          <ResponsiveContainer width="99%" height="100%">
-            <BarChart data={data?.pollAnalytics || []} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#F3F4F6" />
-              <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
-              <YAxis 
-                type="category" 
-                dataKey="name" 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fontSize: 12, fill: '#4B5563', fontWeight: 500 }}
-                width={120}
-              />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: '12px',
-                  border: 'none',
-                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                }}
-              />
-              <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={40}>
-                {(data?.pollAnalytics || []).map((entry: any, index: number) => (
-                  <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#FF6B35" : "#E85A28"} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+
+        <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-zinc-900">Poll Question 2: What makes users click?</h3>
+            <span className="text-xs text-zinc-500 font-medium">Weekly Insights</span>
+          </div>
+          <div className="h-[300px] w-full min-h-[300px]">
+            <ResponsiveContainer width="99%" height="100%">
+              <BarChart data={data?.pollQ2 || []} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#F3F4F6" />
+                <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+                <YAxis 
+                  type="category" 
+                  dataKey="name" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 12, fill: '#4B5563', fontWeight: 500 }}
+                  width={120}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: '12px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                  }}
+                />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={40}>
+                  {(data?.pollQ2 || []).map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#FF6B35" : "#E85A28"} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
