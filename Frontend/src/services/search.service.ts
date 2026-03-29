@@ -11,12 +11,14 @@ export interface SearchParams {
   page?: number;
   limit?: number;
   userId?: number | string;
+  subcategory?: string;
 }
 
 export async function searchDeals(params: SearchParams) {
   const qs = new URLSearchParams();
   if (params.q) qs.set("q", params.q);
   if (params.category_id) qs.set("category_id", String(params.category_id));
+  if (params.subcategory) qs.set("subcategory", params.subcategory);
   if (params.store_id) qs.set("store_id", String(params.store_id));
   if (params.min_price !== undefined) qs.set("min_price", String(params.min_price));
   if (params.max_price !== undefined) qs.set("max_price", String(params.max_price));

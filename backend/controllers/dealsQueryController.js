@@ -78,6 +78,10 @@ exports.list = async (req, res, next) => {
       where.push(`category_id IN (SELECT id FROM categories WHERE name ILIKE $${params.length + 1})`);
       params.push(String(req.query.category_name));
     }
+    if (req.query.subcategory && has('subcategory')) {
+      params.push(String(req.query.subcategory));
+      where.push('subcategory = $' + params.length);
+    }
     if (req.query.status && has('status')) {
       params.push(String(req.query.status));
       where.push('status = $' + params.length);

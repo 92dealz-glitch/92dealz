@@ -11,7 +11,6 @@ import {
   Download,
   Bell
 } from "lucide-react";
-import nextDynamic from "next/dynamic";
 import StatCard from "@/components/admin/StatCard";
 import { API_BASE } from "@/services/apiClient";
 import VendorManagement from "@/components/admin/VendorManagement";
@@ -21,16 +20,18 @@ import ProductManagement from "@/components/admin/ProductManagement";
 import AdminReportManagement from "@/components/admin/AdminReportManagement";
 
 // ─── Dynamic Recharts Imports (SSR-Safe) ──────────────────────────────────────
-const ResponsiveContainer = nextDynamic(() => import("recharts").then(m => m.ResponsiveContainer), { ssr: false });
-const AreaChart = nextDynamic(() => import("recharts").then(m => m.AreaChart), { ssr: false });
-const Area = nextDynamic(() => import("recharts").then(m => m.Area), { ssr: false });
-const XAxis = nextDynamic(() => import("recharts").then(m => m.XAxis), { ssr: false });
-const YAxis = nextDynamic(() => import("recharts").then(m => m.YAxis), { ssr: false });
-const CartesianGrid = nextDynamic(() => import("recharts").then(m => m.CartesianGrid), { ssr: false });
-const Tooltip = nextDynamic(() => import("recharts").then(m => m.Tooltip), { ssr: false });
-const BarChart = nextDynamic(() => import("recharts").then(m => m.BarChart), { ssr: false });
-const Bar = nextDynamic(() => import("recharts").then(m => m.Bar), { ssr: false });
-const Cell = nextDynamic(() => import("recharts").then(m => m.Cell), { ssr: false });
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  BarChart,
+  Bar,
+  Cell
+} from "recharts";
 
 export default function AdminDashboardPage() {
   const [isMounted, setIsMounted] = useState(false);
@@ -156,7 +157,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="99%" height="100%">
-              <AreaChart data={clicksTrend && clicksTrend.length > 0 ? clicksTrend : [{name: 'Loading', clicks: 0, views: 0}]}>
+              <AreaChart data={clicksTrend && clicksTrend.length > 0 ? clicksTrend : [{ name: 'Loading', clicks: 0, views: 0 }]}>
                 <defs>
                   <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#E85A28" stopOpacity={0.1} />
@@ -204,7 +205,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="99%" height="100%">
-              <BarChart data={data?.categories && data.categories.length > 0 ? data.categories : [{name: 'None', value: 0}]} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <BarChart data={data?.categories && data.categories.length > 0 ? data.categories : [{ name: 'None', value: 0 }]} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
                 <XAxis
                   dataKey="name"
@@ -248,11 +249,11 @@ export default function AdminDashboardPage() {
               <BarChart data={data?.pollQ1 || []} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#F3F4F6" />
                 <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
-                <YAxis 
-                  type="category" 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 12, fill: '#4B5563', fontWeight: 500 }}
                   width={120}
                 />
@@ -283,11 +284,11 @@ export default function AdminDashboardPage() {
               <BarChart data={data?.pollQ2 || []} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#F3F4F6" />
                 <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
-                <YAxis 
-                  type="category" 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 12, fill: '#4B5563', fontWeight: 500 }}
                   width={120}
                 />

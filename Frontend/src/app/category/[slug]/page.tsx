@@ -43,24 +43,13 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   const res = await searchDeals({ 
     category_id: categoryId, 
-    q: sub, // Using 'q' for subcategory keyword search if sub exists
+    subcategory: sub, 
     page: 1, 
     limit: 50 
   });
   
   let items = res.data || [];
   let isFallback = false;
-
-  if (items.length === 0) {
-    isFallback = true;
-    try {
-      // Fetch trending deals as fallback
-      const trendingRes = await searchDeals({ page: 1, limit: 12 });
-      items = trendingRes.data || [];
-    } catch (err) {
-      console.error("[CategoryPage] Fallback fetch failed:", err);
-    }
-  }
 
   const displayItems = items.map((l: any) => ({
     id: l.id,
@@ -111,7 +100,6 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         <CategoryListingClient
           items={displayItems}
           title={categoryLabel}
-          isFallback={isFallback}
         />
       </main>
 

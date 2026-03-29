@@ -52,11 +52,9 @@ function FilterSection({
 export default function CategoryListingClient({
   items,
   title,
-  isFallback = false,
 }: {
   items: AdItem[];
   title: string;
-  isFallback?: boolean;
 }) {
   type ListingItem = AdItem & { priceRaw?: number };
 
@@ -244,26 +242,6 @@ export default function CategoryListingClient({
 
       {/* ── Listings ── */}
       <section className="md:col-span-9">
-        {isFallback && (
-          <div className="mb-8 p-6 bg-orange-50 border-2 border-orange-200 rounded-2xl shadow-md animate-in fade-in slide-in-from-top-4 duration-500">
-            <div className="flex items-start gap-5">
-              <div className="p-3 bg-white rounded-xl shadow-sm">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2.5">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-black text-orange-900 mb-1">No product found for "{title}"</h3>
-                <p className="text-orange-800 text-sm leading-relaxed">
-                  We currently don't have any listings specifically under <strong>{title}</strong>. 
-                  But don't worry! We've gathered some of our other <strong>trending and exclusive deals</strong> below for you to explore.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 px-1">
           <div className="text-base text-gray-900 font-medium">
