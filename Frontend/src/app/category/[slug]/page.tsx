@@ -5,7 +5,7 @@ import Footer from "../../../components/Footer";
 import CategoryListingClient from "../../../components/CategoryListingClient";
 import { apiFetch } from "@/services/apiClient";
 import { ENDPOINTS } from "@/utils/constants";
-import { searchDeals } from "@/services/search.service";
+import { listActiveAds } from "@/services/ads.service";
 
 type Props = {
   params: { slug: string };
@@ -51,12 +51,11 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
     // Resolve Deals - use categoryId if found, otherwise search by name as fallback
     if (categoryId || sub || categoryLabel) {
-      const res = await searchDeals({ 
+      const res = await listActiveAds({ 
         category_id: categoryId,
         category_name: !categoryId ? categoryLabel : undefined,
-        subcategory: sub, 
-        page: 1, 
-        limit: 50 
+        limit: 50,
+        page: 1
       });
       items = res.data || [];
     }

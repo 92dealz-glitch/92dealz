@@ -5,9 +5,12 @@ let DEALS_COLUMNS = null;
 async function introspect() {
   if (!DEALS_COLUMNS) {
     const [cols] = await sequelize.query(
-      `SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='deals'`
+      `SELECT column_name
+       FROM information_schema.columns
+       WHERE table_schema='public' AND table_name ILIKE 'deals'`
     );
     DEALS_COLUMNS = new Set(cols.map(c => c.column_name));
+    console.log(`[SearchIntrospect] Found ${DEALS_COLUMNS.size} columns for deals table.`);
   }
 }
 
@@ -76,7 +79,10 @@ exports.search = async (req, res, next) => {
     }
 
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals ${whereSql}`;
-    const dataSql = `SELECT ${selectCols.join(', ')} FROM deals ${whereSql} ${orderSql} LIMIT ${limit} OFFSET ${offset}`;
+    const dataSql = `SELECT ${selectCols.join(', ')},
+                     (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating,
+                     (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = deals.id) AS clicks
+                     FROM deals ${whereSql} ${orderSql} LIMIT ${limit} OFFSET ${offset}`;
 
     const [[countRow]] = await sequelize.query(countSql, { bind });
     const [rows] = await sequelize.query(dataSql, { bind });
