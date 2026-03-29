@@ -25,64 +25,60 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       .join(" ");
   };
 
-  // If slug is numeric, it might be the direct category number
-  const isNumericSlug = /^\d+$/.test(slug);
-  if (isNumericSlug) {
-    categoryId = Number(slug);
-    console.log(`[CategoryPage] Slug "${slug}" is numeric, using as categoryId: ${categoryId}`);
-  }
+  let categoryId: number | undefined;
+  let categoryLabel = formatSlug(slug);
+  let items: any[] = [];
 
   try {
-    // If we don't have a categoryId yet (slug was a string name)
-    if (!categoryId) {
+    // If slug is numeric, it might be the direct category number
+    const isNumericSlug = /^\d+$/.test(slug);
+    if (isNumericSlug) {
+      categoryId = Number(slug);
+    }
+
+    // Resolve Category Metadata
+    try {
       const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
-      console.log(`[CategoryPage] slug: ${slug}, status: ${catRes.success}, data:`, JSON.stringify(catRes.data));
       if (catRes.success && catRes.data) {
-        // Some systems might use 'id' or 'category_id'
         categoryId = Number(catRes.data.id ?? catRes.data.category_id);
-        categoryLabel = catRes.data.name;
+        categoryLabel = catRes.data.name || categoryLabel;
       }
-    } else {
-      // If it's numeric, we still might want the label for breadcrumbs
-      const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
-      if (catRes.success && catRes.data) {
-        categoryLabel = catRes.data.name;
-      }
+    } catch (catErr) {
+      console.error(`[CategoryPage] Metadata fetch failed for "${slug}":`, catErr);
+    }
+
+    // Resolve Deals
+    if (categoryId || sub || categoryLabel) {
+      const res = await searchDeals({ 
+        category_id: categoryId,
+        category_name: !categoryId ? categoryLabel : undefined,
+        subcategory: sub, 
+        page: 1, 
+        limit: 50 
+      });
+      items = res.data || [];
     }
   } catch (err) {
-    console.error(`[CategoryPage] Failed to fetch category for slug "${slug}":`, err);
+    console.error(`[CategoryPage] Critical Fetch Error for "${slug}":`, err);
+    items = [];
   }
 
-  // If subcategory is present, we might want to append it to the label
   const displayTitle = sub ? `${categoryLabel} - ${sub}` : categoryLabel;
-
-  // ONLY search if we have a categoryId, a sub search, or a valid slug fallback
-  let items = [];
-  console.log(`[CategoryPage] Triggering search with categoryId: ${categoryId}, sub: ${sub}, fallback_name: ${categoryLabel}`);
-  if (categoryId || sub || categoryLabel) {
-    const res = await searchDeals({ 
-      category_id: categoryId,
-      category_name: !categoryId ? categoryLabel : undefined,
-      subcategory: sub, 
-      page: 1, 
-      limit: 50 
-    });
-    console.log(`[CategoryPage] Search complete. Items found: ${res.data?.length || 0}`);
-    items = res.data || [];
-  }
-  
   let isFallback = false;
 
-  const displayItems = items.map((l: any) => ({
-    id: l.id,
-    title: l.title,
-    price: `₦${Number(l.price).toLocaleString()}`,
-    priceRaw: Number(l.price),
-    desc: l.description || undefined,
-    badge: l.image_url || "/assets/images/bgphone.svg",
-    location: l.location || l.city || "Nigeria",
-    condition: l.condition || "Brand New",
-  }));
+  const displayItems = items.map((l: any) => {
+    const priceStr = l.price !== undefined && l.price !== null ? Number(l.price).toLocaleString() : "0";
+    return {
+      id: l.id,
+      title: l.title || "Untitled Deal",
+      price: `₦${priceStr}`,
+      priceRaw: Number(l.price || 0),
+      desc: l.description || undefined,
+      badge: l.image_url || "/assets/images/bgphone.svg",
+      location: l.location || l.city || "Nigeria",
+      condition: l.condition || "Brand New",
+    };
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
