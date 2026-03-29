@@ -30,6 +30,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   try {
     const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
+    console.log(`[CategoryPage] slug: ${slug}, response:`, JSON.stringify(catRes));
     if (catRes.success && catRes.data) {
       categoryId = catRes.data.id;
       categoryLabel = catRes.data.name;
@@ -41,14 +42,18 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   // If subcategory is present, we might want to append it to the label
   const displayTitle = sub ? `${categoryLabel} - ${sub}` : categoryLabel;
 
-  const res = await searchDeals({ 
-    category_id: categoryId, 
-    subcategory: sub, 
-    page: 1, 
-    limit: 50 
-  });
+  // ONLY search if we have a categoryId or a sub search
+  let items = [];
+  if (categoryId || sub) {
+    const res = await searchDeals({ 
+      category_id: categoryId, 
+      subcategory: sub, 
+      page: 1, 
+      limit: 50 
+    });
+    items = res.data || [];
+  }
   
-  let items = res.data || [];
   let isFallback = false;
 
   const displayItems = items.map((l: any) => ({

@@ -11,6 +11,7 @@ async function introspect() {
        WHERE table_schema='public' AND table_name='deals'`
     );
     DEALS_COLUMNS = new Set(cols.map(c => c.column_name));
+    console.log('[DealsIntrospect] Columns:', [...DEALS_COLUMNS].join(', '));
   }
   if (HAS_CLICK_EVENTS === null) {
     const [tables] = await sequelize.query(
@@ -66,8 +67,11 @@ exports.list = async (req, res, next) => {
       where.push('price <= $' + params.length);
     }
     if (req.query.category_id && has('category_id')) {
-      params.push(Number(req.query.category_id));
-      where.push('category_id = $' + params.length);
+      const cid = Number(req.query.category_id);
+      if (!isNaN(cid)) {
+        params.push(cid);
+        where.push('category_id = $' + params.length);
+      }
     }
     if (req.query.store_id && has('store_id')) {
       params.push(Number(req.query.store_id));
