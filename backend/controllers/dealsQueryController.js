@@ -71,11 +71,9 @@ exports.list = async (req, res, next) => {
       if (!isNaN(cid)) {
         params.push(cid);
         const pIdx = params.length;
-        // Apply filter directly if we're reasonably sure the column exists
-        if (has('category_id') || DEALS_COLUMNS?.size > 0) {
-          console.log(`[DealsListSQL] Applying category_id filter: $${pIdx} = ${cid}`);
-          where.push(`category_id = $${pIdx}`);
-        }
+        // Apply filter more certainly
+        console.log(`[DealsListSQL] Targeting category_id: $${pIdx} = ${cid}`);
+        where.push(`category_id = $${pIdx}`);
       }
     }
     if (req.query.store_id && has('store_id')) {

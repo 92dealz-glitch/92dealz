@@ -49,11 +49,11 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       console.error(`[CategoryPage] Metadata fetch failed for "${slug}":`, catErr);
     }
 
-    // Resolve Deals - use categoryId if found, otherwise search by name as fallback
+    // Resolve Deals - use both ID and Name for redundancy if possible
     if (categoryId || sub || categoryLabel) {
       const res = await listActiveAds({ 
         category_id: categoryId,
-        category_name: !categoryId ? categoryLabel : undefined,
+        category_name: categoryLabel, // Send both as safety net
         limit: 50,
         page: 1
       });
