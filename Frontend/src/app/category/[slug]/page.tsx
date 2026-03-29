@@ -30,9 +30,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   try {
     const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
-    console.log(`[CategoryPage] slug: ${slug}, response:`, JSON.stringify(catRes));
+    console.log(`[CategoryPage] slug: ${slug}, status: ${catRes.success}, data_id: ${catRes.data?.id}`);
     if (catRes.success && catRes.data) {
-      categoryId = catRes.data.id;
+      // Ensure we treat the ID as something valid (Number)
+      categoryId = Number(catRes.data.id);
       categoryLabel = catRes.data.name;
     }
   } catch (err) {
@@ -42,15 +43,18 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   // If subcategory is present, we might want to append it to the label
   const displayTitle = sub ? `${categoryLabel} - ${sub}` : categoryLabel;
 
-  // ONLY search if we have a categoryId or a sub search
+  // ONLY search if we have a categoryId, a sub search, or a valid slug fallback
   let items = [];
-  if (categoryId || sub) {
+  console.log(`[CategoryPage] Triggering search with categoryId: ${categoryId}, sub: ${sub}, fallback_name: ${categoryLabel}`);
+  if (categoryId || sub || categoryLabel) {
     const res = await searchDeals({ 
-      category_id: categoryId, 
+      category_id: categoryId,
+      category_name: !categoryId ? categoryLabel : undefined,
       subcategory: sub, 
       page: 1, 
       limit: 50 
     });
+    console.log(`[CategoryPage] Search complete. Items found: ${res.data?.length || 0}`);
     items = res.data || [];
   }
   

@@ -12,7 +12,12 @@ exports.list = async (req, res, next) => {
 exports.getBySlug = async (req, res, next) => {
   try {
     const { slug } = req.params;
-    const category = await Category.findOne({ where: { slug } });
+    const { Op } = require('sequelize');
+    const category = await Category.findOne({ 
+      where: { 
+        slug: { [Op.iLike]: slug } 
+      } 
+    });
     if (!category) {
       return res.status(404).json({ success: false, message: 'Category not found' });
     }

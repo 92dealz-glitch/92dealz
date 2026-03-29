@@ -68,9 +68,12 @@ exports.list = async (req, res, next) => {
     }
     if (req.query.category_id && has('category_id')) {
       const cid = Number(req.query.category_id);
+      console.log(`[DealsListSearch] category_id input: ${req.query.category_id}, numeric: ${cid}`);
       if (!isNaN(cid)) {
         params.push(cid);
         where.push('category_id = $' + params.length);
+      } else {
+        console.warn(`[DealsListSearch] category_id "${req.query.category_id}" is NaN`);
       }
     }
     if (req.query.store_id && has('store_id')) {
