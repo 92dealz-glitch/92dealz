@@ -75,10 +75,12 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       title: l.title || "Untitled Deal",
       price: `₦${priceStr}`,
       priceRaw: Number(l.price || 0),
-      desc: l.description || undefined,
+      desc: l.description || "",
       badge: l.image_url || "/assets/images/bgphone.svg",
-      location: l.location || l.city || "Nigeria",
+      location: l.location || l.city || l.state || "Nigeria",
       condition: l.condition || "Brand New",
+      views: l.clicks || 0,
+      rating: l.rating || 0,
     };
   });
 

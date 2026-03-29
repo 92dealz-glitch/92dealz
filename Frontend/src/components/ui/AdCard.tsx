@@ -33,7 +33,7 @@ export default function AdCard({ item, className = "" }: Props) {
     <Link href={`/product/${item.id}`}>
       <article
         className={
-          `relative rounded-lg border-2 border-emerald-500/80 p-3 bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col h-full ${className}`
+          `relative rounded-2xl border border-gray-100 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group ${className}`
         }
         aria-label={`Ad ${item.title}`}
       >
