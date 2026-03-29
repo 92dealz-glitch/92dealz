@@ -8,10 +8,10 @@ async function introspect() {
     const [cols] = await sequelize.query(
       `SELECT column_name
        FROM information_schema.columns
-       WHERE table_schema='public' AND table_name='deals'`
+       WHERE table_schema='public' AND table_name ILIKE 'deals'`
     );
     DEALS_COLUMNS = new Set(cols.map(c => c.column_name));
-    console.log('[DealsIntrospect] Columns:', [...DEALS_COLUMNS].join(', '));
+    console.log(`[DealsIntrospect] Found ${DEALS_COLUMNS.size} columns for deals table.`);
   }
   if (HAS_CLICK_EVENTS === null) {
     const [tables] = await sequelize.query(
@@ -66,16 +66,16 @@ exports.list = async (req, res, next) => {
       params.push(Number(req.query.max_price));
       where.push('price <= $' + params.length);
     }
-    if (req.query.category_id && has('category_id')) {
+    if (req.query.category_id) {
       const cid = Number(req.query.category_id);
-      console.log(`[DealsListSearch] category_id input: ${req.query.category_id}, numeric: ${cid}`);
       if (!isNaN(cid)) {
         params.push(cid);
         const pIdx = params.length;
-        console.log(`[DealsListSQL] Adding category_id filter: $${pIdx} = ${cid}`);
-        where.push(`category_id = $${pIdx}`);
-      } else {
-        console.warn(`[DealsListSearch] category_id "${req.query.category_id}" is NaN`);
+        // Apply filter directly if we're reasonably sure the column exists
+        if (has('category_id') || DEALS_COLUMNS?.size > 0) {
+          console.log(`[DealsListSQL] Applying category_id filter: $${pIdx} = ${cid}`);
+          where.push(`category_id = $${pIdx}`);
+        }
       }
     }
     if (req.query.store_id && has('store_id')) {

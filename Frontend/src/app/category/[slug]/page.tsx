@@ -40,14 +40,16 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     try {
       const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
       if (catRes.success && catRes.data) {
-        categoryId = Number(catRes.data.id ?? catRes.data.category_id);
+        // Safe mapping for id, category_id, or even nested data
+        const rawId = catRes.data.id ?? catRes.data.category_id;
+        if (rawId) categoryId = Number(rawId);
         categoryLabel = catRes.data.name || categoryLabel;
       }
     } catch (catErr) {
       console.error(`[CategoryPage] Metadata fetch failed for "${slug}":`, catErr);
     }
 
-    // Resolve Deals
+    // Resolve Deals - use categoryId if found, otherwise search by name as fallback
     if (categoryId || sub || categoryLabel) {
       const res = await searchDeals({ 
         category_id: categoryId,
