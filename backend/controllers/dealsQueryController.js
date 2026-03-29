@@ -71,7 +71,9 @@ exports.list = async (req, res, next) => {
       console.log(`[DealsListSearch] category_id input: ${req.query.category_id}, numeric: ${cid}`);
       if (!isNaN(cid)) {
         params.push(cid);
-        where.push('category_id = $' + params.length);
+        const pIdx = params.length;
+        console.log(`[DealsListSQL] Adding category_id filter: $${pIdx} = ${cid}`);
+        where.push(`category_id = $${pIdx}`);
       } else {
         console.warn(`[DealsListSearch] category_id "${req.query.category_id}" is NaN`);
       }

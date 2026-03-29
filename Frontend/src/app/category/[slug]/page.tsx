@@ -25,16 +25,29 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       .join(" ");
   };
 
-  let categoryId: number | undefined;
-  let categoryLabel = formatSlug(slug);
+  // If slug is numeric, it might be the direct category number
+  const isNumericSlug = /^\d+$/.test(slug);
+  if (isNumericSlug) {
+    categoryId = Number(slug);
+    console.log(`[CategoryPage] Slug "${slug}" is numeric, using as categoryId: ${categoryId}`);
+  }
 
   try {
-    const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
-    console.log(`[CategoryPage] slug: ${slug}, status: ${catRes.success}, data_id: ${catRes.data?.id}`);
-    if (catRes.success && catRes.data) {
-      // Ensure we treat the ID as something valid (Number)
-      categoryId = Number(catRes.data.id);
-      categoryLabel = catRes.data.name;
+    // If we don't have a categoryId yet (slug was a string name)
+    if (!categoryId) {
+      const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
+      console.log(`[CategoryPage] slug: ${slug}, status: ${catRes.success}, data:`, JSON.stringify(catRes.data));
+      if (catRes.success && catRes.data) {
+        // Some systems might use 'id' or 'category_id'
+        categoryId = Number(catRes.data.id ?? catRes.data.category_id);
+        categoryLabel = catRes.data.name;
+      }
+    } else {
+      // If it's numeric, we still might want the label for breadcrumbs
+      const catRes = await apiFetch<{ success: boolean; data: any }>(`${ENDPOINTS.categories}/${slug}`);
+      if (catRes.success && catRes.data) {
+        categoryLabel = catRes.data.name;
+      }
     }
   } catch (err) {
     console.error(`[CategoryPage] Failed to fetch category for slug "${slug}":`, err);
