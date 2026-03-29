@@ -99,7 +99,11 @@ exports.list = async (req, res, next) => {
     }
 
     const whereSql = where.length ? 'WHERE ' + where.join(' AND ') : '';
-    const orderSql = 'ORDER BY ' + buildSort(req.query.sort, req.query.dir);
+    
+    let orderSql = 'ORDER BY ' + buildSort(req.query.sort, req.query.dir);
+    if (req.query.random === 'true') {
+      orderSql = 'ORDER BY RANDOM()';
+    }
 
     const baseSelectCols = ['id', 'title', 'description', 'price', '"createdAt"', '"userId"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',

@@ -12,21 +12,35 @@ export default function Recommended() {
     (async () => {
       try {
         let categoryName = undefined;
+        let isRandom = true;
+
         // Try to get user preferences
         try {
           const profile = await getMyProfile();
           const profileData = profile.data as any;
-          if (profile.success && profileData.poll_category) {
-            categoryName = profileData.poll_category;
-            setTitle(`Recommended ${categoryName} for you.`);
+          if (profile.success && profileData.poll_category && profileData.last_poll_date) {
+            const lastDate = new Date(profileData.last_poll_date);
+            const now = new Date();
+            const diffDays = Math.floor(Math.abs(now.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 7) {
+              categoryName = profileData.poll_category;
+              setTitle(`Recommended ${categoryName} for you.`);
+              isRandom = false;
+            } else {
+               setTitle("Freshly Picked for you.");
+            }
           }
         } catch (_) {
-          // Fallback to general recommendations if not logged in
+          // Fallback to random for guest users
+          setTitle("Recommended Discovery.");
         }
 
         const res = await listActiveAds({ 
           limit: 8, 
-          category_name: categoryName 
+          category_name: categoryName,
+          // @ts-ignore - added random support in backend
+          random: isRandom ? 'true' : undefined
         });
         const mapped: AdItem[] = (res.data || []).slice(0, 8).map((d: any) => ({
           id: d.id,

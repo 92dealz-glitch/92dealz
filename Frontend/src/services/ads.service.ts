@@ -27,7 +27,7 @@ export interface AdPayload {
   specifications?: Record<string, any>;
 }
 
-export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string }) {
+export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string; random?: string }) {
   let url = BASE;
   if (params) {
     const q = new URLSearchParams();
