@@ -70,35 +70,30 @@ export default function AdCard({ item, className = "" }: Props) {
           </button>
         </div>
 
-        <div className="mt-2 flex-1">
-          <p className="text-orange-600 font-extrabold text-base">{item.price}</p>
-          <h4 className="mt-1 font-semibold text-black text-sm line-clamp-2">{item.title}</h4>
-          {item.desc ? (
-            <p className="mt-1 text-sm text-gray-600 line-clamp-3">{item.desc}</p>
-          ) : null}
+        <div className="mt-2 flex-1 min-h-[50px]">
+          <p className="text-orange-600 font-extrabold text-[13px] sm:text-base">{item.price}</p>
+          <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm line-clamp-1 sm:line-clamp-2 leading-tight">{item.title}</h4>
         </div>
 
-        <div className="mt-4 flex items-center justify-between text-sm">
-          <div className="flex items-center gap-1 text-xs">
+        <div className="mt-3 flex items-center justify-between">
+          <div className="flex items-center gap-0.5 text-[10px] sm:text-xs">
             {item.rating && item.rating > 0 ? (
               <>
-                <span className="font-bold text-black mr-1">{Number(item.rating).toFixed(1)}</span>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={i < Math.round(Number(item.rating)) ? "text-yellow-400" : "text-gray-300"}>★</span>
-                ))}
+                <span className="font-bold text-black mr-0.5">{Number(item.rating).toFixed(1)}</span>
+                <span className="text-yellow-400">★</span>
               </>
             ) : (
-              <span className="text-gray-400 italic">No reviews yet</span>
+              <span className="text-gray-400 italic">No reviews</span>
             )}
           </div>
 
-          <div className="text-xs text-gray-500">{item.condition ?? "Brand New"}</div>
+          <div className="text-[10px] sm:text-xs text-gray-500 font-medium">{item.condition ?? "Brand New"}</div>
         </div>
 
-        <div className="mt-3 flex items-center justify-between text-xs text-gray-600">
-          <div>{item.location ?? "Delta, Warri"}</div>
-          <div className="flex items-center gap-2">
-            <span className="text-orange-500 font-semibold">{item.views ?? item.likes ?? 0} views</span>
+        <div className="mt-2 flex items-center justify-between text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
+          <div className="truncate max-w-[60px] sm:max-w-none">{item.location ?? "Nigeria"}</div>
+          <div className="flex items-center gap-1">
+            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span className="hidden sm:inline">views</span></span>
           </div>
         </div>
       </article>

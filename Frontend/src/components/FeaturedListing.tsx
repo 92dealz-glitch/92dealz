@@ -8,34 +8,42 @@ export default function FeaturedListing() {
           <div className="flex flex-col md:flex-row items-start md:gap-x-6">
 
             {/* Text block */}
-            <div className="w-full md:w-[65%] p-6 md:p-8 md:pl-12 md:pr-6">
-              <h2 className="text-2xl sm:text-3xl md:text-[56px] font-extrabold leading-[1.2] text-black drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
-                <span className="block md:whitespace-nowrap pr-0 sm:pr-2">Let&apos;s get one thing straight:</span>
+            <div className="w-full md:w-[60%] p-6 sm:p-8 lg:pl-12 lg:pr-6 z-10">
+              <h2 className="text-3xl sm:text-4xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight">
+                <span className="block mb-2 text-zinc-400 text-sm sm:text-lg uppercase tracking-[0.2em] font-bold">Let&apos;s get one thing straight:</span>
 
-                <span className="block md:whitespace-nowrap">
-                  <span className="text-[#FF6B35]">at 234Deals,</span> every listing
+                <span className="block">
+                  At <span className="text-[#FF6B35]">234Deals,</span>
+                </span>
+                
+                <span className="block">
+                  Every listing is
                 </span>
 
-                <span className="block md:whitespace-nowrap">is worth your time.</span>
-
-                <span className="block mt-4 md:mt-2 md:whitespace-nowrap">There&apos;s truly no such thing</span>
-
-                <span className="block relative md:whitespace-nowrap">
-                  as a bad find!
-                  <span className="absolute left-0 -bottom-2 w-32 sm:w-40 md:w-56 h-1.5 bg-[#FF6B35] rounded-full opacity-90 -skew-x-6"></span>
+                <span className="block">
+                  worth your time.
                 </span>
+
+                <div className="mt-6 sm:mt-8 space-y-1">
+                  <span className="block text-xl sm:text-2xl lg:text-3xl font-bold text-zinc-500 italic">There&apos;s truly no such thing</span>
+                  <span className="relative inline-block text-2xl sm:text-3xl lg:text-4xl font-black text-zinc-900">
+                    as a bad Deal!
+                    <span className="absolute left-0 -bottom-1 w-full h-2 bg-[#FF6B35]/30 rounded-full -rotate-1"></span>
+                  </span>
+                </div>
               </h2>
             </div>
 
-            {/* Image block - hidden on mobile, visible at md+ */}
-            <div className="hidden md:flex w-full md:w-[35%] justify-center md:justify-end md:pr-8 mt-6 md:mt-0">
-              <Image
-                src="/images/litsingimage.svg"
-                alt="listing people"
-                width={320}
-                height={320}
-                className="w-full max-w-[220px] md:max-w-[320px] h-auto object-contain drop-shadow-xl"
-              />
+            {/* Image block - Ensure it doesn't overlap on smaller screens */}
+            <div className="w-full md:w-[40%] flex justify-center md:justify-end p-6 md:p-8">
+              <div className="relative w-full max-w-[280px] sm:max-w-[320px] aspect-square">
+                <Image
+                  src="/images/litsingimage.svg"
+                  alt="Quality Deals"
+                  fill
+                  className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+                />
+              </div>
             </div>
 
           </div>
