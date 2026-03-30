@@ -18,7 +18,7 @@ export default function FeaturedListing() {
 
                 <span className="block md:whitespace-nowrap">is worth your time.</span>
 
-                <span className="block mt-4 md:mt-2 md:whitespace-nowrap italic text-zinc-500 text-lg sm:text-2xl">There&apos;s truly no such thing</span>
+                <span className="block mt-4 md:mt-2 md:whitespace-nowrap">There&apos;s truly no such thing</span>
 
                 <span className="block relative md:whitespace-nowrap">
                   as a bad Deal!
