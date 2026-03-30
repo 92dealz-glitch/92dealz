@@ -5,37 +5,45 @@ export default function FeaturedListing() {
     <>
       <div className="max-w-[1200px] mx-auto mt-8 px-4 sm:px-6">
         <div className="relative bg-white rounded-lg overflow-hidden">
-          <div className="flex flex-col md:flex-row items-start md:gap-x-6">
+          <div className="flex flex-row items-center md:items-start gap-x-2 sm:gap-x-6">
 
             {/* Text block */}
-            <div className="w-full md:w-[65%] p-6 md:p-8 md:pl-12 md:pr-6">
-              <h2 className="text-2xl sm:text-3xl md:text-[56px] font-extrabold leading-[1.2] text-black drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
-                <span className="block md:whitespace-nowrap pr-0 sm:pr-2">Let&apos;s get one thing straight:</span>
-
-                <span className="block md:whitespace-nowrap">
-                  <span className="text-[#FF6B35]">at 234Deals,</span> every listing
+            <div className="w-[60%] sm:w-[65%] p-4 sm:p-8 lg:pl-12 lg:pr-6 z-10">
+              <h2 className="text-[10px] xs:text-xs sm:text-lg uppercase tracking-[0.2em] font-bold text-zinc-400 mb-1 sm:mb-2">Let&apos;s get one thing straight:</h2>
+              
+              <div className="text-sm xs:text-base sm:text-4xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight">
+                <span className="block">
+                  At <span className="text-[#FF6B35]">234Deals,</span>
+                </span>
+                
+                <span className="block">
+                  Every listing is
                 </span>
 
-                <span className="block md:whitespace-nowrap">is worth your time.</span>
-
-                <span className="block mt-4 md:mt-2 md:whitespace-nowrap">There&apos;s truly no such thing</span>
-
-                <span className="block relative md:whitespace-nowrap">
-                  as a bad Deal!
-                  <span className="absolute left-0 -bottom-2 w-32 sm:w-40 md:w-56 h-1.5 bg-[#FF6B35] rounded-full opacity-90 -skew-x-6"></span>
+                <span className="block">
+                  worth your time.
                 </span>
-              </h2>
+
+                <div className="mt-2 sm:mt-8 space-y-0.5 sm:space-y-1">
+                  <span className="block text-[10px] xs:text-xs sm:text-2xl lg:text-3xl font-bold text-zinc-900">There&apos;s truly no such thing</span>
+                  <span className="relative inline-block text-xs xs:text-sm sm:text-3xl lg:text-4xl font-black text-[#FF6B35]">
+                    as a bad Deal!
+                    <span className="absolute left-0 -bottom-0.5 w-full h-1 sm:h-2 bg-[#FF6B35]/20 rounded-full -rotate-1"></span>
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Image block - hidden on mobile, visible at md+ */}
-            <div className="hidden md:flex w-full md:w-[35%] justify-center md:justify-end md:pr-8 mt-6 md:mt-0">
-              <Image
-                src="/images/litsingimage.svg"
-                alt="listing people"
-                width={320}
-                height={320}
-                className="w-full max-w-[220px] md:max-w-[320px] h-auto object-contain drop-shadow-xl"
-              />
+            {/* Image block - Stay next to text even on mobile */}
+            <div className="w-[40%] sm:w-[35%] flex justify-end p-2 sm:p-8">
+              <div className="relative w-full max-w-[120px] sm:max-w-[320px] aspect-square">
+                <Image
+                  src="/images/litsingimage.svg"
+                  alt="Quality Deals"
+                  fill
+                  className="object-contain drop-shadow-2xl"
+                />
+              </div>
             </div>
 
           </div>
