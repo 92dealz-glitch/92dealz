@@ -278,10 +278,9 @@ export default function ProductPage({ params }: Props) {
       <Navbar />
       <main className="max-w-[1200px] mx-auto mt-6 px-4 sm:px-6">
         <nav className="text-gray-600 text-sm mb-4">Home &gt; Products &gt; {product.title}</nav>
-
-        <div className="grid gap-6 items-start lg:grid-cols-[1fr_360px]">
-          {/* Left: Gallery + Info (card with orange border) */}
-          <section className="rounded-lg border-2 border-orange-300 bg-white p-4 sm:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
+          {/* 1. Gallery Section */}
+          <section className="order-1 lg:col-start-1 rounded-lg border-2 border-orange-300 bg-white p-4 sm:p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-extrabold text-orange-600">{product.title}</h1>
@@ -336,8 +335,8 @@ export default function ProductPage({ params }: Props) {
             </div>
           </section>
 
-          {/* Right: Price box + Seller Info */}
-          <aside className="space-y-4">
+          {/* 2. Price Section */}
+          <aside className="order-2 lg:col-start-2 space-y-4">
             <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
               <div className="absolute top-4 right-4">
                 <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">{product.condition}</span>
@@ -377,332 +376,286 @@ export default function ProductPage({ params }: Props) {
                 </Link>
               </div>
             </div>
-
-            <div className="rounded-lg bg-white border border-orange-200 p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">Seller Information</h3>
-                <div className="text-xs text-gray-500">● Last seen 12:01 PM</div>
-              </div>
-
-              <div className="border-t border-b border-gray-100 py-3">
-                <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-orange-505 text-white flex items-center justify-center font-bold overflow-hidden">
-                      {product.sellerImage ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={product.sellerImage} alt="" className="w-full h-full object-cover" />
-                      ) : (product.sellerName || 'S').slice(0,1)}
-                    </div>
-                    <div>
-                      <div className="font-semibold flex items-center gap-1.5">
-                        <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link>
-                        {product.isVerified && <VerifiedBadge size={16} showText />}
-                      </div>
-                      <div className="text-yellow-400">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <span key={i}>{i < Math.floor(product.sellerRating || 0) ? "⭐️" : "☆"}</span>
-                        ))}
-                      </div>
-                      <div className="mt-2">
-                        <Link href={`/seller/${product.sellerId}`} className="text-sm text-orange-500 font-medium">View Seller Profile</Link>
-                      </div>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
-                  <div>Member Since:</div><div className="font-medium">{product.sellerMemberSince || "January 2023"}</div>
-                  <div>Total Ads Posted:</div><div className="font-medium">{product.sellerTotalAds || 0} items</div>
-                  <div>Response Time:</div><div className="font-medium">{product.sellerResponseTime || "Within 1 hour"}</div>
-                  <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>
-                  {product.sellerPhone && (
-                    <>
-                      <div>Phone:</div><div className="font-medium text-orange-600 select-all">{product.sellerPhone}</div>
-                    </>
-                  )}
-                  {/* Email hidden per request */}
-                </div>
-              </div>
-
-              <div className="mt-4 space-y-2">
-                <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">🔎 View Seller Profile</Link>
-                <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">📋 See All Ads from Seller</Link>
-                <button 
-                  onClick={() => {
-                    setReportTarget({ productId: product.id, itemName: product.title });
-                    setShowReportModal(true);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 py-2 text-red-500 font-bold text-sm hover:bg-red-50 rounded border border-red-100 transition-colors mt-2"
-                >
-                  🚩 Report this Ad
-                </button>
-              </div>
-            </div>
           </aside>
-        </div>
 
-        {/* Message Modal */}
-        {messageModal && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-gray-900">Message to {product.sellerName}</h3>
-                <button onClick={() => setMessageModal(false)} className="text-gray-400 hover:text-gray-600">✕</button>
-              </div>
-              <textarea
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-                placeholder="Type your message here..."
-                className="w-full h-32 border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none"
-              />
-              <div className="mt-4 flex gap-3">
-                <button
-                  onClick={() => setMessageModal(false)}
-                  className="flex-1 py-3 border border-gray-200 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  disabled={sendingMessage || !messageText.trim()}
-                  onClick={handleSendMessage}
-                  className="flex-1 py-3 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition disabled:opacity-50"
-                >
-                  {sendingMessage ? "Sending..." : "Send Message"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Row setup: Gallery & Pricing at top, then Detail section, then Contact Seller options */}
-        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_360px] gap-6 mt-6">
-          {/* Main content column */}
-          <div className="space-y-6 flex flex-col">
-            {/* Gallery Info (Already at top in separate grid above, but let's re-align for consistency if needed) */}
-            {/* Move Description & Specs here for mobile */}
-            <div className="order-2 lg:order-none">
-              <div className="rounded-lg border border-orange-200 bg-white p-4">
-                <div className="border-b pb-3">
-                  <div className="sm:hidden">
-                    <label className="sr-only">Select section</label>
-                    <select
-                      value={activeTab}
-                      onChange={(e) => setActiveTab(e.target.value as any)}
-                      className="w-full rounded-md border-gray-200 bg-white px-3 py-2 text-sm"
-                    >
-                      <option value="description">PRODUCT DESCRIPTION</option>
-                      <option value="specs">SPECIFICATIONS</option>
-                    </select>
-                  </div>
-
-                  <div className="hidden sm:flex gap-6">
-                    <button
-                      onClick={() => setActiveTab('description')}
-                      className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'description' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
-                    >
-                      PRODUCT DESCRIPTION
-                    </button>
-
-                    <button
-                      onClick={() => setActiveTab('specs')}
-                      className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'specs' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
-                    >
-                      SPECIFICATIONS
-                    </button>
-                  </div>
+          {/* 3. Description & Specs Section */}
+          <section className="order-3 lg:col-start-1 space-y-6">
+            <div className="rounded-lg border border-orange-200 bg-white p-4">
+              <div className="border-b pb-3">
+                <div className="sm:hidden">
+                  <label className="sr-only">Select section</label>
+                  <select
+                    value={activeTab}
+                    onChange={(e) => setActiveTab(e.target.value as any)}
+                    className="w-full rounded-md border-gray-200 bg-white px-3 py-2 text-sm"
+                  >
+                    <option value="description">PRODUCT DESCRIPTION</option>
+                    <option value="specs">SPECIFICATIONS</option>
+                  </select>
                 </div>
 
-                <div className="mt-4 text-gray-800 leading-relaxed">
-                  {activeTab === 'description' && (
-                    <div className="whitespace-pre-wrap">
-                      {product.desc || "No description provided."}
-                    </div>
-                  )}
+                <div className="hidden sm:flex gap-6">
+                  <button
+                    onClick={() => setActiveTab('description')}
+                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'description' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
+                  >
+                    PRODUCT DESCRIPTION
+                  </button>
 
-                  {activeTab === 'specs' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {product.brand && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Brand</span>
-                          <span className="font-semibold">{product.brand}</span>
-                        </div>
-                      )}
-                      {product.model && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Model</span>
-                          <span className="font-semibold">{product.model}</span>
-                        </div>
-                      )}
-                      {product.color && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Color</span>
-                          <span className="font-semibold">{product.color}</span>
-                        </div>
-                      )}
-                      {product.screenSize && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Screen Size</span>
-                          <span className="font-semibold">{product.screenSize}</span>
-                        </div>
-                      )}
-                      {product.ram && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">RAM</span>
-                          <span className="font-semibold">{product.ram}</span>
-                        </div>
-                      )}
-                      {product.internalStorage && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Storage</span>
-                          <span className="font-semibold">{product.internalStorage}</span>
-                        </div>
-                      )}
-                      {product.battery && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Battery</span>
-                          <span className="font-semibold">{product.battery}</span>
-                        </div>
-                      )}
-                      {product.mainCamera && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Main Camera</span>
-                          <span className="font-semibold">{product.mainCamera}</span>
-                        </div>
-                      )}
-                      {product.location && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Location</span>
-                          <span className="font-semibold">{product.location}</span>
-                        </div>
-                      )}
-                      {product.subcategory && (
-                        <div className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">Subcategory</span>
-                          <span className="font-semibold">{product.subcategory}</span>
-                        </div>
-                      )}
-                      {Object.entries(product.specifications || {}).map(([key, value]) => (
-                        <div key={key} className="flex justify-between border-b border-gray-100 pb-2">
-                          <span className="text-gray-500">{key}</span>
-                          <span className="font-semibold">{String(value)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <button
+                    onClick={() => setActiveTab('specs')}
+                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'specs' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
+                  >
+                    SPECIFICATIONS
+                  </button>
                 </div>
               </div>
-            </div>
 
-            {/* Customer Reviews section */}
-            <div className="mt-6 rounded-lg border border-orange-200 bg-white order-3 lg:order-none">
-                <div className="p-4 border-b">
-                  <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
-                </div>
-                
-                <div className="p-4 border-b bg-zinc-50">
-                    <h5 className="font-bold text-sm mb-2">Leave a Review for {product.sellerName}</h5>
-                    <div className="flex gap-1 mb-3">
-                      {[1,2,3,4,5].map(star => (
-                         <button key={star} type="button" onClick={() => setReviewRating(star)} className={`text-2xl hover:scale-110 transition-transform ${reviewRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
-                      ))}
-                    </div>
-                    <textarea 
-                       value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                       placeholder="Share your experience with this vendor..."
-                       className="w-full text-sm border-gray-300 rounded-md shadow-sm p-3 focus:ring-orange-500 outline-none focus:border-orange-500 mb-3" rows={3}>
-                    </textarea>
-                    <Button disabled={submittingReview || !reviewText.trim()} onClick={submitReview} className="bg-orange-600 text-white min-w-[120px]">
-                       {submittingReview ? "Submitting..." : "Submit Review"}
-                    </Button>
-                </div>
-
-                {reviews.length === 0 ? (
-                  <div className="p-6 text-center text-gray-500 italic">No reviews yet for this vendor. Be the first!</div>
-                ) : (
-                  <div className="max-h-[400px] overflow-y-auto">
-                  {reviews.map((r: any) => (
-                    <div key={r.id} className="p-4 border-b flex gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 uppercase font-bold text-sm">
-                        {(r.Reviewer?.name || 'U').slice(0, 2)}
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-800">{r.comment}</div>
-                        <div className="text-yellow-400 mt-1 text-sm">
-                           {Array.from({length: 5}).map((_, i) => (<span key={i}>{i < Math.round(r.rating) ? '★' : '☆'}</span>))}
-                        </div>
-                        <div className="text-xs text-gray-500 mt-2">
-                          {new Date(r.createdAt).toLocaleDateString()} by <span className="font-semibold">{r.Reviewer?.name || 'Anonymous User'}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+              <div className="mt-4 text-gray-800 leading-relaxed">
+                {activeTab === 'description' && (
+                  <div className="whitespace-pre-wrap">
+                    {product.desc || "No description provided."}
                   </div>
                 )}
+
+                {activeTab === 'specs' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {product.brand && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Brand</span>
+                        <span className="font-semibold">{product.brand}</span>
+                      </div>
+                    )}
+                    {product.model && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Model</span>
+                        <span className="font-semibold">{product.model}</span>
+                      </div>
+                    )}
+                    {product.color && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Color</span>
+                        <span className="font-semibold">{product.color}</span>
+                      </div>
+                    )}
+                    {product.screenSize && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Screen Size</span>
+                        <span className="font-semibold">{product.screenSize}</span>
+                      </div>
+                    )}
+                    {product.ram && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">RAM</span>
+                        <span className="font-semibold">{product.ram}</span>
+                      </div>
+                    )}
+                    {product.internalStorage && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Storage</span>
+                        <span className="font-semibold">{product.internalStorage}</span>
+                      </div>
+                    )}
+                    {product.battery && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Battery</span>
+                        <span className="font-semibold">{product.battery}</span>
+                      </div>
+                    )}
+                    {product.mainCamera && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Main Camera</span>
+                        <span className="font-semibold">{product.mainCamera}</span>
+                      </div>
+                    )}
+                    {product.location && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Location</span>
+                        <span className="font-semibold">{product.location}</span>
+                      </div>
+                    )}
+                    {product.subcategory && (
+                      <div className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">Subcategory</span>
+                        <span className="font-semibold">{product.subcategory}</span>
+                      </div>
+                    )}
+                    {Object.entries(product.specifications || {}).map(([key, value]) => (
+                      <div key={key} className="flex justify-between border-b border-gray-100 pb-2">
+                        <span className="text-gray-500">{key}</span>
+                        <span className="font-semibold">{String(value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* 4. Seller Information Section */}
+          <section className="order-4 lg:col-start-2 rounded-lg bg-white border border-orange-200 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold">Seller Information</h3>
+              <div className="text-xs text-gray-500">● Last seen 12:01 PM</div>
             </div>
 
-            <div className="mt-6 rounded-lg border border-orange-200 bg-white p-4 pb-8 order-4 lg:order-none">
-              <h4 className="font-semibold mb-3">Before you buy</h4>
-              <ul className="list-disc pl-5 text-sm text-gray-700 space-y-2">
-                <li>Check feedbacks to make sure the person is reliable.</li>
-                <li>For products, ensure that what's in the package is exactly what you expect.</li>
-                <li>Avoid sending any prepayments.</li>
-                <li>Meet in person at a safe public place.</li>
-                <li>Check all the docs and only pay if you're satisfied.</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Right sidebar column for buttons etc */}
-          <aside className="space-y-4 flex flex-col">
-            <div className="rounded-lg border border-orange-200 bg-white p-4 order-5 lg:order-none">
-              <h4 className="font-semibold mb-3">Contact Options</h4>
-              <div className="space-y-3">
-                <button type="button" onClick={() => showAlert(`Call: ${product.sellerPhone || 'Not available'}`, "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
-                <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
-                <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
-                {/* Email button removed */}
+            <div className="border-t border-b border-gray-100 py-3">
+              <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-505 text-white flex items-center justify-center font-bold overflow-hidden">
+                    {product.sellerImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={product.sellerImage} alt="" className="w-full h-full object-cover" />
+                    ) : (product.sellerName || 'S').slice(0,1)}
+                  </div>
+                  <div>
+                    <div className="font-semibold flex items-center gap-1.5">
+                      <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link>
+                      {product.isVerified && <VerifiedBadge size={16} showText />}
+                    </div>
+                    <div className="text-yellow-400">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i}>{i < Math.floor(product.sellerRating || 0) ? "⭐️" : "☆"}</span>
+                      ))}
+                    </div>
+                    <div className="mt-2">
+                      <Link href={`/seller/${product.sellerId}`} className="text-sm text-orange-500 font-medium">View Seller Profile</Link>
+                    </div>
+                  </div>
               </div>
 
-              <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
+              <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
+                <div>Member Since:</div><div className="font-medium">{product.sellerMemberSince || "January 2023"}</div>
+                <div>Total Ads Posted:</div><div className="font-medium">{product.sellerTotalAds || 0} items</div>
+                <div>Response Time:</div><div className="font-medium">{product.sellerResponseTime || "Within 1 hour"}</div>
+                <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>
+                {product.sellerPhone && (
+                  <>
+                    <div>Phone:</div><div className="font-medium text-orange-600 select-all">{product.sellerPhone}</div>
+                  </>
+                )}
+              </div>
+            </div>
 
+            <div className="mt-4 space-y-2">
+              <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">🔎 View Seller Profile</Link>
+              <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">📋 See All Ads from Seller</Link>
               <button 
                 onClick={() => {
-                  setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
+                  setReportTarget({ productId: product.id, itemName: product.title });
                   setShowReportModal(true);
                 }}
-                className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors font-bold"
+                className="w-full flex items-center justify-center gap-2 py-2 text-red-500 font-bold text-sm hover:bg-red-50 rounded border border-red-100 transition-colors mt-2"
               >
-                🚩 Report this seller
+                🚩 Report this Ad
               </button>
             </div>
+          </section>
 
-            <div className="rounded-lg border border-orange-200 bg-white p-4 order-6 lg:order-none">
-              <button className="w-full bg-orange-600 text-white py-3 rounded">🔎 View all Reviews</button>
+          {/* 5. Contact Options Section */}
+          <section className="order-5 lg:col-start-2 rounded-lg border border-orange-200 bg-white p-4">
+            <h4 className="font-semibold mb-3">Contact Options</h4>
+            <div className="space-y-3">
+              <button type="button" onClick={() => showAlert(`Call: ${product.sellerPhone || 'Not available'}`, "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
+              <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
+              <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
             </div>
 
-            <div className="rounded-lg border border-orange-200 bg-white p-5 shadow-sm order-7 lg:order-none">
-              <h5 className="font-bold text-zinc-900 mb-4 flex items-center gap-2">
-                <Share2 size={18} className="text-orange-600" />
-                Share With Friends
-              </h5>
-              <div className="grid grid-cols-2 gap-3">
-                <button 
-                  onClick={handleCopyLink}
-                  className="flex items-center justify-center gap-2 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition-all group"
-                >
-                  {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-zinc-400 group-hover:text-orange-500" />}
-                  {copied ? "Copied!" : "Copy Link"}
-                </button>
-                <button 
-                  onClick={handleShare}
-                  className="flex items-center justify-center gap-2 py-2.5 bg-orange-600 border border-orange-500 rounded-xl text-sm font-bold text-white hover:bg-orange-700 transition-all shadow-sm shadow-orange-100"
-                >
-                  <Share2 size={16} />
-                  Share
-                </button>
+            <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
+
+            <button 
+              onClick={() => {
+                setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
+                setShowReportModal(true);
+              }}
+              className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors font-bold"
+            >
+              🚩 Report this seller
+            </button>
+          </section>
+
+          {/* 6. Reviews Section */}
+          <section className="order-6 lg:col-start-1 rounded-lg border border-orange-200 bg-white">
+              <div className="p-4 border-b">
+                <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
               </div>
-            </div>
-          </aside>
-        </div>
+              
+              <div className="p-4 border-b bg-zinc-50">
+                  <h5 className="font-bold text-sm mb-2">Leave a Review for {product.sellerName}</h5>
+                  <div className="flex gap-1 mb-3">
+                    {[1,2,3,4,5].map(star => (
+                       <button key={star} type="button" onClick={() => setReviewRating(star)} className={`text-2xl hover:scale-110 transition-transform ${reviewRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
+                    ))}
+                  </div>
+                  <textarea 
+                     value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+                     placeholder="Share your experience with this vendor..."
+                     className="w-full text-sm border-gray-300 rounded-md shadow-sm p-3 focus:ring-orange-500 outline-none focus:border-orange-500 mb-3" rows={3}>
+                  </textarea>
+                  <Button disabled={submittingReview || !reviewText.trim()} onClick={submitReview} className="bg-orange-600 text-white min-w-[120px]">
+                     {submittingReview ? "Submitting..." : "Submit Review"}
+                  </Button>
+              </div>
 
+              {reviews.length === 0 ? (
+                <div className="p-6 text-center text-gray-500 italic">No reviews yet for this vendor. Be the first!</div>
+              ) : (
+                <div className="max-h-[400px] overflow-y-auto">
+                {reviews.map((r: any) => (
+                  <div key={r.id} className="p-4 border-b flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 uppercase font-bold text-sm">
+                      {(r.Reviewer?.name || 'U').slice(0, 2)}
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-800">{r.comment}</div>
+                      <div className="text-yellow-400 mt-1 text-sm">
+                         {Array.from({length: 5}).map((_, i) => (<span key={i}>{i < Math.round(r.rating) ? '★' : '☆'}</span>))}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-2">
+                        {new Date(r.createdAt).toLocaleDateString()} by <span className="font-semibold">{r.Reviewer?.name || 'Anonymous User'}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                </div>
+              )}
+          </section>
+
+          {/* 7. Safety / Before you buy Section */}
+          <section className="order-7 lg:col-start-1 rounded-lg border border-orange-200 bg-white p-4 pb-8">
+            <h4 className="font-semibold mb-3">Before you buy</h4>
+            <ul className="list-disc pl-5 text-sm text-gray-700 space-y-2">
+              <li>Check feedbacks to make sure the person is reliable.</li>
+              <li>For products, ensure that what's in the package is exactly what you expect.</li>
+              <li>Avoid sending any prepayments.</li>
+              <li>Meet in person at a safe public place.</li>
+              <li>Check all the docs and only pay if you're satisfied.</li>
+            </ul>
+          </section>
+
+          {/* 8. Share Section */}
+          <section className="order-8 lg:col-start-2 rounded-lg border border-orange-200 bg-white p-5 shadow-sm">
+            <h5 className="font-bold text-zinc-900 mb-4 flex items-center gap-2">
+              <Share2 size={18} className="text-orange-600" />
+              Share With Friends
+            </h5>
+            <div className="grid grid-cols-2 gap-3">
+              <button 
+                onClick={handleCopyLink}
+                className="flex items-center justify-center gap-2 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition-all group"
+              >
+                {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-zinc-400 group-hover:text-orange-500" />}
+                {copied ? "Copied!" : "Copy Link"}
+              </button>
+              <button 
+                onClick={handleShare}
+                className="flex items-center justify-center gap-2 py-2.5 bg-orange-600 border border-orange-500 rounded-xl text-sm font-bold text-white hover:bg-orange-700 transition-all shadow-sm shadow-orange-100"
+              >
+                <Share2 size={16} />
+                Share
+              </button>
+            </div>
+          </section>
+        </div>
         <ReportModal 
           isOpen={showReportModal} 
           onClose={() => setShowReportModal(false)} 

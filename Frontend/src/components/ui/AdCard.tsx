@@ -78,10 +78,12 @@ export default function AdCard({ item, className = "" }: Props) {
         <div className="mt-3 flex items-center justify-between">
           <div className="flex items-center gap-0.5 text-[10px] sm:text-xs">
             {item.rating && item.rating > 0 ? (
-              <>
-                <span className="font-bold text-black mr-0.5">{Number(item.rating).toFixed(1)}</span>
-                <span className="text-yellow-400">★</span>
-              </>
+              <div className="flex items-center text-yellow-400">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i}>{i < Math.floor(item.rating || 0) ? "★" : "☆"}</span>
+                ))}
+                <span className="ml-1 text-black font-bold">({Number(item.rating).toFixed(1)})</span>
+              </div>
             ) : (
               <span className="text-gray-400 italic">No reviews</span>
             )}
@@ -93,7 +95,7 @@ export default function AdCard({ item, className = "" }: Props) {
         <div className="mt-2 flex items-center justify-between text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
           <div className="truncate max-w-[60px] sm:max-w-none">{item.location ?? "Nigeria"}</div>
           <div className="flex items-center gap-1">
-            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span className="hidden sm:inline">views</span></span>
+            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span>views</span></span>
           </div>
         </div>
       </article>
