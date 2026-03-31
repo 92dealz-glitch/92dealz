@@ -75,21 +75,23 @@ export default function AdCard({ item, className = "" }: Props) {
           <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm line-clamp-1 sm:line-clamp-2 leading-tight">{item.title}</h4>
         </div>
 
-        <div className="mt-3 flex items-center justify-between">
-          <div className="flex items-center gap-0.5 text-[10px] sm:text-xs">
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex items-center gap-1">
             {item.rating && item.rating > 0 ? (
               <div className="flex items-center text-yellow-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i}>{i < Math.floor(item.rating || 0) ? "★" : "☆"}</span>
-                ))}
-                <span className="ml-1 text-black font-bold">({Number(item.rating).toFixed(1)})</span>
+                <div className="flex items-center text-lg leading-none">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className="drop-shadow-sm">{i < Math.floor(item.rating || 0) ? "★" : "☆"}</span>
+                  ))}
+                </div>
+                <span className="ml-1.5 text-black font-extrabold text-sm">({Number(item.rating).toFixed(1)})</span>
               </div>
             ) : (
-              <span className="text-gray-400 italic">No reviews</span>
+              <span className="text-gray-400 italic text-xs">No reviews</span>
             )}
           </div>
 
-          <div className="text-[10px] sm:text-xs text-gray-500 font-medium">{item.condition ?? "Brand New"}</div>
+          <div className="text-xs text-gray-500 font-bold bg-gray-50 px-2 py-0.5 rounded">{item.condition ?? "Brand New"}</div>
         </div>
 
         <div className="mt-2 flex items-center justify-between text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">

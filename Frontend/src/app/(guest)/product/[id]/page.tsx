@@ -280,7 +280,7 @@ export default function ProductPage({ params }: Props) {
         <nav className="text-gray-600 text-sm mb-4">Home &gt; Products &gt; {product.title}</nav>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
           {/* 1. Gallery Section */}
-          <section className="order-1 lg:col-start-1 rounded-lg border-2 border-orange-300 bg-white p-4 sm:p-6">
+          <section className="lg:col-start-1 rounded-lg border-2 border-orange-300 bg-white p-4 sm:p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-extrabold text-orange-600">{product.title}</h1>
@@ -335,51 +335,8 @@ export default function ProductPage({ params }: Props) {
             </div>
           </section>
 
-          {/* 2. Price Section */}
-          <aside className="order-2 lg:col-start-2 space-y-4">
-            <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
-              <div className="absolute top-4 right-4">
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">{product.condition}</span>
-              </div>
-
-              <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>
-              <div className="mt-2 inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm">Negotiable</div>
-
-              {orderMessage && (
-                <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 text-sm font-bold ${orderMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
-                   {orderMessage.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-                   {orderMessage.text}
-                </div>
-              )}
-
-              <div className="mt-6 space-y-3">
-                <Button 
-                  onClick={() => {
-                  const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-                  if (!token) { showAlert("Please login to contact seller", "Authentication Required"); return; }
-                  setMessageText("I'm interested in your ad.");
-                    setMessageModal(true);
-                  }} 
-                  className="w-full bg-orange-600 text-white py-3"
-                >
-                  📞 Contact Seller
-                </Button>
-                <Link 
-                  href={`/messages?userId=${product.sellerId}&dealId=${product.id}`}
-                  className="w-full"
-                >
-                  <Button 
-                    className="w-full bg-orange-600 text-white py-3 font-bold"
-                  >
-                    💬 Chat Seller
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </aside>
-
-          {/* 3. Description & Specs Section */}
-          <section className="order-3 lg:col-start-1 space-y-6">
+          {/* 2. Description & Specs Section (Now above Price on Mobile) */}
+          <section className="lg:col-start-1 space-y-6">
             <div className="rounded-lg border border-orange-200 bg-white p-4">
               <div className="border-b pb-3">
                 <div className="sm:hidden">
@@ -492,89 +449,154 @@ export default function ProductPage({ params }: Props) {
             </div>
           </section>
 
-          {/* 4. Seller Information Section */}
-          <section className="order-4 lg:col-start-2 rounded-lg bg-white border border-orange-200 p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold">Seller Information</h3>
-              <div className="text-xs text-gray-500">● Last seen 12:01 PM</div>
-            </div>
-
-            <div className="border-t border-b border-gray-100 py-3">
-              <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-505 text-white flex items-center justify-center font-bold overflow-hidden">
-                    {product.sellerImage ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={product.sellerImage} alt="" className="w-full h-full object-cover" />
-                    ) : (product.sellerName || 'S').slice(0,1)}
-                  </div>
-                  <div>
-                    <div className="font-semibold flex items-center gap-1.5">
-                      <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link>
-                      {product.isVerified && <VerifiedBadge size={16} showText />}
-                    </div>
-                    <div className="text-yellow-400">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i}>{i < Math.floor(product.sellerRating || 0) ? "⭐️" : "☆"}</span>
-                      ))}
-                    </div>
-                    <div className="mt-2">
-                      <Link href={`/seller/${product.sellerId}`} className="text-sm text-orange-500 font-medium">View Seller Profile</Link>
-                    </div>
-                  </div>
+          {/* 3. Sidebar (Price Section + Seller Info) - Spans all rows on desktop to avoid gaps */}
+          <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4">
+            <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
+              <div className="absolute top-4 right-4">
+                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">{product.condition}</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
-                <div>Member Since:</div><div className="font-medium">{product.sellerMemberSince || "January 2023"}</div>
-                <div>Total Ads Posted:</div><div className="font-medium">{product.sellerTotalAds || 0} items</div>
-                <div>Response Time:</div><div className="font-medium">{product.sellerResponseTime || "Within 1 hour"}</div>
-                <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>
-                {product.sellerPhone && (
-                  <>
-                    <div>Phone:</div><div className="font-medium text-orange-600 select-all">{product.sellerPhone}</div>
-                  </>
-                )}
+              <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>
+              <div className="mt-2 inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm">Negotiable</div>
+
+              {orderMessage && (
+                <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 text-sm font-bold ${orderMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                   {orderMessage.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                   {orderMessage.text}
+                </div>
+              )}
+
+              <div className="mt-6 space-y-3">
+                <Button 
+                  onClick={() => {
+                  const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+                  if (!token) { showAlert("Please login to contact seller", "Authentication Required"); return; }
+                  setMessageText("I'm interested in your ad.");
+                    setMessageModal(true);
+                  }} 
+                  className="w-full bg-orange-600 text-white py-3"
+                >
+                  📞 Contact Seller
+                </Button>
+                <Link 
+                  href={`/messages?userId=${product.sellerId}&dealId=${product.id}`}
+                  className="w-full"
+                >
+                  <Button 
+                    className="w-full bg-orange-600 text-white py-3 font-bold"
+                  >
+                    💬 Chat Seller
+                  </Button>
+                </Link>
               </div>
             </div>
 
-            <div className="mt-4 space-y-2">
-              <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">🔎 View Seller Profile</Link>
-              <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">📋 See All Ads from Seller</Link>
+            {/* 4. Seller Information */}
+            <div className="rounded-lg bg-white border border-orange-200 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">Seller Information</h3>
+                <div className="text-xs text-gray-500">● Last seen 12:01 PM</div>
+              </div>
+
+              <div className="border-t border-b border-gray-100 py-3">
+                <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-full bg-orange-505 text-white flex items-center justify-center font-bold overflow-hidden">
+                      {product.sellerImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={product.sellerImage} alt="" className="w-full h-full object-cover" />
+                      ) : (product.sellerName || 'S').slice(0,1)}
+                    </div>
+                    <div>
+                      <div className="font-semibold flex items-center gap-1.5">
+                        <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link>
+                        {product.isVerified && <VerifiedBadge size={16} showText />}
+                      </div>
+                      <div className="text-yellow-400">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i} className="text-lg">{i < Math.floor(product.sellerRating || 0) ? "⭐️" : "☆"}</span>
+                        ))}
+                      </div>
+                      <div className="mt-2">
+                        <Link href={`/seller/${product.sellerId}`} className="text-sm text-orange-500 font-medium">View Seller Profile</Link>
+                      </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
+                  <div>Member Since:</div><div className="font-medium">{product.sellerMemberSince || "January 2023"}</div>
+                  <div>Total Ads Posted:</div><div className="font-medium">{product.sellerTotalAds || 0} items</div>
+                  <div>Response Time:</div><div className="font-medium">{product.sellerResponseTime || "Within 1 hour"}</div>
+                  <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>
+                  {product.sellerPhone && (
+                    <>
+                      <div>Phone:</div><div className="font-medium text-orange-600 select-all">{product.sellerPhone}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">🔎 View Seller Profile</Link>
+                <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">📋 See All Ads from Seller</Link>
+                <button 
+                  onClick={() => {
+                    setReportTarget({ productId: product.id, itemName: product.title });
+                    setShowReportModal(true);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2 text-red-500 font-bold text-sm hover:bg-red-50 rounded border border-red-100 transition-colors mt-2"
+                >
+                  🚩 Report this Ad
+                </button>
+              </div>
+            </div>
+
+            {/* 5. Contact Options */}
+            <div className="rounded-lg border border-orange-200 bg-white p-4">
+              <h4 className="font-semibold mb-3">Contact Options</h4>
+              <div className="space-y-3">
+                <button type="button" onClick={() => showAlert(`Call: ${product.sellerPhone || 'Not available'}`, "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
+                <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
+                <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
+              </div>
+              <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
               <button 
                 onClick={() => {
-                  setReportTarget({ productId: product.id, itemName: product.title });
+                  setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
                   setShowReportModal(true);
                 }}
-                className="w-full flex items-center justify-center gap-2 py-2 text-red-500 font-bold text-sm hover:bg-red-50 rounded border border-red-100 transition-colors mt-2"
+                className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors font-bold"
               >
-                🚩 Report this Ad
+                🚩 Report this seller
               </button>
             </div>
-          </section>
 
-          {/* 5. Contact Options Section */}
-          <section className="order-5 lg:col-start-2 rounded-lg border border-orange-200 bg-white p-4">
-            <h4 className="font-semibold mb-3">Contact Options</h4>
-            <div className="space-y-3">
-              <button type="button" onClick={() => showAlert(`Call: ${product.sellerPhone || 'Not available'}`, "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
-              <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
-              <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
+            {/* 8. Share Section */}
+            <div className="rounded-lg border border-orange-200 bg-white p-5 shadow-sm">
+              <h5 className="font-bold text-zinc-900 mb-4 flex items-center gap-2">
+                <Share2 size={18} className="text-orange-600" />
+                Share With Friends
+              </h5>
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  onClick={handleCopyLink}
+                  className="flex items-center justify-center gap-2 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition-all group"
+                >
+                  {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-zinc-400 group-hover:text-orange-500" />}
+                  {copied ? "Copied!" : "Copy Link"}
+                </button>
+                <button 
+                  onClick={handleShare}
+                  className="flex items-center justify-center gap-2 py-2.5 bg-orange-600 border border-orange-500 rounded-xl text-sm font-bold text-white hover:bg-orange-700 transition-all shadow-sm shadow-orange-100"
+                >
+                  <Share2 size={16} />
+                  Share
+                </button>
+              </div>
             </div>
-
-            <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
-
-            <button 
-              onClick={() => {
-                setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
-                setShowReportModal(true);
-              }}
-              className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors font-bold"
-            >
-              🚩 Report this seller
-            </button>
-          </section>
+          </aside>
 
           {/* 6. Reviews Section */}
-          <section className="order-6 lg:col-start-1 rounded-lg border border-orange-200 bg-white">
+          <section className="lg:col-start-1 rounded-lg border border-orange-200 bg-white">
               <div className="p-4 border-b">
                 <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
               </div>
@@ -621,7 +643,7 @@ export default function ProductPage({ params }: Props) {
           </section>
 
           {/* 7. Safety / Before you buy Section */}
-          <section className="order-7 lg:col-start-1 rounded-lg border border-orange-200 bg-white p-4 pb-8">
+          <section className="lg:col-start-1 rounded-lg border border-orange-200 bg-white p-4 pb-8">
             <h4 className="font-semibold mb-3">Before you buy</h4>
             <ul className="list-disc pl-5 text-sm text-gray-700 space-y-2">
               <li>Check feedbacks to make sure the person is reliable.</li>
@@ -630,30 +652,6 @@ export default function ProductPage({ params }: Props) {
               <li>Meet in person at a safe public place.</li>
               <li>Check all the docs and only pay if you're satisfied.</li>
             </ul>
-          </section>
-
-          {/* 8. Share Section */}
-          <section className="order-8 lg:col-start-2 rounded-lg border border-orange-200 bg-white p-5 shadow-sm">
-            <h5 className="font-bold text-zinc-900 mb-4 flex items-center gap-2">
-              <Share2 size={18} className="text-orange-600" />
-              Share With Friends
-            </h5>
-            <div className="grid grid-cols-2 gap-3">
-              <button 
-                onClick={handleCopyLink}
-                className="flex items-center justify-center gap-2 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition-all group"
-              >
-                {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-zinc-400 group-hover:text-orange-500" />}
-                {copied ? "Copied!" : "Copy Link"}
-              </button>
-              <button 
-                onClick={handleShare}
-                className="flex items-center justify-center gap-2 py-2.5 bg-orange-600 border border-orange-500 rounded-xl text-sm font-bold text-white hover:bg-orange-700 transition-all shadow-sm shadow-orange-100"
-              >
-                <Share2 size={16} />
-                Share
-              </button>
-            </div>
           </section>
         </div>
         <ReportModal 
