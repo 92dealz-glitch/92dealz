@@ -30,7 +30,6 @@ const baseItems: MenuItem[] = [
     { id: "add-product", label: "Add Product", icon: PlusSquare, href: "/vendor-dashboard/add-product" },
     { id: "sales-stats", label: "Sales Stats", icon: BarChart2, href: "/vendor-dashboard/analytics" },
     { id: "messages", label: "Messages", icon: MessageSquare, href: "/vendor-dashboard/messages" },
-    { id: "orders", label: "Orders", icon: ShoppingCart, href: "/vendor-dashboard/orders" },
     { id: "settings", label: "Settings", icon: Settings, href: "/vendor-dashboard/settings/personal-details", hasSubmenu: true },
 ];
 
@@ -52,17 +51,14 @@ export default function DashboardSidebar() {
     const filteredBaseItems = baseItems.filter(item => {
         if (isUserDashboard) {
             // Buyers only see these
-            return ["overview", "messages", "orders", "settings"].includes(item.id);
+            return ["overview", "messages", "settings"].includes(item.id);
         }
         // Vendors see everything
         return true;
     });
 
     const menuItems: MenuItem[] = filteredBaseItems.map(it => {
-        let label = it.label;
-        if (isUserDashboard && it.id === "orders") label = "My Purchases";
-        
-        return it.id === "messages" ? { ...it, label, badge: unread || undefined } : { ...it, label };
+        return it.id === "messages" ? { ...it, badge: unread || undefined } : it;
     });
 
     return (

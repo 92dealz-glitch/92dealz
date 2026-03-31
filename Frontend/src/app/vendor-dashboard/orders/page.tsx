@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { listOrders, confirmOrder, Order } from "@/services/orders.service";
 import { API_BASE } from "@/services/apiClient";
-import { Loader2, Package, CheckCircle, Clock, XCircle, Phone, Mail, User } from "lucide-react";
+import { Loader2, Package, CheckCircle, Clock, XCircle, Phone, Mail, User, MessageSquare } from "lucide-react";
 import { useAlert } from "@/context/AlertContext";
 
 export default function VendorOrdersPage() {
@@ -143,31 +144,15 @@ export default function VendorOrdersPage() {
                                         </div>
 
                                         <div className="flex flex-col justify-end gap-2">
-                                            {order.status === 'pending' && (
-                                                <button 
-                                                    onClick={() => handleConfirm(order.id)}
-                                                    disabled={!!actionLoading}
-                                                    className="w-full bg-green-600 text-white font-black py-3 rounded-xl hover:bg-green-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                                            <div className="mt-6 flex flex-col gap-3">
+                                                <Link 
+                                                    href={`/messages?userId=${order.buyer_id}`}
+                                                    className="w-full bg-zinc-900 text-white font-black py-3 rounded-xl hover:bg-black transition flex items-center justify-center gap-2"
                                                 >
-                                                    {actionLoading === order.id ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
-                                                    Confirm Order
-                                                </button>
-                                            )}
-                                            {order.status === 'buyer_confirmed' && (
-                                                <button 
-                                                    onClick={() => handleConfirm(order.id)}
-                                                    disabled={!!actionLoading}
-                                                    className="w-full bg-orange-600 text-white font-black py-3 rounded-xl hover:bg-orange-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
-                                                >
-                                                    {actionLoading === order.id ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
-                                                    Mark as Complete
-                                                </button>
-                                            )}
-                                            {order.status === 'completed' && (
-                                                <div className="flex items-center justify-center gap-2 text-green-600 font-black py-3 bg-green-50 rounded-xl">
-                                                    <CheckCircle size={20} /> Order Fulfilled
-                                                </div>
-                                            )}
+                                                    <MessageSquare size={20} />
+                                                    Message Buyer
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
 

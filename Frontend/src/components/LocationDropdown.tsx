@@ -40,7 +40,8 @@ const LOCATIONS = [
   "Sokoto",
   "Taraba",
   "Yobe",
-  "Zamfara"
+  "Zamfara",
+  "🇨🇳 CHINA"
 ];
 
 export default function LocationDropdown({

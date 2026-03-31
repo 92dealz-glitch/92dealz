@@ -33,11 +33,11 @@ export default function AdCard({ item, className = "" }: Props) {
     <Link href={`/product/${item.id}`}>
       <article
         className={
-          `relative rounded-2xl border border-gray-100 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group ${className}`
+          `relative rounded-2xl border border-green-500 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group ${className}`
         }
         aria-label={`Ad ${item.title}`}
       >
-        <div className="flex-none relative w-full rounded-md overflow-hidden border border-gray-100">
+        <div className="flex-none relative w-full rounded-md overflow-hidden border border-green-500">
           <div className="w-full pb-[66%]"></div>
           {(item.badge || item.img) ? (
             // eslint-disable-next-line @next/next/no-img-element

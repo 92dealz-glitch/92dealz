@@ -375,17 +375,6 @@ export default function ProductPage({ params }: Props) {
                     💬 Chat Seller
                   </Button>
                 </Link>
-                <Button 
-                  disabled={isPlacingOrder}
-                  onClick={() => {
-                    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-                    if (!token) { showAlert("Please login to place an order", "Authentication Required"); return; }
-                    setShowConfirmModal(true)
-                  }}
-                  className="w-full bg-black text-white py-3 font-extrabold flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors"
-                >
-                  {isPlacingOrder ? <Loader2 className="animate-spin" size={20} /> : "🛒 Confirm Purchase"}
-                </Button>
               </div>
             </div>
 
@@ -449,64 +438,6 @@ export default function ProductPage({ params }: Props) {
             </div>
           </aside>
         </div>
-        
-        {/* Confirm Purchase Modal */}
-        {showConfirmModal && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 animate-in fade-in duration-300">
-            <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-orange-100 flex flex-col animate-in zoom-in-95 duration-300">
-              <div className="h-2 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500 w-full" />
-              
-              <div className="p-8">
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center text-orange-600 ring-8 ring-orange-50/50">
-                    <Package size={32} />
-                  </div>
-                </div>
-
-                <div className="text-center space-y-3 mb-8">
-                  <h3 className="text-2xl font-black text-zinc-900 tracking-tight">Confirm Your Purchase</h3>
-                  <div className="space-y-4">
-                    <div className="bg-orange-50/50 p-4 rounded-2xl border border-orange-100">
-                      <p className="text-sm font-bold text-orange-700 leading-relaxed italic">
-                        "234Deals Only Connects Buyers and Sellers. You must contact the seller for final confirmation."
-                      </p>
-                    </div>
-                    <p className="text-zinc-500 font-bold leading-relaxed px-4">
-                      Do you wish to proceed to directly confirm the item without further negotiation?
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => setShowConfirmModal(false)}
-                    className="py-4 px-6 border-2 border-zinc-100 rounded-2xl font-black text-zinc-400 hover:bg-zinc-50 hover:text-zinc-600 transition-all duration-200"
-                  >
-                    Not Yet
-                  </button>
-                  <button
-                    disabled={isPlacingOrder}
-                    onClick={handlePlaceOrder}
-                    className="py-4 px-6 bg-zinc-900 text-white rounded-2xl font-black hover:bg-black hover:shadow-lg hover:shadow-zinc-200 transition-all duration-200 flex items-center justify-center gap-2 group"
-                  >
-                    {isPlacingOrder ? <Loader2 className="animate-spin" size={20} /> : (
-                      <>
-                        Directly Confirm
-                        <CheckCircle2 size={18} className="group-hover:scale-110 transition-transform" />
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-zinc-50 p-4 text-center border-t border-zinc-100">
-                <p className="text-[10px] uppercase tracking-widest font-black text-zinc-400 flex items-center justify-center gap-2">
-                  <Shield size={12} /> Secure Connection via 234Deals
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Message Modal */}
         {messageModal && (
@@ -541,167 +472,173 @@ export default function ProductPage({ params }: Props) {
           </div>
         )}
 
-        {/* Second row: Description tabs + Reviews and Right column contact options */}
-        <div className="grid gap-6 mt-6 lg:grid-cols-[1fr_360px]">
-          <div>
-            <div className="rounded-lg border border-orange-200 bg-white p-4">
-              <div className="border-b pb-3">
-                <div className="sm:hidden">
-                  <label className="sr-only">Select section</label>
-                  <select
-                    value={activeTab}
-                    onChange={(e) => setActiveTab(e.target.value as any)}
-                    className="w-full rounded-md border-gray-200 bg-white px-3 py-2 text-sm"
-                  >
-                    <option value="description">PRODUCT DESCRIPTION</option>
-                    <option value="specs">SPECIFICATIONS</option>
-                  </select>
+        {/* Row setup: Gallery & Pricing at top, then Detail section, then Contact Seller options */}
+        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_360px] gap-6 mt-6">
+          {/* Main content column */}
+          <div className="space-y-6 flex flex-col">
+            {/* Gallery Info (Already at top in separate grid above, but let's re-align for consistency if needed) */}
+            {/* Move Description & Specs here for mobile */}
+            <div className="order-2 lg:order-none">
+              <div className="rounded-lg border border-orange-200 bg-white p-4">
+                <div className="border-b pb-3">
+                  <div className="sm:hidden">
+                    <label className="sr-only">Select section</label>
+                    <select
+                      value={activeTab}
+                      onChange={(e) => setActiveTab(e.target.value as any)}
+                      className="w-full rounded-md border-gray-200 bg-white px-3 py-2 text-sm"
+                    >
+                      <option value="description">PRODUCT DESCRIPTION</option>
+                      <option value="specs">SPECIFICATIONS</option>
+                    </select>
+                  </div>
+
+                  <div className="hidden sm:flex gap-6">
+                    <button
+                      onClick={() => setActiveTab('description')}
+                      className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'description' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
+                    >
+                      PRODUCT DESCRIPTION
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('specs')}
+                      className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'specs' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
+                    >
+                      SPECIFICATIONS
+                    </button>
+                  </div>
                 </div>
 
-                <div className="hidden sm:flex gap-6">
-                  <button
-                    onClick={() => setActiveTab('description')}
-                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'description' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
-                  >
-                    PRODUCT DESCRIPTION
-                  </button>
+                <div className="mt-4 text-gray-800 leading-relaxed">
+                  {activeTab === 'description' && (
+                    <div className="whitespace-pre-wrap">
+                      {product.desc || "No description provided."}
+                    </div>
+                  )}
 
-                  <button
-                    onClick={() => setActiveTab('specs')}
-                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'specs' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
-                  >
-                    SPECIFICATIONS
-                  </button>
+                  {activeTab === 'specs' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {product.brand && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Brand</span>
+                          <span className="font-semibold">{product.brand}</span>
+                        </div>
+                      )}
+                      {product.model && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Model</span>
+                          <span className="font-semibold">{product.model}</span>
+                        </div>
+                      )}
+                      {product.color && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Color</span>
+                          <span className="font-semibold">{product.color}</span>
+                        </div>
+                      )}
+                      {product.screenSize && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Screen Size</span>
+                          <span className="font-semibold">{product.screenSize}</span>
+                        </div>
+                      )}
+                      {product.ram && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">RAM</span>
+                          <span className="font-semibold">{product.ram}</span>
+                        </div>
+                      )}
+                      {product.internalStorage && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Storage</span>
+                          <span className="font-semibold">{product.internalStorage}</span>
+                        </div>
+                      )}
+                      {product.battery && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Battery</span>
+                          <span className="font-semibold">{product.battery}</span>
+                        </div>
+                      )}
+                      {product.mainCamera && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Main Camera</span>
+                          <span className="font-semibold">{product.mainCamera}</span>
+                        </div>
+                      )}
+                      {product.location && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Location</span>
+                          <span className="font-semibold">{product.location}</span>
+                        </div>
+                      )}
+                      {product.subcategory && (
+                        <div className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">Subcategory</span>
+                          <span className="font-semibold">{product.subcategory}</span>
+                        </div>
+                      )}
+                      {Object.entries(product.specifications || {}).map(([key, value]) => (
+                        <div key={key} className="flex justify-between border-b border-gray-100 pb-2">
+                          <span className="text-gray-500">{key}</span>
+                          <span className="font-semibold">{String(value)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              <div className="mt-4 text-gray-800 leading-relaxed">
-                {activeTab === 'description' && (
-                  <div className="whitespace-pre-wrap">
-                    {product.desc || "No description provided."}
-                  </div>
-                )}
-
-                {activeTab === 'specs' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {product.brand && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Brand</span>
-                        <span className="font-semibold">{product.brand}</span>
-                      </div>
-                    )}
-                    {product.model && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Model</span>
-                        <span className="font-semibold">{product.model}</span>
-                      </div>
-                    )}
-                    {product.color && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Color</span>
-                        <span className="font-semibold">{product.color}</span>
-                      </div>
-                    )}
-                    {product.screenSize && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Screen Size</span>
-                        <span className="font-semibold">{product.screenSize}</span>
-                      </div>
-                    )}
-                    {product.ram && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">RAM</span>
-                        <span className="font-semibold">{product.ram}</span>
-                      </div>
-                    )}
-                    {product.internalStorage && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Storage</span>
-                        <span className="font-semibold">{product.internalStorage}</span>
-                      </div>
-                    )}
-                    {product.battery && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Battery</span>
-                        <span className="font-semibold">{product.battery}</span>
-                      </div>
-                    )}
-                    {product.mainCamera && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Main Camera</span>
-                        <span className="font-semibold">{product.mainCamera}</span>
-                      </div>
-                    )}
-                    {product.location && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Location</span>
-                        <span className="font-semibold">{product.location}</span>
-                      </div>
-                    )}
-                    {product.subcategory && (
-                      <div className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">Subcategory</span>
-                        <span className="font-semibold">{product.subcategory}</span>
-                      </div>
-                    )}
-                    {Object.entries(product.specifications || {}).map(([key, value]) => (
-                      <div key={key} className="flex justify-between border-b border-gray-100 pb-2">
-                        <span className="text-gray-500">{key}</span>
-                        <span className="font-semibold">{String(value)}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
 
-            <div className="mt-6 rounded-lg border border-orange-200 bg-white">
-              <div className="p-4 border-b">
-                <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
-              </div>
-              
-              <div className="p-4 border-b bg-zinc-50">
-                  <h5 className="font-bold text-sm mb-2">Leave a Review for {product.sellerName}</h5>
-                  <div className="flex gap-1 mb-3">
-                    {[1,2,3,4,5].map(star => (
-                       <button key={star} type="button" onClick={() => setReviewRating(star)} className={`text-2xl hover:scale-110 transition-transform ${reviewRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
-                    ))}
-                  </div>
-                  <textarea 
-                     value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                     placeholder="Share your experience with this vendor..."
-                     className="w-full text-sm border-gray-300 rounded-md shadow-sm p-3 focus:ring-orange-500 outline-none focus:border-orange-500 mb-3" rows={3}>
-                  </textarea>
-                  <Button disabled={submittingReview || !reviewText.trim()} onClick={submitReview} className="bg-orange-600 text-white min-w-[120px]">
-                     {submittingReview ? "Submitting..." : "Submit Review"}
-                  </Button>
-              </div>
-
-              {reviews.length === 0 ? (
-                <div className="p-6 text-center text-gray-500 italic">No reviews yet for this vendor. Be the first!</div>
-              ) : (
-                <div className="max-h-[400px] overflow-y-auto">
-                {reviews.map((r: any) => (
-                  <div key={r.id} className="p-4 border-b flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 uppercase font-bold text-sm">
-                      {(r.Reviewer?.name || 'U').slice(0, 2)}
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-800">{r.comment}</div>
-                      <div className="text-yellow-400 mt-1 text-sm">
-                         {Array.from({length: 5}).map((_, i) => (<span key={i}>{i < Math.round(r.rating) ? '★' : '☆'}</span>))}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-2">
-                        {new Date(r.createdAt).toLocaleDateString()} by <span className="font-semibold">{r.Reviewer?.name || 'Anonymous User'}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+            {/* Customer Reviews section */}
+            <div className="mt-6 rounded-lg border border-orange-200 bg-white order-3 lg:order-none">
+                <div className="p-4 border-b">
+                  <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
                 </div>
-              )}
+                
+                <div className="p-4 border-b bg-zinc-50">
+                    <h5 className="font-bold text-sm mb-2">Leave a Review for {product.sellerName}</h5>
+                    <div className="flex gap-1 mb-3">
+                      {[1,2,3,4,5].map(star => (
+                         <button key={star} type="button" onClick={() => setReviewRating(star)} className={`text-2xl hover:scale-110 transition-transform ${reviewRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
+                      ))}
+                    </div>
+                    <textarea 
+                       value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+                       placeholder="Share your experience with this vendor..."
+                       className="w-full text-sm border-gray-300 rounded-md shadow-sm p-3 focus:ring-orange-500 outline-none focus:border-orange-500 mb-3" rows={3}>
+                    </textarea>
+                    <Button disabled={submittingReview || !reviewText.trim()} onClick={submitReview} className="bg-orange-600 text-white min-w-[120px]">
+                       {submittingReview ? "Submitting..." : "Submit Review"}
+                    </Button>
+                </div>
+
+                {reviews.length === 0 ? (
+                  <div className="p-6 text-center text-gray-500 italic">No reviews yet for this vendor. Be the first!</div>
+                ) : (
+                  <div className="max-h-[400px] overflow-y-auto">
+                  {reviews.map((r: any) => (
+                    <div key={r.id} className="p-4 border-b flex gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 uppercase font-bold text-sm">
+                        {(r.Reviewer?.name || 'U').slice(0, 2)}
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-800">{r.comment}</div>
+                        <div className="text-yellow-400 mt-1 text-sm">
+                           {Array.from({length: 5}).map((_, i) => (<span key={i}>{i < Math.round(r.rating) ? '★' : '☆'}</span>))}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-2">
+                          {new Date(r.createdAt).toLocaleDateString()} by <span className="font-semibold">{r.Reviewer?.name || 'Anonymous User'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  </div>
+                )}
             </div>
 
-            <div className="mt-6 rounded-lg border border-orange-200 bg-white p-4 pb-8">
+            <div className="mt-6 rounded-lg border border-orange-200 bg-white p-4 pb-8 order-4 lg:order-none">
               <h4 className="font-semibold mb-3">Before you buy</h4>
               <ul className="list-disc pl-5 text-sm text-gray-700 space-y-2">
                 <li>Check feedbacks to make sure the person is reliable.</li>
@@ -713,8 +650,9 @@ export default function ProductPage({ params }: Props) {
             </div>
           </div>
 
-          <aside className="space-y-4">
-            <div className="rounded-lg border border-orange-200 bg-white p-4">
+          {/* Right sidebar column for buttons etc */}
+          <aside className="space-y-4 flex flex-col">
+            <div className="rounded-lg border border-orange-200 bg-white p-4 order-5 lg:order-none">
               <h4 className="font-semibold mb-3">Contact Options</h4>
               <div className="space-y-3">
                 <button type="button" onClick={() => showAlert(`Call: ${product.sellerPhone || 'Not available'}`, "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
@@ -736,11 +674,11 @@ export default function ProductPage({ params }: Props) {
               </button>
             </div>
 
-            <div className="rounded-lg border border-orange-200 bg-white p-4">
+            <div className="rounded-lg border border-orange-200 bg-white p-4 order-6 lg:order-none">
               <button className="w-full bg-orange-600 text-white py-3 rounded">🔎 View all Reviews</button>
             </div>
 
-            <div className="rounded-lg border border-orange-200 bg-white p-5 shadow-sm">
+            <div className="rounded-lg border border-orange-200 bg-white p-5 shadow-sm order-7 lg:order-none">
               <h5 className="font-bold text-zinc-900 mb-4 flex items-center gap-2">
                 <Share2 size={18} className="text-orange-600" />
                 Share With Friends
