@@ -52,6 +52,7 @@ export default function Recommended() {
           condition: d.condition || "Brand New",
           views: d.clicks || 0,
           rating: d.rating || 0,
+          isVerified: d.is_verified || d.User?.is_verified || false,
         }));
         setItems(mapped);
       } catch (err) {

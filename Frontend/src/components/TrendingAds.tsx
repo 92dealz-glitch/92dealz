@@ -19,6 +19,7 @@ export default function TrendingAds() {
           condition: d.condition || "Brand New",
           likes: d.clicks || 0,
           rating: Number(d.rating || 0),
+          isVerified: d.is_verified || d.User?.is_verified || false,
         }));
         setList(mapped);
       } catch (err) {

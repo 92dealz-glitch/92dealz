@@ -23,14 +23,14 @@ export default function Hero() {
         // Find next loaded index or stay on current if none ready
         if (loadedIndices.length <= 1) return prev;
         
-        // Find the position of current index in loadedIndices
-        const currentPos = loadedIndices.indexOf(prev);
-        const nextPos = (currentPos + 1) % loadedIndices.length;
-        return loadedIndices[nextPos];
-      });
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [loadedIndices]);
+          // Find the position of current index in loadedIndices
+          const currentPos = loadedIndices.indexOf(prev);
+          const nextPos = (currentPos + 1) % loadedIndices.length;
+          return loadedIndices[nextPos];
+        });
+      }, 7000); // Slower interval
+      return () => clearInterval(timer);
+    }, [loadedIndices]);
 
   const handleImageLoad = (idx: number) => {
     if (!loadedIndices.includes(idx)) {
@@ -66,7 +66,7 @@ export default function Hero() {
           {HERO_IMAGES.map((img, i) => (
             <div 
               key={i}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out will-change-[opacity,transform] ${(i === index && loadedIndices.includes(i)) ? "opacity-100 scale-105" : "opacity-0 scale-100"}`}
+              className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out will-change-[opacity,transform] ${(i === index && loadedIndices.includes(i)) ? "opacity-100 scale-105" : "opacity-0 scale-100"}`}
             >
               <Image
                 src={img}
@@ -74,7 +74,7 @@ export default function Hero() {
                 width={460}
                 height={460}
                 priority={i === 0}
-                className="mx-auto object-contain opacity-95 transition-transform duration-1000"
+                className="mx-auto object-contain opacity-95 transition-transform duration-[2000ms]"
               />
             </div>
           ))}
@@ -171,17 +171,17 @@ export default function Hero() {
           {/* DESKTOP CAROUSEL (RIGHT SIDE) */}
           <div className="relative w-full h-0 lg:h-[580px] pointer-events-none hidden lg:block z-0 order-1 lg:order-2">
             <div className="relative w-full h-full overflow-visible">
-               {HERO_IMAGES.map((img, i) => (
+              {HERO_IMAGES.map((img, i) => (
                   <div 
                     key={i}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out will-change-opacity ${(i === index && loadedIndices.includes(i)) ? "opacity-100" : "opacity-0"}`}
+                    className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out will-change-opacity ${(i === index && loadedIndices.includes(i)) ? "opacity-100" : "opacity-0"}`}
                   >
                     <Image
                       src={img}
                       alt={`Hero ${i + 1}`}
                       fill
                       priority={i === 0}
-                      className="object-contain object-top drop-shadow-2xl"
+                      className="object-contain object-top drop-shadow-2xl transition-transform duration-[2000ms] "
                     />
                   </div>
                 ))}

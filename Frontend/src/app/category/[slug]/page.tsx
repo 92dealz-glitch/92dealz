@@ -79,6 +79,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       condition: l.condition || "Brand New",
       views: l.clicks || 0,
       rating: l.rating || 0,
+      isVerified: l.is_verified || l.User?.is_verified || false,
     };
   });
 

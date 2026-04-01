@@ -13,6 +13,7 @@ interface HotDeal {
   img: string;
   location: string;
   newLabel?: string;
+  isVerified?: boolean;
 }
 
 import { useEffect, useState, useRef } from "react";
@@ -32,6 +33,7 @@ export default function HotDeals() {
           img: d.image_url || "/assets/images/bgphone.svg",
           location: d.location || d.city || "Nigeria",
           newLabel: d.condition || "Brand New",
+          isVerified: d.is_verified || d.User?.is_verified || false,
         }));
         setList(mapped);
       } catch (err) {}
@@ -158,6 +160,12 @@ export default function HotDeals() {
                         fill
                         className="absolute inset-0 object-cover transition-transform group-hover:scale-105"
                       />
+                      {item.isVerified && (
+                        <div className="absolute top-2 left-2 z-20 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-sm flex items-center gap-1">
+                          <span>✓</span>
+                          <span className="hidden sm:inline">Verified</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
