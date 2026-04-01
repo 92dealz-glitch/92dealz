@@ -32,25 +32,27 @@ export default function FeaturedAds() {
   if (featured.length === 0) return null;
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-16 mt-8">
-      <div className="flex items-center justify-between mb-8">
-        <h3 className="text-3xl font-extrabold text-[#f45c03]">Featured Ads</h3>
-        <div className="hidden sm:block h-1 flex-1 bg-gradient-to-r from-[#f45c03]/20 to-transparent ml-8 rounded-full" />
+    <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-20 mt-10">
+      <div className="flex items-center gap-5 mb-10">
+        <h3 className="text-3xl sm:text-4xl font-extrabold text-[#f45c03] uppercase tracking-tight">Featured Ads</h3>
+        <div className="h-0.5 flex-1 bg-[#f45c03] opacity-40 shadow-sm" />
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[1fr] items-stretch">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 auto-rows-[1fr] items-stretch">
         {featured.map((it) => (
-          <div key={it.id} className="bg-[#f45c03] p-1.5 rounded-[22px] shadow-lg transition-all hover:scale-[1.02]">
-            <AdCard 
-              item={it} 
-              className="!border-none !shadow-none h-full"
-            />
+          <div key={it.id} className="p-1 sm:p-2 bg-[#f45c03] rounded-[30px] shadow-2xl transition-all hover:-translate-y-2 group">
+            <div className="bg-white rounded-[24px] overflow-hidden h-full">
+              <AdCard 
+                item={it} 
+                className="!border-none !shadow-none !p-2 sm:!p-4"
+              />
+            </div>
           </div>
         ))}
       </div>
       
-      <div className="mt-10 flex justify-center">
-        <button className="bg-gradient-to-r from-[#f45c03] to-[#f45c03] px-12 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-100 text-white hover:scale-105 active:scale-95 transition-all">
+      <div className="mt-14 flex justify-center">
+        <button className="bg-[#f45c03] px-16 py-4.5 rounded-2xl font-black shadow-xl shadow-orange-100 text-white hover:scale-105 active:scale-95 transition-all text-xl tracking-wider">
           Explore Premium Deals
         </button>
       </div>
