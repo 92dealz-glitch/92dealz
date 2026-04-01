@@ -65,14 +65,14 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-2 sm:pt-8 lg:pt-24 pb-12 lg:pb-16 mt-0 lg:mt-0">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-0 sm:pt-8 lg:pt-24 pb-12 lg:pb-16 mt-0 lg:mt-0">
 
         {/* MOBILE CAROUSEL */}
         <div className="absolute inset-0 flex justify-center lg:hidden pointer-events-none -translate-y-8">
           {SLIDES.map((slide, i) => (
             <div
               key={i}
-              className={`absolute inset-0 transition-all duration-[1000ms] ease-in-out ${(i === index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              className={`absolute inset-0 transition-all duration-[1000ms] ease-in-out ${(i === index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 invisible pointer-events-none"}`}
             >
               <div className="relative w-full h-full flex justify-center items-center">
                 {slide.images.length === 1 ? (
@@ -118,7 +118,7 @@ export default function Hero() {
               {SLIDES.map((slide, i) => (
                 <div 
                   key={i} 
-                  className={`col-start-1 row-start-1 transition-all duration-1000 ease-in-out ${(i === index) ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8 pointer-events-none"}`}
+                  className={`col-start-1 row-start-1 transition-all duration-1000 ease-in-out ${(i === index) ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8 invisible pointer-events-none"}`}
                 >
                   <h1 className="font-black text-black tracking-tight leading-[1.1] text-[32px] sm:text-[48px] lg:text-[60px] xl:text-[70px]">
                     {slide.title}
@@ -174,7 +174,7 @@ export default function Hero() {
               {SLIDES.map((slide, i) => (
                 <div
                   key={i}
-                  className={`absolute inset-0 transition-all duration-[1000ms] ease-in-out ${(i === index) ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+                  className={`absolute inset-0 transition-all duration-[1000ms] ease-in-out ${(i === index) ? "opacity-100 scale-100" : "opacity-0 scale-95 invisible pointer-events-none"}`}
                 >
                   {slide.images.length === 1 ? (
                     <Image
