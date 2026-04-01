@@ -1,4 +1,5 @@
 "use client";
+// Build Fix: Ensuring Vercel picks up the new reviewId prop interface.
 
 import React, { useState } from "react";
 import { AlertTriangle, X, Loader2, Send } from "lucide-react";

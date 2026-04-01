@@ -4,17 +4,18 @@ const Deal = require('../models/Deal');
 
 exports.submitReport = async (req, res, next) => {
   try {
-    const { product_id, vendor_id, reason, details } = req.body;
+    const { product_id, vendor_id, review_id, reason, details } = req.body;
     const reporter_id = req.user.id;
 
-    if (!product_id && !vendor_id) {
-      return res.status(400).json({ success: false, message: 'Either product or vendor must be reported' });
+    if (!product_id && !vendor_id && !review_id) {
+      return res.status(400).json({ success: false, message: 'Must provide a product, vendor, or review to report' });
     }
 
     const report = await Report.create({
       reporter_id,
       product_id: product_id || null,
       vendor_id: vendor_id || null,
+      review_id: review_id || null,
       reason,
       details: details || null
     });
@@ -31,7 +32,8 @@ exports.getReports = async (req, res, next) => {
       include: [
         { model: User, as: 'Reporter', attributes: ['id', 'name', 'email'] },
         { model: Deal, as: 'Product', attributes: ['id', 'title', 'userId'] },
-        { model: User, as: 'Vendor', attributes: ['id', 'name', 'email'] }
+        { model: User, as: 'Vendor', attributes: ['id', 'name', 'email'] },
+        { model: require('../models/Review'), as: 'ReportedReview', attributes: ['id', 'comment', 'rating', 'vendor_id'] }
       ],
       order: [['createdAt', 'DESC']]
     });

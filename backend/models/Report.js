@@ -41,6 +41,14 @@ const Report = sequelize.define('Report', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  review_id: {
+    type: DataTypes.BIGINT,
+    allowNull: true,
+    references: {
+      model: 'reviews',
+      key: 'id'
+    }
+  },
   status: {
     type: DataTypes.ENUM('pending', 'resolved', 'dismissed'),
     defaultValue: 'pending',
@@ -50,8 +58,11 @@ const Report = sequelize.define('Report', {
   timestamps: true,
 });
 
+const Review = require('./Review');
+
 Report.belongsTo(User, { as: 'Reporter', foreignKey: 'reporter_id', onDelete: 'CASCADE' });
 Report.belongsTo(Deal, { as: 'Product', foreignKey: 'product_id', onDelete: 'CASCADE' });
 Report.belongsTo(User, { as: 'Vendor', foreignKey: 'vendor_id', onDelete: 'CASCADE' });
+Report.belongsTo(Review, { as: 'ReportedReview', foreignKey: 'review_id', onDelete: 'CASCADE' });
 
 module.exports = Report;
