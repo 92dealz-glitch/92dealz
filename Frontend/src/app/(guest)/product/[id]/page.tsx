@@ -287,8 +287,8 @@ export default function ProductPage({ params }: Props) {
           <section className="lg:col-start-1 rounded-lg border-2 border-orange-300 bg-white p-4 sm:p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h1 className="text-2xl font-extrabold text-orange-600">{product.title}</h1>
-                <p className="text-gray-700 mt-2">{product.desc}</p>
+                <h1 className="text-2xl font-extrabold text-orange-600 break-words leading-tight">{product.title}</h1>
+                <p className="text-gray-700 mt-2 line-clamp-3">{product.desc}</p>
               </div>
               <div className="flex items-center gap-3">
                <button 
@@ -367,29 +367,17 @@ export default function ProductPage({ params }: Props) {
           <section className="lg:col-start-1 space-y-6">
             <div className="rounded-lg border border-orange-200 bg-white p-4">
               <div className="border-b pb-3">
-                <div className="sm:hidden">
-                  <label className="sr-only">Select section</label>
-                  <select
-                    value={activeTab}
-                    onChange={(e) => setActiveTab(e.target.value as any)}
-                    className="w-full rounded-md border-gray-200 bg-white px-3 py-2 text-sm"
-                  >
-                    <option value="description">PRODUCT DESCRIPTION</option>
-                    <option value="specs">SPECIFICATIONS</option>
-                  </select>
-                </div>
-
-                <div className="hidden sm:flex gap-6">
+                <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-1 scrollbar-hide">
                   <button
                     onClick={() => setActiveTab('description')}
-                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'description' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
+                    className={`pb-2 font-bold text-xs sm:text-sm whitespace-nowrap transition-all ${activeTab === 'description' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500'}`}
                   >
                     PRODUCT DESCRIPTION
                   </button>
 
                   <button
                     onClick={() => setActiveTab('specs')}
-                    className={`pb-2 font-semibold whitespace-nowrap ${activeTab === 'specs' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-800'}`}
+                    className={`pb-2 font-bold text-xs sm:text-sm whitespace-nowrap transition-all ${activeTab === 'specs' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500'}`}
                   >
                     SPECIFICATIONS
                   </button>

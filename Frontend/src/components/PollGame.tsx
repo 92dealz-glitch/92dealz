@@ -70,7 +70,10 @@ export default function PollGame() {
           <h2 className="text-[32px] font-bold text-gray-900 mb-4">Poll Completed!</h2>
           <p className="text-gray-600 mb-8">{message || "You've already played this week. Come back next week for fresh options!"}</p>
           <button 
-            onClick={() => router.push("/")}
+            onClick={() => {
+              router.push("/");
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             className="bg-[#f45c03] text-white px-8 py-3 rounded-full font-bold hover:bg-[#f45c03] transition-all"
           >
             Back to Home

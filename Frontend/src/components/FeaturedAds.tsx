@@ -108,13 +108,13 @@ export default function FeaturedAds() {
                 </p>
 
                 {/* RATING */}
-                <div className="flex items-center gap-1 mb-6">
+                <div className="flex items-center gap-1 mb-6 text-yellow-400">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i} className="text-xl">
                       {i < Math.floor(it.rating || 5) ? '★' : '☆'}
                     </span>
                   ))}
-                  {it.rating > 0 && <span className="ml-2 font-bold">({Number(it.rating).toFixed(1)})</span>}
+                  {it.rating > 0 && <span className="ml-2 font-bold text-white">({Number(it.rating).toFixed(1)})</span>}
                 </div>
 
                 <div className="flex items-center justify-between mt-auto border-t border-white/20 pt-4">
