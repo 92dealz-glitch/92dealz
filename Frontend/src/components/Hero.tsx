@@ -52,7 +52,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative bg-white overflow-hidden overflow-x-hidden min-h-[620px] lg:min-h-0">
+    <section className="relative bg-white overflow-x-hidden min-h-[620px] lg:min-h-0">
 
       {/* PERMANENT FAINTED BACKGROUND */}
       <div
@@ -84,23 +84,23 @@ export default function Hero() {
                     className="object-contain"
                   />
                 ) : (
-                  <div className="relative w-full flex justify-center items-end px-4 overflow-visible">
-                    <div className="relative w-1/2 h-[550px] z-20 -mr-24">
+                  <div className="relative w-full h-[800px] flex justify-center items-end overflow-visible">
+                    <div className="absolute left-[-10%] bottom-0 w-[80%] h-full z-20 translate-x-[20%] transition-transform">
                       <Image
                         src={slide.images[0]}
                         alt="Woman"
                         fill
                         priority={true}
-                        className="object-contain object-bottom"
+                        className="object-contain object-bottom scale-[1.5]"
                       />
                     </div>
-                    <div className="relative w-1/2 h-[550px] z-10">
+                    <div className="absolute right-[-10%] bottom-0 w-[80%] h-full z-10 translate-x-[-20%] transition-transform">
                       <Image
                         src={slide.images[1]}
                         alt="Man"
                         fill
                         priority={true}
-                        className="object-contain object-bottom"
+                        className="object-contain object-bottom scale-[1.5]"
                       />
                     </div>
                   </div>
@@ -189,7 +189,7 @@ export default function Hero() {
                   ) : (
                     <div className="relative w-full h-full flex justify-center items-end overflow-visible">
                       <div className="relative w-full h-full flex items-end justify-center overflow-visible">
-                        <div className="relative w-1/2 h-[165%] -mr-56 z-20">
+                        <div className="relative w-[70%] h-[250%] -mr-[40%] z-20">
                            <Image
                             src={slide.images[0]}
                             alt="Woman"
@@ -198,7 +198,7 @@ export default function Hero() {
                             className="object-contain object-bottom"
                           />
                         </div>
-                        <div className="relative w-1/2 h-[165%] z-10">
+                        <div className="relative w-[70%] h-[250%] z-10">
                           <Image
                             src={slide.images[1]}
                             alt="Man"
