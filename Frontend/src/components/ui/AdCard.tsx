@@ -91,7 +91,9 @@ export default function AdCard({ item, className = "" }: Props) {
             )}
           </div>
 
-          <div className="text-xs text-gray-500 font-bold bg-gray-50 px-2 py-0.5 rounded">{item.condition ?? "Brand New"}</div>
+          <div className="text-[10px] sm:text-xs text-gray-500 font-bold bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] sm:max-w-none">
+            {item.condition === "Brand New" ? "New" : (item.condition ?? "New")}
+          </div>
         </div>
 
         <div className="mt-2 flex items-center justify-between text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">

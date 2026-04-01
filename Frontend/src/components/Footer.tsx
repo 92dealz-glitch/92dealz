@@ -53,9 +53,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-center md:items-end col-span-2 md:col-span-1">
             <h5 className="text-sm font-semibold mb-4">Follow us on</h5>
-                  <div className="flex items-center gap-3 mb-6 justify-center md:justify-end">
+                  <div className="flex flex-wrap items-center gap-3 mb-6 justify-center md:justify-end">
                     {/* Social SVG icons */}
                     <Link
                       href="#"
@@ -110,8 +110,7 @@ export default function Footer() {
                     </Link>
                   </div>
 
-            {/* Logo + tagline */}
-            <div className="text-center md:text-right">
+            <div className="text-center md:text-right mt-4 md:mt-0">
               <div className="flex flex-col items-center md:items-end gap-2">
                 <Image
                   src="/234dealslogo.svg"
@@ -123,7 +122,7 @@ export default function Footer() {
                 <div className="text-sm font-semibold text-gray-800">
                   234Deals
                 </div>
-                <div className="text-xs text-gray-600 italic">
+                <div className="text-sm text-gray-800 font-extrabold italic">
                   The Marketplace By Us For Us
                 </div>
               </div>

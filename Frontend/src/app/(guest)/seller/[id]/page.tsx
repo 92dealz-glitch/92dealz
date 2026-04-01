@@ -209,7 +209,7 @@ export default function SellerPage({ params }: Props) {
             boxShadow: "0 1px 3px rgba(0,0,0,0.07)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 20 }}>
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-5 text-center md:text-left">
             {/* Avatar */}
             <div
               style={{
@@ -242,27 +242,9 @@ export default function SellerPage({ params }: Props) {
 
             {/* Info */}
             <div style={{ flex: 1 }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                  gap: 8,
-                }}
-              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <div>
-                  <h1
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 800,
-                      color: "#f97316",
-                      margin: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                  >
+                  <h1 className="text-2xl font-extrabold text-orange-600 flex items-center justify-center md:justify-start gap-2 m-0">
                     {seller.name}
                     <span
                       style={{
@@ -280,20 +262,13 @@ export default function SellerPage({ params }: Props) {
                       ✓
                     </span>
                   </h1>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      marginTop: 6,
-                    }}
-                  >
+                  <div className="flex items-center justify-center md:justify-start gap-1 mt-1.5">
                     <StarRating rating={seller.rating} />
-                    <span style={{ color: "#6b7280", fontSize: 13 }}>
+                    <span className="text-gray-500 text-xs sm:text-sm">
                       {seller.rating}
                     </span>
                   </div>
-                  <div style={{ marginTop: 6 }}>
+                  <div className="flex justify-center md:justify-start mt-2">
                     <span
                       style={{
                         background: "#dcfce7",
@@ -307,16 +282,7 @@ export default function SellerPage({ params }: Props) {
                       Online
                     </span>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      marginTop: 6,
-                      color: "#6b7280",
-                      fontSize: 13,
-                    }}
-                  >
+                  <div className="flex items-center justify-center md:justify-start gap-1 mt-1.5 text-gray-500 text-xs sm:text-sm">
                     <MapPinIcon />
                     <span>{seller.location}</span>
                   </div>
@@ -327,14 +293,7 @@ export default function SellerPage({ params }: Props) {
         </div>
 
         {/* Main grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 340px",
-            gap: 16,
-            alignItems: "start",
-          }}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
           {/* Left column */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {/* About (full width) */}
@@ -390,13 +349,7 @@ export default function SellerPage({ params }: Props) {
               <h2 style={{ fontWeight: 700, fontSize: 17, margin: "0 0 16px" }}>
                 Active Listing ({seller.totalAds})
               </h2>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: 14,
-                }}
-              >
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {listings.map((l) => (
                   <Link
                     key={l.id}
@@ -673,74 +626,29 @@ export default function SellerPage({ params }: Props) {
               <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 16px" }}>
                 Get in touch with {seller.name} for enquiries or offers.
               </p>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 10 }}
-              >
-                {seller.phone && (
-                  <>
-                    <button
-                      onClick={() => window.location.href = `tel:${seller.phone}`}
-                      style={{
-                        background: "#f97316",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 8,
-                        padding: "12px",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                      }}
-                    >
-                      <PhoneIcon /> Call Seller
-                    </button>
-                    <button
-                      onClick={() => window.open(`https://wa.me/${seller.phone.replace(/\D/g, '')}`, '_blank')}
-                      style={{
-                        background: "#22c55e",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 8,
-                        padding: "12px",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                      }}
-                    >
-                      <WAIcon /> Whatsapp
-                    </button>
-                  </>
-                )}
-                <Link href={`/messages?userId=${seller.id}`} className="w-full">
-                  <button
-                    style={{
-                      background: "#fff",
-                      color: "#374151",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 8,
-                      padding: "12px",
-                      fontWeight: 500,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      width: "100%",
-                    }}
-                  >
-                    <ChatIcon /> Chat Seller
-                  </button>
-                </Link>
-                {/* Email hidden per request */}
-              </div>
+                  <div className="flex flex-col gap-2 mt-4">
+                    {seller.phone && (
+                      <>
+                        <button
+                          onClick={() => window.location.href = `tel:${seller.phone}`}
+                          className="w-full bg-[#f97316] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-orange-700 transition"
+                        >
+                          <PhoneIcon /> Call Seller
+                        </button>
+                        <button
+                          onClick={() => window.open(`https://wa.me/${seller.phone.replace(/\D/g, '')}`, '_blank')}
+                          className="w-full bg-[#22c55e] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-green-700 transition"
+                        >
+                          <WAIcon /> WhatsApp
+                        </button>
+                      </>
+                    )}
+                    <Link href={`/messages?userId=${seller.id}`} className="w-full">
+                      <button className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition">
+                        <ChatIcon /> Chat Seller
+                      </button>
+                    </Link>
+                  </div>
               <button
                 onClick={() => setShowReportModal(true)}
                 style={{
