@@ -7,12 +7,13 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
 import ReportModal from "@/components/ReportModal";
 import { useAlert } from "@/context/AlertContext";
+import { useFavorites } from "@/context/FavoritesProvider";
 
 type Props = {
   params: Promise<{ id: string }>
@@ -22,6 +23,8 @@ export default function ProductPage({ params }: Props) {
   // Unwrap params using use()
   const { id } = use(params);
   const { showAlert } = useAlert();
+  const { isFavorite, toggle } = useFavorites();
+  const fav = isFavorite(id);
   const router = useRouter();
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
@@ -288,8 +291,26 @@ export default function ProductPage({ params }: Props) {
                 <p className="text-gray-700 mt-2">{product.desc}</p>
               </div>
               <div className="flex items-center gap-3">
-                <button className="w-9 h-9 rounded-md border border-gray-200 flex items-center justify-center">♡</button>
-                <button className="w-9 h-9 rounded-md border border-gray-200 flex items-center justify-center">⤴</button>
+               <button 
+                 onClick={(e) => {
+                    e.preventDefault();
+                    toggle({
+                      id: product.id,
+                      title: product.title,
+                      price: product.price,
+                      img: sampleImages[selected] || sampleImages[0],
+                      desc: product.desc,
+                      location: product.location,
+                      likes: product.likes,
+                    });
+                 }}
+                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200 hover:bg-gray-50 transition-colors"
+               >
+                 <Heart className={`w-5 h-5 ${fav ? 'text-red-500 fill-red-500' : 'text-gray-500'}`} />
+                 <span className={`text-sm font-semibold ${fav ? 'text-red-500' : 'text-gray-700'}`}>
+                   {fav ? 'Saved' : 'Save'}
+                 </span>
+               </button>
               </div>
             </div>
 

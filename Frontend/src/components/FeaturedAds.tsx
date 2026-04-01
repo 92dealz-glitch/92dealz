@@ -20,6 +20,7 @@ export default function FeaturedAds() {
           views: d.clicks || 0,
           rating: Number(d.rating || 0),
           condition: d.condition || "Featured",
+          isVerified: d.is_verified || d.User?.is_verified || false,
         }));
         setFeatured(data);
       } catch (err) {

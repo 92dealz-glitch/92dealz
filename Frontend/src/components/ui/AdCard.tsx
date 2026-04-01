@@ -19,6 +19,7 @@ export type AdItem = {
   rating?: number;
   condition?: string;
   views?: number;
+  isVerified?: boolean;
 };
 
 type Props = {
@@ -47,6 +48,12 @@ export default function AdCard({ item, className = "" }: Props) {
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
           ) : null}
+
+          {item.isVerified && (
+            <div className="absolute top-2 left-2 z-20 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm flex items-center gap-1">
+              ✓ Verified
+            </div>
+          )}
 
           {/* Heart button: positioned top-right over the image */}
           <button

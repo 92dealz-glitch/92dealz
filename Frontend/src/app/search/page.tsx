@@ -41,6 +41,7 @@ export default async function SearchPage({
     location: l.location || l.city || "Nigeria",
     condition: l.condition || "Brand New",
     rating: l.rating,
+    isVerified: l.is_verified || l.User?.is_verified || false,
   }));
 
   return (
