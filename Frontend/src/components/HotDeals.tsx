@@ -216,15 +216,15 @@ export default function HotDeals() {
                   </svg>
                 </div>
 
-                {/* LOCATION */}
-                <div className="mt-3 flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1.5 text-gray-600">
+                {/* LOCATION & CONDITION */}
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-y-2 text-sm">
+                  <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0">
                     <span>📍</span>
-                    <span>{item.location}</span>
+                    <span className="truncate">{item.location}</span>
                   </div>
                   {item.newLabel && (
-                    <span className="font-medium text-gray-700">
-                      {item.newLabel}
+                    <span className="font-bold text-[#f45c03] bg-[#f45c03]/10 px-2 py-0.5 rounded-md shrink-0">
+                      {item.newLabel === "Brand New" ? "New" : (item.newLabel ?? "New")}
                     </span>
                   )}
                 </div>

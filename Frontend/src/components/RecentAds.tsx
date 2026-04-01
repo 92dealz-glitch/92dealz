@@ -31,7 +31,7 @@ export default function RecentAds() {
   return (
     <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-8">
       <h3 className="text-3xl font-extrabold text-[#f45c03] mb-6">Recent Ads</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-[1fr] items-stretch">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[1fr] items-stretch">
         {list.map((it) => (
           <AdCard key={it.id} item={it} />
         ))}
