@@ -10,6 +10,7 @@ interface ReportModalProps {
   onClose: () => void;
   productId?: number;
   vendorId?: number;
+  reviewId?: number;
   itemName: string;
 }
 
@@ -23,7 +24,7 @@ const REASONS = [
   "Other"
 ];
 
-export default function ReportModal({ isOpen, onClose, productId, vendorId, itemName }: ReportModalProps) {
+export default function ReportModal({ isOpen, onClose, productId, vendorId, reviewId, itemName }: ReportModalProps) {
   const { showAlert } = useAlert();
   const [reason, setReason] = useState("");
   const [details, setDetails] = useState("");
@@ -40,6 +41,7 @@ export default function ReportModal({ isOpen, onClose, productId, vendorId, item
       const res = await submitReport({
         product_id: productId,
         vendor_id: vendorId,
+        review_id: reviewId,
         reason,
         details
       });
@@ -67,7 +69,7 @@ export default function ReportModal({ isOpen, onClose, productId, vendorId, item
             <div className="bg-orange-100 p-2 rounded-lg text-orange-600">
                 <AlertTriangle size={20} />
             </div>
-            <h3 className="font-bold text-zinc-900">Report {productId ? "Product" : "Vendor"}</h3>
+            <h3 className="font-bold text-zinc-900">Report {productId ? "Product" : reviewId ? "Review" : "Vendor"}</h3>
           </div>
           <button onClick={onClose} className="text-zinc-400 hover:text-zinc-600 transition-colors">
             <X size={20} />

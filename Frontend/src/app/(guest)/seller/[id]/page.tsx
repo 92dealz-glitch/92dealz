@@ -15,6 +15,8 @@ export default function SellerPage({ params }: Props) {
   const [listings, setListings] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReviewId, setReportReviewId] = useState<number | undefined>(undefined);
+  const [reportItemName, setReportItemName] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -574,8 +576,30 @@ export default function SellerPage({ params }: Props) {
                             </span>
                           ))}
                         </div>
-                        <div style={{ fontSize: 12, color: "#9ca3af" }}>
-                          {new Date(r.createdAt).toLocaleDateString()} by {r.Reviewer?.name || "Anonymous User"}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                          <div style={{ fontSize: 12, color: "#9ca3af" }}>
+                            {new Date(r.createdAt).toLocaleDateString()} by {r.Reviewer?.name || "Anonymous User"}
+                          </div>
+                          <button 
+                            onClick={() => {
+                              setReportReviewId(r.id);
+                              setReportItemName(`Review by ${r.Reviewer?.name || 'User'}`);
+                              setShowReportModal(true);
+                            }}
+                            style={{ 
+                              fontSize: 11, 
+                              color: "#ef4444", 
+                              background: "none", 
+                              border: "none", 
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 2,
+                              fontWeight: 600
+                            }}
+                          >
+                            🚩 Report
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -883,9 +907,13 @@ export default function SellerPage({ params }: Props) {
         </div>
         <ReportModal
           isOpen={showReportModal}
-          onClose={() => setShowReportModal(false)}
-          vendorId={seller.id}
-          itemName={seller.name}
+          onClose={() => {
+            setShowReportModal(false);
+            setReportReviewId(undefined);
+          }}
+          vendorId={reportReviewId ? undefined : seller?.id}
+          reviewId={reportReviewId}
+          itemName={reportItemName || (seller?.name || "Seller")}
         />
       </main>
 

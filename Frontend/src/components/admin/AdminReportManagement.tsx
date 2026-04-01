@@ -117,6 +117,19 @@ export default function AdminReportManagement() {
                         </div>
                         <div className="text-zinc-400 text-[10px]">ID: #{report.Product.id}</div>
                       </div>
+                    ) : report.ReportedReview ? (
+                      <div>
+                         <div className="font-bold text-rose-600 text-sm flex items-center gap-1.5">
+                          Review (⭐{report.ReportedReview.rating})
+                          <Link href={`/seller/${report.ReportedReview.vendor_id}`} target="_blank" className="text-zinc-400 hover:text-rose-500">
+                            <ExternalLink size={14} />
+                          </Link>
+                        </div>
+                        <div className="text-zinc-600 text-[11px] italic mt-1 line-clamp-2 bg-zinc-50 p-1.5 rounded border border-zinc-100">
+                           "{report.ReportedReview.comment}"
+                        </div>
+                        <div className="text-zinc-400 text-[10px] mt-0.5">ID: #{report.ReportedReview.id}</div>
+                      </div>
                     ) : (
                       <div>
                         <div className="font-bold text-purple-600 text-sm flex items-center gap-1.5">

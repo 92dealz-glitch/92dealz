@@ -186,7 +186,7 @@ export async function deleteDealAdmin(id: number, reason?: string) {
   );
 }
 
-export async function submitReport(data: { product_id?: number; vendor_id?: number; reason: string; details: string }) {
+export async function submitReport(data: { product_id?: number; vendor_id?: number; review_id?: number; reason: string; details: string }) {
   return apiFetch<{ success: boolean; data: any }>(
     "/users/reports",
     { method: "POST", body: data, auth: true }
