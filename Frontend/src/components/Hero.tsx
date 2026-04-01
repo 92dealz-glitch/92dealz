@@ -84,8 +84,8 @@ export default function Hero() {
                     className="object-contain"
                   />
                 ) : (
-                  <div className="relative w-full h-[420px] flex justify-center items-end overflow-visible">
-                    <div className="absolute left-0 bottom-0 w-[65%] h-full z-20 translate-x-[15%] transition-transform">
+                  <div className="relative w-full h-[500px] flex justify-center items-end overflow-visible">
+                    <div className="absolute left-0 bottom-0 w-[78%] h-full z-20 translate-x-[12%] transition-transform">
                       <Image
                         src={slide.images[0]}
                         alt="Woman"
@@ -94,7 +94,7 @@ export default function Hero() {
                         className="object-contain object-bottom"
                       />
                     </div>
-                    <div className="absolute right-0 bottom-0 w-[65%] h-full z-10 translate-x-[-15%] transition-transform">
+                    <div className="absolute right-0 bottom-0 w-[78%] h-full z-10 translate-x-[-12%] transition-transform">
                       <Image
                         src={slide.images[1]}
                         alt="Man"
