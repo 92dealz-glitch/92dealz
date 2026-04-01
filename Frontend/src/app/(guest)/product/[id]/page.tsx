@@ -147,7 +147,7 @@ export default function ProductPage({ params }: Props) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; itemName: string }>({ itemName: "" });
+  const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; reviewId?: number; itemName: string }>({ itemName: "" });
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
@@ -637,9 +637,26 @@ export default function ProductPage({ params }: Props) {
                       <div className="font-medium text-gray-800">{r.comment}</div>
                       <div className="text-yellow-400 mt-1 text-sm">
                          {Array.from({length: 5}).map((_, i) => (<span key={i}>{i < Math.round(r.rating) ? '★' : '☆'}</span>))}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-2">
-                        {new Date(r.createdAt).toLocaleDateString()} by <span className="font-semibold">{r.Reviewer?.name || 'Anonymous User'}</span>
+                        <p className="text-gray-600 mt-2 text-sm">{r.comment}</p>
+                        <div className="flex items-center justify-between mt-3">
+                          <div className="text-xs text-gray-400">
+                            {new Date(r.createdAt).toLocaleDateString()} by {r.Reviewer?.name || "Anonymous User"}
+                          </div>
+                          <button 
+                            onClick={() => {
+                              setReportTarget({ 
+                                reviewId: r.id, 
+                                itemName: `Review by ${r.Reviewer?.name || 'User'}`,
+                                vendorId: undefined, // Clear other targets
+                                productId: undefined
+                              });
+                              setShowReportModal(true);
+                            }}
+                            className="text-[10px] text-rose-500 font-bold hover:underline flex items-center gap-1"
+                          >
+                            🚩 Report
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -697,9 +714,12 @@ export default function ProductPage({ params }: Props) {
         )}
         <ReportModal 
           isOpen={showReportModal} 
-          onClose={() => setShowReportModal(false)} 
+          onClose={() => {
+            setShowReportModal(false);
+          }} 
           productId={reportTarget.productId}
           vendorId={reportTarget.vendorId}
+          reviewId={reportTarget.reviewId}
           itemName={reportTarget.itemName}
         />
       </main>

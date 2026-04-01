@@ -41,13 +41,13 @@ export default function Hero() {
   return (
     <section className="relative bg-white overflow-hidden overflow-x-hidden min-h-[620px] lg:min-h-0">
       
-      {/* PERMANENT FAINTED BACKGROUND - Cloudinary Source */}
+      {/* PERMANENT FAINTED BACKGROUND - Resized for better UI balance */}
       <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-[0.12] sm:opacity-[0.15]"
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.15] sm:opacity-[0.18]"
         style={{
           backgroundImage: "url('https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037719/mapHeroImagebackground_foq9rd.png')",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
+          backgroundPosition: "center 20%",
+          backgroundSize: "65% auto",
           backgroundRepeat: "no-repeat"
         }}
       />
@@ -66,7 +66,7 @@ export default function Hero() {
           {HERO_IMAGES.map((img, i) => (
             <div 
               key={i}
-              className={`absolute inset-0 transition-all duration-1000 ease-in-out ${(i === index && loadedIndices.includes(i)) ? "opacity-100 scale-105" : "opacity-0 scale-95"}`}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out will-change-[opacity,transform] ${(i === index && loadedIndices.includes(i)) ? "opacity-100 scale-105" : "opacity-0 scale-100"}`}
             >
               <Image
                 src={img}
@@ -74,7 +74,7 @@ export default function Hero() {
                 width={460}
                 height={460}
                 priority={i === 0}
-                className="mx-auto object-contain opacity-95"
+                className="mx-auto object-contain opacity-95 transition-transform duration-1000"
               />
             </div>
           ))}
@@ -174,7 +174,7 @@ export default function Hero() {
                {HERO_IMAGES.map((img, i) => (
                   <div 
                     key={i}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${(i === index && loadedIndices.includes(i)) ? "opacity-100" : "opacity-0"}`}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out will-change-opacity ${(i === index && loadedIndices.includes(i)) ? "opacity-100" : "opacity-0"}`}
                   >
                     <Image
                       src={img}
