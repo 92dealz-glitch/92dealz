@@ -1,31 +1,66 @@
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import CategoryBar from "./CategoryBar";
 
+const HERO_IMAGES = [
+  "/images/heroimage3.png",
+  "/images/heroimage4.png",
+  "/images/heroimage5.png",
+  "/images/heroimage6.png",
+];
+
 export default function Hero() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section className="relative bg-white overflow-hidden overflow-x-hidden">
-      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-12 pt-16 lg:pt-20 pb-12 lg:pb-16">
+    <section className="relative bg-white overflow-hidden overflow-x-hidden min-h-[600px] lg:min-h-0">
+      
+      {/* PERMANENT FAINTED BACKGROUND */}
+      <div 
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.07]"
+        style={{
+          backgroundImage: "url('/images/mapHeroImagebackground.png')",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat"
+        }}
+      />
 
-        {/* MOBILE BACKGROUND IMAGE */}
-        <div className="absolute inset-0 flex justify-center lg:hidden pointer-events-none">
-          <Image
-            src="/images/heroimagenew.png"
-            alt="Happy shopper"
-            width={460}
-            height={460}
-            priority
-            className="-translate-y-6 lg:hidden object-contain"
-          />
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 pt-16 lg:pt-24 pb-12 lg:pb-16 mt-6 lg:mt-0">
 
-          {/* Modern bottom-half fade with blur */}
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white via-white/80 to-transparent backdrop-blur-[2px] z-10" />
+        {/* MOBILE CAROUSEL */}
+        <div className="absolute inset-0 flex justify-center lg:hidden pointer-events-none -translate-y-8">
+          {HERO_IMAGES.map((img, i) => (
+            <div 
+              key={i}
+              className={`absolute inset-0 transition-all duration-1000 ease-in-out ${i === index ? "opacity-100 scale-105" : "opacity-0 scale-95"}`}
+            >
+              <Image
+                src={img}
+                alt={`Hero ${i + 1}`}
+                width={460}
+                height={460}
+                priority
+                className="mx-auto object-contain opacity-90"
+              />
+            </div>
+          ))}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white via-white/80 to-transparent backdrop-blur-[1px] z-10" />
         </div>
 
         {/* CONTENT */}
         <div className="relative flex flex-col lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 min-h-[500px] lg:min-h-[520px]">
           
-          <div className="relative z-10 max-w-[680px] mx-auto text-center lg:mx-0 lg:text-left order-2 lg:order-1 pt-80 sm:pt-96 lg:pt-0">
+          <div className="relative z-20 max-w-[680px] mx-auto text-center lg:mx-0 lg:text-left order-2 lg:order-1 pt-80 sm:pt-96 lg:pt-0">
             {/* HEADING */}
             <h1
               className="
@@ -33,24 +68,23 @@ export default function Hero() {
                 text-black
                 tracking-tight
                 leading-[1.1]
-                text-[30px]
-                sm:text-[42px]
-                lg:text-[64px]
-                xl:text-[72px]
+                text-[32px]
+                sm:text-[48px]
+                lg:text-[68px]
+                xl:text-[76px]
               "
             >
-              {/* Desktop: forced line breaks with gradient */}
-              <span className="hidden lg:block">
+              <span className="hidden lg:block drop-shadow-sm">
                 <span className="sm:whitespace-nowrap">
                   Connecting{" "}
-                  <span className="bg-gradient-to-r from-[#3B82F6] to-[#2563EB] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#FF6B35] to-[#f97316] bg-clip-text text-transparent">
                     Smart
                   </span>
                 </span>
                 <br />
                 <span className="sm:whitespace-nowrap">
                   Buyers and{" "}
-                  <span className="bg-gradient-to-r from-[#3B82F6] to-[#2563EB] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#FF6B35] to-[#f97316] bg-clip-text text-transparent">
                     Sellers
                   </span>
                 </span>
@@ -58,80 +92,85 @@ export default function Hero() {
                 Across Nigeria
               </span>
 
-              {/* Mobile & tablet: all black text, first line together */}
               <span className="block lg:hidden">
-                Connecting smart buyers and Sellers Across Nigeria
+                Connecting smart buyers and Sellers <br/>
+                <span className="text-[#FF6B35]">Across Nigeria</span>
               </span>
             </h1>
 
             {/* SUBTEXT */}
-            <p className="mt-6 max-w-[540px] mx-auto lg:mx-0 text-[15px] sm:text-[16px] lg:text-[17px] leading-[1.7] text-black">
+            <p className="mt-8 max-w-[540px] mx-auto lg:mx-0 text-[15px] sm:text-[17px] lg:text-[19px] font-medium leading-[1.6] text-zinc-900/80">
               Buy, Sell & Discover Everything You Need — a convenient space where
               buyers and sellers meet, trade safely, and find value in every
               category with ease.
             </p>
 
             {/* BUTTONS */}
-            <div className="mt-8 flex flex-col sm:flex-row items-center gap-3">
-
-              {/* CTA (Reduced Width on Mobile) */}
+            <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
               <Link
                 href="/vendor-dashboard/add-product"
                 className="
-                  w-auto
+                  w-full sm:w-auto
                   bg-[#FF6B35] hover:bg-[#E85A28]
-                  text-white font-semibold text-[15px]
-                  px-6 py-3.5
-                  rounded-lg
-                  shadow-md hover:shadow-lg
-                  transition-all duration-200 cursor-pointer
+                  text-white font-bold text-[16px]
+                  px-10 py-4
+                  rounded-xl
+                  shadow-[0_10px_20px_-5px_rgba(255,107,53,0.3)]
+                  hover:shadow-[0_15px_25px_-5px_rgba(255,107,53,0.4)]
+                  hover:-translate-y-0.5
+                  transition-all duration-300 cursor-pointer
                 "
               >
                 Start Selling Today!
               </Link>
 
-              {/* Arrow Button (Desktop Only) */}
               <button
                 className="
                   hidden sm:inline-flex
                   items-center justify-center
-                  w-12 h-12 rounded-full
-                  bg-[#FF6B35] hover:bg-[#E85A28]
-                  text-white
-                  transition-all duration-200
+                  w-14 h-14 rounded-full
+                  border-2 border-zinc-200
+                  bg-white hover:border-[#FF6B35]
+                  text-zinc-400 hover:text-[#FF6B35]
+                  transition-all duration-300
                   cursor-pointer group
-                  ml-0 sm:ml-2
                 "
                 aria-label="Learn more"
               >
-                <span className="text-lg group-hover:translate-x-1 transition-transform duration-200">
+                <span className="text-xl group-hover:translate-x-1 transition-transform duration-200">
                   →
                 </span>
               </button>
             </div>
           </div>
 
-          {/* DESKTOP HERO IMAGE (RIGHT SIDE) */}
-          <div className="relative w-full h-0 lg:h-[520px] pointer-events-none hidden lg:block z-0 order-1 lg:order-2">
-            <div className="relative w-full h-full overflow-hidden">
-              <Image
-                src="/images/heroimagenew.png"
-                alt="Happy shopper with shopping bags"
-                fill
-                priority
-                className="object-contain object-top"
-              />
-              {/* Subtle left-to-right gradient to blend with background behind text */}
-              <div className="absolute inset-y-0 left-0 w-[200px] bg-gradient-to-r from-white via-white/50 to-transparent pointer-events-none z-10" />
-              {/* Bottom ground merge gradient */}
-              <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10" />
+          {/* DESKTOP CAROUSEL (RIGHT SIDE) */}
+          <div className="relative w-full h-0 lg:h-[580px] pointer-events-none hidden lg:block z-0 order-1 lg:order-2">
+            <div className="relative w-full h-full overflow-visible">
+               {HERO_IMAGES.map((img, i) => (
+                  <div 
+                    key={i}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === index ? "opacity-100" : "opacity-0"}`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`Hero ${i + 1}`}
+                      fill
+                      priority
+                      className="object-contain object-top drop-shadow-2xl"
+                    />
+                  </div>
+                ))}
+              
+              {/* Refined gradient masks */}
+              <div className="absolute inset-y-0 left-0 w-[300px] bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10" />
+              <div className="absolute bottom-0 left-0 right-0 h-[150px] bg-gradient-to-t from-white via-white/60 to-transparent pointer-events-none z-10" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile-only categories bar (horizontal scroll) */}
-      <div className="lg:hidden mt-2">
+      <div className="lg:hidden mt-2 border-t border-zinc-100">
         <CategoryBar />
       </div>
 
