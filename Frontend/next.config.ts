@@ -11,12 +11,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "234deals-backend.vercel.app", pathname: "/uploads/**" },
     ],
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 };
 
 export default nextConfig;

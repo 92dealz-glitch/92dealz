@@ -536,8 +536,7 @@ export default function ProductPage({ params }: Props) {
               </div>
 
               <div className="mt-4 space-y-2">
-                <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">🔎 View Seller Profile</Link>
-                <Link href={`/seller/${product.sellerId}/listings`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded">📋 See All Ads from Seller</Link>
+                <Link href={`/seller/${product.sellerId}/listings`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded font-bold transition-all hover:bg-orange-700 shadow-sm">📋 See All Ads from Seller</Link>
                 <button 
                   onClick={() => {
                     setReportTarget({ productId: product.id, itemName: product.title });
