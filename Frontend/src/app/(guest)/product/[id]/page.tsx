@@ -147,7 +147,7 @@ export default function ProductPage({ params }: Props) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; reviewId?: number; itemName: string }>({ itemName: "" });
+  const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; reportedReviewId?: number; itemName: string }>({ itemName: "" });
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
@@ -645,7 +645,7 @@ export default function ProductPage({ params }: Props) {
                           <button 
                             onClick={() => {
                               setReportTarget({ 
-                                reviewId: r.id, 
+                                reportedReviewId: r.id, 
                                 itemName: `Review by ${r.Reviewer?.name || 'User'}`,
                                 vendorId: undefined, // Clear other targets
                                 productId: undefined
@@ -719,7 +719,7 @@ export default function ProductPage({ params }: Props) {
           }} 
           productId={reportTarget.productId}
           vendorId={reportTarget.vendorId}
-          reviewId={reportTarget.reviewId}
+          reportedReviewId={reportTarget.reportedReviewId}
           itemName={reportTarget.itemName}
         />
       </main>

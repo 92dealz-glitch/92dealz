@@ -15,7 +15,7 @@ export default function SellerPage({ params }: Props) {
   const [listings, setListings] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [reportReviewId, setReportReviewId] = useState<number | undefined>(undefined);
+  const [reportedReviewId, setReportedReviewId] = useState<number | undefined>(undefined);
   const [reportItemName, setReportItemName] = useState("");
 
   useEffect(() => {
@@ -582,7 +582,7 @@ export default function SellerPage({ params }: Props) {
                           </div>
                           <button 
                             onClick={() => {
-                              setReportReviewId(r.id);
+                              setReportedReviewId(r.id);
                               setReportItemName(`Review by ${r.Reviewer?.name || 'User'}`);
                               setShowReportModal(true);
                             }}
@@ -909,10 +909,10 @@ export default function SellerPage({ params }: Props) {
           isOpen={showReportModal}
           onClose={() => {
             setShowReportModal(false);
-            setReportReviewId(undefined);
+            setReportedReviewId(undefined);
           }}
-          vendorId={reportReviewId ? undefined : seller?.id}
-          reviewId={reportReviewId}
+          vendorId={reportedReviewId ? undefined : seller?.id}
+          reportedReviewId={reportedReviewId}
           itemName={reportItemName || (seller?.name || "Seller")}
         />
       </main>
