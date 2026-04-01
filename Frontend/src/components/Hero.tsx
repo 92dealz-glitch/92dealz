@@ -33,7 +33,7 @@ const SLIDES = [
   {
     title: (
       <>
-        Sell <span className="text-[#f45c03]">Faster</span>, Reach <span className="text-[#f45c03]">More</span> People
+        Sell <span className="text-[#f45c03]">Faster</span> Reach <span className="text-[#f45c03]">More</span> People
       </>
     ),
     subheading: "List your products in minutes, connect with real buyers, and grow your business with tools designed to make selling smooth and secure.",
@@ -65,7 +65,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 pt-16 lg:pt-24 pb-12 lg:pb-16 mt-6 lg:mt-0">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-16 lg:pt-24 pb-12 lg:pb-16 mt-6 lg:mt-0">
 
         {/* MOBILE CAROUSEL */}
         <div className="absolute inset-0 flex justify-center lg:hidden pointer-events-none -translate-y-8">
@@ -84,20 +84,20 @@ export default function Hero() {
                     className="object-contain"
                   />
                 ) : (
-                  <div className="relative w-72 h-72">
-                    <Image
-                      src={slide.images[1]}
-                      alt="Back Image"
-                      width={280}
-                      height={280}
-                      className="absolute -left-10 top-4 object-contain opacity-50 scale-90"
-                    />
+                  <div className="relative w-full flex justify-center items-end gap-0">
                     <Image
                       src={slide.images[0]}
-                      alt="Front Image"
-                      width={280}
-                      height={280}
-                      className="absolute left-0 top-0 object-contain z-10"
+                      alt="Person 1"
+                      width={220}
+                      height={220}
+                      className="object-contain translate-x-4"
+                    />
+                    <Image
+                      src={slide.images[1]}
+                      alt="Person 2"
+                      width={220}
+                      height={220}
+                      className="object-contain -translate-x-4 z-10"
                     />
                   </div>
                 )}
@@ -111,21 +111,24 @@ export default function Hero() {
         <div className="relative flex flex-col lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 min-h-[500px] lg:min-h-[520px]">
 
           <div className="relative z-20 max-w-[680px] mx-auto text-center lg:mx-0 lg:text-left order-2 lg:order-1 pt-80 sm:pt-96 lg:pt-0">
-            {/* HEADING with Animation */}
-            <div className="relative min-h-[140px] sm:min-h-[180px] lg:min-h-[220px]">
+            {/* HEADING with Animation - Restructured to prevent button overlap */}
+            <div className="grid grid-cols-1 grid-rows-1">
               {SLIDES.map((slide, i) => (
-                <div key={i} className={`absolute inset-0 transition-all duration-1000 ease-in-out ${(i === index) ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8 pointer-events-none"}`}>
+                <div 
+                  key={i} 
+                  className={`col-start-1 row-start-1 transition-all duration-1000 ease-in-out ${(i === index) ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8 pointer-events-none"}`}
+                >
                   <h1 className="font-black text-black tracking-tight leading-[1.1] text-[32px] sm:text-[48px] lg:text-[60px] xl:text-[70px]">
                     {slide.title}
                   </h1>
-                  <p className="mt-8 max-w-[540px] mx-auto lg:mx-0 text-[15px] sm:text-[17px] lg:text-[19px] font-medium leading-[1.6] text-zinc-900/80">
+                  <p className="mt-8 max-w-[540px] mx-auto lg:mx-0 text-[15px] sm:text-[17px] lg:text-[19px] font-medium leading-[1.6] text-zinc-900/80 line-clamp-2 md:line-clamp-3">
                     {slide.subheading}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* BUTTONS */}
+            {/* BUTTONS - Now correctly positioned below the grid stack */}
             <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
               <Link
                 href="/vendor-dashboard/add-product"
@@ -180,22 +183,24 @@ export default function Hero() {
                       className="object-contain object-top drop-shadow-2xl"
                     />
                   ) : (
-                    <div className="relative w-full h-full">
-                      <div className="absolute inset-x-0 inset-y-0 -left-20 top-10 opacity-40 scale-90 translate-x-10 filter blur-[1px]">
-                         <Image
-                          src={slide.images[1]}
-                          alt="Back Image"
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                      <div className="z-10 relative w-full h-full">
-                        <Image
-                          src={slide.images[0]}
-                          alt="Front Image"
-                          fill
-                          className="object-contain"
-                        />
+                    <div className="relative w-full h-full flex justify-center items-end">
+                      <div className="relative w-[80%] h-full flex items-end">
+                        <div className="relative w-1/2 h-[85%] -mr-16">
+                           <Image
+                            src={slide.images[0]}
+                            alt="Woman"
+                            fill
+                            className="object-contain object-bottom"
+                          />
+                        </div>
+                        <div className="relative w-1/2 h-[95%] z-10">
+                          <Image
+                            src={slide.images[1]}
+                            alt="Man"
+                            fill
+                            className="object-contain object-bottom"
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
