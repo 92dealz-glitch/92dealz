@@ -5,25 +5,20 @@ import SearchResultsClient from "@/components/SearchResultsClient";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: {
-    q?: string | string[];
-    category?: string | string[];
-    search?: string | string[];
-    userId?: string | string[];
-    [key: string]: any;
-  };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const pickFirst = (v: unknown) => (Array.isArray(v) ? v[0] : v);
-  const keys = Object.keys(searchParams || {});
+  const resolvedSearchParams = (await searchParams) || {};
+  const keys = Object.keys(resolvedSearchParams);
   
   const rawQ =
-    (pickFirst(searchParams.q) as string | undefined) ??
-    (pickFirst(searchParams.search) as string | undefined) ??
-    ("" in searchParams ? (pickFirst(searchParams[""]) as string | undefined) : undefined) ??
-    (keys.length ? (pickFirst(searchParams[keys[0]]) as string | undefined) : undefined) ??
+    (pickFirst(resolvedSearchParams.q) as string | undefined) ??
+    (pickFirst(resolvedSearchParams.search) as string | undefined) ??
+    ("" in resolvedSearchParams ? (pickFirst(resolvedSearchParams[""]) as string | undefined) : undefined) ??
+    (keys.length ? (pickFirst(resolvedSearchParams[keys[0]]) as string | undefined) : undefined) ??
     "";
-  const rawC = (pickFirst(searchParams.category) as string | undefined) ?? "";
-  const userId = (pickFirst(searchParams.userId) as string | undefined);
+  const rawC = (pickFirst(resolvedSearchParams.category) as string | undefined) ?? "";
+  const userId = (pickFirst(resolvedSearchParams.userId) as string | undefined);
 
   const qRaw = rawQ.trim();
   const cRaw = rawC.trim();
