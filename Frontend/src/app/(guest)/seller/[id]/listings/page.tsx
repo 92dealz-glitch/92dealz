@@ -107,7 +107,7 @@ export default function VendorListingsPage({ params }: Props) {
           </Link>
           <span className="text-gray-300">|</span>
           <nav className="text-gray-500 text-sm">
-            Home > Seller > <span className="text-orange-600">{seller.name}</span> > All Listings
+            Home &gt; Seller &gt; <span className="text-orange-600">{seller.name}</span> &gt; All Listings
           </nav>
         </div>
 
