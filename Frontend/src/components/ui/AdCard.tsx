@@ -34,7 +34,7 @@ export default function AdCard({ item, className = "" }: Props) {
     <Link href={`/product/${item.id}`}>
       <article
         className={
-          `relative rounded-2xl border border-zinc-100 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group ${className}`
+          `relative rounded-2xl border border-emerald-500/30 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group ${className}`
         }
         aria-label={`Ad ${item.title}`}
       >
@@ -50,7 +50,7 @@ export default function AdCard({ item, className = "" }: Props) {
           ) : null}
 
           {item.isVerified && (
-            <div className="absolute top-2 left-2 z-20 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-sm flex items-center gap-1">
+            <div className="absolute top-2 left-2 z-20 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-sm flex items-center gap-1">
               <span>✓</span>
               <span className="hidden sm:inline">Verified</span>
             </div>

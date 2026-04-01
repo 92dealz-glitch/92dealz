@@ -161,7 +161,7 @@ export default function HotDeals() {
                         className="absolute inset-0 object-cover transition-transform group-hover:scale-105"
                       />
                       {item.isVerified && (
-                        <div className="absolute top-2 left-2 z-20 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-sm flex items-center gap-1">
+                        <div className="absolute top-2 left-2 z-20 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-sm flex items-center gap-1">
                           <span>✓</span>
                           <span className="hidden sm:inline">Verified</span>
                         </div>

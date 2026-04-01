@@ -122,8 +122,8 @@ export default function Footer() {
                 <div className="text-sm font-semibold text-gray-800">
                   234Deals
                 </div>
-                <div className="text-sm text-gray-800 font-extrabold italic">
-                  The Marketplace By Us For Us
+                <div className="text-sm text-gray-800 font-extrabold italic text-center md:text-right">
+                  A Marketplace By Us For Us
                 </div>
               </div>
             </div>

@@ -10,11 +10,11 @@ interface Props {
 export default function VerifiedBadge({ className = "", size = 16, showText = false }: Props) {
   return (
     <div className={`inline-flex items-center gap-1.5 ${className}`} title="Verified Vendor">
-      <div className="bg-blue-500 text-white rounded-full p-0.5 flex items-center justify-center shadow-sm">
-        <CheckCircle2 size={size - 4} fill="white" stroke="rgb(59, 130, 246)" />
+      <div className="bg-emerald-500 text-white rounded-full p-0.5 flex items-center justify-center shadow-sm">
+        <CheckCircle2 size={size - 4} fill="white" stroke="rgb(16, 185, 129)" />
       </div>
       {showText && (
-        <span className="text-blue-600 font-black text-[11px] uppercase tracking-wider">
+        <span className="text-emerald-600 font-black text-[11px] uppercase tracking-wider">
           Verified
         </span>
       )}
