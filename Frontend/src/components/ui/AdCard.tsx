@@ -34,7 +34,7 @@ export default function AdCard({ item, className = "" }: Props) {
     <Link href={`/product/${item.id}`}>
       <article
         className={
-          `relative rounded-2xl border border-emerald-500/30 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group ${className}`
+          `relative rounded-2xl border border-emerald-500/30 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group overflow-hidden ${className}`
         }
         aria-label={`Ad ${item.title}`}
       >
@@ -83,31 +83,31 @@ export default function AdCard({ item, className = "" }: Props) {
           <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm sm:line-clamp-2 leading-tight break-words">{item.title}</h4>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-y-2">
+          <div className="flex items-center gap-1 shrink-0">
             {item.rating && item.rating > 0 ? (
               <div className="flex items-center text-yellow-400">
                 <div className="flex items-center text-lg leading-none">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className="drop-shadow-sm">{i < Math.floor(item.rating || 0) ? "★" : "☆"}</span>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <span key={i} className="drop-shadow-sm">{i <= Math.floor(item.rating || 0) ? "★" : "☆"}</span>
                   ))}
                 </div>
-                <span className="ml-1.5 text-black font-extrabold text-sm">({Number(item.rating).toFixed(1)})</span>
+                <span className="ml-1.5 text-black font-extrabold text-xs sm:text-sm">({Number(item.rating).toFixed(1)})</span>
               </div>
             ) : (
-              <span className="text-gray-400 italic text-xs">No reviews</span>
+              <span className="text-gray-400 italic text-[10px] sm:text-xs">No reviews</span>
             )}
           </div>
 
-          <div className="text-[10px] sm:text-xs text-gray-500 font-bold bg-gray-100 px-2 py-1 rounded-full break-words text-center min-w-[50px]">
+          <div className="text-[10px] sm:text-xs text-gray-500 font-bold bg-gray-100 px-2 py-1 rounded-full break-words text-center min-w-[40px] shrink-0">
             {item.condition === "Brand New" ? "New" : (item.condition ?? "New")}
           </div>
         </div>
 
-        <div className="mt-2 flex items-center justify-between text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
-          <div className="break-words max-w-[60px] sm:max-w-none">{item.location ?? "Nigeria"}</div>
-          <div className="flex items-center gap-1">
-            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span>views</span></span>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-y-2 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
+          <div className="break-all max-w-[80px] sm:max-w-none shrink">{item.location ?? "Nigeria"}</div>
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span className="hidden xs:inline">views</span></span>
           </div>
         </div>
       </article>
