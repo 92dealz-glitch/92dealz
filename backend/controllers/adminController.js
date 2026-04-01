@@ -297,7 +297,7 @@ exports.getVendors = async (req, res, next) => {
   try {
     const vendors = await User.findAll({
       where: { role: 'vendor' },
-      attributes: ['id', 'name', 'email', 'phone', 'status', 'businessName', 'createdAt'],
+      attributes: ['id', 'name', 'email', 'phone', 'status', 'businessName', 'createdAt', 'government_id_url', 'businessAddress', 'about', 'is_verified'],
       order: [['createdAt', 'DESC']]
     });
     return res.json({ success: true, data: vendors });

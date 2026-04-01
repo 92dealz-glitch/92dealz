@@ -56,3 +56,42 @@ exports.getVendorReviews = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.deleteReviewAdmin = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const review = await Review.findByPk(id);
+    if (!review) return res.status(404).json({ success: false, message: 'Review not found' });
+
+    const vendor_id = review.vendor_id;
+    const reviewer_id = review.reviewer_id;
+    
+    // Create a notification for the reviewer that their review was deleted
+    try {
+      const Notification = require('../models/Notification');
+      await Notification.create({
+        user_id: reviewer_id,
+        type: 'REVIEW_REMOVED',
+        title: 'Review Removed by Moderator',
+        message: 'Your recent review was removed by an administrator for violating our community guidelines or terms of service.',
+        link: '/'
+      });
+    } catch (err) {
+      console.error("Failed to send review removal notification", err);
+    }
+
+    await review.destroy();
+
+    // Recalculate average rating for the vendor
+    const allReviews = await Review.findAll({ where: { vendor_id } });
+    let newRating = 0;
+    if (allReviews.length > 0) {
+      newRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+    }
+    await User.update({ rating: parseFloat(newRating.toFixed(1)) }, { where: { id: vendor_id } });
+
+    return res.json({ success: true, message: 'Review deleted and vendor rating updated successfully.' });
+  } catch (err) {
+    return next(err);
+  }
+};

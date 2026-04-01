@@ -13,12 +13,17 @@ interface Vendor {
   status: 'pending' | 'active' | 'rejected' | 'suspended';
   businessName: string;
   createdAt: string;
+  businessAddress?: string;
+  government_id_url?: string;
+  is_verified?: boolean;
+  about?: string;
 }
 
 export default function VendorManagement() {
   const { showAlert, showConfirm } = useAlert();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [error, setError] = useState("");
@@ -174,6 +179,13 @@ export default function VendorManagement() {
                   <td className="px-4 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button
+                        onClick={() => setSelectedVendor(v)}
+                        className="p-2 rounded-lg transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100"
+                        title="View Details"
+                      >
+                        <Eye size={18} />
+                      </button>
+                      <button
                         onClick={() => handleStatusUpdate(v.id, v.status)}
                         disabled={actionLoading === v.id}
                         className={`p-2 rounded-lg transition-colors ${
@@ -310,6 +322,104 @@ export default function VendorManagement() {
                 )}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {selectedVendor && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50 sticky top-0 z-10">
+              <h3 className="font-bold text-zinc-900">Vendor Details</h3>
+              <button
+                onClick={() => setSelectedVendor(null)}
+                className="text-zinc-400 hover:text-zinc-600 transition-colors p-1"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-zinc-500 font-bold uppercase">Name</p>
+                  <p className="text-sm font-medium text-zinc-900">{selectedVendor.name}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-zinc-500 font-bold uppercase">Email</p>
+                  <p className="text-sm font-medium text-zinc-900">{selectedVendor.email}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-zinc-500 font-bold uppercase">Phone</p>
+                  <p className="text-sm font-medium text-zinc-900">{selectedVendor.phone || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-zinc-500 font-bold uppercase">Status</p>
+                  <p className="text-sm font-medium text-zinc-900 capitalize">{selectedVendor.status}</p>
+                </div>
+              </div>
+
+              <div className="border-t border-zinc-100 pt-4">
+                <h4 className="text-sm font-bold text-zinc-900 mb-3">Business Information</h4>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-zinc-500 font-bold uppercase">Business Name</p>
+                    <p className="text-sm font-medium text-zinc-900">{selectedVendor.businessName || "Personal Account"}</p>
+                  </div>
+                  {(selectedVendor.businessAddress || selectedVendor.about) && (
+                    <>
+                      {selectedVendor.businessAddress && (
+                        <div>
+                          <p className="text-xs text-zinc-500 font-bold uppercase">Address</p>
+                          <p className="text-sm font-medium text-zinc-900">{selectedVendor.businessAddress}</p>
+                        </div>
+                      )}
+                      {selectedVendor.about && (
+                        <div>
+                          <p className="text-xs text-zinc-500 font-bold uppercase">About</p>
+                          <p className="text-sm font-medium text-zinc-900 max-h-24 overflow-y-auto">{selectedVendor.about}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="border-t border-zinc-100 pt-4">
+                <h4 className="text-sm font-bold text-zinc-900 mb-3">Verification</h4>
+                <div className="flex items-center justify-between bg-zinc-50 p-4 rounded-xl border border-zinc-100">
+                  <div className="flex items-center gap-3">
+                    {selectedVendor.is_verified ? (
+                      <CheckCircle className="text-emerald-500" size={24} />
+                    ) : (
+                      <ShieldAlert className="text-amber-500" size={24} />
+                    )}
+                    <div>
+                      <p className="text-sm font-bold text-zinc-900">
+                        {selectedVendor.is_verified ? "Verified Vendor" : "Unverified"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedVendor.government_id_url ? (
+                  <div className="mt-4">
+                    <p className="text-xs text-zinc-500 font-bold uppercase mb-2">Government ID Document</p>
+                    <a
+                      href={selectedVendor.government_id_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-black transition-colors shadow-md"
+                    >
+                      <Eye size={16} />
+                      View Document
+                    </a>
+                  </div>
+                ) : (
+                   <p className="text-xs text-zinc-400 mt-4 italic">No verification document uploaded.</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}

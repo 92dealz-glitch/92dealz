@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Flag, Loader2, CheckCircle, XCircle, ExternalLink, Trash2, UserX } from "lucide-react";
-import { getAdminReports, updateReportStatusAdmin, deleteDealAdmin, updateVendorStatusAdmin } from "@/lib/api";
+import { getAdminReports, updateReportStatusAdmin, deleteDealAdmin, updateVendorStatusAdmin, deleteReviewAdmin } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 import Link from "next/link";
 
@@ -44,8 +44,8 @@ export default function AdminReportManagement() {
     }
   };
 
-  const handleQuickAction = async (reportId: number, type: 'product' | 'vendor', targetId: number, title: string) => {
-    const reason = await showPrompt(`Reason for removing this ${type}? (Vendor will be notified)`, "", "Moderation Reason");
+  const handleQuickAction = async (reportId: number, type: 'product' | 'vendor' | 'review', targetId: number, title: string) => {
+    const reason = await showPrompt(`Reason for removing this ${type}? (User/Vendor will be notified)`, "", "Moderation Reason");
     if (!reason) return;
 
     setActionLoading(reportId);
@@ -53,10 +53,10 @@ export default function AdminReportManagement() {
       let res;
       if (type === 'product') {
         res = await deleteDealAdmin(targetId, reason);
+      } else if (type === 'review') {
+        res = await deleteReviewAdmin(targetId);
       } else {
-        res = await updateVendorStatusAdmin(targetId, 'suspended'); // Or delete? user asked for remove from database
-        // Actually for vendor "delete" is more "remove from database"
-        // res = await deleteVendorAdmin(targetId);
+        res = await updateVendorStatusAdmin(targetId, 'suspended');
       }
       
       if (res.success) {
@@ -173,6 +173,17 @@ export default function AdminReportManagement() {
                               disabled={actionLoading === report.id}
                               className="p-2 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
                               title="Delete Product"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
+
+                          {report.ReportedReview && (
+                            <button
+                              onClick={() => handleQuickAction(report.id, 'review', report.ReportedReview.id, "Review")}
+                              disabled={actionLoading === report.id}
+                              className="p-2 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
+                              title="Delete Review"
                             >
                               <Trash2 size={18} />
                             </button>

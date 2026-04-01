@@ -81,6 +81,7 @@ exports.search = async (req, res, next) => {
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals ${whereSql}`;
     const dataSql = `SELECT ${selectCols.join(', ')},
                      (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating,
+                     (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified,
                      (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = deals.id) AS clicks
                      FROM deals ${whereSql} ${orderSql} LIMIT ${limit} OFFSET ${offset}`;
 

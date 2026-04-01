@@ -186,6 +186,13 @@ export async function deleteDealAdmin(id: number, reason?: string) {
   );
 }
 
+export async function deleteReviewAdmin(id: number) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/reviews/${id}`,
+    { method: "DELETE", auth: true }
+  );
+}
+
 export async function submitReport(data: { product_id?: number; vendor_id?: number; review_id?: number; reason: string; details: string }) {
   return apiFetch<{ success: boolean; data: any }>(
     "/users/reports",

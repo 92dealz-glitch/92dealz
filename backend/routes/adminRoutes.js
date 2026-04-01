@@ -50,4 +50,8 @@ const reportCtrl = require('../controllers/reportController');
 router.get('/reports', reportCtrl.getReports);
 router.put('/reports/:id', reportCtrl.updateReportStatus);
 
+// Reviews
+const reviewCtrl = require('../controllers/reviewController');
+router.delete('/reviews/:id', reviewCtrl.deleteReviewAdmin);
+
 module.exports = router;
