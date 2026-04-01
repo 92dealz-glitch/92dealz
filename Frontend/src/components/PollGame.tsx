@@ -15,7 +15,7 @@ export default function PollGame() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await getMyProfile();
+        const res: any = await getMyProfile();
         if (res.success) {
           setUser(res.data);
           // Check if poll was done recently
