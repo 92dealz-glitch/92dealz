@@ -85,7 +85,7 @@ export default function Hero() {
                   />
                 ) : (
                   <div className="relative w-full flex justify-center items-end px-4 overflow-visible">
-                    <div className="relative w-1/2 h-[345px] z-20 -mr-20">
+                    <div className="relative w-1/2 h-[550px] z-20 -mr-24">
                       <Image
                         src={slide.images[0]}
                         alt="Woman"
@@ -94,7 +94,7 @@ export default function Hero() {
                         className="object-contain object-bottom"
                       />
                     </div>
-                    <div className="relative w-1/2 h-[345px] z-10">
+                    <div className="relative w-1/2 h-[550px] z-10">
                       <Image
                         src={slide.images[1]}
                         alt="Man"
@@ -187,9 +187,9 @@ export default function Hero() {
                       className="object-contain object-top drop-shadow-2xl"
                     />
                   ) : (
-                    <div className="relative w-full h-full flex justify-center items-end">
+                    <div className="relative w-full h-full flex justify-center items-end overflow-visible">
                       <div className="relative w-full h-full flex items-end justify-center overflow-visible">
-                        <div className="relative w-1/2 h-[111.5%] -mr-48 z-20">
+                        <div className="relative w-1/2 h-[165%] -mr-56 z-20">
                            <Image
                             src={slide.images[0]}
                             alt="Woman"
@@ -198,7 +198,7 @@ export default function Hero() {
                             className="object-contain object-bottom"
                           />
                         </div>
-                        <div className="relative w-1/2 h-[111.5%] z-10">
+                        <div className="relative w-1/2 h-[165%] z-10">
                           <Image
                             src={slide.images[1]}
                             alt="Man"
