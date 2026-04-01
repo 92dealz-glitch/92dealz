@@ -28,7 +28,7 @@ export default function Recommended() {
               setTitle(`Recommended ${categoryName} for you.`);
               isRandom = false;
             } else {
-               setTitle("Freshly Picked for you.");
+              setTitle("Freshly Picked for you.");
             }
           }
         } catch (_) {
@@ -36,8 +36,8 @@ export default function Recommended() {
           setTitle("Recommended Discovery.");
         }
 
-        const res = await listActiveAds({ 
-          limit: 8, 
+        const res = await listActiveAds({
+          limit: 8,
           category_name: categoryName,
           // @ts-ignore - added random support in backend
           random: isRandom ? 'true' : undefined
@@ -67,7 +67,7 @@ export default function Recommended() {
     <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-16">
       <h3 className="text-3xl font-extrabold text-[#f45c03] mb-6">Recommended for you.</h3>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[1fr] items-stretch">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-[1fr] items-stretch">
         {items.map((it) => (
           <AdCard key={it.id} item={it} />
         ))}

@@ -14,6 +14,7 @@ interface HotDeal {
   location: string;
   newLabel?: string;
   isVerified?: boolean;
+  rating?: number;
 }
 
 import { useEffect, useState, useRef } from "react";
@@ -34,6 +35,7 @@ export default function HotDeals() {
           location: d.location || d.city || "Nigeria",
           newLabel: d.condition || "Brand New",
           isVerified: d.is_verified || d.User?.is_verified || false,
+          rating: Number(d.rating || 0),
         }));
         setList(mapped);
       } catch (err) {}
@@ -102,7 +104,7 @@ export default function HotDeals() {
         <div
           ref={scrollRef}
           className={
-            "flex gap-4 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory lg:gap-6 " +
+            "flex gap-4 overflow-x-auto pt-6 pb-6 scroll-smooth snap-x snap-mandatory lg:gap-6 " +
             "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           }
         >
@@ -196,24 +198,18 @@ export default function HotDeals() {
                 </div>
 
                 {/* RATING */}
-                <div className="mt-1.5 flex gap-0.5">
-                  {[1, 2, 3, 4].map((i) => (
+                <div className="mt-1.5 flex gap-0.5 text-yellow-400">
+                  {[1, 2, 3, 4, 5].map((i) => (
                     <svg
                       key={i}
-                      className="w-5 h-5 text-[#f45c03]"
+                      className={`w-5 h-5 ${i <= Math.floor(item.rating || 4) ? "text-yellow-400" : "text-gray-300"}`}
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
                       <path d="M12 .587l3.668 7.431L24 9.748l-6 5.858L19.335 24 12 20.201 4.665 24 6 15.606 0 9.748l8.332-1.73L12 .587z" />
                     </svg>
                   ))}
-                  <svg
-                    className="w-5 h-5 text-gray-300"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 .587l3.668 7.431L24 9.748l-6 5.858L19.335 24 12 20.201 4.665 24 6 15.606 0 9.748l8.332-1.73L12 .587z" />
-                  </svg>
+                  <span className="ml-1 text-black font-bold text-xs mt-0.5">({Number(item.rating || 0).toFixed(1)})</span>
                 </div>
 
                 {/* LOCATION & CONDITION */}

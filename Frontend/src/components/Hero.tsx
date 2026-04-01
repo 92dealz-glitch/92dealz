@@ -65,7 +65,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-0 sm:pt-8 lg:pt-24 pb-12 lg:pb-16 mt-0 lg:mt-0">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-0 sm:pt-8 lg:pt-24 pb-12 lg:pb-16 mt-0 lg:mt-0 -translate-y-4">
 
         {/* MOBILE CAROUSEL */}
         <div className="absolute inset-0 flex justify-center lg:hidden pointer-events-none -translate-y-8">
@@ -84,20 +84,22 @@ export default function Hero() {
                     className="object-contain"
                   />
                 ) : (
-                  <div className="relative w-full flex justify-center items-end px-4">
-                    <div className="relative w-1/2 h-[340px] z-20 -mr-20">
+                  <div className="relative w-full flex justify-center items-end px-4 overflow-visible">
+                    <div className="relative w-1/2 h-[345px] z-20 -mr-20">
                       <Image
                         src={slide.images[0]}
                         alt="Woman"
                         fill
+                        priority={true}
                         className="object-contain object-bottom"
                       />
                     </div>
-                    <div className="relative w-1/2 h-[340px] z-10">
+                    <div className="relative w-1/2 h-[345px] z-10">
                       <Image
                         src={slide.images[1]}
                         alt="Man"
                         fill
+                        priority={true}
                         className="object-contain object-bottom"
                       />
                     </div>
@@ -187,19 +189,21 @@ export default function Hero() {
                   ) : (
                     <div className="relative w-full h-full flex justify-center items-end">
                       <div className="relative w-full h-full flex items-end justify-center overflow-visible">
-                        <div className="relative w-1/2 h-[110%] -mr-48 z-20">
+                        <div className="relative w-1/2 h-[111.5%] -mr-48 z-20">
                            <Image
                             src={slide.images[0]}
                             alt="Woman"
                             fill
+                            priority={true}
                             className="object-contain object-bottom"
                           />
                         </div>
-                        <div className="relative w-1/2 h-[110%] z-10">
+                        <div className="relative w-1/2 h-[111.5%] z-10">
                           <Image
                             src={slide.images[1]}
                             alt="Man"
                             fill
+                            priority={true}
                             className="object-contain object-bottom"
                           />
                         </div>
