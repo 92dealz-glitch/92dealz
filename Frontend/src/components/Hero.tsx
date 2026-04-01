@@ -5,6 +5,7 @@ import Link from "next/link";
 import CategoryBar from "./CategoryBar";
 
 const HERO_IMAGES = [
+  "/images/heroimagenew.png",
   "/images/heroimage3.png",
   "/images/heroimage4.png",
   "/images/heroimage5.png",
@@ -13,20 +14,36 @@ const HERO_IMAGES = [
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
+  const [loadedIndices, setLoadedIndices] = useState<number[]>([0]); // Assume first is priority or handled by priority prop
 
   useEffect(() => {
+    // Rotation logic: only cycle through loaded images
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+      setIndex((prev) => {
+        // Find next loaded index or stay on current if none ready
+        if (loadedIndices.length <= 1) return prev;
+        
+        // Find the position of current index in loadedIndices
+        const currentPos = loadedIndices.indexOf(prev);
+        const nextPos = (currentPos + 1) % loadedIndices.length;
+        return loadedIndices[nextPos];
+      });
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [loadedIndices]);
+
+  const handleImageLoad = (idx: number) => {
+    if (!loadedIndices.includes(idx)) {
+      setLoadedIndices((prev) => [...prev, idx].sort((a, b) => a - b));
+    }
+  };
 
   return (
-    <section className="relative bg-white overflow-hidden overflow-x-hidden min-h-[600px] lg:min-h-0">
+    <section className="relative bg-white overflow-hidden overflow-x-hidden min-h-[620px] lg:min-h-0">
       
-      {/* PERMANENT FAINTED BACKGROUND */}
+      {/* PERMANENT FAINTED BACKGROUND - Increased visibility */}
       <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-[0.07]"
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.22] sm:opacity-[0.3]"
         style={{
           backgroundImage: "url('/images/mapHeroImagebackground.png')",
           backgroundPosition: "center",
@@ -35,6 +52,13 @@ export default function Hero() {
         }}
       />
 
+      {/* Background Preloader (Hidden) */}
+      <div className="hidden">
+        {HERO_IMAGES.map((img, i) => (
+          <img key={i} src={img} onLoad={() => handleImageLoad(i)} />
+        ))}
+      </div>
+
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 pt-16 lg:pt-24 pb-12 lg:pb-16 mt-6 lg:mt-0">
 
         {/* MOBILE CAROUSEL */}
@@ -42,15 +66,15 @@ export default function Hero() {
           {HERO_IMAGES.map((img, i) => (
             <div 
               key={i}
-              className={`absolute inset-0 transition-all duration-1000 ease-in-out ${i === index ? "opacity-100 scale-105" : "opacity-0 scale-95"}`}
+              className={`absolute inset-0 transition-all duration-1000 ease-in-out ${(i === index && loadedIndices.includes(i)) ? "opacity-100 scale-105" : "opacity-0 scale-95"}`}
             >
               <Image
                 src={img}
                 alt={`Hero ${i + 1}`}
                 width={460}
                 height={460}
-                priority
-                className="mx-auto object-contain opacity-90"
+                priority={i === 0}
+                className="mx-auto object-contain opacity-95"
               />
             </div>
           ))}
@@ -150,13 +174,13 @@ export default function Hero() {
                {HERO_IMAGES.map((img, i) => (
                   <div 
                     key={i}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === index ? "opacity-100" : "opacity-0"}`}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${(i === index && loadedIndices.includes(i)) ? "opacity-100" : "opacity-0"}`}
                   >
                     <Image
                       src={img}
                       alt={`Hero ${i + 1}`}
                       fill
-                      priority
+                      priority={i === 0}
                       className="object-contain object-top drop-shadow-2xl"
                     />
                   </div>

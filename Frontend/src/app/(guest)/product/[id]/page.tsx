@@ -7,7 +7,7 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
@@ -146,6 +146,7 @@ export default function ProductPage({ params }: Props) {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; itemName: string }>({ itemName: "" });
   const [copied, setCopied] = useState(false);
 
@@ -315,8 +316,14 @@ export default function ProductPage({ params }: Props) {
                 ›
               </button>
 
-              <div className="absolute bottom-4 right-6">
-                <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-sm">View Image</span>
+              <div className="absolute bottom-5 right-5 z-10">
+                <button 
+                  onClick={() => setIsLightboxOpen(true)}
+                  className="flex items-center gap-2 bg-white/90 hover:bg-white text-orange-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
+                >
+                  <Maximize2 size={16} />
+                  View Image
+                </button>
               </div>
             </div>
 
@@ -653,6 +660,41 @@ export default function ProductPage({ params }: Props) {
             </ul>
           </section>
         </div>
+
+        {/* --- Lightbox Modal --- */}
+        {isLightboxOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4">
+            <button 
+              onClick={() => setIsLightboxOpen(false)}
+              className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-[110]"
+            >
+              <X size={32} />
+            </button>
+            <div className="relative w-full max-w-5xl max-h-[90vh] flex items-center justify-center">
+              <img 
+                src={sampleImages[selected]} 
+                alt={product.title} 
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" 
+              />
+              
+              {/* Optional: Nav arrows inside lightbox for mobile ease */}
+              <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none px-4">
+                 <button
+                    onClick={(e) => { e.stopPropagation(); setSelected((prev) => (prev - 1 + sampleImages.length) % sampleImages.length); }}
+                    className="pointer-events-auto w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all sm:hidden"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setSelected((prev) => (prev + 1) % sampleImages.length); }}
+                    className="pointer-events-auto w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all sm:hidden"
+                  >
+                    ›
+                  </button>
+              </div>
+            </div>
+          </div>
+        )}
         <ReportModal 
           isOpen={showReportModal} 
           onClose={() => setShowReportModal(false)} 
