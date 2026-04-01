@@ -119,7 +119,7 @@ export async function updateProfileImage(url: string | null) {
 }
 
 export async function getMyProfile() {
-  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string; is_verified?: boolean; verification_status?: 'none' | 'pending' | 'approved' | 'rejected'; government_id_url?: string | null; last_poll_date?: string | null } }>(
+  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string; is_verified?: boolean; verification_status?: 'none' | 'pending' | 'approved' | 'rejected'; government_id_url?: string | null; last_poll_date?: string | null; poll_category?: string | null; poll_choice?: string | null } }>(
     "/users/profile",
     { method: "GET", auth: true }
   );
