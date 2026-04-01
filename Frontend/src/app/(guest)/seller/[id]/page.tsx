@@ -477,7 +477,7 @@ export default function SellerPage({ params }: Props) {
 
               {listings.length > 0 && (
                 <Link
-                  href={`/search?userId=${seller.id}`}
+                  href={`/seller/${seller.id}/listings`}
                   style={{ textDecoration: "none" }}
                 >
                   <button
