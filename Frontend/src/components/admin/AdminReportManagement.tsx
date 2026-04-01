@@ -59,10 +59,10 @@ export default function AdminReportManagement() {
         res = await updateVendorStatusAdmin(targetId, 'suspended');
       }
       
-      if (res.success) {
+      if (res && res.success) {
         await updateReportStatusAdmin(reportId, 'resolved');
         setReports(prev => prev.map(r => r.id === reportId ? { ...r, status: 'resolved' } : r));
-        showAlert(`${type.charAt(0).toUpperCase() + type.slice(1)} removed and vendor notified.`, "Action Successful");
+        showAlert(`${type.charAt(0).toUpperCase() + type.slice(1)} removed correctly.`, "Action Successful");
       }
     } catch (err) {
       showAlert("Action failed.", "Report Error");

@@ -47,7 +47,7 @@ export default function FeaturedAds() {
   if (featured.length === 0) return null;
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-20 mt-10">
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10 text-center sm:text-left">
       <div className="flex items-center gap-5 mb-10">
         <h3 className="text-3xl sm:text-4xl font-extrabold text-[#f45c03] uppercase tracking-tight">Featured Ads</h3>
         <div className="h-0.5 flex-1 bg-[#f45c03] opacity-40 shadow-sm" />
@@ -135,10 +135,10 @@ export default function FeaturedAds() {
         })}
       </div>
       
-      <div className="mt-14 flex justify-center">
+      <div className="mt-12 flex justify-center">
         <Link 
           href="/search"
-          className="bg-[#f45c03] border-2 border-white/20 px-16 py-4.5 rounded-2xl font-black shadow-xl text-white hover:bg-white hover:text-[#f45c03] transition-all text-xl tracking-wider uppercase"
+          className="bg-[#f45c03] border-2 border-white/20 px-8 py-3.5 rounded-2xl font-black shadow-xl text-white hover:bg-white hover:text-[#f45c03] transition-all text-base tracking-wider uppercase"
         >
           Explore Premium Deals
         </Link>

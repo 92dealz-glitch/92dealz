@@ -480,8 +480,8 @@ export default function ProductPage({ params }: Props) {
           {/* 3. Sidebar (Price Section + Seller Info) - Spans all rows on desktop to avoid gaps */}
           <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4">
             <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
-              <div className="absolute top-4 right-4">
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">{product.condition}</span>
+              <div className="absolute top-4 right-4 capitalize">
+                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">{product.condition?.replace(/_/g, ' ') || 'New'}</span>
               </div>
 
               <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>

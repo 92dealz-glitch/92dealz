@@ -861,7 +861,7 @@ export default function SellerPage({ params }: Props) {
               </div>
             </div>
 
-            {/* Share With Friends */}
+            {/* Share Profile Section */}
             <div
               style={{
                 background: "#fff",
@@ -872,35 +872,78 @@ export default function SellerPage({ params }: Props) {
               }}
             >
               <h4 style={{ fontWeight: 700, fontSize: 15, margin: "0 0 12px" }}>
-                Share With Friends
+                Share Profile
               </h4>
-              <div style={{ display: "flex", gap: 10 }}>
-                {[
-                  { bg: "#e1306c", icon: "📷", label: "Instagram" },
-                  { bg: "#1877f2", icon: "f", label: "Facebook" },
-                  { bg: "#1da1f2", icon: "𝕏", label: "Twitter" },
-                  { bg: "#25d366", icon: "💬", label: "WhatsApp" },
-                ].map((s) => (
-                  <button
-                    key={s.label}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: "50%",
-                      background: s.bg,
-                      color: "#fff",
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ 
+                  display: "flex", 
+                  background: "#f9fafb", 
+                  border: "1px solid #e5e7eb", 
+                  borderRadius: 8, 
+                  overflow: "hidden" 
+                }}>
+                  <input 
+                    readOnly 
+                    value={typeof window !== 'undefined' ? window.location.href : ""} 
+                    style={{ 
+                      flex: 1, 
+                      padding: "8px 12px", 
+                      fontSize: 12, 
+                      background: "transparent", 
                       border: "none",
-                      cursor: "pointer",
-                      fontSize: 15,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 0,
+                      outline: "none",
+                      color: "#6b7280"
+                    }}
+                  />
+                  <button 
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        navigator.clipboard.writeText(window.location.href);
+                        alert("Link copied to clipboard!");
+                      }
+                    }}
+                    style={{ 
+                      padding: "8px 12px", 
+                      background: "#f97316", 
+                      color: "#fff", 
+                      border: "none", 
+                      fontSize: 12, 
+                      fontWeight: 700,
+                      cursor: "pointer"
                     }}
                   >
-                    {s.icon}
+                    Copy
                   </button>
-                ))}
+                </div>
+                <button
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: `${seller.name} on 234Deals`,
+                        url: window.location.href
+                      }).catch(() => {});
+                    } else {
+                      alert("Web Share API not supported in this browser.");
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: 8,
+                    background: "#fff",
+                    border: "1px solid #f97316",
+                    color: "#f97316",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8
+                  }}
+                >
+                  <span>🔗</span> Share Profile
+                </button>
               </div>
             </div>
           </aside>
