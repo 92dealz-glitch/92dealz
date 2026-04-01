@@ -71,7 +71,7 @@ export default function PollGame() {
           <p className="text-gray-600 mb-8">{message || "You've already played this week. Come back next week for fresh options!"}</p>
           <button 
             onClick={() => router.push("/")}
-            className="bg-[#FF6B35] text-white px-8 py-3 rounded-full font-bold hover:bg-[#E85A2E] transition-all"
+            className="bg-[#f45c03] text-white px-8 py-3 rounded-full font-bold hover:bg-[#f45c03] transition-all"
           >
             Back to Home
           </button>
@@ -112,7 +112,7 @@ export default function PollGame() {
 
       <div className="max-w-[1200px] mx-auto relative z-10">
         <h2 className="text-center text-[42px] md:text-[52px] font-bold mb-4">
-          Let&apos;s Play a Quick <span className="text-[#FF6B35]">Poll Game</span> 🎮
+          Let&apos;s Play a Quick <span className="text-[#f45c03]">Poll Game</span> 🎮
         </h2>
         <p className="text-center text-gray-600 mb-12 max-w-[600px] mx-auto">
           Help us personalize your experience and win insights into what others are shopping for!
@@ -121,7 +121,7 @@ export default function PollGame() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[1100px] mx-auto mb-12">
           {/* Question 1 */}
           <div className="relative">
-            <div className="relative bg-[#FF6B35] rounded-[28px] p-8 shadow-lg h-full z-10 text-white">
+            <div className="relative bg-[#f45c03] rounded-[28px] p-8 shadow-lg h-full z-10 text-white">
               <h3 className="text-[20px] font-semibold mb-6">If you could shop only ONE category this week, which would it be?</h3>
               <div className="flex flex-col gap-3">
                 {["Electronics", "Fashion", "Phones"].map((opt) => (
@@ -130,7 +130,7 @@ export default function PollGame() {
                     onClick={() => setCategory(opt)}
                     className={`text-left px-6 py-4 rounded-xl border-2 transition-all font-medium ${
                       category === opt 
-                        ? "bg-white text-[#FF6B35] border-white" 
+                        ? "bg-white text-[#f45c03] border-white" 
                         : "bg-white/10 text-white border-white/20 hover:bg-white/20"
                     }`}
                   >
@@ -143,7 +143,7 @@ export default function PollGame() {
 
           {/* Question 2 */}
           <div className="relative">
-            <div className="relative bg-[#FF6B35] rounded-[28px] p-8 shadow-lg h-full z-10 text-white">
+            <div className="relative bg-[#f45c03] rounded-[28px] p-8 shadow-lg h-full z-10 text-white">
               <h3 className="text-[20px] font-semibold mb-6">What makes you click a product the fastest?</h3>
               <div className="flex flex-col gap-3">
                 {["Fine pictures", "Popular items", "Good descriptions"].map((opt) => (
@@ -152,7 +152,7 @@ export default function PollGame() {
                     onClick={() => setChoice(opt)}
                     className={`text-left px-6 py-4 rounded-xl border-2 transition-all font-medium ${
                       choice === opt 
-                        ? "bg-white text-[#FF6B35] border-white" 
+                        ? "bg-white text-[#f45c03] border-white" 
                         : "bg-white/10 text-white border-white/20 hover:bg-white/20"
                     }`}
                   >

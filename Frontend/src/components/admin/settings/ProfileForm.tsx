@@ -114,7 +114,7 @@ export default function ProfileForm() {
             </button>
             <button 
               onClick={handleSave}
-              className="px-4 py-2 bg-[#E85A28] text-white rounded-lg text-sm font-bold hover:bg-[#D14F23] transition-colors shadow-sm"
+              className="px-4 py-2 bg-[#f45c03] text-white rounded-lg text-sm font-bold hover:bg-[#f45c03] transition-colors shadow-sm"
             >
               Save Changes
             </button>
@@ -137,7 +137,7 @@ export default function ProfileForm() {
             )}
           </div>
           {isEditing && (
-            <label className="absolute bottom-0 right-0 p-1.5 bg-[#E85A28] rounded-full border-2 border-white text-white shadow-sm cursor-pointer hover:scale-110 transition-transform">
+            <label className="absolute bottom-0 right-0 p-1.5 bg-[#f45c03] rounded-full border-2 border-white text-white shadow-sm cursor-pointer hover:scale-110 transition-transform">
               <Plus size={14} />
               <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
             </label>
@@ -183,3 +183,4 @@ export default function ProfileForm() {
     </div>
   );
 }
+

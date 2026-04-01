@@ -134,7 +134,7 @@ export default function SubmissionsPage() {
           <input
             type="text"
             placeholder="Search ads or status..."
-            className="pl-10 pr-4 py-3 bg-white border border-zinc-200 rounded-xl w-full md:w-[320px] focus:outline-none focus:border-[#E85A28] transition-all font-bold"
+            className="pl-10 pr-4 py-3 bg-white border border-zinc-200 rounded-xl w-full md:w-[320px] focus:outline-none focus:border-[#f45c03] transition-all font-bold"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -143,7 +143,7 @@ export default function SubmissionsPage() {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-12 h-12 border-4 border-[#E85A28] border-t-transparent rounded-full animate-spin" />
+          <div className="w-12 h-12 border-4 border-[#f45c03] border-t-transparent rounded-full animate-spin" />
           <p className="font-black text-zinc-500">Loading submissions...</p>
         </div>
       ) : filteredSubmissions.length === 0 ? (
@@ -183,7 +183,7 @@ export default function SubmissionsPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-black text-black hover:text-[#E85A28] transition-colors cursor-pointer" onClick={() => setSelectedSubmission(sub)}>
+                          <p className="font-black text-black hover:text-[#f45c03] transition-colors cursor-pointer" onClick={() => setSelectedSubmission(sub)}>
                             {sub.title}
                           </p>
                           <p className="text-zinc-400 text-xs font-bold mt-0.5">{sub.brand} {sub.model}</p>
@@ -266,12 +266,12 @@ export default function SubmissionsPage() {
                 <div>
                   <h3 className="text-2xl font-black text-black">{selectedSubmission.title}</h3>
                   <div className="flex items-center gap-2 text-zinc-500 font-bold text-sm mt-1">
-                    <MapPin size={14} className="text-[#E85A28]" />
+                    <MapPin size={14} className="text-[#f45c03]" />
                     {selectedSubmission.city}, {selectedSubmission.state}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[#E85A28] text-2xl font-black">₦{selectedSubmission.price.toLocaleString()}</div>
+                  <div className="text-[#f45c03] text-2xl font-black">₦{selectedSubmission.price.toLocaleString()}</div>
                   <div className="text-zinc-400 text-xs font-bold mt-1">PRICE</div>
                 </div>
               </div>
@@ -295,7 +295,7 @@ export default function SubmissionsPage() {
                   <button 
                     disabled={isUpdating}
                     onClick={() => handleStatusUpdate(selectedSubmission.id, "APPROVED")}
-                    className="flex-1 bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-orange-100 disabled:opacity-50"
+                    className="flex-1 bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-orange-100 disabled:opacity-50"
                   >
                     {isUpdating ? "Approving..." : "Approve Ad"}
                   </button>
@@ -308,4 +308,5 @@ export default function SubmissionsPage() {
     </div>
   );
 }
+
 

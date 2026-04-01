@@ -39,7 +39,7 @@ export default function SalesAnalytics() {
                             key={f}
                             onClick={() => setActiveFilter(f)}
                             className={`px-6 py-2 rounded-md font-bold text-xs transition-all ${activeFilter === f
-                                    ? "bg-[#E85A28] text-white shadow-md shadow-orange-100"
+                                    ? "bg-[#f45c03] text-white shadow-md shadow-orange-100"
                                     : "text-zinc-500 hover:text-black"
                                 }`}
                         >
@@ -73,7 +73,7 @@ export default function SalesAnalytics() {
                                     style={{ height: `${(d.visitors / maxVal) * 100}%` }}
                                 />
                                 <div
-                                    className="w-2.5 rounded-sm bg-[#E85A28] transition-all duration-700 delay-300"
+                                    className="w-2.5 rounded-sm bg-[#f45c03] transition-all duration-700 delay-300"
                                     style={{ height: `${(d.contact_views / maxVal) * 100}%` }}
                                 />
                                 <div
@@ -90,7 +90,7 @@ export default function SalesAnalytics() {
             {/* Legend */}
             <div className="mt-12 space-y-4 max-w-xs">
                 <LegendItem color="#10B981" label="Visitors" checked />
-                <LegendItem color="#E85A28" label="Contact views" checked />
+                <LegendItem color="#f45c03" label="Contact views" checked />
                 <LegendItem color="#3B82F6" label="Chats" checked />
             </div>
         </div>
@@ -104,7 +104,7 @@ function LegendItem({ color, label, checked = false }: { color: string, label: s
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
                 <span className="text-zinc-600 font-bold text-[14px]">{label}</span>
             </div>
-            <div className={`w-5 h-5 rounded flex items-center justify-center transition-all ${checked ? "bg-[#E85A28] border-[#E85A28]" : "bg-white border-zinc-300 border"
+            <div className={`w-5 h-5 rounded flex items-center justify-center transition-all ${checked ? "bg-[#f45c03] border-[#f45c03]" : "bg-white border-zinc-300 border"
                 }`}>
                 {checked && <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
             </div>
@@ -112,3 +112,4 @@ function LegendItem({ color, label, checked = false }: { color: string, label: s
         </label>
     )
 }
+

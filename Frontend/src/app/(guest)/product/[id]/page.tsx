@@ -308,7 +308,7 @@ export default function ProductPage({ params }: Props) {
                >
                  <Heart className={`w-5 h-5 ${fav ? 'text-red-500 fill-red-500' : 'text-gray-500'}`} />
                  <span className={`text-sm font-semibold ${fav ? 'text-red-500' : 'text-gray-700'}`}>
-                   {fav ? 'Saved' : 'Save'}
+                   {fav ? 'Favorited' : 'Add to Favorites'}
                  </span>
                </button>
               </div>

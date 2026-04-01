@@ -98,7 +98,7 @@ export default function DealsManagementPage() {
           <p className="text-zinc-500 text-sm mt-1 font-medium">Manage all deals and promotions</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#E85A28] text-[#E85A28] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[#f45c03] text-[#f45c03] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
             <Download size={16} />
             Export
           </button>
@@ -153,7 +153,7 @@ export default function DealsManagementPage() {
               {/* Add New Deal Button */}
               <Link 
                 href="/admin/deals/new"
-                className="flex items-center justify-center gap-2 bg-[#E85A28] text-white px-6 py-2.5 rounded-lg hover:bg-[#D14F23] transition-colors font-bold shadow-md shadow-[#E85A28]/20 active:scale-95"
+                className="flex items-center justify-center gap-2 bg-[#f45c03] text-white px-6 py-2.5 rounded-lg hover:bg-[#f45c03] transition-colors font-bold shadow-md shadow-[#f45c03]/20 active:scale-95"
               >
                 <Plus size={20} />
                 Add New Deal
@@ -260,3 +260,4 @@ export default function DealsManagementPage() {
     </div>
   );
 }
+

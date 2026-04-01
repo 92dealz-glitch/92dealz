@@ -19,7 +19,7 @@ export default function UnauthorizedPage() {
         <div className="flex flex-col gap-3">
           <Link
             href="/"
-            className="flex items-center justify-center gap-2 w-full bg-[#E85A28] text-white font-black py-4 rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-100"
+            className="flex items-center justify-center gap-2 w-full bg-[#f45c03] text-white font-black py-4 rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-100"
           >
             <Home size={18} />
             Back to Home
@@ -43,3 +43,4 @@ export default function UnauthorizedPage() {
     </div>
   );
 }
+

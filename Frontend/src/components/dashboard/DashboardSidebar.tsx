@@ -74,7 +74,7 @@ export default function DashboardSidebar() {
                             <Link
                                 href={itemHref}
                                 className={`w-full flex items-center justify-between px-4 py-3 rounded-md transition-all duration-200 ${isActive
-                                    ? "bg-[#E85A28] text-white"
+                                    ? "bg-[#f45c03] text-white"
                                     : "text-zinc-600 hover:bg-zinc-50 hover:text-black"
                                     }`}
                             >
@@ -84,7 +84,7 @@ export default function DashboardSidebar() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {item.badge && (
-                                        <span className="flex items-center justify-center w-5 h-5 rounded bg-[#E85A28] text-white text-[10px] font-bold border border-white">
+                                        <span className="flex items-center justify-center w-5 h-5 rounded bg-[#f45c03] text-white text-[10px] font-bold border border-white">
                                             {item.badge}
                                         </span>
                                     )}
@@ -109,7 +109,7 @@ export default function DashboardSidebar() {
                                             <Link
                                                 href={subItem.href}
                                                 className={`block py-2 text-[14px] font-bold transition-colors ${pathname === subItem.href
-                                                    ? "text-[#E85A28]"
+                                                    ? "text-[#f45c03]"
                                                     : subItem.isDestructive ? "text-red-500 hover:text-red-600" : "text-zinc-500 hover:text-black"
                                                     }`}
                                             >
@@ -126,3 +126,4 @@ export default function DashboardSidebar() {
         </div>
     );
 }
+

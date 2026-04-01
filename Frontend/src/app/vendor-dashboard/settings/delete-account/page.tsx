@@ -18,7 +18,7 @@ export default function DeleteAccountPage() {
                         <div className="relative max-w-sm">
                             <input
                                 type={showPassword ? "text" : "password"}
-                                className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors pr-12"
+                                className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors pr-12"
                             />
                         <button
                     type="button"
@@ -33,7 +33,7 @@ export default function DeleteAccountPage() {
                     <div className="relative max-w-sm">
                         <select 
                             defaultValue=""
-                            className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
+                            className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
                         >
                             <option value="" disabled>Tell us why you&apos;re leaving</option>
                             <option>I have too many spam messages</option>
@@ -76,3 +76,4 @@ export default function DeleteAccountPage() {
 function ChevronDownIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
+

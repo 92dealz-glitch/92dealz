@@ -1,4 +1,4 @@
-ï»¿"use client";
+"use client";
 
 import React from "react";
 import { 
@@ -126,7 +126,7 @@ export default function AnalyticsPage() {
           label="Total Clicks"
           value={String(summary?.total_views || 0)}
           icon={MousePointer2}
-          trend={{ value: "Î“Ã¥Ã¦ 20%", isUp: true }}
+          trend={{ value: "Gåæ 20%", isUp: true }}
           color="orange"
           bgColor="bg-[#22C55E]"
           iconColor="text-white"
@@ -135,7 +135,7 @@ export default function AnalyticsPage() {
           label="Total Views"
           value={String(Math.floor((summary?.total_views || 0) * 1.5))}
           icon={Eye}
-          trend={{ value: "Î“Ã¥Ã¦ 15%", isUp: true }}
+          trend={{ value: "Gåæ 15%", isUp: true }}
           color="green"
           bgColor="bg-[#22C55E]"
           iconColor="text-white"
@@ -144,7 +144,7 @@ export default function AnalyticsPage() {
           label="Conversions"
           value={String(summary?.total_contacts || 0)}
           icon={RefreshCw}
-          trend={{ value: "Î“Ã¥Ã¦ 10%", isUp: true }}
+          trend={{ value: "Gåæ 10%", isUp: true }}
           color="yellow"
           bgColor="bg-[#FACC15]"
           iconColor="text-white"
@@ -153,7 +153,7 @@ export default function AnalyticsPage() {
           label="Avg. CTR"
           value={summary?.total_views ? `${((summary.total_contacts / summary.total_views) * 100).toFixed(1)}%` : "0%"}
           icon={TrendingUp}
-          trend={{ value: "Î“Ã¥Ã¦ 5%", isUp: true }}
+          trend={{ value: "Gåæ 5%", isUp: true }}
           color="purple"
           bgColor="bg-[#A855F7]"
           iconColor="text-white"
@@ -167,7 +167,7 @@ export default function AnalyticsPage() {
             <h3 className="font-bold text-zinc-900">Clicks & Conversions Trend</h3>
             <p className="text-xs text-zinc-500 mt-1">Track clicks, views, and conversions over time</p>
           </div>
-          <button className="bg-[#E85A28] text-white text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform">
+          <button className="bg-[#f45c03] text-white text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform">
             Last 7 days
           </button>
         </div>
@@ -179,7 +179,7 @@ export default function AnalyticsPage() {
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
               <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
               <Legend verticalAlign="bottom" height={36} iconType="rect" align="left" />
-              <Line type="monotone" dataKey="clicks" stroke="#E85A28" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Clicks" />
+              <Line type="monotone" dataKey="clicks" stroke="#f45c03" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Clicks" />
               <Line type="monotone" dataKey="views" stroke="#10B981" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Views" />
               <Line type="monotone" dataKey="conversions" stroke="#FACC15" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Conversions" />
             </LineChart>
@@ -266,3 +266,4 @@ export default function AnalyticsPage() {
     </div>
   );
 }
+

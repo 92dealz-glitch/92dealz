@@ -145,7 +145,7 @@ export default function ForgotPasswordPage() {
                 {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
                 <div className="mt-8 flex items-center">
-                  <Link href="/login" className="flex items-center gap-3 text-gray-800 hover:underline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg><span className="font-semibold">Back to Login</span></Link>
+                  <Link href="/login" className="flex items-center gap-3 text-gray-800 hover:underline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg><span className="font-semibold">Back to Login</span></Link>
                 </div>
               </div>
             )}
@@ -190,7 +190,7 @@ export default function ForgotPasswordPage() {
                 {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
                 <div className="mt-6 flex items-center justify-center">
-                  <Link href="/login" className="flex items-center gap-3 text-gray-800 hover:underline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg><span className="font-semibold">Back to Login</span></Link>
+                  <Link href="/login" className="flex items-center gap-3 text-gray-800 hover:underline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg><span className="font-semibold">Back to Login</span></Link>
                 </div>
               </div>
             )}
@@ -219,7 +219,7 @@ export default function ForgotPasswordPage() {
                 {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
                 <div className="mt-6 flex items-center">
-                  <Link href="/login" className="flex items-center gap-3 text-gray-800 hover:underline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg><span className="font-semibold">Back to Login</span></Link>
+                  <Link href="/login" className="flex items-center gap-3 text-gray-800 hover:underline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg><span className="font-semibold">Back to Login</span></Link>
                 </div>
               </div>
             )}
@@ -241,7 +241,7 @@ export default function ForgotPasswordPage() {
 
                 <div className="mt-10 flex items-center justify-center">
                   <Link href="/login" className="flex items-center gap-3 text-gray-800 hover:underline">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="15 18 9 12 15 6" />
                     </svg>
                     <span className="font-semibold">Back to Login</span>
@@ -256,3 +256,4 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
+

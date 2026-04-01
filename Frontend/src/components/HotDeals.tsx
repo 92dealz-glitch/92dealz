@@ -66,13 +66,13 @@ export default function HotDeals() {
   text-2xl sm:text-3xl md:text-4xl lg:text-5xl 
   font-extrabold text-black text-center"
         >
-          Hot Deals <span className="text-[#FF6B35]">Today!</span>
+          Hot Deals <span className="text-[#f45c03]">Today!</span>
         </h3>
 
         <div className="ml-auto hidden md:flex">
           <a
             href="#"
-            className="text-sm font-medium text-gray-700 hover:text-[#FF6B35] transition"
+            className="text-sm font-medium text-gray-700 hover:text-[#f45c03] transition"
           >
             See more
           </a>
@@ -85,7 +85,7 @@ export default function HotDeals() {
         <button
           aria-label="Scroll left"
           onClick={scrollLeft}
-          className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-20 bg-[#FF6B35] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#FF5520] transition"
+          className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-20 bg-[#f45c03] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#f45c03] transition"
         >
           <svg
             className="w-6 h-6"
@@ -109,15 +109,15 @@ export default function HotDeals() {
           {list.map((item) => (
             <div
               key={item.id}
-              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#FF6B35] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start min-h-[320px] lg:min-h-0 group"
+              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start min-h-[320px] lg:min-h-0 group"
             >
               {/* HOT BADGE */}
               <div className="absolute -top-3 left-3 z-10 pointer-events-none">
                 <div className="relative">
-                  <div className="bg-[#FF6B35] text-white text-sm font-bold px-4 py-1.5 rounded-r-lg">
+                  <div className="bg-[#f45c03] text-white text-sm font-bold px-4 py-1.5 rounded-r-lg">
                     Hot 🔥
                   </div>
-                  <div className="absolute left-0 -bottom-2 w-0 h-0 border-t-[8px] border-t-[#FF6B35] border-r-[8px] border-r-transparent" />
+                  <div className="absolute left-0 -bottom-2 w-0 h-0 border-t-[8px] border-t-[#f45c03] border-r-[8px] border-r-transparent" />
                 </div>
               </div>
 
@@ -187,10 +187,10 @@ export default function HotDeals() {
 
                 {/* PRICE & TITLE */}
                 <div className="mt-4 flex-1">
-                  <p className="text-[#FF6B35] font-extrabold text-xl sm:text-2xl">
+                  <p className="text-[#f45c03] font-extrabold text-xl sm:text-2xl">
                     {item.price}
                   </p>
-                  <h4 className="mt-1 font-semibold text-base sm:text-lg text-black line-clamp-2 group-hover:text-[#FF6B35] transition-colors">
+                  <h4 className="mt-1 font-semibold text-base sm:text-lg text-black line-clamp-2 group-hover:text-[#f45c03] transition-colors">
                     {item.title}
                   </h4>
                 </div>
@@ -200,7 +200,7 @@ export default function HotDeals() {
                   {[1, 2, 3, 4].map((i) => (
                     <svg
                       key={i}
-                      className="w-5 h-5 text-[#FF6B35]"
+                      className="w-5 h-5 text-[#f45c03]"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
@@ -237,7 +237,7 @@ export default function HotDeals() {
         <button
           aria-label="Scroll right"
           onClick={scrollRight}
-          className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-20 bg-[#FF6B35] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#FF5520] transition"
+          className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-20 bg-[#f45c03] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#f45c03] transition"
         >
           <svg
             className="w-6 h-6"
@@ -253,3 +253,4 @@ export default function HotDeals() {
     </section>
   );
 }
+

@@ -13,7 +13,7 @@ export default function FeaturedListing() {
               
               <div className="text-sm xs:text-base sm:text-4xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight">
                 <span className="block">
-                  At <span className="text-[#FF6B35]">234Deals,</span>
+                  At <span className="text-[#f45c03]">234Deals,</span>
                 </span>
                 
                 <span className="block">
@@ -26,9 +26,9 @@ export default function FeaturedListing() {
 
                 <div className="mt-2 sm:mt-8 space-y-0.5 sm:space-y-1">
                   <span className="block text-[10px] xs:text-xs sm:text-2xl lg:text-3xl font-bold text-zinc-900">There&apos;s truly no such thing</span>
-                  <span className="relative inline-block text-xs xs:text-sm sm:text-3xl lg:text-4xl font-black text-[#FF6B35]">
+                  <span className="relative inline-block text-xs xs:text-sm sm:text-3xl lg:text-4xl font-black text-[#f45c03]">
                     as a bad Deal!
-                    <span className="absolute left-0 -bottom-0.5 w-full h-1 sm:h-2 bg-[#FF6B35]/20 rounded-full -rotate-1"></span>
+                    <span className="absolute left-0 -bottom-0.5 w-full h-1 sm:h-2 bg-[#f45c03]/20 rounded-full -rotate-1"></span>
                   </span>
                 </div>
               </div>

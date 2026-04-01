@@ -21,7 +21,7 @@ export default function FavoritesPage() {
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#FF6B35]">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#f45c03]">
               My Favourites
             </h1>
             <p className="text-sm text-gray-600 mt-1">
@@ -83,7 +83,7 @@ export default function FavoritesPage() {
                 />
               </div>
 
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#FF6B35] mb-3">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#f45c03] mb-3">
                 No favourites yet
               </h2>
               <p className="text-base text-gray-600">

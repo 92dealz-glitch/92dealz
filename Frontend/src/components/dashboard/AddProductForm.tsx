@@ -92,7 +92,7 @@ export default function AddProductForm() {
                     <div className="text-zinc-500 font-bold text-sm mb-3">Step {step} of 3</div>
                     <div className="w-full h-1.5 bg-zinc-100 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-[#E85A28] transition-all duration-500 ease-out"
+                            className="h-full bg-[#f45c03] transition-all duration-500 ease-out"
                             style={{ width: `${(step / 3) * 100}%` }}
                         />
                     </div>
@@ -205,13 +205,13 @@ function TrashIcon() {
 function InputField({ label, placeholder, value, onChange, required = false, type = "text" }: { label: string, placeholder: string, value: string, onChange: (v: string) => void, required?: boolean, type?: string }) {
     return (
         <div className="flex flex-col gap-2">
-            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#E85A28] ml-1">*</span>}</label>
+            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
             <input
                 type={type}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors"
+                className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors"
             />
         </div>
     )
@@ -220,12 +220,12 @@ function InputField({ label, placeholder, value, onChange, required = false, typ
 function SelectField({ label, options, value, onChange, required = false }: { label: string, options: string[], value: string, onChange: (v: string) => void, required?: boolean }) {
     return (
         <div className="flex flex-col gap-2">
-            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#E85A28] ml-1">*</span>}</label>
+            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
             <div className="relative">
                 <select 
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
+                    className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
                 >
                     <option value="" disabled>Select {label}</option>
                     {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -262,7 +262,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <InputField label="Product Title" placeholder="e.g. washing machine" value={data.title} onChange={(v) => updateData({ title: v })} required />
             <div className="flex flex-col gap-2">
-                <label className="text-black font-black text-[15px]">Category<span className="text-[#E85A28] ml-1">*</span></label>
+                <label className="text-black font-black text-[15px]">Category<span className="text-[#f45c03] ml-1">*</span></label>
                 <div className="relative">
                     <select 
                         value={data.category_id || ""}
@@ -271,7 +271,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                             const cat = categories.find(c => Number(c.catId) === id);
                             updateData({ category_id: id, category: cat?.id || "", subcategory: "" });
                         }}
-                        className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
+                        className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
                     >
                         <option value="" disabled>Select Category</option>
                         {categories.map(c => <option key={c.catId} value={c.catId}>{c.title}</option>)}
@@ -294,7 +294,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
 
             {specs.length > 0 && (
                 <div className="bg-zinc-50 border border-zinc-100 rounded-xl p-6 mt-4">
-                    <h4 className="text-black font-black text-[17px] mb-6">Product Specifications <span className="text-[#E85A28] ml-1">*</span></h4>
+                    <h4 className="text-black font-black text-[17px] mb-6">Product Specifications <span className="text-[#f45c03] ml-1">*</span></h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {specs.map((s: any) => (
                         <div key={s.label}>
@@ -313,7 +313,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                                         value={data.specifications[s.label] || ""}
                                         onChange={(e) => handleSpecChange(s.label, e.target.value)}
                                         placeholder={s.placeholder || ""}
-                                        className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white"
+                                        className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
                                     />
                                 </div>
                             ) : (
@@ -341,7 +341,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                 <button
                     onClick={onNext}
                     disabled={!data.title || !data.category_id}
-                    className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                    className="bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                 >
                     Next
                 </button>
@@ -366,13 +366,13 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className="text-black font-black text-[15px]">Description <span className="text-[#E85A28] ml-1">*</span></label>
+                <label className="text-black font-black text-[15px]">Description <span className="text-[#f45c03] ml-1">*</span></label>
                 <textarea
                     placeholder="Describe your product in detail..."
                     value={data.description}
                     onChange={(e) => updateData({ description: e.target.value })}
                     rows={6}
-                    className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors resize-none"
+                    className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors resize-none"
                 />
             </div>
 
@@ -385,14 +385,14 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                 <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={onBack}
-                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                        className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Back
                     </button>
                     <button
                         onClick={onNext}
                         disabled={!data.price || !data.description}
-                        className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                        className="bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Next
                     </button>
@@ -481,7 +481,7 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                         </div>
                     ))}
                     {data.images.length < 20 && (
-                        <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#E85A28] hover:bg-orange-50 transition-all text-zinc-400 hover:text-[#E85A28] relative overflow-hidden">
+                        <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-400 hover:text-[#f45c03] relative overflow-hidden">
                             <>
                                 <Plus size={24} />
                                 <span className="text-[10px] font-black uppercase">{uploading ? "Uploading..." : data.images.length === 0 ? "Upload Image" : "Add Photo"}</span>
@@ -519,7 +519,7 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                 <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={onBack}
-                        className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                        className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Back
                     </button>
@@ -527,7 +527,7 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
                         <button 
                             onClick={postAd} 
                             disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
-                            className="w-full sm:w-auto bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
+                            className="w-full sm:w-auto bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
                         >
                             {submitting ? "Posting..." : "Post Ad"}
                         </button>
@@ -540,10 +540,10 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
 
 function PromoteCard({ title, price, desc }: { title: string, price: string, desc: string }) {
     return (
-        <div className="border border-[#E85A28]/30 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer group">
+        <div className="border border-[#f45c03]/30 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer group">
             <div className="flex justify-between items-center mb-4">
                 <h5 className="text-black font-black text-lg">{title}</h5>
-                <span className="text-[#E85A28] font-black text-xl">{price}</span>
+                <span className="text-[#f45c03] font-black text-xl">{price}</span>
             </div>
             <div className="flex gap-2 mb-4">
                 {["7 days", "14 days", "30 days"].map(d => (
@@ -556,3 +556,4 @@ function PromoteCard({ title, price, desc }: { title: string, price: string, des
         </div>
     )
 }
+

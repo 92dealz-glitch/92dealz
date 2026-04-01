@@ -78,7 +78,7 @@ export default function VerificationPage() {
                             <div className="flex flex-col gap-4">
                                 <label className="text-black font-black text-lg">Upload a valid government ID (NIN, Passport, Driver&apos;s License)</label>
                                 <div className="relative">
-                                    <select className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white">
+                                    <select className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white">
                                         <option>NIN</option>
                                         <option>Passport</option>
                                         <option>Driver&apos;s License</option>
@@ -89,7 +89,7 @@ export default function VerificationPage() {
                                 </div>
                             </div>
 
-                            <label className="aspect-[2/1] max-w-sm rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#E85A28] hover:bg-orange-50 transition-all text-zinc-400 hover:text-[#E85A28] group">
+                            <label className="aspect-[2/1] max-w-sm rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-400 hover:text-[#f45c03] group">
                                 {uploading ? (
                                     <Loader2 className="animate-spin" size={32} />
                                 ) : (
@@ -173,3 +173,4 @@ export default function VerificationPage() {
 function ChevronDownIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
+

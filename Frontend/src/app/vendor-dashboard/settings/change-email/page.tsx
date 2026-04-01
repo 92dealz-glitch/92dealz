@@ -15,13 +15,14 @@ export default function ChangeEmailPage() {
 
                 <div className="flex flex-col gap-2">
                     <label className="text-black font-black text-[15px]">New email address</label>
-                    <input type="email" placeholder="Enter new email" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" />
+                    <input type="email" placeholder="Enter new email" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors" />
                 </div>
 
-                <button className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]">
+                <button className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]">
                     Verify & update
                 </button>
             </form>
         </div>
     );
 }
+

@@ -10,21 +10,21 @@ export default function QuickActions() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Link 
                     href="/vendor-dashboard/add-product"
-                    className="flex items-center justify-center gap-2 bg-[#E85A28] hover:bg-[#D44D1F] text-white font-bold py-3 px-4 rounded-md transition-all duration-200"
+                    className="flex items-center justify-center gap-2 bg-[#f45c03] hover:bg-[#f45c03] text-white font-bold py-3 px-4 rounded-md transition-all duration-200"
                 >
                     <PlusCircle size={20} />
                     Add New Product
                 </Link>
                 <Link 
                     href="/vendor-dashboard/my-ads"
-                    className="flex items-center justify-center gap-2 bg-white border border-zinc-300 text-zinc-800 font-bold py-3 px-4 rounded-md transition-all duration-200 hover:border-[#E85A28] hover:text-[#E85A28]"
+                    className="flex items-center justify-center gap-2 bg-white border border-zinc-300 text-zinc-800 font-bold py-3 px-4 rounded-md transition-all duration-200 hover:border-[#f45c03] hover:text-[#f45c03]"
                 >
                     <Package size={20} />
                     View My Ads
                 </Link>
                 <Link 
                     href="/vendor-dashboard/analytics"
-                    className="flex items-center justify-center gap-2 bg-white border border-zinc-300 text-zinc-800 font-bold py-3 px-4 rounded-md transition-all duration-200 hover:border-[#E85A28] hover:text-[#E85A28]"
+                    className="flex items-center justify-center gap-2 bg-white border border-zinc-300 text-zinc-800 font-bold py-3 px-4 rounded-md transition-all duration-200 hover:border-[#f45c03] hover:text-[#f45c03]"
                 >
                     <BarChart2 size={20} />
                     View Analytics
@@ -33,3 +33,4 @@ export default function QuickActions() {
         </div>
     );
 }
+

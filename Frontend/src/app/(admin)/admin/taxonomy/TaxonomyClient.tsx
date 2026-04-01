@@ -1,4 +1,4 @@
-ï»¿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { 
@@ -80,14 +80,14 @@ export default function TaxonomyManagementPage() {
   if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading taxonomy...</div>;
 
   const categoryIcons: Record<string, string> = {
-    "Electronics": "â‰¡Æ’Ã´â–’",
-    "Fashion": "â‰¡Æ’Ã¦Ã¹",
-    "Home & Kitchen": "â‰¡Æ’Ã¬â”‚",
-    "Phones": "â‰¡Æ’Ã´â–’",
-    "Gaming": "â‰¡Æ’Ã„Â«",
-    "Vehicle": "â‰¡Æ’ÃœÃ¹",
-    "Babies & Kids": "â‰¡Æ’Âºâ••",
-    "Health & Beauty": "â‰¡Æ’Ã†Ã¤",
+    "Electronics": "=ƒô¦",
+    "Fashion": "=ƒæù",
+    "Home & Kitchen": "=ƒì¦",
+    "Phones": "=ƒô¦",
+    "Gaming": "=ƒÄ«",
+    "Vehicle": "=ƒÜù",
+    "Babies & Kids": "=ƒº+",
+    "Health & Beauty": "=ƒÆä",
   };
 
   return (
@@ -99,7 +99,7 @@ export default function TaxonomyManagementPage() {
           <p className="text-zinc-500 text-sm mt-1 font-medium italic">Manage categories, tags and merchant profiles</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#E85A28] text-[#E85A28] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[#f45c03] text-[#f45c03] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
             <Download size={16} />
             Export
           </button>
@@ -120,7 +120,7 @@ export default function TaxonomyManagementPage() {
               onClick={() => setActiveTab(tab as any)}
               className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${
                 activeTab === tab 
-                  ? "bg-white text-[#E85A28] shadow-sm shadow-orange-500/10" 
+                  ? "bg-white text-[#f45c03] shadow-sm shadow-orange-500/10" 
                   : "text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100/50"
               }`}
             >
@@ -141,7 +141,7 @@ export default function TaxonomyManagementPage() {
             </div>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center justify-center gap-2 bg-[#E85A28] text-white px-6 py-2.5 rounded-lg hover:bg-[#D14F23] transition-colors font-bold shadow-md shadow-[#E85A28]/20 active:scale-95"
+              className="flex items-center justify-center gap-2 bg-[#f45c03] text-white px-6 py-2.5 rounded-lg hover:bg-[#f45c03] transition-colors font-bold shadow-md shadow-[#f45c03]/20 active:scale-95"
             >
               <Plus size={20} />
               Add {activeTab.slice(0, -1)}
@@ -165,7 +165,7 @@ export default function TaxonomyManagementPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <span className="w-10 h-10 flex items-center justify-center bg-zinc-100 rounded-lg text-lg grayscale group-hover:grayscale-0 transition-all">
-                          {categoryIcons[cat.name] || "â‰¡Æ’Ã´Âª"}
+                          {categoryIcons[cat.name] || "=ƒôª"}
                         </span>
                         <span className="text-sm font-black text-zinc-900">{cat.name}</span>
                       </div>
@@ -231,3 +231,4 @@ export default function TaxonomyManagementPage() {
     </div>
   );
 }
+

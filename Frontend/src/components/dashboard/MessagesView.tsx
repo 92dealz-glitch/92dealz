@@ -8,7 +8,7 @@ export default function MessagesView() {
             <h2 className="text-black font-black text-2xl mb-12 self-start">Messages</h2>
 
             <div className="flex flex-col items-center max-w-sm">
-                <div className="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center mb-10 text-[#E85A28]">
+                <div className="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center mb-10 text-[#f45c03]">
                     <MessageCircleIcon />
                 </div>
 
@@ -17,7 +17,7 @@ export default function MessagesView() {
                     Stay connected with potential buyers through our messaging system
                 </p>
 
-                <button className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-3.5 px-12 rounded-lg transition-all shadow-lg shadow-orange-100 min-w-[200px]">
+                <button className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-3.5 px-12 rounded-lg transition-all shadow-lg shadow-orange-100 min-w-[200px]">
                     View Messages
                 </button>
             </div>
@@ -32,3 +32,4 @@ function MessageCircleIcon() {
         </svg>
     )
 }
+

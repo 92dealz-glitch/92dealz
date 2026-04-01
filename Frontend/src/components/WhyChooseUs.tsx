@@ -9,7 +9,7 @@ export default function WhyChooseUs() {
       <section className="w-full bg-white py-8 md:py-14">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 text-center">
           <h3 className="text-lg sm:text-2xl md:text-[36px] font-extrabold mb-2">
-            Why <span className="font-extrabold">Choose <span className="text-[#FF6B35]">Us?</span></span>
+            Why <span className="font-extrabold">Choose <span className="text-[#f45c03]">Us?</span></span>
           </h3>
           <p className="text-xs sm:text-sm md:text-base text-gray-600 mb-6">Join thousands of happy buyers and sellers across Nigeria</p>
 
@@ -46,3 +46,4 @@ export default function WhyChooseUs() {
     </>
   );
 }
+

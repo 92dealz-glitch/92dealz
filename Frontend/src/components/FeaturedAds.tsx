@@ -34,25 +34,27 @@ export default function FeaturedAds() {
   return (
     <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-16 mt-8">
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-3xl font-extrabold text-[#FF6B35]">Featured Ads</h3>
-        <div className="hidden sm:block h-1 flex-1 bg-gradient-to-r from-[#FF6B35]/20 to-transparent ml-8 rounded-full" />
+        <h3 className="text-3xl font-extrabold text-[#f45c03]">Featured Ads</h3>
+        <div className="hidden sm:block h-1 flex-1 bg-gradient-to-r from-[#f45c03]/20 to-transparent ml-8 rounded-full" />
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[1fr] items-stretch">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[1fr] items-stretch">
         {featured.map((it) => (
-          <AdCard 
-            key={it.id} 
-            item={it} 
-            className="!border-[#FF6B35]/40 shadow-md hover:shadow-2xl hover:-translate-y-1"
-          />
+          <div key={it.id} className="bg-[#f45c03] p-1.5 rounded-[22px] shadow-lg transition-all hover:scale-[1.02]">
+            <AdCard 
+              item={it} 
+              className="!border-none !shadow-none h-full"
+            />
+          </div>
         ))}
       </div>
       
       <div className="mt-10 flex justify-center">
-        <button className="bg-gradient-to-r from-[#FF6B35] to-[#E85A28] px-12 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-100 text-white hover:scale-105 active:scale-95 transition-all">
+        <button className="bg-gradient-to-r from-[#f45c03] to-[#f45c03] px-12 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-100 text-white hover:scale-105 active:scale-95 transition-all">
           Explore Premium Deals
         </button>
       </div>
     </section>
   );
 }
+

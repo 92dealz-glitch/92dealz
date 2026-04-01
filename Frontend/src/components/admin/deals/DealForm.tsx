@@ -303,7 +303,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
               ) : (
                 <label className="flex flex-col items-center cursor-pointer w-full h-full">
                   <div className="w-16 h-16 bg-white border border-zinc-200 rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                    <Upload size={24} className="text-[#E85A28]" />
+                    <Upload size={24} className="text-[#f45c03]" />
                   </div>
                   <span className="text-sm text-zinc-900 font-bold mb-1">Click to upload product image</span>
                   <span className="text-xs text-zinc-500 font-medium">JPG, PNG, GIF (Max size 5MB)</span>
@@ -357,7 +357,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 bg-[#E85A28] text-white py-3 rounded-lg font-bold hover:bg-[#D14F23] transition-colors shadow-md shadow-[#E85A28]/20 active:scale-95 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-[#f45c03] text-white py-3 rounded-lg font-bold hover:bg-[#f45c03] transition-colors shadow-md shadow-[#f45c03]/20 active:scale-95 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                   {type === "add" ? "Create Deal" : "Save Changes"}
@@ -396,3 +396,4 @@ export default function DealForm({ initialData, type }: DealFormProps) {
     </form>
   );
 }
+

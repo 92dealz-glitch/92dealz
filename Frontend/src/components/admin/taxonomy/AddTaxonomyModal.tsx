@@ -99,7 +99,7 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
                   ) : (
                     <label className="flex flex-col items-center cursor-pointer w-full text-center">
                       <div className="w-12 h-12 bg-white border border-zinc-200 rounded-xl flex items-center justify-center mb-3 shadow-sm">
-                        <Upload size={20} className="text-[#E85A28]" />
+                        <Upload size={20} className="text-[#f45c03]" />
                       </div>
                       <span className="text-xs text-zinc-900 font-bold">Upload image</span>
                       <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
@@ -119,7 +119,7 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
               </button>
               <button 
                 type="submit"
-                className="flex-[2] py-3 bg-[#E85A28] text-white rounded-xl font-bold hover:bg-[#D14F23] transition-colors shadow-lg shadow-[#E85A28]/20 active:scale-95"
+                className="flex-[2] py-3 bg-[#f45c03] text-white rounded-xl font-bold hover:bg-[#f45c03] transition-colors shadow-lg shadow-[#f45c03]/20 active:scale-95"
               >
                 Add {type.charAt(0).toUpperCase() + type.slice(1)}
               </button>
@@ -130,3 +130,4 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
     </div>
   );
 }
+

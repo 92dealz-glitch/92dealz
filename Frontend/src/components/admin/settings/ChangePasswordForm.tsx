@@ -54,7 +54,7 @@ export default function ChangePasswordForm() {
       <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-bold">
         <div className="flex items-center gap-4">
           <div className="p-2.5 bg-white rounded-xl border border-zinc-100 shadow-sm">
-            <Lock size={20} className="text-[#E85A28]" />
+            <Lock size={20} className="text-[#f45c03]" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-zinc-900">Password</span>
@@ -142,7 +142,7 @@ export default function ChangePasswordForm() {
           <button 
             type="submit"
             disabled={isLoading}
-            className="px-6 py-2 bg-[#E85A28] text-white rounded-lg hover:bg-[#D14F23] transition-colors shadow-sm disabled:opacity-50 inline-flex items-center gap-2"
+            className="px-6 py-2 bg-[#f45c03] text-white rounded-lg hover:bg-[#f45c03] transition-colors shadow-sm disabled:opacity-50 inline-flex items-center gap-2"
           >
             {isLoading && <Loader2 size={16} className="animate-spin" />}
             {isLoading ? "Changing..." : "Change Password"}
@@ -152,3 +152,4 @@ export default function ChangePasswordForm() {
     </div>
   );
 }
+

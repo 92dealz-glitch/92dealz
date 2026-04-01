@@ -134,7 +134,7 @@ export default function VendorManagement() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-[#E85A28] text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors shadow-sm"
+          className="flex items-center gap-2 bg-[#f45c03] text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors shadow-sm"
         >
           <UserPlus size={18} />
           Add New Vendor
@@ -310,7 +310,7 @@ export default function VendorManagement() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#E85A28] text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-all shadow-md disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                className="w-full bg-[#f45c03] text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-all shadow-md disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
                   <>
@@ -426,3 +426,4 @@ export default function VendorManagement() {
     </div>
   );
 }
+

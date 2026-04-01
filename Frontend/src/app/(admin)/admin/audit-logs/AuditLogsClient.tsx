@@ -73,7 +73,7 @@ export default function AuditLogsPage() {
         <div className="flex items-center gap-3">
           <button 
             onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 border border-[#E85A28] text-[#E85A28] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95"
+            className="flex items-center gap-2 px-4 py-2 border border-[#f45c03] text-[#f45c03] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95"
           >
             <Download size={16} />
             Export
@@ -103,7 +103,7 @@ export default function AuditLogsPage() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Total Actions" value={filteredLogs.length} icon={Shield} color="orange" bgColor="bg-[#E85A28]" iconColor="text-white" />
+          <StatCard label="Total Actions" value={filteredLogs.length} icon={Shield} color="orange" bgColor="bg-[#f45c03]" iconColor="text-white" />
           <StatCard label="Today" value="2" icon={Eye} color="green" bgColor="bg-[#22C55E]" iconColor="text-white" />
           <StatCard label="Active Admins" value="1" icon={FileCheck} color="yellow" bgColor="bg-[#FACC15]" iconColor="text-white" />
           <StatCard label="System Actions" value="1" icon={Cpu} color="purple" bgColor="bg-[#A855F7]" iconColor="text-white" />
@@ -192,3 +192,4 @@ export default function AuditLogsPage() {
     </div>
   );
 }
+

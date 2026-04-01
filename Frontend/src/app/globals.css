@@ -10,6 +10,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  --color-orange-50: #fff7ed;
+  --color-orange-100: #ffedd5;
+  --color-orange-200: #fed7aa;
+  --color-orange-300: #f45c03;
+  --color-orange-400: #f45c03;
+  --color-orange-500: #f45c03;
+  --color-orange-600: #f45c03;
+  --color-orange-700: #f45c03;
+  --color-orange-800: #f45c03;
+  --color-orange-900: #f45c03;
+  --color-orange-950: #431407;
 }
 
 body {

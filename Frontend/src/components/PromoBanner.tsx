@@ -58,14 +58,14 @@ export default function PromoBanner() {
                 <>
                   <div className="absolute top-10 left-10 z-10 grid grid-cols-5 gap-2 hidden lg:grid opacity-20">
                     {[...Array(20)].map((_, i) => (
-                      <div key={i} className="w-2.5 h-2.5 rounded-full bg-[#FF6B35]" />
+                      <div key={i} className="w-2.5 h-2.5 rounded-full bg-[#f45c03]" />
                     ))}
                   </div>
-                  <div className="absolute bottom-0 left-0 w-32 h-16 bg-[#FF6B35]/10 z-10 hidden lg:block rounded-tr-3xl" />
+                  <div className="absolute bottom-0 left-0 w-32 h-16 bg-[#f45c03]/10 z-10 hidden lg:block rounded-tr-3xl" />
                   <div 
                     className="absolute inset-0 lg:left-[45%] left-[38%] sm:left-[42%]"
                     style={{
-                      background: "linear-gradient(135deg, #FF7A4D 0%, #FF6339 50%, #E85A2E 100%)",
+                      background: "linear-gradient(135deg, #f45c03 0%, #f45c03 50%, #f45c03 100%)",
                       clipPath: "polygon(15% 0, 100% 0, 100% 100%, 0% 100%)",
                     }}
                   />
@@ -121,7 +121,7 @@ export default function PromoBanner() {
                       </span>
                       <span className="inline-flex items-center gap-2 font-black text-[1.2rem] sm:text-[2.2rem] lg:text-[4.2rem] leading-[1.05] tracking-tight">
                         <span className="text-[1.1rem] sm:text-[2.2rem]">{banner.emoji}</span>
-                        <span className="text-[#FF6B35]">{banner.accent}</span>
+                        <span className="text-[#f45c03]">{banner.accent}</span>
                       </span>
                     </h1>
                   ) : (
@@ -151,7 +151,7 @@ export default function PromoBanner() {
                                px-6 py-2.5 sm:px-10 sm:py-3.5 lg:px-14 lg:py-4.5
                                rounded-full transition-all duration-300 ease-out hover:scale-[1.03] active:scale-[0.97]
                                ${banner.theme === 'orange' 
-                                 ? 'bg-[#FF6339] text-white shadow-[0_6px_20px_rgba(255,107,53,0.3)] hover:shadow-[0_12px_30px_rgba(255,107,53,0.4)] hover:bg-[#E85A2E]' 
+                                 ? 'bg-[#f45c03] text-white shadow-[0_6px_20px_rgba(255,107,53,0.3)] hover:shadow-[0_12px_30px_rgba(255,107,53,0.4)] hover:bg-[#f45c03]' 
                                  : 'bg-white text-emerald-700 border-2 border-emerald-600 shadow-[0_6px_20px_rgba(0,0,0,0.05)] hover:bg-emerald-50 hover:border-emerald-700'
                                }`}
                   >
@@ -182,4 +182,5 @@ export default function PromoBanner() {
     </section>
   );
 }
+
 

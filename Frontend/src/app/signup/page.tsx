@@ -294,7 +294,7 @@ export default function SignupPage() {
 
           {role === "vendor" && (
             <div className="flex items-start gap-2 mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" className="mt-0.5 shrink-0">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2" className="mt-0.5 shrink-0">
                 <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <p className="text-xs text-orange-700 leading-relaxed">
@@ -417,7 +417,7 @@ export default function SignupPage() {
 
             {role === "vendor" && (
               <div className="flex items-start gap-2 mb-5 p-3 bg-orange-50 border border-orange-200 rounded-xl">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" className="mt-0.5 shrink-0">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2" className="mt-0.5 shrink-0">
                   <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
                 <p className="text-xs text-orange-700 leading-relaxed">
@@ -493,3 +493,4 @@ export default function SignupPage() {
     </div>
   );
 }
+

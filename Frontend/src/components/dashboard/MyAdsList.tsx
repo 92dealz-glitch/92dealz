@@ -38,7 +38,7 @@ export default function MyAdsList() {
                 <h2 className="text-black font-black text-2xl">My Ads</h2>
                 <Link
                     href="/vendor-dashboard/add-product"
-                    className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-bold py-2.5 px-6 rounded-md flex items-center gap-2 transition-all duration-200"
+                    className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-bold py-2.5 px-6 rounded-md flex items-center gap-2 transition-all duration-200"
                 >
                     <Plus size={20} />
                     Add New
@@ -56,14 +56,14 @@ export default function MyAdsList() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`flex items-center gap-2 pb-4 font-bold text-[15px] transition-all relative ${activeTab === tab.id
-                                ? "text-[#E85A28]"
+                                ? "text-[#f45c03]"
                                 : "text-zinc-500 hover:text-black"
                             }`}
                     >
-                        <tab.icon size={18} className={activeTab === tab.id ? "text-[#E85A28]" : "text-zinc-400"} />
+                        <tab.icon size={18} className={activeTab === tab.id ? "text-[#f45c03]" : "text-zinc-400"} />
                         {tab.label}
                         {activeTab === tab.id && (
-                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E85A28]" />
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#f45c03]" />
                         )}
                     </button>
                 ))}
@@ -74,7 +74,7 @@ export default function MyAdsList() {
                 {loading && <div className="text-sm text-zinc-500">Loading...</div>}
                 {error && <div className="text-sm text-red-600">{error}</div>}
                 {items.map((ad) => (
-                    <div key={ad.id} className="flex flex-col md:flex-row gap-6 p-4 rounded-xl border border-zinc-100 hover:border-[#E85A28]/30 transition-all duration-300">
+                    <div key={ad.id} className="flex flex-col md:flex-row gap-6 p-4 rounded-xl border border-zinc-100 hover:border-[#f45c03]/30 transition-all duration-300">
                         <div className="relative w-full md:w-48 h-40 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-50 border border-zinc-100">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={ad.image_url || "/images/heroimage.svg"} alt={ad.title} className="absolute inset-0 w-full h-full object-cover" />
@@ -84,10 +84,10 @@ export default function MyAdsList() {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="text-black font-black text-lg mb-1">{ad.title}</h3>
-                                    <div className="text-[#E85A28] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
+                                    <div className="text-[#f45c03] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
                                     <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
                                         <span className="bg-zinc-100 px-2 py-0.5 rounded text-xs">{new Date(ad.createdAt || Date.now()).toLocaleDateString()}</span>
-                                        {ad.subcategory && <span className="text-[#E85A28] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
+                                        {ad.subcategory && <span className="text-[#f45c03] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
                                     </div>
                                 </div>
                                 <span className="bg-[#10B981] text-white px-3 py-1 rounded-md text-[11px] font-black uppercase">
@@ -109,7 +109,7 @@ export default function MyAdsList() {
                                             showAlert(e.message || "Action failed");
                                         }
                                     }}
-                                    className="flex items-center gap-2 border border-zinc-300 hover:border-[#E85A28] hover:text-[#E85A28] text-zinc-700 font-bold py-1.5 px-4 rounded-md text-sm transition-all">
+                                    className="flex items-center gap-2 border border-zinc-300 hover:border-[#f45c03] hover:text-[#f45c03] text-zinc-700 font-bold py-1.5 px-4 rounded-md text-sm transition-all">
                                     <Edit2 size={14} />
                                     Edit
                                 </button>
@@ -147,3 +147,4 @@ export default function MyAdsList() {
         </div>
     );
 }
+

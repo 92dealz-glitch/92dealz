@@ -36,7 +36,7 @@ function FilterSection({
         className="w-full flex items-center justify-between px-4 py-3.5"
         style={{ minHeight: 52 }}
       >
-        <span className="font-semibold text-base" style={{ color: "#f97316" }}>
+        <span className="font-semibold text-base" style={{ color: "#f45c03" }}>
           {label}
         </span>
         <span className="text-xl font-light leading-none" style={{ color: "#9ca3af" }}>
@@ -148,7 +148,7 @@ export default function CategoryListingClient({
             <button
               onClick={clearAll}
               className="font-bold text-sm hover:underline transition-all"
-              style={{ color: "#f97316" }}
+              style={{ color: "#f45c03" }}
             >
               Clear All
             </button>
@@ -222,7 +222,7 @@ export default function CategoryListingClient({
                 <button
                   onClick={() => setPage(1)}
                   className="flex-shrink-0 p-2.5 rounded-lg text-white shadow-md hover:shadow-orange-200 transition-all active:scale-95"
-                  style={{ background: "#f97316" }}
+                  style={{ background: "#f45c03" }}
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -263,7 +263,7 @@ export default function CategoryListingClient({
           {paged.length === 0 ? (
             <div className="p-12 bg-white border-2 border-dashed border-orange-100 rounded-3xl col-span-full text-center">
               <div className="mx-auto w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>

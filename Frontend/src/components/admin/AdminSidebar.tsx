@@ -81,7 +81,7 @@ export default function AdminSidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                 isActive
-                  ? "bg-[#E85A28] text-white shadow-md shadow-[#E85A28]/20"
+                  ? "bg-[#f45c03] text-white shadow-md shadow-[#f45c03]/20"
                   : "text-zinc-600 hover:bg-zinc-50 hover:text-black"
               }`}
             >
@@ -117,4 +117,5 @@ export default function AdminSidebar() {
     </div>
   );
 }
+
 

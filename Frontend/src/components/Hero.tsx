@@ -101,14 +101,14 @@ export default function Hero() {
               <span className="hidden lg:block drop-shadow-sm">
                 <span className="sm:whitespace-nowrap">
                   Connecting{" "}
-                  <span className="bg-gradient-to-r from-[#FF6B35] to-[#f97316] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#f45c03] to-[#f45c03] bg-clip-text text-transparent">
                     Smart
                   </span>
                 </span>
                 <br />
                 <span className="sm:whitespace-nowrap">
                   Buyers and{" "}
-                  <span className="bg-gradient-to-r from-[#FF6B35] to-[#f97316] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#f45c03] to-[#f45c03] bg-clip-text text-transparent">
                     Sellers
                   </span>
                 </span>
@@ -118,7 +118,7 @@ export default function Hero() {
 
               <span className="block lg:hidden">
                 Connecting smart buyers and Sellers <br/>
-                <span className="text-[#FF6B35]">Across Nigeria</span>
+                <span className="text-[#f45c03]">Across Nigeria</span>
               </span>
             </h1>
 
@@ -135,7 +135,7 @@ export default function Hero() {
                 href="/vendor-dashboard/add-product"
                 className="
                   w-full sm:w-auto
-                  bg-[#FF6B35] hover:bg-[#E85A28]
+                  bg-[#f45c03] hover:bg-[#f45c03]
                   text-white font-bold text-[16px]
                   px-10 py-4
                   rounded-xl
@@ -154,8 +154,8 @@ export default function Hero() {
                   items-center justify-center
                   w-14 h-14 rounded-full
                   border-2 border-zinc-200
-                  bg-white hover:border-[#FF6B35]
-                  text-zinc-400 hover:text-[#FF6B35]
+                  bg-white hover:border-[#f45c03]
+                  text-zinc-400 hover:text-[#f45c03]
                   transition-all duration-300
                   cursor-pointer group
                 "
@@ -201,3 +201,4 @@ export default function Hero() {
     </section>
   );
 }
+

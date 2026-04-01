@@ -581,8 +581,8 @@ export default function Navbar() {
                 <Heart size={22} />
                 <span className="text-[10px] mt-1 text-center">Favorite</span>
               </Link>
-              <Link href="/vendor-dashboard/add-product" className="flex flex-col items-center text-sm text-[#FF6B35]">
-                <div className="bg-[#FF6B35] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white relative z-50">
+              <Link href="/vendor-dashboard/add-product" className="flex flex-col items-center text-sm text-[#f45c03]">
+                <div className="bg-[#f45c03] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white relative z-50">
                   <Plus size={24} className="text-white" />
                 </div>
                 <span className="text-[10px] mt-1 text-center">Sell</span>
@@ -822,3 +822,4 @@ function UserAvatarCircle({ small = false }: { small?: boolean }) {
 function LogoutButton(props: any) {
   return <LogOut {...props} />;
 }
+

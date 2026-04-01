@@ -27,7 +27,7 @@ export default function ChangePhoneForm() {
       <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-bold">
         <div className="flex items-center gap-4">
           <div className="p-2.5 bg-white rounded-xl border border-zinc-100 shadow-sm">
-            <Phone size={20} className="text-[#E85A28]" />
+            <Phone size={20} className="text-[#f45c03]" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-zinc-900">Phone Number</span>
@@ -74,7 +74,7 @@ export default function ChangePhoneForm() {
           </button>
           <button 
             type="submit"
-            className="px-6 py-2 bg-[#E85A28] text-white rounded-lg hover:bg-[#D14F23] transition-colors shadow-sm"
+            className="px-6 py-2 bg-[#f45c03] text-white rounded-lg hover:bg-[#f45c03] transition-colors shadow-sm"
           >
             Change Phone
           </button>
@@ -83,3 +83,4 @@ export default function ChangePhoneForm() {
     </div>
   );
 }
+

@@ -105,7 +105,7 @@ export default function PersonalDetailsPage() {
                           </div>
                         )}
                     </div>
-                    <label className="absolute bottom-0 right-0 bg-[#E85A28] text-white p-2.5 rounded-full border-4 border-white shadow-md hover:bg-[#D44D1F] transition-all cursor-pointer">
+                    <label className="absolute bottom-0 right-0 bg-[#f45c03] text-white p-2.5 rounded-full border-4 border-white shadow-md hover:bg-[#f45c03] transition-all cursor-pointer">
                         <CameraIcon />
                         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={onPick} />
                     </label>
@@ -115,7 +115,7 @@ export default function PersonalDetailsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="flex flex-col gap-2">
                             <label className="text-black font-black text-[15px]">Full Name</label>
-                            <input type="text" name="name" value={profile.name} onChange={handleChange} required className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="Enter full name" />
+                            <input type="text" name="name" value={profile.name} onChange={handleChange} required className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors" placeholder="Enter full name" />
                         </div>
                         <div className="flex flex-col gap-2">
                             <label className="text-black font-black text-[15px]">Email Address (Read Only)</label>
@@ -126,11 +126,11 @@ export default function PersonalDetailsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="flex flex-col gap-2">
                             <label className="text-black font-black text-[15px]">Phone Number</label>
-                            <input type="text" name="phone" value={profile.phone} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="+234 8100909 000" />
+                            <input type="text" name="phone" value={profile.phone} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors" placeholder="+234 8100909 000" />
                         </div>
                         <div className="flex flex-col gap-2">
                             <label className="text-black font-black text-[15px]">Business Name</label>
-                            <input type="text" name="businessName" value={profile.businessName} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="e.g. Adaeze Fashion House" />
+                            <input type="text" name="businessName" value={profile.businessName} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors" placeholder="e.g. Adaeze Fashion House" />
                         </div>
                     </div>
 
@@ -138,7 +138,7 @@ export default function PersonalDetailsPage() {
                         <div className="flex flex-col gap-2">
                             <label className="text-black font-black text-[15px]">Business Category</label>
                             <div className="relative">
-                                <select name="businessCategory" value={profile.businessCategory} onChange={handleChange} className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors bg-white">
+                                <select name="businessCategory" value={profile.businessCategory} onChange={handleChange} className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white">
                                     <option value="">Select a category</option>
                                     {categories.map(c => (
                                         <option key={c.id} value={c.id}>{c.title}</option>
@@ -151,7 +151,7 @@ export default function PersonalDetailsPage() {
                         </div>
                         <div className="flex flex-col gap-2">
                             <label className="text-black font-black text-[15px]">Business Address</label>
-                            <input type="text" name="businessAddress" value={profile.businessAddress} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors" placeholder="e.g. 14 Broad Street, Lagos" />
+                            <input type="text" name="businessAddress" value={profile.businessAddress} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors" placeholder="e.g. 14 Broad Street, Lagos" />
                         </div>
                     </div>
 
@@ -163,12 +163,12 @@ export default function PersonalDetailsPage() {
                             onChange={handleChange}
                             rows={4}
                             placeholder="Write a short description about yourself or your business"
-                            className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors resize-none"
+                            className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors resize-none"
                         />
                     </div>
 
                     <div className="flex justify-start pt-8">
-                        <button type="submit" disabled={saving} className="bg-[#E85A28] hover:bg-[#D44D1F] disabled:opacity-50 text-white font-black py-4 px-16 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[240px]">
+                        <button type="submit" disabled={saving} className="bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-16 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[240px]">
                             {saving ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
@@ -185,3 +185,4 @@ function CameraIcon() {
 function ChevronDownIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
+

@@ -18,7 +18,7 @@ export default function SettingsPage() {
           <h1 className="text-2xl font-bold text-zinc-900">Settings</h1>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#E85A28] text-[#E85A28] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[#f45c03] text-[#f45c03] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
             <Download size={16} />
             Export
           </button>
@@ -49,3 +49,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

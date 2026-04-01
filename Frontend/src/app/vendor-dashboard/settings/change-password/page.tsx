@@ -13,7 +13,7 @@ export default function ChangePasswordPage() {
                 <PasswordField label="New password" placeholder="Enter new password" />
                 <PasswordField label="Confirm new password" placeholder="Re-enter new password" />
 
-                <button className="bg-[#E85A28] hover:bg-[#D44D1F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]">
+                <button className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]">
                     Update password
                 </button>
             </form>
@@ -30,7 +30,7 @@ function PasswordField({ label, placeholder }: { label: string, placeholder: str
                 <input
                     type={show ? "text" : "password"}
                     placeholder={placeholder}
-                    className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#E85A28] transition-colors pr-12"
+                    className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors pr-12"
                 />
                 <button 
                     type="button" 
@@ -43,3 +43,4 @@ function PasswordField({ label, placeholder }: { label: string, placeholder: str
         </div>
     )
 }
+

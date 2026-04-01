@@ -69,7 +69,7 @@ export default function VendorDashboardLayout({
                         <div className="flex flex-col gap-3">
                             <button 
                                 onClick={() => router.push(isUpgrade ? "/account-settings" : "/")}
-                                className="px-6 py-3 bg-[#E85A28] text-white font-bold rounded-xl hover:bg-[#D14F23] transition-colors"
+                                className="px-6 py-3 bg-[#f45c03] text-white font-bold rounded-xl hover:bg-[#f45c03] transition-colors"
                             >
                                 {isUpgrade ? "Go to Account Settings" : "Return to Homepage"}
                             </button>
@@ -111,4 +111,5 @@ export default function VendorDashboardLayout({
         </div>
     );
 }
+
 
