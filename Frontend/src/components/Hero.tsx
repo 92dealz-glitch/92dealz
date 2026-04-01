@@ -5,11 +5,11 @@ import Link from "next/link";
 import CategoryBar from "./CategoryBar";
 
 const HERO_IMAGES = [
-  "/images/heroimagenew.png",
-  "/images/heroimage3.png",
-  "/images/heroimage4.png",
-  "/images/heroimage5.png",
-  "/images/heroimage6.png",
+  "https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037596/heroimagenew_rmenuc.png",
+  "https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037497/heroimage3_ihpozi.png",
+  "https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037522/heroimage4_biz6z7.png",
+  "https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037574/heroimage5_lzfzj0.png",
+  "https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037580/heroimage6_xulxg9.png",
 ];
 
 export default function Hero() {
@@ -41,11 +41,11 @@ export default function Hero() {
   return (
     <section className="relative bg-white overflow-hidden overflow-x-hidden min-h-[620px] lg:min-h-0">
       
-      {/* PERMANENT FAINTED BACKGROUND - Increased visibility */}
+      {/* PERMANENT FAINTED BACKGROUND - Cloudinary Source */}
       <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-[0.22] sm:opacity-[0.3]"
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.12] sm:opacity-[0.15]"
         style={{
-          backgroundImage: "url('/images/mapHeroImagebackground.png')",
+          backgroundImage: "url('https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037719/mapHeroImagebackground_foq9rd.png')",
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat"
