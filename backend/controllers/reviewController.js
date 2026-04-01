@@ -73,11 +73,20 @@ exports.deleteReviewAdmin = async (req, res, next) => {
         user_id: reviewer_id,
         type: 'REVIEW_REMOVED',
         title: 'Review Removed by Moderator',
-        message: 'Your recent review was removed by an administrator for violating our community guidelines or terms of service.',
+        message: 'Your recent review was removed by an administrator for violating community guidelines.',
         link: '/'
       });
+      
+      // Also notify the vendor that a review was removed from their profile
+      await Notification.create({
+        user_id: vendor_id,
+        type: 'REVIEW_MODERATED',
+        title: 'Review Removed from your Profile',
+        message: 'A review left on your profile was removed by a moderator for policy violations.',
+        link: '/seller/' + vendor_id
+      });
     } catch (err) {
-      console.error("Failed to send review removal notification", err);
+      console.error("Failed to send review removal notifications", err);
     }
 
     await review.destroy();
