@@ -65,7 +65,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-8 sm:pt-12 lg:pt-24 pb-12 lg:pb-16 mt-2 lg:mt-0">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-2 sm:pt-8 lg:pt-24 pb-12 lg:pb-16 mt-0 lg:mt-0">
 
         {/* MOBILE CAROUSEL */}
         <div className="absolute inset-0 flex justify-center lg:hidden pointer-events-none -translate-y-8">
@@ -85,18 +85,18 @@ export default function Hero() {
                   />
                 ) : (
                   <div className="relative w-full flex justify-center items-end px-4">
-                    <div className="relative w-1/2 h-72 -mr-16">
+                    <div className="relative w-1/2 h-[320px] z-20 -mr-20">
                       <Image
                         src={slide.images[0]}
-                        alt="Person 1"
+                        alt="Woman"
                         fill
                         className="object-contain object-bottom"
                       />
                     </div>
-                    <div className="relative w-1/2 h-80 z-10">
+                    <div className="relative w-1/2 h-[280px] z-10">
                       <Image
                         src={slide.images[1]}
-                        alt="Person 2"
+                        alt="Man"
                         fill
                         className="object-contain object-bottom"
                       />
@@ -186,8 +186,8 @@ export default function Hero() {
                     />
                   ) : (
                     <div className="relative w-full h-full flex justify-center items-end">
-                      <div className="relative w-full h-full flex items-end justify-center">
-                        <div className="relative w-1/2 h-[95%] -mr-40 translate-y-4">
+                      <div className="relative w-full h-full flex items-end justify-center overflow-visible">
+                        <div className="relative w-1/2 h-[110%] -mr-48 translate-y-6 z-20">
                            <Image
                             src={slide.images[0]}
                             alt="Woman"
