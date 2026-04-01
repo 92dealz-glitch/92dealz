@@ -80,7 +80,7 @@ export default function AdCard({ item, className = "" }: Props) {
 
         <div className="mt-2 flex-1 min-h-[50px]">
           <p className="text-orange-600 font-extrabold text-[13px] sm:text-base">{item.price}</p>
-          <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm line-clamp-1 sm:line-clamp-2 leading-tight">{item.title}</h4>
+          <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm sm:line-clamp-2 leading-tight break-words">{item.title}</h4>
         </div>
 
         <div className="mt-4 flex items-center justify-between">
@@ -99,13 +99,13 @@ export default function AdCard({ item, className = "" }: Props) {
             )}
           </div>
 
-          <div className="text-[10px] sm:text-xs text-gray-500 font-bold bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] sm:max-w-none">
+          <div className="text-[10px] sm:text-xs text-gray-500 font-bold bg-gray-100 px-2 py-0.5 rounded-full break-words max-w-[80px] sm:max-w-none text-center">
             {item.condition === "Brand New" ? "New" : (item.condition ?? "New")}
           </div>
         </div>
 
         <div className="mt-2 flex items-center justify-between text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
-          <div className="truncate max-w-[60px] sm:max-w-none">{item.location ?? "Nigeria"}</div>
+          <div className="break-words max-w-[60px] sm:max-w-none">{item.location ?? "Nigeria"}</div>
           <div className="flex items-center gap-1">
             <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span>views</span></span>
           </div>

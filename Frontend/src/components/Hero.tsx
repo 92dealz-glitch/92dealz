@@ -85,7 +85,7 @@ export default function Hero() {
                   />
                 ) : (
                   <div className="relative w-full flex justify-center items-end px-4">
-                    <div className="relative w-1/2 h-[320px] z-20 -mr-20">
+                    <div className="relative w-1/2 h-[340px] z-20 -mr-20">
                       <Image
                         src={slide.images[0]}
                         alt="Woman"
@@ -93,7 +93,7 @@ export default function Hero() {
                         className="object-contain object-bottom"
                       />
                     </div>
-                    <div className="relative w-1/2 h-[280px] z-10">
+                    <div className="relative w-1/2 h-[340px] z-10">
                       <Image
                         src={slide.images[1]}
                         alt="Man"
@@ -187,7 +187,7 @@ export default function Hero() {
                   ) : (
                     <div className="relative w-full h-full flex justify-center items-end">
                       <div className="relative w-full h-full flex items-end justify-center overflow-visible">
-                        <div className="relative w-1/2 h-[110%] -mr-48 translate-y-6 z-20">
+                        <div className="relative w-1/2 h-[110%] -mr-48 z-20">
                            <Image
                             src={slide.images[0]}
                             alt="Woman"
@@ -195,7 +195,7 @@ export default function Hero() {
                             className="object-contain object-bottom"
                           />
                         </div>
-                        <div className="relative w-1/2 h-[100%] z-10">
+                        <div className="relative w-1/2 h-[110%] z-10">
                           <Image
                             src={slide.images[1]}
                             alt="Man"
