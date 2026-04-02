@@ -188,26 +188,37 @@ export default function ProductPage({ params }: Props) {
         showAlert("Please login to send a message", "Authentication Required");
         return;
       }
-      const res = await fetch(`${API_BASE}/messages`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          to_user_id: Number(product.sellerId),
-          deal_id: Number(product.id),
-          content: finalMsg.trim(),
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        showAlert("Message sent successfully!", "Message Sent");
+
+      if (product.sellerPhone) {
+        const cleanPhone = product.sellerPhone.replace(/\D/g, '');
+        const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(finalMsg.trim())}`;
+        window.open(waUrl, '_blank');
+        try { await logContactView(Number(product.id)); } catch {}
         setMessageModal(false);
         setMessageText("");
-        try { await logContactView(Number(product.id)); } catch {}
+        showAlert("Redirecting to WhatsApp...", "Redirecting");
       } else {
-        showAlert(data.message || "Failed to send message");
+        const res = await fetch(`${API_BASE}/messages`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            to_user_id: Number(product.sellerId),
+            deal_id: Number(product.id),
+            content: finalMsg.trim(),
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAlert("Message sent successfully!", "Message Sent");
+          setMessageModal(false);
+          setMessageText("");
+          try { await logContactView(Number(product.id)); } catch {}
+        } else {
+          showAlert(data.message || "Failed to send message");
+        }
       }
     } catch (err) {
       showAlert("An error occurred while sending the message");
