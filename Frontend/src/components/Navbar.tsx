@@ -45,7 +45,8 @@ export default function Navbar() {
   const [mQuery, setMQuery] = useState("");
   const favorites = useFavorites();
   const { showVendorUpgrade, showVendorTasks } = useAlert();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { role, isPhoneVerified, verificationStatus } = useNavUserDetails();
+  const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mSuggestions, setMSuggestions] = useState<string[]>([]);
@@ -54,16 +55,15 @@ export default function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
 
+  const isVendor = role === "vendor" || role === "Vendor";
+  const hasPendingTasks = isVendor && (!isPhoneVerified || verificationStatus !== "approved");
+
   const [topCats, setTopCats] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
     getFallbackArray().then(res => setTopCats(res.slice(0, 5)));
   }, []);
 
-  useEffect(() => {
-    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-    setIsLoggedIn(!!token);
-  }, []);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -543,7 +543,7 @@ export default function Navbar() {
                   { icon: HelpCircle, label: "Help & Support", path: "/contact" },
                   { icon: Shield, label: "Safety Tips", path: "/safety-tips" },
                 ].concat(
-                  (typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") 
+                  hasPendingTasks 
                   ? [{ icon: ClipboardList as any, label: "Tasks", path: "#" } as any] 
                   : []
                 ).map((item, idx) => (
@@ -807,8 +807,8 @@ function useNavUserDetails() {
 }
 
 function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isPhoneVerified, verificationStatus } = useNavUserDetails();
-  const hasPendingTasks = !isPhoneVerified || verificationStatus !== "approved";
+  const { isPhoneVerified, verificationStatus, role } = useNavUserDetails();
+  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
@@ -830,8 +830,8 @@ function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
 }
 
 function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isPhoneVerified, verificationStatus } = useNavUserDetails();
-  const hasPendingTasks = !isPhoneVerified || verificationStatus !== "approved";
+  const { isPhoneVerified, verificationStatus, role } = useNavUserDetails();
+  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
