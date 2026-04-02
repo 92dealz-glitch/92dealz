@@ -11,7 +11,7 @@ export function Button({ variant = "primary", children, ...props }: ButtonProps)
       ? "bg-black text-white hover:opacity-90"
       : "bg-transparent border";
   return (
-    <button className={`${base} ${style}`} {...props}>
+    <button className={`${base} ${style} ${props.className || ""}`} {...props}>
       {children}
     </button>
   );

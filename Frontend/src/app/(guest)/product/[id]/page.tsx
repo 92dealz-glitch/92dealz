@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, use } from "react"
+import React, { useEffect, useState, use } from "react";
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -146,6 +146,7 @@ export default function ProductPage({ params }: Props) {
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false)
   const [orderMessage, setOrderMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -786,7 +787,7 @@ export default function ProductPage({ params }: Props) {
                      Cancel
                    </button>
                    <button 
-                     onClick={handleSendMessage}
+                     onClick={() => handleSendMessage()}
                      disabled={sendingMessage || !messageText.trim()}
                      className="flex-1 bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 disabled:opacity-50 flex items-center justify-center gap-2"
                    >
