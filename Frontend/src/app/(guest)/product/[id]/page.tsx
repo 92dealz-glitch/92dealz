@@ -489,12 +489,12 @@ export default function ProductPage({ params }: Props) {
                   onClick={() => {
                     const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
                     if (!token) { showAlert("Please login to contact seller", "Authentication Required"); return; }
-                    handleSendMessage("I'm interested in your product.");
+                    setMessageText("I am interested in your product.");
+                    setMessageModal(true);
                   }} 
                   className="w-full bg-orange-600 text-white py-3"
-                  disabled={sendingMessage}
                 >
-                  {sendingMessage ? "Sending..." : "📞 Contact Seller"}
+                  Send Message to seller
                 </Button>
                 <Link 
                   href={`/messages?userId=${product.sellerId}&dealId=${product.id}`}
@@ -568,7 +568,7 @@ export default function ProductPage({ params }: Props) {
                 onClick={() => setShowContactOptions(!showContactOptions)}
                 className="w-full p-4 flex items-center justify-between font-semibold"
               >
-                <span>Contact Options</span>
+                <span>View Contact Options</span>
                 <span className={`transition-transform duration-300 ${showContactOptions ? 'rotate-180' : ''}`}>▼</span>
               </button>
               
