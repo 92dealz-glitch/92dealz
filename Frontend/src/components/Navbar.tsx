@@ -20,6 +20,7 @@ import {
   Plus,
   Grid,
   Package,
+  ClipboardList,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -43,7 +44,7 @@ export default function Navbar() {
   const [query, setQuery] = useState("");
   const [mQuery, setMQuery] = useState("");
   const favorites = useFavorites();
-  const { showVendorUpgrade } = useAlert();
+  const { showVendorUpgrade, showVendorTasks } = useAlert();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -261,7 +262,7 @@ export default function Navbar() {
                 </>
               ) : (
                 <div className="flex items-center gap-5">
-
+                  <TaskIcon showVendorTasks={showVendorTasks} />
                   <div className="relative">
                     <button
                       onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
@@ -541,16 +542,29 @@ export default function Navbar() {
                   { icon: Heart, label: "Favorites", path: "/favorites" },
                   { icon: HelpCircle, label: "Help & Support", path: "/contact" },
                   { icon: Shield, label: "Safety Tips", path: "/safety-tips" },
-                ].map((item, idx) => (
-                  <Link
+                ].concat(
+                  (typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") 
+                  ? [{ icon: ClipboardList as any, label: "Tasks", path: "#" } as any] 
+                  : []
+                ).map((item, idx) => (
+                  <button
                     key={idx}
-                    href={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-zinc-700"
+                    onClick={() => {
+                      if (item.label === "Tasks") {
+                        showVendorTasks();
+                      } else {
+                        router.push(item.path);
+                      }
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-zinc-700"
                   >
                     <item.icon className="text-orange-600" size={20} />
                     <div className="text-sm font-medium">{item.label}</div>
-                  </Link>
+                    {item.label === "Tasks" && (
+                       <span className="ml-auto w-2 h-2 bg-orange-600 rounded-full animate-pulse" />
+                    )}
+                  </button>
                 ))}
                 <button
                   onClick={() => {
@@ -619,6 +633,7 @@ export default function Navbar() {
                 <Mail size={22} />
                 <span className="text-[10px] mt-1 text-center">Chat</span>
               </Link>
+              <MobileTaskTab showVendorTasks={showVendorTasks} />
               <Link href="/vendor-dashboard/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
                 <Grid size={22} />
                 <span className="text-[10px] mt-1 text-center">My Ads</span>
@@ -708,15 +723,40 @@ export default function Navbar() {
 }
 
 function useNavUserDetails() {
-  const [data, setData] = useState<{ url: string | null; isVerified: boolean; name: string | null }>({ url: null, isVerified: false, name: null });
+  const [data, setData] = useState<{ 
+    url: string | null; 
+    isVerified: boolean; 
+    isPhoneVerified: boolean;
+    verificationStatus: string;
+    name: string | null;
+    role: string;
+  }>({ 
+    url: null, 
+    isVerified: false, 
+    isPhoneVerified: false,
+    verificationStatus: "none",
+    name: null,
+    role: "user"
+  });
+
   useEffect(() => {
     try {
       const cached = typeof window !== "undefined" ? window.localStorage.getItem("profile_image_url") : null;
       const cachedVerified = typeof window !== "undefined" ? window.localStorage.getItem("is_verified") === "true" : false;
+      const cachedPhoneVerified = typeof window !== "undefined" ? window.localStorage.getItem("is_phone_verified") === "true" : false;
+      const cachedStatus = typeof window !== "undefined" ? window.localStorage.getItem("verification_status") || "none" : "none";
       const cachedName = typeof window !== "undefined" ? window.localStorage.getItem("profile_name") : null;
+      const role = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
+      
       if (cached) setData(prev => ({ ...prev, url: cached }));
       if (cachedName) setData(prev => ({ ...prev, name: cachedName }));
-      setData(prev => ({ ...prev, isVerified: cachedVerified }));
+      setData(prev => ({ 
+        ...prev, 
+        isVerified: cachedVerified, 
+        isPhoneVerified: cachedPhoneVerified,
+        verificationStatus: cachedStatus,
+        role: role
+      }));
 
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
       if (!token) return;
@@ -734,12 +774,27 @@ function useNavUserDetails() {
           } else {
             const u = d?.data?.profile_image_url;
             const v = !!d?.data?.is_verified;
+            const pv = !!d?.data?.is_phone_verified;
+            const vs = d?.data?.verification_status || "none";
             const n = d?.data?.name;
-            setData({ url: u || null, isVerified: v, name: n || null });
+            const r = d?.data?.role || "user";
+            
+            setData({ 
+              url: u || null, 
+              isVerified: v, 
+              isPhoneVerified: pv,
+              verificationStatus: vs,
+              name: n || null,
+              role: r
+            });
+            
             if (typeof window !== "undefined") {
               if (u) window.localStorage.setItem("profile_image_url", u);
               if (n) window.localStorage.setItem("profile_name", n);
               window.localStorage.setItem("is_verified", String(v));
+              window.localStorage.setItem("is_phone_verified", String(pv));
+              window.localStorage.setItem("verification_status", vs);
+              window.localStorage.setItem("role", r);
             }
           }
         })
@@ -749,6 +804,44 @@ function useNavUserDetails() {
     } catch { }
   }, []);
   return data;
+}
+
+function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
+  const { isPhoneVerified, verificationStatus } = useNavUserDetails();
+  const hasPendingTasks = !isPhoneVerified || verificationStatus !== "approved";
+
+  if (!hasPendingTasks) return null;
+
+  return (
+    <button
+      onClick={() => showVendorTasks()}
+      className="p-2 text-zinc-600 hover:text-orange-600 transition-colors relative group"
+      title="Vendor Tasks"
+    >
+      <ClipboardList size={24} />
+      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-600 rounded-full border-2 border-white animate-pulse" />
+      
+      {/* Tooltip */}
+      <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-zinc-900 text-white text-[10px] font-bold py-1 px-2 rounded whitespace-nowrap z-50">
+        Tasks Pending
+      </div>
+    </button>
+  );
+}
+
+function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
+  const { isPhoneVerified, verificationStatus } = useNavUserDetails();
+  const hasPendingTasks = !isPhoneVerified || verificationStatus !== "approved";
+
+  if (!hasPendingTasks) return null;
+
+  return (
+    <button onClick={() => showVendorTasks()} className="flex flex-col items-center text-sm text-zinc-700 relative">
+      <ClipboardList size={22} className="text-orange-600" />
+      <span className="text-[10px] mt-1 text-center font-bold text-orange-600">Tasks</span>
+      <span className="absolute top-0 right-1/2 translate-x-3 w-1.5 h-1.5 bg-orange-600 rounded-full" />
+    </button>
+  );
 }
 
 function NavUserMenu({ signOut }: { signOut: () => void }) {

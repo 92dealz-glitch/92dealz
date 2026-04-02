@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { getMyProfile, updateProfile, upgradeToVendor, sendPhoneOtp, verifyPhoneOtp } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
+import { useAlert } from "@/context/AlertContext";
 
 export default function AccountSettingsPage() {
   const [profile, setProfile] = useState<any>(null);
@@ -80,18 +81,28 @@ export default function AccountSettingsPage() {
     }
   };
 
+  const { showVendorTasks } = useAlert();
+
   const handleUpgrade = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setMessage(null);
     try {
       await upgradeToVendor(upgradeData);
+      
+      // Update local storage immediately for direct conversion
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("role", "vendor");
+      }
+      
       setMessage({ 
         type: "success", 
-        text: "Upgrade request submitted! Your role change requires a fresh login to take effect. Please logout and login again." 
+        text: "Congratulations! Your account has been upgraded to Vendor successfully." 
       });
+      
       setUpgradeMode(false);
-      // We don't call loadData here because the token is stale anyway
+      showVendorTasks();
+      loadData(); // Success, so reload profile to reflect vendor fields
     } catch (err: any) {
       setMessage({ type: "error", text: err.message || "Failed to upgrade" });
     } finally {

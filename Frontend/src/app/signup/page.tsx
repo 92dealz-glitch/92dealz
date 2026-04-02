@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { registerUser, loginUser, registerInitiate, registerVerify } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useAlert } from "@/context/AlertContext";
 
 type UserRole = "user" | "vendor";
 type ContactMethod = "phone" | "email";
@@ -154,6 +155,7 @@ const ContactMethodToggle = ({ method, setMethod }: { method: ContactMethod, set
 );
 
 export default function SignupPage() {
+  const { showAlert, showVendorTasks } = useAlert();
   const router = useRouter();
   const [role, setRole] = useState<UserRole>("user");
   const [method, setMethod] = useState<ContactMethod>("email");
@@ -252,6 +254,7 @@ export default function SignupPage() {
       
       const r = String(res.user?.role || "").toLowerCase();
       if (r === "vendor") {
+        showVendorTasks();
         router.push("/vendor-dashboard");
       } else if (r === "admin") {
         router.push("/admin-dashboard");
@@ -292,16 +295,6 @@ export default function SignupPage() {
 
           <RoleToggle role={role} setRole={setRole} setError={setError} />
 
-          {role === "vendor" && (
-            <div className="flex items-start gap-2 mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2" className="mt-0.5 shrink-0">
-                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              <p className="text-xs text-orange-700 leading-relaxed">
-                Vendor accounts are reviewed within <strong>24 hours</strong>. You'll receive a confirmation before your store goes live.
-              </p>
-            </div>
-          )}
 
           <ContactMethodToggle method={method} setMethod={setMethod} />
 
@@ -415,16 +408,6 @@ export default function SignupPage() {
 
             <RoleToggle role={role} setRole={setRole} setError={setError} />
 
-            {role === "vendor" && (
-              <div className="flex items-start gap-2 mb-5 p-3 bg-orange-50 border border-orange-200 rounded-xl">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2" className="mt-0.5 shrink-0">
-                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                <p className="text-xs text-orange-700 leading-relaxed">
-                  Vendor accounts are reviewed within <strong>24 hours</strong>. You'll get a confirmation email before your store goes live.
-                </p>
-              </div>
-            )}
 
             <div className="mb-4">
               <p className="text-xs text-gray-500 mb-2 font-medium">Sign up via</p>
