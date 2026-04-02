@@ -468,14 +468,13 @@ export default function ProductPage({ params }: Props) {
           {/* 3. Sidebar (Price Section + Seller Info) - Spans all rows on desktop to avoid gaps */}
           <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4">
             <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
-              <div className="absolute top-4 right-4 capitalize">
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
+              <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>
+              <div className="mt-4 flex items-center gap-2">
+                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs font-medium uppercase">Negotiable</span>
+                <span className="bg-green-50 text-green-700 px-3 py-1 rounded text-xs font-bold uppercase">
                   {product.condition === "Brand New" ? "New" : (product.condition?.replace(/_/g, ' ') || 'New')}
                 </span>
               </div>
-
-              <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>
-              <div className="mt-2 inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm">Negotiable</div>
 
               {orderMessage && (
                 <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 text-sm font-bold ${orderMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
