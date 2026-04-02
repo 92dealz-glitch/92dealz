@@ -288,7 +288,6 @@ export default function ProductPage({ params }: Props) {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-extrabold text-orange-600 break-words leading-tight">{product.title}</h1>
-                <p className="text-gray-700 mt-2 line-clamp-3">{product.desc}</p>
               </div>
               <div className="flex items-center gap-3">
                <button 
@@ -748,6 +747,63 @@ export default function ProductPage({ params }: Props) {
           reportedReviewId={reportTarget.reportedReviewId}
           itemName={reportTarget.itemName}
         />
+
+        {/* --- Message Seller Modal --- */}
+        {messageModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMessageModal(false)}></div>
+             <div className="relative bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-orange-100">
+               <div className="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center justify-between">
+                 <h3 className="font-bold text-gray-900">Message Seller</h3>
+                 <button onClick={() => setMessageModal(false)} className="text-gray-400 hover:text-orange-600 transition-colors">
+                   <X size={20} />
+                 </button>
+               </div>
+               <div className="p-6">
+                 <div className="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-xl">
+                   <div className="w-12 h-12 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold overflow-hidden shadow-inner">
+                     {product.sellerImage ? <img src={product.sellerImage} className="w-full h-full object-cover" alt="" /> : (product.sellerName || 'S').slice(0,1)}
+                   </div>
+                   <div>
+                     <div className="font-bold text-gray-900">{product.sellerName}</div>
+                     <div className="text-xs text-orange-600 font-medium">Verified Seller</div>
+                   </div>
+                 </div>
+
+                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Your Message</label>
+                 <textarea 
+                   value={messageText} 
+                   onChange={(e) => setMessageText(e.target.value)}
+                   placeholder="Hi, is this still available?"
+                   className="w-full border-2 border-gray-100 rounded-xl p-4 text-sm focus:border-orange-500 outline-none transition-all resize-none min-h-[120px]"
+                 />
+                 
+                 <div className="mt-6 flex gap-3">
+                   <button 
+                     onClick={() => setMessageModal(false)}
+                     className="flex-1 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-colors border-2 border-transparent"
+                   >
+                     Cancel
+                   </button>
+                   <button 
+                     onClick={handleSendMessage}
+                     disabled={sendingMessage || !messageText.trim()}
+                     className="flex-1 bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 disabled:opacity-50 flex items-center justify-center gap-2"
+                   >
+                     {sendingMessage ? (
+                       <>
+                         <Loader2 className="w-4 h-4 animate-spin" />
+                         Sending...
+                       </>
+                     ) : (
+                       "Send Message"
+                     )}
+                   </button>
+                 </div>
+               </div>
+             </div>
+          </div>
+        )}
       </main>
 
       <SimilarItems />
