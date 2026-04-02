@@ -8,8 +8,8 @@ export default function RecentAds() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds({ limit: 8, sort: "created_at", dir: "desc" });
-        const mapped: AdItem[] = (res.data || []).map((d: any) => ({
+        const res = await listActiveAds({ limit: 50, sort: "created_at", dir: "desc" });
+        const allMapped: AdItem[] = (res.data || []).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,
           title: d.title,
@@ -21,7 +21,10 @@ export default function RecentAds() {
           rating: Number(d.rating || 0),
           isVerified: d.is_verified || d.User?.is_verified || false,
         }));
-        setList(mapped);
+        
+        // Filter to only show verified vendors in this section
+        const verifiedOnly = allMapped.filter(item => item.isVerified).slice(0, 8);
+        setList(verifiedOnly);
       } catch (err) {
         console.error("Failed to fetch recent ads:", err);
       }

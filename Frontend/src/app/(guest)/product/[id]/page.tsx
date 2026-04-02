@@ -767,7 +767,7 @@ export default function ProductPage({ params }: Props) {
                    </div>
                    <div>
                      <div className="font-bold text-gray-900">{product.sellerName}</div>
-                     <div className="text-xs text-orange-600 font-medium">Verified Seller</div>
+                     {product.isVerified && <div className="text-xs text-orange-600 font-medium">Verified Seller</div>}
                    </div>
                  </div>
 
