@@ -15,6 +15,7 @@ interface HotDeal {
   newLabel?: string;
   isVerified?: boolean;
   rating?: number;
+  views?: number;
 }
 
 import { useEffect, useState, useRef } from "react";
@@ -36,6 +37,7 @@ export default function HotDeals() {
           newLabel: d.condition || "Brand New",
           isVerified: d.is_verified || d.User?.is_verified || false,
           rating: Number(d.rating || 0),
+          views: d.clicks || 0,
         }));
         setList(mapped);
       } catch (err) {}
@@ -213,16 +215,18 @@ export default function HotDeals() {
                 </div>
 
                 {/* LOCATION & CONDITION */}
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-y-2 text-sm">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-y-2 text-xs">
                   <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0">
-                    <span>📍</span>
-                    <span className="truncate">{item.location}</span>
+                    <span>📍 {item.location}</span>
                   </div>
-                  {item.newLabel && (
-                    <span className="font-bold text-[#f45c03] bg-[#f45c03]/10 px-2 py-0.5 rounded-md shrink-0">
-                      {item.newLabel === "Brand New" ? "New" : (item.newLabel ?? "New")}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-4">
+                    <span className="text-orange-600 font-bold">{item.views ?? 0} views</span>
+                    {item.newLabel && (
+                      <span className="font-bold text-[#f45c03] bg-[#f45c03]/10 px-2 py-0.5 rounded-md shrink-0">
+                        {item.newLabel === "Brand New" ? "New" : (item.newLabel ?? "New")}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             </div>

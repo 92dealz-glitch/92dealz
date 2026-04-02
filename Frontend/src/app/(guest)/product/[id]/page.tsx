@@ -469,7 +469,9 @@ export default function ProductPage({ params }: Props) {
           <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4">
             <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
               <div className="absolute top-4 right-4 capitalize">
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">{product.condition?.replace(/_/g, ' ') || 'New'}</span>
+                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
+                  {product.condition === "Brand New" ? "New" : (product.condition?.replace(/_/g, ' ') || 'New')}
+                </span>
               </div>
 
               <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>
@@ -545,7 +547,12 @@ export default function ProductPage({ params }: Props) {
                   <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>
                   {product.sellerPhone && (
                     <>
-                      <div>Phone:</div><div className="font-medium text-orange-600 select-all">{product.sellerPhone}</div>
+                      <div>Phone:</div>
+                      <div className="font-medium">
+                        <a href={`tel:${product.sellerPhone.replace(/\D/g, '')}`} className="text-orange-600 hover:underline select-all">
+                          {product.sellerPhone}
+                        </a>
+                      </div>
                     </>
                   )}
                 </div>
@@ -569,9 +576,20 @@ export default function ProductPage({ params }: Props) {
             <div className="rounded-lg border border-orange-200 bg-white p-4">
               <h4 className="font-semibold mb-3">Contact Options</h4>
               <div className="space-y-3">
-                <button type="button" onClick={() => showAlert(`Call: ${product.sellerPhone || 'Not available'}`, "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">📞 {product.sellerPhone || "View Phone Number"}</button>
-                <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold">💬 Whatsapp</a>
-                <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold">💬 Chat Seller</button>
+                {product.sellerPhone ? (
+                  <a 
+                    href={`tel:${product.sellerPhone.replace(/\D/g,'')}`}
+                    className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors"
+                  >
+                    📞 {product.sellerPhone}
+                  </a>
+                ) : (
+                  <button type="button" onClick={() => showAlert("Phone number not available", "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold opacity-70 cursor-not-allowed">
+                    📞 Not Available
+                  </button>
+                )}
+                <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold hover:bg-green-600 transition-colors">💬 Whatsapp</a>
+                <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors">💬 Chat Seller</button>
               </div>
               <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
               <button 

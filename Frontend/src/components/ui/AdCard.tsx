@@ -107,7 +107,7 @@ export default function AdCard({ item, className = "" }: Props) {
         <div className="mt-2 flex flex-wrap items-center justify-between gap-y-2 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
           <div className="break-all max-w-[80px] sm:max-w-none shrink">{item.location ?? "Nigeria"}</div>
           <div className="flex items-center gap-1 shrink-0">
-            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span className="hidden xs:inline">views</span></span>
+            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span>views</span></span>
           </div>
         </div>
       </article>
