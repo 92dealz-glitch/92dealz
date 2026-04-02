@@ -3,7 +3,10 @@ import { ChevronLeft, X, Upload, Plus } from "lucide-react";
 import { createAd } from "@/services/ads.service";
 import { uploadImage } from "@/services/upload.service";
 import { useRouter } from "next/navigation";
-import { getFallbackArray, CategoryData } from "@/data/categoriesData";
+import { getFallbackArray } from "@/data/categoriesData";
+import { getMyProfile } from "@/lib/api";
+import { NIGERIAN_STATES } from "@/data/locationData";
+import { ChevronDown } from "lucide-react";
 
 type Step = 1 | 2 | 3;
 
@@ -30,6 +33,8 @@ export default function AddProductForm() {
     const [step, setStep] = useState<Step>(1);
     const [showClearModal, setShowClearModal] = useState(false);
     const [categories, setCategories] = useState<CategoryItem[]>([]);
+    const [isNigerian, setIsNigerian] = useState(false);
+    const [profileLoaded, setProfileLoaded] = useState(false);
     
     // Shared state for all steps
     const [formData, setFormData] = useState({
@@ -53,6 +58,22 @@ export default function AddProductForm() {
     useEffect(() => {
         getFallbackArray().then(res => {
             setCategories(res as any);
+        });
+        
+        // Fetch profile to detect location
+        getMyProfile().then(res => {
+            if (res.success && res.data) {
+                const phone = String(res.data.phone || "");
+                const isNig = phone.startsWith("+234") || phone.startsWith("234") || (phone.startsWith("0") && phone.length >= 11);
+                setIsNigerian(isNig);
+                if (isNig) {
+                    setFormData(prev => ({ ...prev, state: "Nigeria" }));
+                }
+            }
+            setProfileLoaded(true);
+        }).catch(err => {
+            console.error("Failed to load profile", err);
+            setProfileLoaded(true);
         });
     }, []);
 
@@ -125,6 +146,7 @@ export default function AddProductForm() {
                         data={formData} 
                         updateData={updateFormData} 
                         onBack={prevStep} 
+                        isNigerian={isNigerian}
                     />
                 )}
             </div>
@@ -242,6 +264,51 @@ function ChevronDownIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+}
+
+function CustomSelect({ label, options, value, onChange, required = false, disabled = false }: { label: string, options: string[], value: string, onChange: (v: string) => void, required?: boolean, disabled?: boolean }) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+        };
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+    }, []);
+
+    return (
+        <div className="flex flex-col gap-2 relative" ref={ref}>
+            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
+            <button
+                type="button"
+                onClick={() => !disabled && setOpen(!open)}
+                className={`flex items-center justify-between w-full border ${disabled ? 'bg-zinc-50 border-zinc-100' : 'bg-white border-zinc-200 focus:border-[#f45c03]'} rounded-lg p-4 text-zinc-900 font-bold transition-all text-left h-[58px]`}
+                disabled={disabled}
+            >
+                <span className={!value ? "text-zinc-400" : ""}>{value || `Select ${label}`}</span>
+                <ChevronDown className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} size={18} />
+            </button>
+            {open && (
+                <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border border-zinc-100 rounded-xl shadow-xl z-50 py-2 max-h-[300px] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200 border-t-4 border-t-orange-500">
+                    {options.map((opt) => (
+                        <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                                onChange(opt);
+                                setOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-3 text-sm font-bold transition-colors hover:bg-orange-50 hover:text-orange-600 ${value === opt ? 'bg-orange-50 text-orange-600' : 'text-zinc-700'}`}
+                        >
+                            {opt}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 }
 
 function StepOne({ data, updateData, onNext, categories }: { data: any, updateData: (d: any) => void, onNext: () => void, categories: CategoryItem[] }) {
@@ -402,11 +469,11 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: any) => void, onBack: () => void }) {
+function StepThree({ data, updateData, onBack, isNigerian }: { data: any, updateData: (d: any) => void, onBack: () => void, isNigerian?: boolean }) {
     const router = useRouter();
     const [submitting, setSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const fileRef = useRef<HTMLInputElement | null>(null);
+    const fileRef = useRef<HTMLInputElement|null>(null);
 
     async function onChooseFile(e: React.ChangeEvent<HTMLInputElement>) {
         const f = e.target.files?.[0];
@@ -460,8 +527,26 @@ function StepThree({ data, updateData, onBack }: { data: any, updateData: (d: an
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <SelectField label="State" options={["Nigeria", "China"]} value={data.state || ""} onChange={(v) => updateData({ state: v })} required />
-                <InputField label="City" placeholder="e.g. Ikeja, Lekki" value={data.city || ""} onChange={(v) => updateData({ city: v })} required />
+                <CustomSelect 
+                    label="Country" 
+                    options={["Nigeria", "China"]} 
+                    value={data.state || ""} 
+                    onChange={(v) => {
+                        updateData({ state: v, city: "" });
+                    }} 
+                    required 
+                    disabled={isNigerian}
+                />
+                
+                {data.state === "Nigeria" && (
+                    <CustomSelect 
+                        label="State" 
+                        options={NIGERIAN_STATES} 
+                        value={data.city || ""} 
+                        onChange={(v) => updateData({ city: v })} 
+                        required 
+                    />
+                )}
             </div>
 
             <div>
