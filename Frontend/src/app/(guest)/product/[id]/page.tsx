@@ -146,10 +146,10 @@ export default function ProductPage({ params }: Props) {
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false)
   const [orderMessage, setOrderMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [showContactOptions, setShowContactOptions] = useState(false);
   const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; reportedReviewId?: number; itemName: string }>({ itemName: "" });
   const [copied, setCopied] = useState(false);
 
@@ -177,8 +177,9 @@ export default function ProductPage({ params }: Props) {
     }
   };
 
-  const handleSendMessage = async () => {
-    if (!messageText.trim()) return;
+  const handleSendMessage = async (textOverride?: string) => {
+    const finalMsg = textOverride || messageText;
+    if (!finalMsg.trim()) return;
     try {
       setSendingMessage(true);
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
@@ -195,7 +196,7 @@ export default function ProductPage({ params }: Props) {
         body: JSON.stringify({
           to_user_id: Number(product.sellerId),
           deal_id: Number(product.id),
-          content: messageText.trim(),
+          content: finalMsg.trim(),
         }),
       });
       const data = await res.json();
@@ -485,14 +486,14 @@ export default function ProductPage({ params }: Props) {
               <div className="mt-6 space-y-3">
                 <Button 
                   onClick={() => {
-                  const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-                  if (!token) { showAlert("Please login to contact seller", "Authentication Required"); return; }
-                  setMessageText("I'm interested in your ad.");
-                    setMessageModal(true);
+                    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+                    if (!token) { showAlert("Please login to contact seller", "Authentication Required"); return; }
+                    handleSendMessage("I'm interested in your product.");
                   }} 
                   className="w-full bg-orange-600 text-white py-3"
+                  disabled={sendingMessage}
                 >
-                  📞 Contact Seller
+                  {sendingMessage ? "Sending..." : "📞 Contact Seller"}
                 </Button>
                 <Link 
                   href={`/messages?userId=${product.sellerId}&dealId=${product.id}`}
@@ -543,16 +544,6 @@ export default function ProductPage({ params }: Props) {
                   <div>Total Ads Posted:</div><div className="font-medium">{product.sellerTotalAds || 0} items</div>
                   <div>Response Time:</div><div className="font-medium">{product.sellerResponseTime || "Within 1 hour"}</div>
                   <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>
-                  {product.sellerPhone && (
-                    <>
-                      <div>Phone:</div>
-                      <div className="font-medium">
-                        <a href={`tel:${product.sellerPhone.replace(/\D/g, '')}`} className="text-orange-600 hover:underline select-all">
-                          {product.sellerPhone}
-                        </a>
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
 
@@ -571,34 +562,43 @@ export default function ProductPage({ params }: Props) {
             </div>
 
             {/* 5. Contact Options */}
-            <div className="rounded-lg border border-orange-200 bg-white p-4">
-              <h4 className="font-semibold mb-3">Contact Options</h4>
-              <div className="space-y-3">
-                {product.sellerPhone ? (
-                  <a 
-                    href={`tel:${product.sellerPhone.replace(/\D/g,'')}`}
-                    className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors"
-                  >
-                    📞 {product.sellerPhone}
-                  </a>
-                ) : (
-                  <button type="button" onClick={() => showAlert("Phone number not available", "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold opacity-70 cursor-not-allowed">
-                    📞 Not Available
-                  </button>
-                )}
-                <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold hover:bg-green-600 transition-colors">💬 Whatsapp</a>
-                <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors">💬 Chat Seller</button>
-              </div>
-              <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
+            <div className="rounded-lg border border-orange-200 bg-white">
               <button 
-                onClick={() => {
-                  setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
-                  setShowReportModal(true);
-                }}
-                className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors font-bold"
+                onClick={() => setShowContactOptions(!showContactOptions)}
+                className="w-full p-4 flex items-center justify-between font-semibold"
               >
-                🚩 Report this seller
+                <span>Contact Options</span>
+                <span className={`transition-transform duration-300 ${showContactOptions ? 'rotate-180' : ''}`}>▼</span>
               </button>
+              
+              {showContactOptions && (
+                <div className="p-4 pt-0 space-y-3">
+                  {product.sellerPhone ? (
+                    <a 
+                      href={`tel:${product.sellerPhone.replace(/\D/g,'')}`}
+                      className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors"
+                    >
+                      📞 {product.sellerPhone}
+                    </a>
+                  ) : (
+                    <button type="button" onClick={() => showAlert("Phone number not available", "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold opacity-70 cursor-not-allowed">
+                      📞 Not Available
+                    </button>
+                  )}
+                  <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold hover:bg-green-600 transition-colors">💬 Whatsapp</a>
+                  <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors">💬 Chat Seller</button>
+                  <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
+                  <button 
+                    onClick={() => {
+                      setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
+                      setShowReportModal(true);
+                    }}
+                    className="mt-4 w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors font-bold"
+                  >
+                    🚩 Report this seller
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* 8. Share Section */}
