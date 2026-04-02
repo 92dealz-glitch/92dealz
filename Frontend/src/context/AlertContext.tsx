@@ -7,7 +7,7 @@ interface AlertState {
   id: number;
   message: string;
   title?: string;
-  type: 'alert' | 'confirm' | 'prompt';
+  type: 'alert' | 'confirm' | 'prompt' | 'vendor_upgrade';
   initialValue?: string;
   resolve: (value: any) => void;
 }
@@ -16,6 +16,7 @@ interface AlertContextType {
   showAlert: (message: string, title?: string) => void;
   showConfirm: (message: string, title?: string) => Promise<boolean>;
   showPrompt: (message: string, initialValue?: string, title?: string) => Promise<string | null>;
+  showVendorUpgrade: (message: string, title?: string) => Promise<boolean>;
   hideAlert: (value?: any) => void;
 }
 
@@ -40,6 +41,12 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const showVendorUpgrade = (message: string, title?: string) => {
+    return new Promise<boolean>((resolve) => {
+      setAlert({ id: Date.now(), message, title, type: 'vendor_upgrade', resolve });
+    });
+  };
+
   const hideAlert = (value?: any) => {
     if (alert) {
       alert.resolve(value);
@@ -48,7 +55,7 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AlertContext.Provider value={{ showAlert, showConfirm, showPrompt, hideAlert }}>
+    <AlertContext.Provider value={{ showAlert, showConfirm, showPrompt, showVendorUpgrade, hideAlert }}>
       {children}
       {alert && (
         <CustomAlert

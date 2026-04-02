@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAlert } from "@/context/AlertContext";
 
 const banners = [
   {
@@ -33,6 +35,8 @@ const banners = [
 
 export default function PromoBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const router = useRouter();
+  const { showVendorUpgrade } = useAlert();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -40,6 +44,26 @@ export default function PromoBanner() {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleSellClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+    if (!token) {
+      router.push("/signup");
+      return;
+    }
+    const role = (typeof window !== "undefined" ? window.localStorage.getItem("role") || "user" : "user").toLowerCase();
+    if (role === "user") {
+      const confirmed = await showVendorUpgrade(
+        "To Add a Product you need to Upgrade your account into Vendor, it will just take a minute"
+      );
+      if (confirmed) {
+        router.push("/account-settings");
+      }
+    } else {
+      router.push("/vendor-dashboard/add-product");
+    }
+  };
 
   return (
     <section className="w-full max-w-full mx-auto px-0 lg:px-8 py-4 lg:py-8 overflow-hidden">
@@ -145,8 +169,8 @@ export default function PromoBanner() {
                     {banner.description}
                   </p>
 
-                  <Link
-                    href={banner.href}
+                  <button
+                    onClick={handleSellClick}
                     className={`inline-block font-bold text-[10px] sm:text-[14px] lg:text-[16px] 
                                px-6 py-2.5 sm:px-10 sm:py-3.5 lg:px-14 lg:py-4.5
                                rounded-full transition-all duration-300 ease-out hover:scale-[1.03] active:scale-[0.97]
@@ -156,7 +180,7 @@ export default function PromoBanner() {
                                }`}
                   >
                     {banner.buttonText}
-                  </Link>
+                  </button>
                 </div>
 
               </div>
@@ -182,5 +206,3 @@ export default function PromoBanner() {
     </section>
   );
 }
-
-

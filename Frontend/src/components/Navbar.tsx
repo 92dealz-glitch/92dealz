@@ -31,6 +31,7 @@ import { API_BASE } from "@/services/apiClient";
 import { getFallbackArray } from "../data/categoriesData";
 import { getNotifications, markAsRead, AppNotification } from "@/services/notification.service";
 import VerifiedBadge from "./VerifiedBadge";
+import { useAlert } from "@/context/AlertContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -42,6 +43,7 @@ export default function Navbar() {
   const [query, setQuery] = useState("");
   const [mQuery, setMQuery] = useState("");
   const favorites = useFavorites();
+  const { showVendorUpgrade } = useAlert();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -145,6 +147,28 @@ export default function Navbar() {
     const { signOut: nextAuthSignOut } = await import("next-auth/react");
     await nextAuthSignOut({ callbackUrl: "/login" });
   }
+
+  const handleSellClick = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+    if (!token) {
+      router.push("/signup");
+      return;
+    }
+    const role = (typeof window !== "undefined" ? window.localStorage.getItem("role") || "user" : "user").toLowerCase();
+    if (role === "user") {
+      const confirmed = await showVendorUpgrade(
+        "To Add a Product you need to Upgrade your account into Vendor, it will just take a minute"
+      );
+      if (confirmed) {
+        setMobileMenuOpen(false);
+        router.push("/account-settings");
+      }
+    } else {
+      setMobileMenuOpen(false);
+      router.push("/vendor-dashboard/add-product");
+    }
+  };
 
   return (
     <header className="w-full bg-white shadow-sm">
@@ -495,8 +519,12 @@ export default function Navbar() {
                 <button
                   onClick={() => {
                     const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
-                    setMobileMenuOpen(false);
-                    router.push(r === "vendor" ? "/vendor-dashboard/add-product" : "/");
+                    if (r === "vendor") {
+                       setMobileMenuOpen(false);
+                       router.push("/vendor-dashboard/add-product");
+                    } else {
+                       handleSellClick();
+                    }
                   }}
                   className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                 >
@@ -548,10 +576,10 @@ export default function Navbar() {
                       <Heart size={22} />
                       <span className="text-[10px] mt-1 text-center">Favorite</span>
                     </Link>
-                    <Link href="/vendor-dashboard/add-product" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                    <button onClick={() => handleSellClick()} className="flex flex-col items-center text-sm text-zinc-700">
                       <Plus size={22} />
                       <span className="text-[10px] mt-1 text-center">Sell</span>
-                    </Link>
+                    </button>
                     <Link href="/messages" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
                       <Mail size={22} />
                       <span className="text-[10px] mt-1 text-center">Chat</span>
@@ -581,12 +609,12 @@ export default function Navbar() {
                 <Heart size={22} />
                 <span className="text-[10px] mt-1 text-center">Favorite</span>
               </Link>
-              <Link href="/vendor-dashboard/add-product" className="flex flex-col items-center text-sm text-[#f45c03]">
+              <button onClick={() => handleSellClick()} className="flex flex-col items-center text-sm text-[#f45c03]">
                 <div className="bg-[#f45c03] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white relative z-50">
                   <Plus size={24} className="text-white" />
                 </div>
                 <span className="text-[10px] mt-1 text-center">Sell</span>
-              </Link>
+              </button>
               <Link href="/messages" className="flex flex-col items-center text-sm text-zinc-700">
                 <Mail size={22} />
                 <span className="text-[10px] mt-1 text-center">Chat</span>

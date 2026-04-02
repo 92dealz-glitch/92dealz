@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import CategoryBar from "./CategoryBar";
+import { useRouter } from "next/navigation";
+import { useAlert } from "@/context/AlertContext";
 
 const HERO_IMAGES = [
   "https://res.cloudinary.com/dgjyfvtph/image/upload/v1775037497/heroimage3_ihpozi.png",
@@ -43,6 +45,8 @@ const SLIDES = [
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
+  const router = useRouter();
+  const { showVendorUpgrade } = useAlert();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -50,6 +54,26 @@ export default function Hero() {
     }, 5000); // 5 Seconds
     return () => clearInterval(timer);
   }, []);
+
+  const handleSellClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+    if (!token) {
+      router.push("/signup");
+      return;
+    }
+    const role = (typeof window !== "undefined" ? window.localStorage.getItem("role") || "user" : "user").toLowerCase();
+    if (role === "user") {
+      const confirmed = await showVendorUpgrade(
+        "To Add a Product you need to Upgrade your account into Vendor, it will just take a minute"
+      );
+      if (confirmed) {
+        router.push("/account-settings");
+      }
+    } else {
+      router.push("/vendor-dashboard/add-product");
+    }
+  };
 
   return (
     <section className="relative bg-white overflow-x-hidden min-h-[620px] lg:min-h-0">
@@ -134,8 +158,8 @@ export default function Hero() {
 
             {/* BUTTONS - Now correctly positioned below the grid stack */}
             <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <Link
-                href="/vendor-dashboard/add-product"
+              <button
+                onClick={handleSellClick}
                 className="
                   w-full sm:w-auto
                   bg-[#f45c03] hover:bg-black
@@ -148,7 +172,7 @@ export default function Hero() {
                 "
               >
                 Start Selling Today!
-              </Link>
+              </button>
 
               <Link
                 href="/search"

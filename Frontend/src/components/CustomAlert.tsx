@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 interface CustomAlertProps {
   message: string;
   title?: string;
-  type?: 'alert' | 'confirm' | 'prompt';
+  type?: 'alert' | 'confirm' | 'prompt' | 'vendor_upgrade';
   initialValue?: string;
   onClose: (value?: any) => void;
 }
@@ -89,6 +89,22 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
                   className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
                 >
                   Save Changes
+                </button>
+              </>
+            )}
+            {type === 'vendor_upgrade' && (
+              <>
+                <button
+                  onClick={() => onClose(false)}
+                  className="flex-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 font-black py-4 rounded-xl transition-all active:scale-[0.98]"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => onClose(true)}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
+                >
+                  Go to Account Settings
                 </button>
               </>
             )}
