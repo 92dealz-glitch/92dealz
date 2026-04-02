@@ -7,6 +7,7 @@ import { getFallbackArray } from "@/data/categoriesData";
 import { getMyProfile } from "@/lib/api";
 import { NIGERIAN_STATES } from "@/data/locationData";
 import { ChevronDown } from "lucide-react";
+import { useAlert } from "@/context/AlertContext";
 
 type Step = 1 | 2 | 3;
 
@@ -33,6 +34,7 @@ export default function AddProductForm() {
     const [step, setStep] = useState<Step>(1);
     const [showClearModal, setShowClearModal] = useState(false);
     const [categories, setCategories] = useState<CategoryItem[]>([]);
+    const [profile, setProfile] = useState<any>(null);
     const [isNigerian, setIsNigerian] = useState(false);
     const [profileLoaded, setProfileLoaded] = useState(false);
     
@@ -66,6 +68,7 @@ export default function AddProductForm() {
                 const phone = String(res.data.phone || "");
                 const isNig = phone.startsWith("+234") || phone.startsWith("234") || (phone.startsWith("0") && phone.length >= 11);
                 setIsNigerian(isNig);
+                setProfile(res.data);
                 if (isNig) {
                     setFormData(prev => ({ ...prev, state: "Nigeria" }));
                 }
@@ -147,6 +150,7 @@ export default function AddProductForm() {
                         updateData={updateFormData} 
                         onBack={prevStep} 
                         isNigerian={isNigerian}
+                        hasPhone={!!profile?.phone}
                     />
                 )}
             </div>
@@ -469,8 +473,9 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack, isNigerian }: { data: any, updateData: (d: any) => void, onBack: () => void, isNigerian?: boolean }) {
+function StepThree({ data, updateData, onBack, isNigerian, hasPhone }: { data: any, updateData: (d: any) => void, onBack: () => void, isNigerian?: boolean, hasPhone: boolean }) {
     const router = useRouter();
+    const { showPhoneVerification } = useAlert();
     const [submitting, setSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
     const fileRef = useRef<HTMLInputElement|null>(null);
@@ -492,6 +497,18 @@ function StepThree({ data, updateData, onBack, isNigerian }: { data: any, update
     async function postAd() {
         const p = Number(data.price);
         if (!data.title || Number.isNaN(p) || data.images.length === 0) return;
+
+        if (!hasPhone) {
+            const goToSettings = await showPhoneVerification(
+                "To post an ad, you must first add and verify a phone number in your account settings. This helps buyers reach you easily.",
+                "Phone Verification Required"
+            );
+            if (goToSettings) {
+                router.push("/account-settings");
+            }
+            return;
+        }
+
         setSubmitting(true);
         try {
             await createAd({ 

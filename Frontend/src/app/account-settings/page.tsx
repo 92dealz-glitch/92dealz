@@ -14,7 +14,7 @@ import {
   Settings, 
   LogOut 
 } from "lucide-react";
-import { getMyProfile, updateProfile, upgradeToVendor } from "@/lib/api";
+import { getMyProfile, updateProfile, upgradeToVendor, sendPhoneOtp, verifyPhoneOtp } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 
 export default function AccountSettingsPage() {
@@ -31,6 +31,11 @@ export default function AccountSettingsPage() {
     businessCategory: "",
     businessAddress: ""
   });
+  
+  // Phone verification state
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -98,6 +103,40 @@ export default function AccountSettingsPage() {
     if (typeof window !== "undefined") {
       window.localStorage.clear();
       window.location.href = "/login";
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!profile?.phone) {
+      setMessage({ type: "error", text: "Please enter a phone number first" });
+      return;
+    }
+    setVerifying(true);
+    try {
+      await sendPhoneOtp({ phone: profile.phone });
+      setShowOtpInput(true);
+      setMessage({ type: "success", text: "Verification code sent to your phone!" });
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "Failed to send code" });
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleConfirmOtp = async () => {
+    if (!otpCode) return;
+    setVerifying(true);
+    try {
+      await verifyPhoneOtp({ phone: profile.phone, otp: otpCode });
+      setShowOtpInput(false);
+      setOtpCode("");
+      setMessage({ type: "success", text: "Phone number verified successfully!" });
+      // Refresh profile to show verified status if backend supports it
+      loadData();
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "Invalid verification code" });
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -203,16 +242,67 @@ export default function AccountSettingsPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input 
-                      type="text" 
-                      value={profile?.phone || ""} 
-                      onChange={(e) => setProfile({...profile, phone: e.target.value})}
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
-                    />
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center justify-between">
+                    <span>Phone Number</span>
+                    {profile?.phone && (
+                      <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-black ${profile?.is_phone_verified ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
+                        {profile?.is_phone_verified ? 'Verified' : 'Unverified'}
+                      </span>
+                    )}
+                  </label>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <input 
+                        type="text" 
+                        value={profile?.phone || ""} 
+                        onChange={(e) => setProfile({...profile, phone: e.target.value})}
+                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
+                        placeholder="+234..."
+                      />
+                    </div>
+                    {!profile?.is_phone_verified && profile?.phone && !showOtpInput && (
+                      <button
+                        type="button"
+                        onClick={handleSendOtp}
+                        disabled={verifying}
+                        className="bg-zinc-900 text-white px-4 rounded-xl text-xs font-bold hover:bg-zinc-800 transition disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {verifying ? "Sending..." : "Verify Now"}
+                      </button>
+                    )}
                   </div>
+
+                  {showOtpInput && (
+                    <div className="mt-4 p-4 bg-orange-50 rounded-xl border border-orange-100 animate-in fade-in zoom-in duration-200">
+                      <p className="text-xs font-bold text-orange-800 mb-3">Enter the 6-digit code sent to your phone:</p>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text" 
+                          maxLength={6}
+                          value={otpCode}
+                          onChange={(e) => setOtpCode(e.target.value)}
+                          className="flex-1 px-4 py-2 border-2 border-orange-200 rounded-lg outline-none focus:border-orange-500 font-black tracking-widest text-center"
+                          placeholder="000000"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleConfirmOtp}
+                          disabled={verifying || otpCode.length < 6}
+                          className="bg-orange-600 text-white px-6 rounded-lg font-bold hover:bg-orange-700 transition disabled:opacity-50"
+                        >
+                          {verifying ? "..." : "Confirm"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowOtpInput(false)}
+                          className="text-zinc-500 text-xs font-bold hover:text-zinc-700"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

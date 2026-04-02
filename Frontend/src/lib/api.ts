@@ -64,6 +64,20 @@ export async function registerVerify(payload: { contact: string; method: string;
   );
 }
 
+export async function sendPhoneOtp(payload: { phone: string }) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/auth/send-phone-otp",
+    { method: "POST", body: payload, auth: true }
+  );
+}
+
+export async function verifyPhoneOtp(payload: { phone: string; otp: string }) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/auth/verify-phone-otp",
+    { method: "POST", body: payload, auth: true }
+  );
+}
+
 export async function loginUser(payload: {
   email: string;
   password: string;

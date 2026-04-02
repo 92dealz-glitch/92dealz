@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 interface CustomAlertProps {
   message: string;
   title?: string;
-  type?: 'alert' | 'confirm' | 'prompt' | 'vendor_upgrade';
+  type?: 'alert' | 'confirm' | 'prompt' | 'vendor_upgrade' | 'phone_verification';
   initialValue?: string;
   onClose: (value?: any) => void;
 }
@@ -92,7 +92,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
                 </button>
               </>
             )}
-            {type === 'vendor_upgrade' && (
+            {(type === 'vendor_upgrade' || type === 'phone_verification') && (
               <>
                 <button
                   onClick={() => onClose(false)}
