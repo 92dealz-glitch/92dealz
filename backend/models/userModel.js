@@ -103,6 +103,14 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  is_phone_verified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  is_email_verified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   verification_status: {
     type: DataTypes.ENUM('none', 'pending', 'approved', 'rejected'),
     defaultValue: 'none',

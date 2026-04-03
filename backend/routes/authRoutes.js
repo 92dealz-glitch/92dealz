@@ -17,4 +17,8 @@ router.post('/verify-otp', authController.verifyOtp);
 router.post('/reset-password', authController.resetPassword);
 router.put('/change-password', auth, authController.changePassword);
 
+// New verification routes for logged-in users
+router.post('/send-verification-otp', auth, authController.sendVerificationOtp);
+router.post('/verify-contact-otp', auth, authController.verifyContactOtp);
+
 module.exports = router;

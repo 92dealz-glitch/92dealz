@@ -10,7 +10,8 @@ import {
   X,
   Clock,
   Zap,
-  ChevronRight
+  ChevronRight,
+  Mail
 } from "lucide-react";
 import Link from "next/link";
 import { getMyProfile } from "@/lib/api";
@@ -46,7 +47,12 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
   if (!isOpen) return null;
 
   const isPhoneVerified = !!profile?.is_phone_verified;
+  const isEmailVerified = !!profile?.is_email_verified;
   const isIdentityVerified = profile?.verification_status === "approved";
+
+  // New logic for primary task
+  const needsPhone = !isPhoneVerified;
+  const needsEmail = !isEmailVerified;
 
   const TaskItem = ({ 
     icon: Icon, 
@@ -129,13 +135,34 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
             </div>
           ) : (
             <div className="space-y-1">
+              {/* Phone Verification Task */}
               <TaskItem 
                 icon={Phone}
-                title="In order to list an Ad please verify your Phone Number"
+                title={!isPhoneVerified ? "Add and verify a Phone Number to start listing Ads" : "Phone Number Verified"}
                 isCompleted={isPhoneVerified}
                 buttonText="Verify Phone Number"
                 href="/account-settings"
               />
+
+              {/* Email Verification Task */}
+              <TaskItem 
+                icon={Mail} 
+                title={!isEmailVerified ? "Add and verify an Email Address to start listing Ads" : "Email Address Verified"}
+                isCompleted={isEmailVerified}
+                buttonText="Verify Email Address"
+                href="/account-settings"
+              />
+
+              {/* Trust/UX Note */}
+              <div className="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex gap-3">
+                <ShieldCheck className="text-blue-600 shrink-0" size={20} />
+                <p className="text-[11px] text-blue-700 font-bold leading-relaxed">
+                  These verification steps are mandatory for the <span className="text-blue-900 underline decoration-blue-300">Best User Experience</span>. 
+                  They ensure trust between buyers and sellers, lead to better visibility, and guarantee seamless communication across the platform.
+                </p>
+              </div>
+
+              <div className="h-4" /> {/* Spacer */}
 
               <TaskItem 
                 icon={Clock}

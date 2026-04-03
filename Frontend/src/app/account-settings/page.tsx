@@ -12,9 +12,19 @@ import {
   CheckCircle, 
   Plus, 
   Settings, 
-  LogOut 
+  LogOut,
+  Mail,
+  X
 } from "lucide-react";
-import { getMyProfile, updateProfile, upgradeToVendor, sendPhoneOtp, verifyPhoneOtp } from "@/lib/api";
+import { 
+  getMyProfile, 
+  updateProfile, 
+  upgradeToVendor, 
+  sendPhoneOtp, 
+  verifyPhoneOtp,
+  sendVerificationOtp,
+  verifyContactOtp
+} from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 import { useAlert } from "@/context/AlertContext";
 
@@ -33,9 +43,11 @@ export default function AccountSettingsPage() {
     businessAddress: ""
   });
   
-  // Phone verification state
+  // Contact verification state
   const [showOtpInput, setShowOtpInput] = useState(false);
+  const [showEmailOtpInput, setShowEmailOtpInput] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [emailOtpCode, setEmailOtpCode] = useState("");
   const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
@@ -138,14 +150,46 @@ export default function AccountSettingsPage() {
     if (!otpCode) return;
     setVerifying(true);
     try {
-      await verifyPhoneOtp({ phone: profile.phone, otp: otpCode });
+      await verifyContactOtp({ contact: profile.phone, method: "phone", otp: otpCode });
       setShowOtpInput(false);
       setOtpCode("");
       setMessage({ type: "success", text: "Phone number verified successfully!" });
-      // Refresh profile to show verified status if backend supports it
       loadData();
     } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "Invalid verification code" });
+      setMessage({ type: "error", text: err.message || "Verification failed" });
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleSendEmailOtp = async () => {
+    if (!profile?.email) {
+      setMessage({ type: "error", text: "Please enter an email address first" });
+      return;
+    }
+    setVerifying(true);
+    try {
+      await sendVerificationOtp({ contact: profile.email, method: "email" });
+      setShowEmailOtpInput(true);
+      setMessage({ type: "success", text: "Verification code sent to your email!" });
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "Failed to send code" });
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleConfirmEmailOtp = async () => {
+    if (!emailOtpCode) return;
+    setVerifying(true);
+    try {
+      await verifyContactOtp({ contact: profile.email, method: "email", otp: emailOtpCode });
+      setShowEmailOtpInput(false);
+      setEmailOtpCode("");
+      setMessage({ type: "success", text: "Email address verified successfully!" });
+      loadData();
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "Verification failed" });
     } finally {
       setVerifying(false);
     }
@@ -238,8 +282,25 @@ export default function AccountSettingsPage() {
               </div>
             </div>
 
+            {profile?.role === 'vendor' && (!profile.is_phone_verified || !profile.is_email_verified) && (
+              <div className="mb-8 p-4 sm:p-5 bg-orange-50 rounded-2xl border border-orange-100 flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
+                <div className="bg-orange-100 p-2.5 rounded-xl text-orange-600 h-fit w-fit mx-auto sm:mx-0">
+                  <TrendingUp size={22} />
+                </div>
+                <div className="text-center sm:text-left">
+                  <h4 className="text-sm font-bold text-orange-900 mb-1">Verify your account for the Best User Experience</h4>
+                  <p className="text-xs text-orange-800 font-medium leading-relaxed">
+                    To ensure trust between you and your buyers, and to provide the <span className="underline decoration-orange-300">Best User Experience</span>, 
+                    we require all vendors to verify both their Phone Number and Email Address. 
+                    Verified vendors get <span className="font-black text-orange-900">3x more visibility</span> and faster ad approvals!
+                  </p>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleUpdateProfile} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Full Name */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
                   <div className="relative">
@@ -252,6 +313,76 @@ export default function AccountSettingsPage() {
                     />
                   </div>
                 </div>
+
+                {/* Email Address */}
+                <div>
+                   <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center justify-between">
+                     <span>Email Address</span>
+                     {profile?.email && (
+                       <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-black ${profile?.is_email_verified ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
+                         {profile?.is_email_verified ? 'Verified' : 'Unverified'}
+                       </span>
+                     )}
+                   </label>
+                   <div className="flex gap-2">
+                     <div className="relative flex-1">
+                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                       <input 
+                         type="email" 
+                         value={profile?.email || ""} 
+                         onChange={(e) => setProfile({...profile, email: e.target.value})}
+                         disabled={profile?.role === 'vendor' && profile?.is_email_verified}
+                         className={`w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none ${profile?.role === 'vendor' && profile?.is_email_verified ? 'opacity-70 cursor-not-allowed grayscale-[0.5]' : ''}`}
+                         placeholder="your@email.com"
+                       />
+                     </div>
+                     {!profile?.is_email_verified && profile?.email && !showEmailOtpInput && (
+                       <button
+                         type="button"
+                         onClick={handleSendEmailOtp}
+                         disabled={verifying}
+                         className="bg-zinc-900 text-white px-4 rounded-xl text-xs font-bold hover:bg-zinc-800 transition disabled:opacity-50 whitespace-nowrap"
+                       >
+                         {verifying ? "..." : "Verify Now"}
+                       </button>
+                     )}
+                   </div>
+
+                   {showEmailOtpInput && (
+                     <div className="mt-4 p-4 bg-orange-50 rounded-xl border border-orange-100 animate-in fade-in zoom-in duration-200">
+                       <p className="text-xs font-bold text-orange-800 mb-3 text-center sm:text-left">Check your email for the 6-digit code:</p>
+                       <div className="flex flex-col sm:flex-row gap-3">
+                         <input 
+                           type="text" 
+                           maxLength={6}
+                           value={emailOtpCode}
+                           onChange={(e) => setEmailOtpCode(e.target.value)}
+                           className="flex-1 px-4 py-2 bg-white border-2 border-orange-200 rounded-lg outline-none focus:border-orange-500 font-black tracking-widest text-center"
+                           placeholder="000000"
+                         />
+                         <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={handleConfirmEmailOtp}
+                              disabled={verifying || emailOtpCode.length < 6}
+                              className="flex-1 sm:flex-none bg-orange-600 text-white px-6 rounded-lg font-bold hover:bg-orange-700 transition disabled:opacity-50"
+                            >
+                              Verify
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowEmailOtpInput(false)}
+                              className="px-3 py-2 text-zinc-500 hover:bg-orange-100 rounded-lg transition"
+                            >
+                              <X size={18} />
+                            </button>
+                         </div>
+                       </div>
+                     </div>
+                   )}
+                </div>
+
+                {/* Phone Number */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center justify-between">
                     <span>Phone Number</span>
@@ -268,7 +399,8 @@ export default function AccountSettingsPage() {
                         type="text" 
                         value={profile?.phone || ""} 
                         onChange={(e) => setProfile({...profile, phone: e.target.value})}
-                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
+                        disabled={profile?.role === 'vendor' && profile?.is_phone_verified}
+                        className={`w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none ${profile?.role === 'vendor' && profile?.is_phone_verified ? 'opacity-70 cursor-not-allowed grayscale-[0.5]' : ''}`}
                         placeholder="+234..."
                       />
                     </div>
@@ -286,31 +418,33 @@ export default function AccountSettingsPage() {
 
                   {showOtpInput && (
                     <div className="mt-4 p-4 bg-orange-50 rounded-xl border border-orange-100 animate-in fade-in zoom-in duration-200">
-                      <p className="text-xs font-bold text-orange-800 mb-3">Enter the 6-digit code sent to your phone:</p>
-                      <div className="flex gap-2">
+                      <p className="text-xs font-bold text-orange-800 mb-3 text-center sm:text-left">Enter the 6-digit code sent to your phone:</p>
+                      <div className="flex flex-col sm:flex-row gap-3">
                         <input 
                           type="text" 
                           maxLength={6}
                           value={otpCode}
                           onChange={(e) => setOtpCode(e.target.value)}
-                          className="flex-1 px-4 py-2 border-2 border-orange-200 rounded-lg outline-none focus:border-orange-500 font-black tracking-widest text-center"
+                          className="flex-1 px-4 py-2 bg-white border-2 border-orange-200 rounded-lg outline-none focus:border-orange-500 font-black tracking-widest text-center"
                           placeholder="000000"
                         />
-                        <button
-                          type="button"
-                          onClick={handleConfirmOtp}
-                          disabled={verifying || otpCode.length < 6}
-                          className="bg-orange-600 text-white px-6 rounded-lg font-bold hover:bg-orange-700 transition disabled:opacity-50"
-                        >
-                          {verifying ? "..." : "Confirm"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setShowOtpInput(false)}
-                          className="text-zinc-500 text-xs font-bold hover:text-zinc-700"
-                        >
-                          Cancel
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleConfirmOtp}
+                            disabled={verifying || otpCode.length < 6}
+                            className="flex-1 sm:flex-none bg-orange-600 text-white px-6 rounded-lg font-bold hover:bg-orange-700 transition disabled:opacity-50"
+                          >
+                            {verifying ? "..." : "Confirm"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowOtpInput(false)}
+                            className="px-3 py-2 text-zinc-500 hover:bg-orange-100 rounded-lg transition"
+                          >
+                            <X size={18} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}

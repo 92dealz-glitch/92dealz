@@ -111,13 +111,37 @@ exports.getProfile = async (req, res, next) => {
 // PUT /api/user/profile
 exports.updateProfile = async (req, res, next) => {
   try {
-    const { name, phone, profile_image_url, businessName, businessCategory, businessAddress, about } = req.body;
+    const { name, phone, email, profile_image_url, businessName, businessCategory, businessAddress, about } = req.body;
     const user = await User.findByPk(req.user.id);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
+
+    // Role check for locking
+    const isVendor = user.role === 'vendor';
+
     if (typeof name === 'string') user.name = name;
-    if (typeof phone === 'string' || phone === null) user.phone = phone || null;
+    
+    // Lock verified phone for vendors
+    if (typeof phone === 'string' || phone === null) {
+      if (isVendor && user.is_phone_verified && phone !== user.phone && phone !== null) {
+        // Skip updating phone if verified and different
+        console.log(`[ProfileLock] Blocked phone update for verified vendor ${user.id}`);
+      } else {
+        user.phone = phone || null;
+      }
+    }
+
+    // Lock verified email for vendors (if provided in body)
+    if (typeof email === 'string') {
+      if (isVendor && user.is_email_verified && email !== user.email) {
+        // Skip updating email if verified and different
+        console.log(`[ProfileLock] Blocked email update for verified vendor ${user.id}`);
+      } else {
+        user.email = email.trim().toLowerCase();
+      }
+    }
+
     if (typeof profile_image_url === 'string' || profile_image_url === null) user.profile_image_url = profile_image_url || null;
     
     if (typeof businessName === 'string' || businessName === null) user.businessName = businessName || null;
@@ -131,7 +155,9 @@ exports.updateProfile = async (req, res, next) => {
       data: { 
         id: user.id, name: user.name, email: user.email, phone: user.phone, profile_image_url: user.profile_image_url,
         businessName: user.businessName, businessCategory: user.businessCategory, businessAddress: user.businessAddress, about: user.about,
-        is_verified: user.is_verified
+        is_verified: user.is_verified,
+        is_phone_verified: user.is_phone_verified,
+        is_email_verified: user.is_email_verified
       },
     });
   } catch (err) {

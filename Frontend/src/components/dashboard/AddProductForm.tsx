@@ -37,6 +37,7 @@ export default function AddProductForm() {
     const [profile, setProfile] = useState<any>(null);
     const [isNigerian, setIsNigerian] = useState(false);
     const [profileLoaded, setProfileLoaded] = useState(false);
+    const { showVendorTasks } = useAlert();
     
     // Shared state for all steps
     const [formData, setFormData] = useState({
@@ -150,7 +151,8 @@ export default function AddProductForm() {
                         updateData={updateFormData} 
                         onBack={prevStep} 
                         isNigerian={isNigerian}
-                        hasPhone={!!profile?.phone}
+                        profile={profile}
+                        showVendorTasks={showVendorTasks}
                     />
                 )}
             </div>
@@ -473,9 +475,15 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack, isNigerian, hasPhone }: { data: any, updateData: (d: any) => void, onBack: () => void, isNigerian?: boolean, hasPhone: boolean }) {
+function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks }: { 
+    data: any, 
+    updateData: (d: any) => void, 
+    onBack: () => void, 
+    isNigerian?: boolean, 
+    profile: any,
+    showVendorTasks: () => void 
+}) {
     const router = useRouter();
-    const { showPhoneVerification } = useAlert();
     const [submitting, setSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
     const fileRef = useRef<HTMLInputElement|null>(null);
@@ -498,15 +506,10 @@ function StepThree({ data, updateData, onBack, isNigerian, hasPhone }: { data: a
         const p = Number(data.price);
         if (!data.title || Number.isNaN(p) || data.images.length === 0) return;
 
-        if (!hasPhone) {
-            const goToSettings = await showPhoneVerification(
-                "To post an ad, you must first add and verify a phone number in your account settings. This helps buyers reach you easily.",
-                "Phone Verification Required"
-            );
-            if (goToSettings) {
-                router.push("/account-settings");
-            }
-            return;
+        // Strict dual verification check for vendors
+        if (!profile?.is_phone_verified || !profile?.is_email_verified) {
+             showVendorTasks(); // Globally triggers the tasks modal
+             return;
         }
 
         setSubmitting(true);

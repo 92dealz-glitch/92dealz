@@ -8,9 +8,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const validateEmail = require('../utils/validateEmail');
 const bcryptjs = require('bcryptjs');
-const { generateOtp } = require('../services/otpService');
+const { generateOtp, upsertOtp, verifyOtp } = require('../services/otpService');
 const { sendResetOtp, sendSignupOtp } = require('../services/emailService');
 const PendingRegistration = require('../models/PendingRegistration');
+const PasswordReset = require('../models/PasswordReset');
 const { Op } = require('sequelize');
 const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
 const verifyRecaptcha = require('../utils/verifyRecaptcha');
@@ -168,6 +169,9 @@ exports.registerVerify = async (req, res, next) => {
       phone: phoneToSave,
       role: roleToSave,
       status: initialStatus,
+      is_verified: true,
+      is_phone_verified: method === 'phone',
+      is_email_verified: method === 'email',
       businessName: roleToSave === 'vendor' ? businessName : null,
       businessCategory: roleToSave === 'vendor' ? businessCategory : null,
       businessAddress: roleToSave === 'vendor' ? businessAddress : null,
@@ -314,6 +318,95 @@ exports.changePassword = async (req, res, next) => {
     await user.save();
 
     return res.json({ success: true, message: 'Password changed successfully' });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// POST /api/auth/send-verification-otp (authenticated)
+exports.sendVerificationOtp = async (req, res, next) => {
+  try {
+    const { contact, method } = req.body;
+    if (!contact || !method) {
+      return res.status(400).json({ success: false, message: 'Contact and method are required' });
+    }
+
+    const userId = req.user.id;
+    const isPhone = method === 'phone';
+    const formattedContact = isPhone ? formatPhone(contact) : contact.trim().toLowerCase();
+
+    // Check if this contact is already used by someone else
+    const where = isPhone ? { phone: formattedContact } : { email: formattedContact };
+    const existing = await User.findOne({ where: { ...where, id: { [Op.ne]: userId } } });
+    if (existing) {
+      return res.status(409).json({ success: false, message: `${isPhone ? 'Phone' : 'Email'} is already in use by another account` });
+    }
+
+    if (isPhone) {
+      const termii = await sendTermiiOtp(formattedContact);
+      if (!termii.pinId) throw new Error('Failed to send phone OTP');
+      await upsertOtp(userId, termii.pinId); // Store pinId
+      return res.json({ success: true, message: 'Verification code sent to your phone' });
+    } else {
+      const otp = generateOtp();
+      await upsertOtp(userId, otp);
+      await sendSignupOtp(formattedContact, otp); // Reusing nice signup template
+      return res.json({ success: true, message: 'Verification code sent to your email' });
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// POST /api/auth/verify-contact-otp (authenticated)
+exports.verifyContactOtp = async (req, res, next) => {
+  try {
+    const { contact, method, otp } = req.body;
+    if (!contact || !method || !otp) {
+      return res.status(400).json({ success: false, message: 'Contact, method and OTP are required' });
+    }
+
+    const userId = req.user.id;
+    const isPhone = method === 'phone';
+    const formattedContact = isPhone ? formatPhone(contact) : contact.trim().toLowerCase();
+
+    const record = await PasswordReset.findOne({ where: { user_id: userId } });
+    if (!record || record.expires_at < new Date()) {
+      return res.status(400).json({ success: false, message: 'OTP expired or session not found' });
+    }
+
+    if (isPhone) {
+      const pinId = record.otp;
+      const verification = await verifyTermiiOtp(pinId, otp);
+      if (String(verification.verified).toLowerCase() !== 'true') {
+        return res.status(400).json({ success: false, message: 'Invalid or expired Phone OTP' });
+      }
+    } else {
+      if (record.otp !== otp) {
+        return res.status(400).json({ success: false, message: 'Invalid Email OTP' });
+      }
+    }
+
+    // Success! Update user
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    if (isPhone) {
+      user.phone = formattedContact;
+      user.is_phone_verified = true;
+    } else {
+      user.email = formattedContact;
+      user.is_email_verified = true;
+    }
+    
+    // Also set general is_verified
+    user.is_verified = true;
+    await user.save();
+    
+    // Explicitly delete the OTP record after success
+    await record.destroy();
+
+    return res.json({ success: true, message: `${isPhone ? 'Phone' : 'Email'} verified successfully` });
   } catch (err) {
     return next(err);
   }

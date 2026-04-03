@@ -78,6 +78,20 @@ export async function verifyPhoneOtp(payload: { phone: string; otp: string }) {
   );
 }
 
+export async function sendVerificationOtp(payload: { contact: string; method: "email" | "phone" }) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/auth/send-verification-otp",
+    { method: "POST", body: payload, auth: true }
+  );
+}
+
+export async function verifyContactOtp(payload: { contact: string; method: "email" | "phone"; otp: string }) {
+  return apiFetch<{ success: boolean; message: string }>(
+    "/auth/verify-contact-otp",
+    { method: "POST", body: payload, auth: true }
+  );
+}
+
 export async function loginUser(payload: {
   email: string;
   password: string;
@@ -133,7 +147,7 @@ export async function updateProfileImage(url: string | null) {
 }
 
 export async function getMyProfile() {
-  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string; is_verified?: boolean; is_phone_verified?: boolean; verification_status?: 'none' | 'pending' | 'approved' | 'rejected'; government_id_url?: string | null; last_poll_date?: string | null; poll_category?: string | null; poll_choice?: string | null } }>(
+  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string; is_verified?: boolean; is_phone_verified?: boolean; is_email_verified?: boolean; verification_status?: 'none' | 'pending' | 'approved' | 'rejected'; government_id_url?: string | null; last_poll_date?: string | null; poll_category?: string | null; poll_choice?: string | null } }>(
     "/users/profile",
     { method: "GET", auth: true }
   );
