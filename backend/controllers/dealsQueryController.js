@@ -193,10 +193,15 @@ exports.create = async (req, res, next) => {
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
-    const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"'];
-    const vals = ['$1', '$2', '$3', '$4', 'NOW()', 'NOW()'];
-    const bind = [title, description || null, price, userId];
-    let idx = 4;
+    const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"', 'status'];
+    const vals = ['$1', '$2', '$3', '$4', 'NOW()', 'NOW()', '$5'];
+    
+    // Always default to pending for non-admins during initial creation
+    const isAdmin = req.user && req.user.role === 'admin';
+    const initialStatus = isAdmin && req.body.status ? req.body.status : 'pending';
+    
+    const bind = [title, description || null, price, userId, initialStatus];
+    let idx = 5;
     if (has('store_id') && typeof store_id !== 'undefined') { idx += 1; cols.push('store_id'); vals.push(`$${idx}`); bind.push(store_id); }
     if (has('category_id') && typeof category_id !== 'undefined') { idx += 1; cols.push('category_id'); vals.push(`$${idx}`); bind.push(category_id); }
     if (has('image_url') && typeof image_url !== 'undefined') { idx += 1; cols.push('image_url'); vals.push(`$${idx}`); bind.push(image_url); }
@@ -222,8 +227,11 @@ exports.create = async (req, res, next) => {
           value = JSON.stringify(value);
         }
         if (f === 'status') {
-          const allowed = ['active', 'sold', 'draft', 'closed'];
-          if (!allowed.includes(value)) value = 'active';
+          // If we already handled status efficiently above for create, we can skip it here
+          // but we ensure 'value' is safe just in case it were to be added to cols
+          const allowedStatus = ['active', 'sold', 'draft', 'closed', 'pending', 'rejected'];
+          if (!allowedStatus.includes(value)) value = 'pending';
+          continue; // Already handled status in base cols
         }
         bind.push(value);
       }
@@ -281,8 +289,8 @@ exports.update = async (req, res, next) => {
           value = JSON.stringify(value);
         }
         if (k === 'status') {
-          const allowedStatus = ['active', 'sold', 'draft', 'closed'];
-          if (!allowedStatus.includes(value)) value = 'active';
+          const allowedStatus = ['active', 'sold', 'draft', 'closed', 'pending', 'rejected'];
+          if (!allowedStatus.includes(value)) value = 'pending';
         }
         bind.push(value);
       }
