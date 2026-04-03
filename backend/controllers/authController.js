@@ -323,11 +323,23 @@ exports.sendVerificationOtp = async (req, res, next) => {
     const isPhone = method === 'phone';
     const formattedContact = isPhone ? formatPhone(contact) : contact.trim().toLowerCase();
 
-    // Check if this contact is already used by someone else
+    // Check if this contact is already verified by someone else
     const where = isPhone ? { phone: formattedContact } : { email: formattedContact };
-    const existing = await User.findOne({ where: { ...where, id: { [Op.ne]: userId } } });
+    const verificationField = isPhone ? 'is_phone_verified' : 'is_email_verified';
+    
+    const existing = await User.findOne({ 
+      where: { 
+        ...where, 
+        [verificationField]: true, 
+        id: { [Op.ne]: userId } 
+      } 
+    });
+    
     if (existing) {
-      return res.status(409).json({ success: false, message: `${isPhone ? 'Phone' : 'Email'} is already in use by another account` });
+      return res.status(409).json({ 
+        success: false, 
+        message: `${isPhone ? 'Phone' : 'Email'} is already verified by another account.` 
+      });
     }
 
     if (isPhone) {
@@ -378,6 +390,15 @@ exports.verifyContactOtp = async (req, res, next) => {
     // Success! Update user
     const user = await User.findByPk(userId);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    // Claiming logic: Remove this contact from any other user who has it in an unverified state
+    const claimingWhere = isPhone ? { phone: formattedContact } : { email: formattedContact };
+    const claimingField = isPhone ? 'is_phone_verified' : 'is_email_verified';
+    
+    await User.update(
+        { [isPhone ? 'phone' : 'email']: null, [claimingField]: false },
+        { where: { ...claimingWhere, id: { [Op.ne]: userId }, [claimingField]: false } }
+    );
 
     if (isPhone) {
       user.phone = formattedContact;
