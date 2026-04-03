@@ -12,7 +12,7 @@ const PasswordReset = sequelize.define('PasswordReset', {
     allowNull: false,
   },
   otp: {
-    type: DataTypes.STRING(6),
+    type: DataTypes.STRING(255),
     allowNull: false,
   },
   expires_at: {
