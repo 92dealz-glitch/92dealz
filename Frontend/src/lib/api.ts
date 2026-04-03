@@ -214,6 +214,20 @@ export async function deleteDealAdmin(id: number, reason?: string) {
   );
 }
 
+export async function approveDealAdmin(id: number) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/deals/${id}/approve`,
+    { method: "PUT", auth: true }
+  );
+}
+
+export async function rejectDealAdmin(id: number, reason: string) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/deals/${id}/reject`,
+    { method: "PUT", body: { reason }, auth: true }
+  );
+}
+
 export async function deleteReviewAdmin(id: number) {
   return apiFetch<{ success: boolean; message: string }>(
     `/admin/reviews/${id}`,

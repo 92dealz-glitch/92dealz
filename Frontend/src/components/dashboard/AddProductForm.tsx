@@ -37,7 +37,7 @@ export default function AddProductForm() {
     const [profile, setProfile] = useState<any>(null);
     const [isNigerian, setIsNigerian] = useState(false);
     const [profileLoaded, setProfileLoaded] = useState(false);
-    const { showVendorTasks } = useAlert();
+    const { showVendorTasks, showAlert } = useAlert();
     
     // Shared state for all steps
     const [formData, setFormData] = useState({
@@ -530,6 +530,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                 state: data.state,
                 city: data.city
             });
+            await showAlert("Your ad has been submitted and is pending admin approval. It will be listed once reviewed.", "Success!");
             router.push("/vendor-dashboard/my-ads");
         } catch (e: any) {
             console.error(e);

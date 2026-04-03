@@ -113,6 +113,68 @@ exports.deleteDeal = async (req, res, next) => {
   }
 };
 
+exports.approveDeal = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const deal = await Deal.findByPk(id);
+    if (!deal) return res.status(404).json({ success: false, message: 'Deal not found' });
+    
+    deal.status = 'active';
+    await deal.save();
+
+    // Notify vendor
+    try {
+      await Notification.create({
+        user_id: deal.userId,
+        type: 'DEAL_APPROVED',
+        title: 'Ad Approved!',
+        message: `Your ad "${deal.title}" has been approved and is now live!`,
+        link: '/vendor-dashboard/my-ads'
+      });
+    } catch (err) {
+      console.error("Failed to notify vendor about deal approval", err);
+    }
+
+    // Trigger alerts for subscribers now that it's active
+    try {
+      await notifyAlertsForDeal({ title: deal.title, price: deal.price, category_id: deal.category_id }, sendGeneric);
+    } catch (_) {}
+
+    return res.json({ success: true, message: 'Deal approved successfully' });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.rejectDeal = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const { reason } = req.body;
+    const deal = await Deal.findByPk(id);
+    if (!deal) return res.status(404).json({ success: false, message: 'Deal not found' });
+    
+    deal.status = 'rejected';
+    await deal.save();
+
+    // Notify vendor with reason
+    try {
+      await Notification.create({
+        user_id: deal.userId,
+        type: 'DEAL_REJECTED',
+        title: 'Ad Disapproved',
+        message: `Your ad "${deal.title}" was not approved. Reason: ${reason || 'Does not meet platform guidelines.'}`,
+        link: '/vendor-dashboard/my-ads'
+      });
+    } catch (err) {
+      console.error("Failed to notify vendor about deal rejection", err);
+    }
+
+    return res.json({ success: true, message: 'Deal rejected and vendor notified' });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 // Categories
 exports.getCategories = async (req, res, next) => {
   try {

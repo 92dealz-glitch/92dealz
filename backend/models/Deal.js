@@ -34,9 +34,9 @@ const Deal = sequelize.define('Deal', {
     allowNull: true,
   },
   status: {
-    type: DataTypes.ENUM('active', 'sold', 'draft', 'closed', 'scheduled'),
+    type: DataTypes.ENUM('active', 'sold', 'draft', 'closed', 'scheduled', 'pending', 'rejected'),
     allowNull: true,
-    defaultValue: 'active',
+    defaultValue: 'pending',
   },
   userId: {
     type: DataTypes.INTEGER,

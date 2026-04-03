@@ -13,6 +13,8 @@ router.get('/deals', ctrl.getDeals);
 router.post('/deals', ctrl.createDeal);
 router.put('/deals/:id', ctrl.updateDeal);
 router.delete('/deals/:id', ctrl.deleteDeal);
+router.put('/deals/:id/approve', ctrl.approveDeal);
+router.put('/deals/:id/reject', ctrl.rejectDeal);
 
 // Categories
 router.get('/categories', ctrl.getCategories);

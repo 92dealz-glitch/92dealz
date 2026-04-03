@@ -10,7 +10,7 @@ type Ad = { id: number; title: string; description?: string | null; price: numbe
 
 export default function MyAdsList() {
     const { showAlert, showConfirm, showPrompt } = useAlert();
-    const [activeTab, setActiveTab] = useState<"published" | "draft" | "closed">("published");
+    const [activeTab, setActiveTab] = useState<"published" | "pending" | "draft" | "closed" | "rejected">("published");
     const [items, setItems] = useState<Ad[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -19,7 +19,15 @@ export default function MyAdsList() {
         setLoading(true);
         setError(null);
         try {
-            const res = await listMyAds();
+            // Map "published" tab to "active" status for the API
+            const statusMap: Record<string, string> = {
+                published: "active",
+                pending: "pending",
+                draft: "draft",
+                closed: "closed",
+                rejected: "rejected"
+            };
+            const res = await listMyAds(statusMap[activeTab]);
             setItems(res.data || []);
         } catch (e: any) {
             setError(e.message || "Failed to load ads");
@@ -30,7 +38,7 @@ export default function MyAdsList() {
 
     useEffect(() => {
         load();
-    }, []);
+    }, [activeTab]);
 
     return (
         <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden p-6">
@@ -49,6 +57,8 @@ export default function MyAdsList() {
             <div className="flex items-center gap-8 border-b border-zinc-100 mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 {[
                     { id: "published", label: "Published", icon: CheckCircle },
+                    { id: "pending", label: "Pending", icon: Edit2 },
+                    { id: "rejected", label: "Rejected", icon: Trash2 },
                     { id: "draft", label: "Draft", icon: Edit2 },
                     { id: "closed", label: "Closed", icon: CheckCircle },
                 ].map((tab) => (
@@ -90,7 +100,10 @@ export default function MyAdsList() {
                                         {ad.subcategory && <span className="text-[#f45c03] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
                                     </div>
                                 </div>
-                                <span className="bg-[#10B981] text-white px-3 py-1 rounded-md text-[11px] font-black uppercase">
+                                <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${
+                                    ad.status === 'pending' ? 'bg-orange-500' : 
+                                    ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
+                                }`}>
                                     {ad.status || "active"}
                                 </span>
                             </div>

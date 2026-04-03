@@ -89,13 +89,19 @@ exports.list = async (req, res, next) => {
       params.push(String(req.query.subcategory));
       where.push('subcategory = $' + params.length);
     }
-    if (req.query.status && has('status')) {
-      params.push(String(req.query.status));
-      where.push('status = $' + params.length);
-    }
     if (req.query.userId && has('"userId"')) {
       params.push(Number(req.query.userId));
       where.push('"userId" = $' + params.length);
+    }
+
+    // Default to active status if not specified
+    if (req.query.status && has('status')) {
+      params.push(String(req.query.status));
+      where.push('status = $' + params.length);
+    } else if (has('status')) {
+      // If no status is requested, we strongly default to active for public safety
+      params.push('active');
+      where.push('status = $' + params.length);
     }
 
     const whereSql = where.length ? 'WHERE ' + where.join(' AND ') : '';

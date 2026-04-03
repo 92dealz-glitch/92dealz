@@ -47,8 +47,10 @@ export async function listTrendingAds() {
   return apiFetch<{ success: boolean; data: any[] }>(`${BASE}/trending`, { method: "GET" }, false);
 }
 
-export async function listMyAds() {
-  return apiFetch<{ success: boolean; data: any[] }>(`${BASE}/vendor`, { method: "GET" }, true);
+export async function listMyAds(status?: string) {
+  let url = `${BASE}/vendor`;
+  if (status) url += `?status=${status}`;
+  return apiFetch<{ success: boolean; data: any[] }>(url, { method: "GET" }, true);
 }
 
 export async function createAd(payload: AdPayload) {

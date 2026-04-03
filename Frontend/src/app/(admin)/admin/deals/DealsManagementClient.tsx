@@ -10,7 +10,9 @@ import {
   Bell,
   Edit2,
   Trash2,
-  ExternalLink
+  ExternalLink,
+  CheckCircle,
+  XCircle
 } from "lucide-react";
 import Link from "next/link";
 import { useNotification } from "@/context/NotificationContext";
@@ -24,6 +26,8 @@ const statusStyles = {
   expired: "bg-[#4B5563] text-white",
   sold: "bg-zinc-700 text-white",
   closed: "bg-zinc-400 text-white",
+  pending: "bg-orange-500 text-white",
+  rejected: "bg-red-500 text-white",
 };
 
 function formatTimeAgo(dateString: string) {
@@ -85,6 +89,33 @@ export default function DealsManagementPage() {
     }
     setActiveMenuId(null);
   };
+  
+  const handleApprove = async (id: number) => {
+    try {
+      const result = await apiFetch<{ success: boolean }>(`admin/deals/${id}/approve`, { method: "PUT" }, true);
+      if (result.success) {
+        setDeals(prev => prev.map(d => d.id === id ? { ...d, status: 'active' } : d));
+        showNotification("success", "Deal approved successfully!");
+      }
+    } catch (err) {
+      showNotification("error", "Failed to approve deal.");
+    }
+    setActiveMenuId(null);
+  };
+
+  const handleReject = async (id: number) => {
+    const reason = prompt("Enter rejection reason (optional):") || "";
+    try {
+      const result = await apiFetch<{ success: boolean }>(`admin/deals/${id}/reject`, { method: "PUT", body: JSON.stringify({ reason }) }, true);
+      if (result.success) {
+        setDeals(prev => prev.map(d => d.id === id ? { ...d, status: 'rejected' } : d));
+        showNotification("warning", "Deal rejected and vendor notified.");
+      }
+    } catch (err) {
+      showNotification("error", "Failed to reject deal.");
+    }
+    setActiveMenuId(null);
+  };
 
   if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading deals...</div>;
 
@@ -140,10 +171,12 @@ export default function DealsManagementPage() {
                     className="w-full appearance-none bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5 outline-none focus:border-orange-500 text-zinc-700 font-bold cursor-pointer"
                   >
                     <option>All Status</option>
-                    <option>Active</option>
-                    <option>Draft</option>
-                    <option>Scheduled</option>
-                    <option>Expired</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="draft">Draft</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="expired">Expired</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
                 </div>
@@ -235,6 +268,26 @@ export default function DealsManagementPage() {
                           <Trash2 size={18} />
                           Delete Deal
                         </button>
+                        
+                        {deal.status === 'pending' && (
+                          <>
+                            <div className="h-px bg-zinc-100 my-2 mx-3" />
+                            <button 
+                              onClick={() => handleApprove(deal.id)}
+                              className="w-full flex items-center gap-3 px-5 py-2.5 text-green-600 hover:bg-green-50 transition-colors"
+                            >
+                              <CheckCircle size={18} />
+                              Approve Ad
+                            </button>
+                            <button 
+                              onClick={() => handleReject(deal.id)}
+                              className="w-full flex items-center gap-3 px-5 py-2.5 text-orange-600 hover:bg-orange-50 transition-colors"
+                            >
+                              <XCircle size={18} />
+                              Reject Ad
+                            </button>
+                          </>
+                        )}
                       </div>
                     )}
                   </td>
