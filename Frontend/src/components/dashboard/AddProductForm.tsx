@@ -484,6 +484,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
     showVendorTasks: () => void 
 }) {
     const router = useRouter();
+    const { showAlert } = useAlert();
     const [submitting, setSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
     const fileRef = useRef<HTMLInputElement|null>(null);
