@@ -344,8 +344,8 @@ exports.sendVerificationOtp = async (req, res, next) => {
 
     if (isPhone) {
       const termii = await sendTermiiOtp(formattedContact);
-      if (!termii.pinId) throw new Error('Failed to send phone OTP');
-      await upsertOtp(userId, termii.pinId); // Store pinId
+      if (!termii.pin_id) throw new Error('Failed to send phone OTP');
+      await upsertOtp(userId, termii.pin_id); // Store pin_id
       return res.json({ success: true, message: 'Verification code sent to your phone' });
     } else {
       const otp = generateOtp();

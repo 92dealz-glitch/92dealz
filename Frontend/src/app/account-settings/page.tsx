@@ -136,7 +136,7 @@ export default function AccountSettingsPage() {
     }
     setVerifying(true);
     try {
-      await sendPhoneOtp({ phone: profile.phone });
+      await sendVerificationOtp({ contact: profile.phone, method: 'phone' });
       setShowOtpInput(true);
       setMessage({ type: "success", text: "Verification code sent to your phone!" });
     } catch (err: any) {

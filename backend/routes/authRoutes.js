@@ -21,4 +21,8 @@ router.put('/change-password', auth, authController.changePassword);
 router.post('/send-verification-otp', auth, authController.sendVerificationOtp);
 router.post('/verify-contact-otp', auth, authController.verifyContactOtp);
 
+// Alias routes for legacy compatibility
+router.post('/send-phone-otp', auth, authController.sendVerificationOtp);
+router.post('/verify-phone-otp', auth, authController.verifyContactOtp);
+
 module.exports = router;
