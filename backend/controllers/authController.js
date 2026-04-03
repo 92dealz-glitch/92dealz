@@ -15,22 +15,9 @@ const PasswordReset = require('../models/PasswordReset');
 const { Op } = require('sequelize');
 const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
 const verifyRecaptcha = require('../utils/verifyRecaptcha');
+const formatPhone = require('../utils/formatPhone');
 
-function formatPhone(phoneInput) {
-  if (!phoneInput) return phoneInput;
-  let clean = phoneInput.replace(/[\s-()]/g, '');
-  if (clean.startsWith('0') && clean.length === 11) {
-    return '+234' + clean.substring(1);
-  }
-  if (clean.startsWith('234') && clean.length === 13) {
-    return '+' + clean;
-  }
-  if (!clean.startsWith('+')) {
-    if (clean.length === 10) return '+234' + clean;
-    return '+' + clean;
-  }
-  return clean;
-}
+// ... (Rest of the file remains same, formatPhone local definition should be removed)
 
 // POST /api/auth/register-initiate
 exports.registerInitiate = async (req, res, next) => {
@@ -71,14 +58,15 @@ exports.registerInitiate = async (req, res, next) => {
 
     // Save phone from form additionally if email was method
     const signupData = { ...req.body, password: hashed };
+    if (signupData.phone) signupData.phone = formatPhone(signupData.phone);
     
     await PendingRegistration.destroy({ where: { contact } });
 
     if (method === 'phone') {
       try {
         const termiiRes = await sendTermiiOtp(contact);
-        if (!termiiRes.pinId) {
-          throw new Error('Termii failed to return a pinId');
+        if (!termiiRes || !termiiRes.pinId) {
+          throw new Error('Termii failed to return a pinId. Response: ' + JSON.stringify(termiiRes));
         }
 
         await PendingRegistration.create({
@@ -344,8 +332,8 @@ exports.sendVerificationOtp = async (req, res, next) => {
 
     if (isPhone) {
       const termii = await sendTermiiOtp(formattedContact);
-      if (!termii.pin_id) throw new Error('Failed to send phone OTP');
-      await upsertOtp(userId, termii.pin_id); // Store pin_id
+      if (!termii || !termii.pinId) throw new Error('Failed to send phone OTP. Response: ' + JSON.stringify(termii));
+      await upsertOtp(userId, termii.pinId); // Store pinId
       return res.json({ success: true, message: 'Verification code sent to your phone' });
     } else {
       const otp = generateOtp();

@@ -5,12 +5,14 @@
  */
 const sequelize = require('../config/database');
 const User = require('../models/userModel');
+const formatPhone = require('../utils/formatPhone');
 
 // POST /api/users/create
 exports.createUser = async (req, res, next) => {
   try {
     const { name, email, phone, password } = req.body;
-    const user = await User.create({ name, email, phone: phone || null, password });
+    const formattedPhone = formatPhone(phone);
+    const user = await User.create({ name, email, phone: formattedPhone || null, password });
     return res.status(201).json({ success: true, data: user });
   } catch (err) {
     return next(err);
@@ -128,7 +130,7 @@ exports.updateProfile = async (req, res, next) => {
         // Skip updating phone if verified and different
         console.log(`[ProfileLock] Blocked phone update for verified vendor ${user.id}`);
       } else {
-        user.phone = phone || null;
+        user.phone = formatPhone(phone) || null;
       }
     }
 
