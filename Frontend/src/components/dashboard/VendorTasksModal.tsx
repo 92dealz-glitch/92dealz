@@ -135,22 +135,22 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
             </div>
           ) : (
             <div className="space-y-1">
-              {/* Phone Verification Task */}
+              {/* Phone Verification Task - Only show if actually missing */}
               {!isPhoneVerified && (
                 <TaskItem 
                   icon={Phone}
-                  title="Add and verify a Phone Number to start listing Ads"
+                  title="In order to list an Ad please verify your Phone Number"
                   isCompleted={isPhoneVerified}
                   buttonText="Verify Phone Number"
                   href="/account-settings"
                 />
               )}
 
-              {/* Email Verification Task */}
+              {/* Email Verification Task - Only show if actually missing */}
               {!isEmailVerified && (
                 <TaskItem 
                   icon={Mail} 
-                  title="Add and verify an Email Address to start listing Ads"
+                  title="You have to add and verify an email address in order to post an ad"
                   isCompleted={isEmailVerified}
                   buttonText="Verify Email Address"
                   href="/account-settings"
@@ -161,10 +161,13 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
               {(!isPhoneVerified || !isEmailVerified) && (
                 <div className="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex gap-3">
                   <ShieldCheck className="text-blue-600 shrink-0" size={20} />
-                  <p className="text-[11px] text-blue-700 font-bold leading-relaxed">
-                    These verification steps are mandatory for the <span className="text-blue-900 underline decoration-blue-300">Best User Experience</span>. 
-                    They ensure trust between buyers and sellers, lead to better visibility, and guarantee seamless communication across the platform.
-                  </p>
+                  <div>
+                    <p className="text-sm font-bold text-blue-900 mb-1">Boost User Trust</p>
+                    <p className="text-[11px] text-blue-700 font-bold leading-relaxed">
+                      Verification is mandatory for the <span className="text-blue-900 underline decoration-blue-300">Best User Experience</span>. 
+                      Verified vendors get 3x more visibility and higher trust from potential buyers.
+                    </p>
+                  </div>
                 </div>
               )}
 
