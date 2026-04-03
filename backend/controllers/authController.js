@@ -66,7 +66,10 @@ exports.registerInitiate = async (req, res, next) => {
       try {
         const termiiRes = await sendTermiiOtp(contact);
         if (!termiiRes || !termiiRes.pinId) {
-          throw new Error('Termii failed to return a pinId. Response: ' + JSON.stringify(termiiRes));
+          return res.status(400).json({ 
+            success: false, 
+            message: 'Failed to send verification SMS. Please check your phone number or try again later.' 
+          });
         }
 
         await PendingRegistration.create({
@@ -343,10 +346,19 @@ exports.sendVerificationOtp = async (req, res, next) => {
     }
 
     if (isPhone) {
-      const termii = await sendTermiiOtp(formattedContact);
-      if (!termii || !termii.pinId) throw new Error('Failed to send phone OTP. Response: ' + JSON.stringify(termii));
-      await upsertOtp(userId, termii.pinId); // Store pinId
-      return res.json({ success: true, message: 'Verification code sent to your phone' });
+      try {
+        const termii = await sendTermiiOtp(formattedContact);
+        if (!termii || !termii.pinId) {
+          return res.status(400).json({ 
+            success: false, 
+            message: 'Could not send verification code to this phone number. Please try again later.' 
+          });
+        }
+        await upsertOtp(userId, termii.pinId); // Store pinId
+        return res.json({ success: true, message: 'Verification code sent to your phone' });
+      } catch (err) {
+        return res.status(400).json({ success: false, message: err.message || 'SMS service error' });
+      }
     } else {
       const otp = generateOtp();
       await upsertOtp(userId, otp);

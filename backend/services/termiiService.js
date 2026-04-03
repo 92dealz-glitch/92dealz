@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const TERMII_API_KEY = process.env.TERMII_API_KEY;
 const BASE_URL = 'https://api.ng.termii.com/api';
 
@@ -26,9 +27,16 @@ exports.sendTermiiOtp = async (phone) => {
   
   const data = await res.json();
   if (!res.ok) {
+    console.error(`[TermiiError] ${res.status}:`, data);
     throw new Error(data.message || `HTTP ${res.status} from Termii API`);
   }
-  return data; // Expected { pinId: '...' }
+  
+  // Normalize pinId/pin_id to pinId
+  if (!data.pinId && data.pin_id) {
+    data.pinId = data.pin_id;
+  }
+  
+  return data; // Guaranteed { pinId: '...' } if successful
 };
 
 exports.verifyTermiiOtp = async (pinId, pin) => {
