@@ -136,31 +136,37 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
           ) : (
             <div className="space-y-1">
               {/* Phone Verification Task */}
-              <TaskItem 
-                icon={Phone}
-                title={!isPhoneVerified ? "Add and verify a Phone Number to start listing Ads" : "Phone Number Verified"}
-                isCompleted={isPhoneVerified}
-                buttonText="Verify Phone Number"
-                href="/account-settings"
-              />
+              {!isPhoneVerified && (
+                <TaskItem 
+                  icon={Phone}
+                  title="Add and verify a Phone Number to start listing Ads"
+                  isCompleted={isPhoneVerified}
+                  buttonText="Verify Phone Number"
+                  href="/account-settings"
+                />
+              )}
 
               {/* Email Verification Task */}
-              <TaskItem 
-                icon={Mail} 
-                title={!isEmailVerified ? "Add and verify an Email Address to start listing Ads" : "Email Address Verified"}
-                isCompleted={isEmailVerified}
-                buttonText="Verify Email Address"
-                href="/account-settings"
-              />
+              {!isEmailVerified && (
+                <TaskItem 
+                  icon={Mail} 
+                  title="Add and verify an Email Address to start listing Ads"
+                  isCompleted={isEmailVerified}
+                  buttonText="Verify Email Address"
+                  href="/account-settings"
+                />
+              )}
 
-              {/* Trust/UX Note */}
-              <div className="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex gap-3">
-                <ShieldCheck className="text-blue-600 shrink-0" size={20} />
-                <p className="text-[11px] text-blue-700 font-bold leading-relaxed">
-                  These verification steps are mandatory for the <span className="text-blue-900 underline decoration-blue-300">Best User Experience</span>. 
-                  They ensure trust between buyers and sellers, lead to better visibility, and guarantee seamless communication across the platform.
-                </p>
-              </div>
+              {/* Trust/UX Note - Only show if any verification is missing */}
+              {(!isPhoneVerified || !isEmailVerified) && (
+                <div className="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex gap-3">
+                  <ShieldCheck className="text-blue-600 shrink-0" size={20} />
+                  <p className="text-[11px] text-blue-700 font-bold leading-relaxed">
+                    These verification steps are mandatory for the <span className="text-blue-900 underline decoration-blue-300">Best User Experience</span>. 
+                    They ensure trust between buyers and sellers, lead to better visibility, and guarantee seamless communication across the platform.
+                  </p>
+                </div>
+              )}
 
               <div className="h-4" /> {/* Spacer */}
 

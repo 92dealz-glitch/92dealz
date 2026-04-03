@@ -727,6 +727,7 @@ function useNavUserDetails() {
     url: string | null; 
     isVerified: boolean; 
     isPhoneVerified: boolean;
+    isEmailVerified: boolean;
     verificationStatus: string;
     name: string | null;
     role: string;
@@ -734,6 +735,7 @@ function useNavUserDetails() {
     url: null, 
     isVerified: false, 
     isPhoneVerified: false,
+    isEmailVerified: false,
     verificationStatus: "none",
     name: null,
     role: "user"
@@ -744,6 +746,7 @@ function useNavUserDetails() {
       const cached = typeof window !== "undefined" ? window.localStorage.getItem("profile_image_url") : null;
       const cachedVerified = typeof window !== "undefined" ? window.localStorage.getItem("is_verified") === "true" : false;
       const cachedPhoneVerified = typeof window !== "undefined" ? window.localStorage.getItem("is_phone_verified") === "true" : false;
+      const cachedEmailVerified = typeof window !== "undefined" ? window.localStorage.getItem("is_email_verified") === "true" : false;
       const cachedStatus = typeof window !== "undefined" ? window.localStorage.getItem("verification_status") || "none" : "none";
       const cachedName = typeof window !== "undefined" ? window.localStorage.getItem("profile_name") : null;
       const role = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
@@ -754,6 +757,7 @@ function useNavUserDetails() {
         ...prev, 
         isVerified: cachedVerified, 
         isPhoneVerified: cachedPhoneVerified,
+        isEmailVerified: cachedEmailVerified,
         verificationStatus: cachedStatus,
         role: role
       }));
@@ -775,6 +779,7 @@ function useNavUserDetails() {
             const u = d?.data?.profile_image_url;
             const v = !!d?.data?.is_verified;
             const pv = !!d?.data?.is_phone_verified;
+            const ev = !!d?.data?.is_email_verified;
             const vs = d?.data?.verification_status || "none";
             const n = d?.data?.name;
             const r = d?.data?.role || "user";
@@ -783,6 +788,7 @@ function useNavUserDetails() {
               url: u || null, 
               isVerified: v, 
               isPhoneVerified: pv,
+              isEmailVerified: ev,
               verificationStatus: vs,
               name: n || null,
               role: r
@@ -793,6 +799,7 @@ function useNavUserDetails() {
               if (n) window.localStorage.setItem("profile_name", n);
               window.localStorage.setItem("is_verified", String(v));
               window.localStorage.setItem("is_phone_verified", String(pv));
+              window.localStorage.setItem("is_email_verified", String(ev));
               window.localStorage.setItem("verification_status", vs);
               window.localStorage.setItem("role", r);
             }
@@ -807,8 +814,8 @@ function useNavUserDetails() {
 }
 
 function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isPhoneVerified, verificationStatus, role } = useNavUserDetails();
-  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || verificationStatus !== "approved");
+  const { isPhoneVerified, isEmailVerified, verificationStatus, role } = useNavUserDetails();
+  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || !isEmailVerified || verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
@@ -830,8 +837,8 @@ function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
 }
 
 function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isPhoneVerified, verificationStatus, role } = useNavUserDetails();
-  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || verificationStatus !== "approved");
+  const { isPhoneVerified, isEmailVerified, verificationStatus, role } = useNavUserDetails();
+  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || !isEmailVerified || verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
