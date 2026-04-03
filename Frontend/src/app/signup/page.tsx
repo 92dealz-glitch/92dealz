@@ -177,6 +177,14 @@ export default function SignupPage() {
   const [step, setStep] = useState(1); // 1 = signup, 2 = otp
   const [otp, setOtp] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -306,14 +314,14 @@ export default function SignupPage() {
               {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
               <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
                   <ReCAPTCHA
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                     onChange={(token) => setCaptchaToken(token)}
                   />
-                ) : (
+                ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
                   <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing. Please check ENV vars.</p>
-                )}
+                ) : null}
               </div>
 
               <button type="submit" disabled={loading}
@@ -422,14 +430,14 @@ export default function SignupPage() {
                 {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
                 <div className="py-2">
-                  {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                  {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
                     <ReCAPTCHA
                       sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                       onChange={(token) => setCaptchaToken(token)}
                     />
-                  ) : (
+                  ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
                     <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing.</p>
-                  )}
+                  ) : null}
                 </div>
 
                 <button type="submit" disabled={loading}

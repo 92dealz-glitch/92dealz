@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/lib/api";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -16,6 +16,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -196,14 +204,14 @@ export default function LoginPage() {
             </div>
 
             <div className="py-2 mb-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-              {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+              {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
                 <ReCAPTCHA
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
                   onChange={(token) => setCaptchaToken(token)}
                 />
-              ) : (
+              ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
                 <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing. Please check ENV vars.</p>
-              )}
+              ) : null}
             </div>
 
             <button
@@ -312,14 +320,14 @@ export default function LoginPage() {
               </div>
 
               <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
                   <ReCAPTCHA
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
                     onChange={(token) => setCaptchaToken(token)}
                   />
-                ) : (
+                ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
                   <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing.</p>
-                )}
+                ) : null}
               </div>
 
               <button
