@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { API_BASE } from "@/services/apiClient";
 import ReportModal from "@/components/ReportModal";
+import { useNavUserDetails } from "@/components/Navbar";
+import VerificationGateModal from "@/components/ui/VerificationGateModal";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -17,6 +19,10 @@ export default function SellerPage({ params }: Props) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportedReviewId, setReportedReviewId] = useState<number | undefined>(undefined);
   const [reportItemName, setReportItemName] = useState("");
+
+  const [showGateModal, setShowGateModal] = useState(false);
+  const { isFullyVerified } = useNavUserDetails();
+  const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
 
   useEffect(() => {
     let active = true;
@@ -654,24 +660,43 @@ export default function SellerPage({ params }: Props) {
                     {seller.phone && (
                       <>
                         <button
-                          onClick={() => window.location.href = `tel:${seller.phone}`}
+                          onClick={() => {
+                            if (!isLoggedIn || !isFullyVerified) {
+                              setShowGateModal(true);
+                              return;
+                            }
+                            window.location.href = `tel:${seller.phone}`;
+                          }}
                           className="w-full bg-[#f97316] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-orange-700 transition"
                         >
                           <PhoneIcon /> Call Seller
                         </button>
                         <button
-                          onClick={() => window.open(`https://wa.me/${seller.phone.replace(/\D/g, '')}`, '_blank')}
+                          onClick={() => {
+                            if (!isLoggedIn || !isFullyVerified) {
+                              setShowGateModal(true);
+                              return;
+                            }
+                            window.open(`https://wa.me/${seller.phone.replace(/\D/g, '')}`, '_blank');
+                          }}
                           className="w-full bg-[#22c55e] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-green-700 transition"
                         >
                           <WAIcon /> WhatsApp
                         </button>
                       </>
                     )}
-                    <Link href={`/messages?userId=${seller.id}`} className="w-full">
-                      <button className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition">
-                        <ChatIcon /> Chat Seller
-                      </button>
-                    </Link>
+                    <button 
+                      onClick={() => {
+                        if (!isLoggedIn || !isFullyVerified) {
+                          setShowGateModal(true);
+                          return;
+                        }
+                        window.location.href = `/messages?userId=${seller.id}`;
+                      }}
+                      className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition"
+                    >
+                      <ChatIcon /> Chat Seller
+                    </button>
                   </div>
               <button
                 onClick={() => setShowReportModal(true)}
@@ -960,6 +985,10 @@ export default function SellerPage({ params }: Props) {
         />
       </main>
 
+      <VerificationGateModal 
+        isOpen={showGateModal} 
+        onClose={() => setShowGateModal(false)} 
+      />
       <Footer />
     </div>
   );

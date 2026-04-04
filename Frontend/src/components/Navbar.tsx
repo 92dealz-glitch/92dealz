@@ -33,6 +33,7 @@ import { getFallbackArray } from "../data/categoriesData";
 import { getNotifications, markAsRead, AppNotification } from "@/services/notification.service";
 import VerifiedBadge from "./VerifiedBadge";
 import { useAlert } from "@/context/AlertContext";
+import VerificationTaskBar from "./VerificationTaskBar";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -56,7 +57,8 @@ export default function Navbar() {
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
 
   const isVendor = role === "vendor" || role === "Vendor";
-  const hasPendingTasks = isVendor && (!isPhoneVerified || verificationStatus !== "approved");
+  const { isFullyVerified } = useNavUserDetails();
+  const hasPendingTasks = isVendor && (!isFullyVerified || verificationStatus !== "approved");
 
   const [topCats, setTopCats] = useState<{ id: string; title: string }[]>([]);
 
@@ -173,6 +175,7 @@ export default function Navbar() {
 
   return (
     <header className="w-full bg-white shadow-sm">
+      <VerificationTaskBar />
       {/* ================= DESKTOP HEADER ================= */}
       <div className="hidden md:block">
         <div className="mx-auto max-w-7xl px-4">
@@ -722,16 +725,19 @@ export default function Navbar() {
   );
 }
 
-function useNavUserDetails() {
-  const [data, setData] = useState<{ 
-    url: string | null; 
-    isVerified: boolean; 
-    isPhoneVerified: boolean;
-    isEmailVerified: boolean;
-    verificationStatus: string;
-    name: string | null;
-    role: string;
-  }>({ 
+export type NavUserDetails = {
+  url: string | null;
+  isVerified: boolean;
+  isPhoneVerified: boolean;
+  isEmailVerified: boolean;
+  verificationStatus: string;
+  name: string | null;
+  role: string;
+  isFullyVerified: boolean;
+};
+
+export function useNavUserDetails() {
+  const [data, setData] = useState<Omit<NavUserDetails, 'isFullyVerified'>>({ 
     url: null, 
     isVerified: false, 
     isPhoneVerified: false,
@@ -740,6 +746,8 @@ function useNavUserDetails() {
     name: null,
     role: "user"
   });
+
+  const isFullyVerified = data.isPhoneVerified && data.isEmailVerified;
 
   useEffect(() => {
     try {
@@ -810,12 +818,12 @@ function useNavUserDetails() {
         });
     } catch { }
   }, []);
-  return data;
+  return { ...data, isFullyVerified };
 }
 
 function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isPhoneVerified, isEmailVerified, verificationStatus, role } = useNavUserDetails();
-  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || !isEmailVerified || verificationStatus !== "approved");
+  const { isFullyVerified, verificationStatus, role } = useNavUserDetails();
+  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isFullyVerified || verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
@@ -837,8 +845,8 @@ function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
 }
 
 function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isPhoneVerified, isEmailVerified, verificationStatus, role } = useNavUserDetails();
-  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isPhoneVerified || !isEmailVerified || verificationStatus !== "approved");
+  const { isFullyVerified, verificationStatus, role } = useNavUserDetails();
+  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isFullyVerified || verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 

@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
 import ReportModal from "@/components/ReportModal";
+import { useNavUserDetails } from "@/components/Navbar";
+import VerificationGateModal from "@/components/ui/VerificationGateModal";
 import { useAlert } from "@/context/AlertContext";
 import { useFavorites } from "@/context/FavoritesProvider";
 
@@ -151,6 +153,9 @@ export default function ProductPage({ params }: Props) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [showContactOptions, setShowContactOptions] = useState(false);
+  const [showGateModal, setShowGateModal] = useState(false);
+  const { isFullyVerified } = useNavUserDetails();
+  const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
   const [reportTarget, setReportTarget] = useState<{ productId?: number; vendorId?: number; reportedReviewId?: number; itemName: string }>({ itemName: "" });
   const [copied, setCopied] = useState(false);
 
@@ -576,7 +581,13 @@ export default function ProductPage({ params }: Props) {
             {/* 5. Contact Options */}
             <div className="rounded-lg border border-orange-200 bg-white">
               <button 
-                onClick={() => setShowContactOptions(!showContactOptions)}
+                onClick={() => {
+                  if (!isLoggedIn || !isFullyVerified) {
+                    setShowGateModal(true);
+                    return;
+                  }
+                  setShowContactOptions(!showContactOptions);
+                }}
                 className="w-full p-4 flex items-center justify-between font-semibold"
               >
                 <span>View Contact Options</span>
@@ -758,6 +769,11 @@ export default function ProductPage({ params }: Props) {
           vendorId={reportTarget.vendorId}
           reportedReviewId={reportTarget.reportedReviewId}
           itemName={reportTarget.itemName}
+        />
+
+        <VerificationGateModal 
+          isOpen={showGateModal} 
+          onClose={() => setShowGateModal(false)} 
         />
 
         {/* --- Message Seller Modal --- */}
