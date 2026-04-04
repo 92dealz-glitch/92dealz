@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 
 interface Props {
   isOpen: boolean;
@@ -15,7 +16,17 @@ export default function VerificationGateModal({
   title = "Verification Required", 
   message = "For security reasons and to provide the best user experience, please complete your profile verification (Email & Phone) to access vendor contact details." 
 }: Props) {
+  const { role } = useNavUserDetails();
+  const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
+
   if (!isOpen) return null;
+
+  // Role-based link
+  const verificationLink = !isLoggedIn 
+    ? "/signup" 
+    : (role === "vendor" || role === "Vendor"
+        ? "/vendor-dashboard/settings/verification"
+        : "/account-settings");
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -46,11 +57,11 @@ export default function VerificationGateModal({
           
           <div className="flex flex-col gap-3">
             <Link 
-              href="/vendor-dashboard/settings/verification" 
+              href={verificationLink} 
               className="w-full bg-[#f97316] text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
               onClick={onClose}
             >
-              Complete Verification
+              {!isLoggedIn ? "Sign Up Now" : "Complete Verification"}
             </Link>
             
             <button 

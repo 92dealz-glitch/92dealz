@@ -1,17 +1,21 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 
 export default function VerificationTaskBar() {
-  const { user } = useAuth();
+  const { isFullyVerified, role } = useNavUserDetails();
+  const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
 
-  if (!user) return null;
+  if (!isLoggedIn) return null;
   
   // Only show if logged in but not fully verified
-  const isFullyVerified = user.is_phone_verified && user.is_email_verified;
-  
   if (isFullyVerified) return null;
+
+  // Role-based link
+  const verificationLink = role === "vendor" || role === "Vendor"
+    ? "/vendor-dashboard/settings/verification"
+    : "/account-settings";
 
   return (
     <div className="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-2.5 px-4 shadow-md overflow-hidden relative group">
@@ -21,12 +25,12 @@ export default function VerificationTaskBar() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
           </span>
-          <span className="tracking-wide">Complete your signup for better security and access to all vendor details.</span>
+          <span className="tracking-wide text-center">Complete your signup for better security and access to all vendor details.</span>
         </div>
         
         <Link 
-          href="/vendor-dashboard/settings/verification" 
-          className="bg-white text-orange-600 px-4 py-1 rounded-full text-xs font-bold hover:bg-orange-50 transition-all transform hover:scale-105 active:scale-95 shadow-sm"
+          href={verificationLink} 
+          className="bg-white text-orange-600 px-4 py-1 rounded-full text-xs font-bold hover:bg-orange-50 transition-all transform hover:scale-105 active:scale-95 shadow-sm whitespace-nowrap"
         >
           Verify Profile Now
         </Link>
