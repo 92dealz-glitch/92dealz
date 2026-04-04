@@ -6,6 +6,7 @@ import { listThreads, getThread, sendMessage, Thread } from "@/services/messages
 import { apiFetch } from "@/services/apiClient";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { getFlagEmoji } from "@/utils/flagUtils";
 
 export default function MessagingClient() {
   const [threads, setThreads] = useState<Thread[]>([]);
@@ -196,9 +197,12 @@ export default function MessagingClient() {
                   
                   <div className="flex-1 min-w-0 flex flex-col justify-center">
                     <div className="flex justify-between items-start mb-0.5">
-                      <span className="font-extrabold text-black truncate text-base leading-tight">
-                        {t.other_name || `User #${t.other_id}`}
-                      </span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-extrabold text-black truncate text-base leading-tight">
+                          {t.other_name || `User #${t.other_id}`}
+                        </span>
+                        {t.other_country_code && <span className="text-sm shrink-0">{getFlagEmoji(t.other_country_code)}</span>}
+                      </div>
                       <span className="text-[10px] text-zinc-400 font-black whitespace-nowrap pt-1">
                           {t.last_created_at ? new Date(t.last_created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                       </span>
@@ -240,13 +244,16 @@ export default function MessagingClient() {
                 <div>
                   <h3 className="font-black text-black leading-tight flex items-center gap-2 text-lg">
                     {activeThread.other_name || `User #${activeThread.other_id}`}
+                    {activeThread.other_country_code && <span className="text-xl" title={activeThread.other_country_name || ""}>{getFlagEmoji(activeThread.other_country_code)}</span>}
                     <Link href={`/seller/${activeThread.other_id}`} className="p-1.5 hover:bg-zinc-100 rounded-lg text-zinc-300 hover:text-orange-600 transition-all shadow-sm">
                       <ExternalLink size={14} />
                     </Link>
                   </h3>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="text-[11px] font-black text-zinc-400 uppercase tracking-wide">Online Now</span>
+                    <span className="text-[11px] font-black text-zinc-400 uppercase tracking-wide">
+                      {activeThread.other_country_name ? `${activeThread.other_country_name} • ` : ""}Online Now
+                    </span>
                   </div>
                 </div>
               </div>

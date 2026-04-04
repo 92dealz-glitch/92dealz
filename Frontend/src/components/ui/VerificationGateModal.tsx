@@ -13,8 +13,8 @@ interface Props {
 export default function VerificationGateModal({ 
   isOpen, 
   onClose, 
-  title = "Complete Your Signup", 
-  message = "Please complete your signup by verifying both your Email and Phone Number to access chat, messaging, and seller contact information. This ensures a secure and trusted experience for all users." 
+  title = "Verify Your Account", 
+  message = "To access and get in touch with sellers, please verify your account. This ensures a secure and trusted experience for all users." 
 }: Props) {
   const { role } = useNavUserDetails();
   const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
@@ -32,7 +32,6 @@ export default function VerificationGateModal({
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div 
         className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300"
-        style={{ fontFamily: "'Nunito', sans-serif" }}
       >
         <div className="p-8 text-center">
           <div className="mx-auto w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6">

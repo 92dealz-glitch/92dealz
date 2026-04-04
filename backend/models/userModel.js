@@ -131,6 +131,14 @@ const User = sequelize.define('User', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  country_name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  country_code: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: true,

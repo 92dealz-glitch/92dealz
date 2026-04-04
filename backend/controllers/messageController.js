@@ -59,6 +59,8 @@ exports.threads = async (req, res, next) => {
          l.deal_id,
          ou.name AS other_name,
          ou.profile_image_url AS other_image,
+         ou.country_code AS other_country_code,
+         ou.country_name AS other_country_name,
          d.title AS deal_title
        FROM last_msg l
        LEFT JOIN unread u ON u.other_id = l.other_id

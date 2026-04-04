@@ -17,6 +17,61 @@ const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
 const { sendTwilioOtp, verifyTwilioOtp } = require('../services/twilioService');
 const verifyRecaptcha = require('../utils/verifyRecaptcha');
 const formatPhone = require('../utils/formatPhone');
+const geoip = require('geoip-lite');
+const { parsePhoneNumber } = require('libphonenumber-js');
+
+/**
+ * Helper to get country from request IP or headers
+ */
+const getCountryFromRequest = (req) => {
+  // Check headers first (common for Vercel/Cloudflare)
+  const headerCountry = req.headers['x-vercel-ip-country'] || req.headers['cf-ipcountry'];
+  if (headerCountry) {
+    try {
+      const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
+      return {
+        code: headerCountry.toUpperCase(),
+        name: displayNames.of(headerCountry.toUpperCase())
+      };
+    } catch (e) {
+      return { code: headerCountry.toUpperCase(), name: null };
+    }
+  }
+
+  // Fallback to geoip-lite
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const geo = geoip.lookup(ip);
+  if (geo && geo.country) {
+    try {
+      const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
+      return {
+        code: geo.country,
+        name: displayNames.of(geo.country)
+      };
+    } catch (e) {
+      return { code: geo.country, name: null };
+    }
+  }
+
+  return { code: null, name: null };
+};
+
+/**
+ * Helper to get country from phone number
+ */
+const getCountryFromPhone = (phone) => {
+  try {
+    const phoneNumber = parsePhoneNumber(phone);
+    if (phoneNumber && phoneNumber.country) {
+      const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
+      return {
+        code: phoneNumber.country,
+        name: displayNames.of(phoneNumber.country)
+      };
+    }
+  } catch (e) {}
+  return { code: null, name: null };
+};
 
 // ... (Rest of the file remains same, formatPhone local definition should be removed)
 
@@ -89,6 +144,20 @@ exports.registerInitiate = async (req, res, next) => {
           otpValue = 'TWILIO_VERIFY';
         }
 
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+        // Detect country from request
+        const detectedCountry = getCountryFromRequest(req);
+        if (signupData.phone) {
+          const phoneCountry = getCountryFromPhone(signupData.phone);
+          if (phoneCountry.code) {
+             detectedCountry.code = phoneCountry.code;
+             detectedCountry.name = phoneCountry.name;
+          }
+        }
+        signupData.country_code = detectedCountry.code;
+        signupData.country_name = detectedCountry.name;
+
         await PendingRegistration.create({
           contact,
           otp: otpValue,
@@ -104,6 +173,13 @@ exports.registerInitiate = async (req, res, next) => {
     } else {
       try {
         const otp = generateOtp();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+        // Detect country from request
+        const detectedCountry = getCountryFromRequest(req);
+        signupData.country_code = detectedCountry.code;
+        signupData.country_name = detectedCountry.name;
+
         await PendingRegistration.create({
           contact,
           otp,
@@ -190,6 +266,8 @@ exports.registerVerify = async (req, res, next) => {
       businessName: roleToSave === 'vendor' ? businessName : null,
       businessCategory: roleToSave === 'vendor' ? businessCategory : null,
       businessAddress: roleToSave === 'vendor' ? businessAddress : null,
+      country_code: signupData.country_code,
+      country_name: signupData.country_name,
     });
 
     await pending.destroy();
@@ -476,6 +554,16 @@ exports.verifyContactOtp = async (req, res, next) => {
     
     // Also set general is_verified
     user.is_verified = true;
+
+    // Update country if verifying phone and user doesn't have it yet
+    if (isPhone) {
+      const phoneCountry = getCountryFromPhone(formattedContact);
+      if (phoneCountry.code) {
+        user.country_code = phoneCountry.code;
+        user.country_name = phoneCountry.name;
+      }
+    }
+
     await user.save();
     
     // Explicitly delete the OTP record after success

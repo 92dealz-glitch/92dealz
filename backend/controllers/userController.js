@@ -28,7 +28,7 @@ exports.getUsers = async (req, res, next) => {
 
     const users = await User.findAll({ 
       where,
-      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified', 'is_phone_verified', 'is_email_verified'],
+      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified', 'is_phone_verified', 'is_email_verified', 'country_code', 'country_name'],
       order: [['id', 'ASC']] 
     });
 
@@ -57,7 +57,7 @@ exports.getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified', 'country_code', 'country_name'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -99,7 +99,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getProfile = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status', 'country_code', 'country_name'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -159,7 +159,9 @@ exports.updateProfile = async (req, res, next) => {
         businessName: user.businessName, businessCategory: user.businessCategory, businessAddress: user.businessAddress, about: user.about,
         is_verified: user.is_verified,
         is_phone_verified: user.is_phone_verified,
-        is_email_verified: user.is_email_verified
+        is_email_verified: user.is_email_verified,
+        country_code: user.country_code,
+        country_name: user.country_name
       },
     });
   } catch (err) {

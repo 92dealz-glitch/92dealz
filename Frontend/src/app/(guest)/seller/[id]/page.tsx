@@ -7,6 +7,7 @@ import { API_BASE } from "@/services/apiClient";
 import ReportModal from "@/components/ReportModal";
 import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 import VerificationGateModal from "@/components/ui/VerificationGateModal";
+import { getFlagEmoji } from "@/utils/flagUtils";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -49,6 +50,8 @@ export default function SellerPage({ params }: Props) {
           responseTime: u.responseTime || "Within 1 hour",
           phone: u.phone,
           profile_image_url: u.profile_image_url,
+          country_code: u.country_code,
+          country_name: u.country_name,
         });
 
         // Fetch active ads for this user
@@ -254,6 +257,7 @@ export default function SellerPage({ params }: Props) {
                 <div>
                   <h1 className="text-2xl font-extrabold text-orange-600 flex items-center justify-center md:justify-start gap-2 m-0">
                     {seller.name}
+                    {seller.country_code && <span className="text-2xl" title={seller.country_name}>{getFlagEmoji(seller.country_code)}</span>}
                     <span
                       style={{
                         background: "#16a34a",
@@ -741,6 +745,7 @@ export default function SellerPage({ params }: Props) {
               >
                 {[
                   ["Member Since:", seller.memberSince],
+                  ["Location:", seller.country_name || seller.location],
                   ["Total Ads Posted:", `${seller.totalAds} items`],
                   ["Response Time:", seller.responseTime],
                   ["Customer Rating:", `${seller.rating}/5.0`],

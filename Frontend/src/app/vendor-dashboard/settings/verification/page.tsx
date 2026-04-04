@@ -102,25 +102,25 @@ export default function VerificationPage() {
             {/* Account Verification Section */}
             <div className="bg-white rounded-3xl border border-zinc-200 shadow-xl shadow-zinc-100 overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-8">
-                     <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-white shadow-lg ${
+                     <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg ${
                         isVerified ? 'bg-emerald-500 shadow-emerald-100' : 
                         vStatus === 'pending' ? 'bg-amber-500 shadow-amber-100' : 
                         vStatus === 'rejected' ? 'bg-red-500 shadow-red-100' : 'bg-zinc-500 shadow-zinc-100'
                     }`}>
-                        {isVerified ? 'TRUSTED SELLER' : vStatus === 'none' ? 'UNVERIFIED' : vStatus}
+                        {isVerified ? 'Trusted Seller' : vStatus === 'none' ? 'Unverified' : vStatus.charAt(0).toUpperCase() + vStatus.slice(1)}
                     </div>
                 </div>
 
                 <div className="p-8 lg:p-14">
-                    <h2 className="text-zinc-900 font-black text-3xl mb-3 uppercase tracking-tighter italic">Identity Verification</h2>
-                    <p className="text-zinc-500 font-bold text-sm mb-12 max-w-xl">Build absolute trust within the marketplace by providing a valid government-issued identifier.</p>
+                    <h2 className="text-zinc-900 font-bold text-2xl mb-3 tracking-tight">Identity Verification</h2>
+                    <p className="text-zinc-500 text-sm mb-12 max-w-xl">Build trust within the marketplace by providing a valid government-issued identifier.</p>
 
                     <div className="max-w-3xl space-y-10">
                         {vStatus === 'none' || vStatus === 'rejected' ? (
                             <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
                                     <div className="space-y-4">
-                                        <label className="text-zinc-900 font-black text-xs uppercase tracking-widest block pl-1">Select Identity Type</label>
+                                        <label className="text-zinc-900 font-bold text-xs pl-1">Select Identity Type</label>
                                         <div className="relative group">
                                             <select className="appearance-none w-full border-2 border-zinc-100 rounded-2xl p-5 text-zinc-900 font-black text-sm focus:outline-none focus:border-[#f45c03] transition-all bg-zinc-50 group-hover:bg-white">
                                                 <option>NIN (Slip or Card)</option>
@@ -137,8 +137,8 @@ export default function VerificationPage() {
                                     <label className="aspect-[1.8/1] rounded-3xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-300 hover:text-[#f45c03] group relative overflow-hidden bg-zinc-50/50">
                                         {uploading ? (
                                             <div className="flex flex-col items-center gap-3">
-                                                <Loader2 className="animate-spin" size={40} />
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 animate-pulse">Scanning Document...</span>
+                                                <Loader2 className="animate-spin text-orange-600" size={40} />
+                                                <span className="text-[10px] font-bold text-orange-600 animate-pulse">Scanning Document...</span>
                                             </div>
                                         ) : (
                                             <>
@@ -171,8 +171,8 @@ export default function VerificationPage() {
                                     </div>
                                 )}
                                 <div className="flex-1 text-center md:text-left">
-                                    <h4 className="text-white font-black text-2xl uppercase tracking-tighter italic">
-                                        {isVerified ? "IDENTITY SECURED" : "PENDING REVIEW"}
+                                    <h4 className="text-white font-bold text-xl tracking-tight">
+                                        {isVerified ? "Identity Secured" : "Pending Review"}
                                     </h4>
                                     <p className="text-zinc-400 font-bold text-sm mt-2 leading-relaxed opacity-80">
                                         {isVerified 
@@ -200,14 +200,14 @@ export default function VerificationPage() {
                                 {isPhoneVerified ? 'FULLY SECURED' : 'UNVERIFIED'}
                             </span>
                         </div>
-                        <h2 className="text-zinc-900 font-black text-2xl mb-2 uppercase tracking-tight italic">Commercial Contact</h2>
-                        <p className="text-zinc-500 font-bold text-xs mb-10 italic opacity-80">Direct verification ensures buyers can reach you reliably for transactions.</p>
+                        <h2 className="text-zinc-900 font-bold text-2xl mb-2 tracking-tight">Commercial Contact</h2>
+                        <p className="text-zinc-500 text-xs mb-10 opacity-80">Direct verification ensures buyers can reach you reliably for transactions.</p>
 
                         {!showOtpInput ? (
                             <div className="space-y-6">
                                 <div className="bg-zinc-50 p-5 rounded-2xl border border-zinc-100">
-                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 pl-1">Registered Number</p>
-                                    <p className="text-zinc-900 font-black text-lg tracking-wider italic">{status?.phone || "+234 XXX XXX XXXX"}</p>
+                                    <p className="text-[10px] font-bold text-zinc-400 mb-1 pl-1">Registered Number</p>
+                                    <p className="text-zinc-900 font-bold text-lg tracking-wider">{status?.phone || "+234 XXX XXX XXXX"}</p>
                                 </div>
 
                                 {isPhoneVerified ? (
@@ -219,7 +219,7 @@ export default function VerificationPage() {
                                     <button 
                                         disabled={sendingOtp || !status?.phone}
                                         onClick={handleSendPhoneOtp}
-                                        className="w-full bg-[#f45c03] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#f45c03] shadow-lg shadow-orange-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                        className="w-full bg-[#f45c03] text-white py-4 rounded-2xl font-bold text-xs hover:bg-[#f45c03] shadow-lg shadow-orange-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
                                         {sendingOtp ? <Loader2 className="animate-spin" size={16} /> : <ArrowRight size={16} />}
                                         Verify This Number

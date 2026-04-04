@@ -33,8 +33,8 @@ import { getFallbackArray } from "../data/categoriesData";
 import { getNotifications, markAsRead, AppNotification } from "@/services/notification.service";
 import VerifiedBadge from "./VerifiedBadge";
 import { useAlert } from "@/context/AlertContext";
-import VerificationTaskBar from "./VerificationTaskBar";
 import { useNavUserDetails } from "@/hooks/useNavUserDetails";
+import { getFlagEmoji } from "@/utils/flagUtils";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -176,7 +176,6 @@ export default function Navbar() {
 
   return (
     <header className="w-full bg-white shadow-sm">
-      <VerificationTaskBar />
       {/* ================= DESKTOP HEADER ================= */}
       <div className="hidden md:block">
         <div className="mx-auto max-w-7xl px-4">
@@ -316,6 +315,15 @@ export default function Navbar() {
                       </>
                     )}
                   </div>
+                  {!isFullyVerified && (
+                    <Link 
+                      href={role === "vendor" || role === "Vendor" ? "/vendor-dashboard/settings/verification" : "/account-settings"}
+                      className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold border border-orange-100 hover:bg-orange-100 transition-colors whitespace-nowrap"
+                    >
+                      <div className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-ping" />
+                      Verify to Contact Sellers
+                    </Link>
+                  )}
                   <NavUserMenu signOut={signOut} />
                 </div>
               )}
@@ -353,20 +361,34 @@ export default function Navbar() {
                     </Link>
                   </>
                 ) : (
-                  <NavUserMenu signOut={signOut} />
+                  <>
+                    {!isFullyVerified && (
+                      <Link 
+                        href={role === "vendor" || role === "Vendor" ? "/vendor-dashboard/settings/verification" : "/account-settings"}
+                        className="flex items-center gap-1.5 px-2 py-1 bg-orange-50 text-orange-600 rounded-full text-[9px] font-bold border border-orange-100 whitespace-nowrap"
+                      >
+                         <div className="w-1 h-1 bg-orange-600 rounded-full animate-ping" />
+                         Verify
+                      </Link>
+                    )}
+                    <NavUserMenu signOut={signOut} />
+                  </>
                 )}
               </div>
 
               {isLoggedIn && (
                 <>
-                  <Link href="/notifications" className="text-zinc-600 relative hover:text-orange-600 transition-colors">
-                    <Bell size={24} />
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
-                        {unreadCount > 9 ? "9+" : unreadCount}
-                      </span>
-                    )}
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    <TaskIcon showVendorTasks={showVendorTasks} />
+                    <Link href="/notifications" className="text-zinc-600 relative hover:text-orange-600 transition-colors">
+                      <Bell size={24} />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
+                          {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
+                      )}
+                    </Link>
+                  </div>
                 </>
               )}
 
@@ -637,7 +659,6 @@ export default function Navbar() {
                 <Mail size={22} />
                 <span className="text-[10px] mt-1 text-center">Chat</span>
               </Link>
-              <MobileTaskTab showVendorTasks={showVendorTasks} />
               <Link href="/vendor-dashboard/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
                 <Grid size={22} />
                 <span className="text-[10px] mt-1 text-center">My Ads</span>
@@ -767,7 +788,7 @@ function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
 
 function NavUserMenu({ signOut }: { signOut: () => void }) {
   const [open, setOpen] = useState(false);
-  const { url, isVerified, name } = useNavUserDetails();
+  const { url, isVerified, name, country_code } = useNavUserDetails();
   const role = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
   const router = useRouter();
 
@@ -797,7 +818,10 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
           <div className="absolute right-0 mt-3 w-56 bg-white border border-zinc-100 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="bg-zinc-50 px-4 py-3 border-b border-zinc-100 mb-1">
               {name && (
-                <p className="text-sm font-bold text-zinc-800 mb-0.5">{name}</p>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <p className="text-sm font-bold text-zinc-800">{name}</p>
+                  {country_code && <span className="text-base" title={country_code}>{getFlagEmoji(country_code)}</span>}
+                </div>
               )}
               <div className="flex items-center gap-2">
                 <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">Account Role:</p>

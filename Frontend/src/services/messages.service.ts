@@ -4,6 +4,8 @@ export interface Thread {
   other_id: number;
   other_name?: string;
   other_image?: string | null;
+  other_country_code?: string | null;
+  other_country_name?: string | null;
   last_id: number;
   last_content: string;
   last_created_at: string;

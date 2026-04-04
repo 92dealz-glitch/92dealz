@@ -10,6 +10,8 @@ export type NavUserDetails = {
   name: string | null;
   role: string;
   isFullyVerified: boolean;
+  country_code: string | null;
+  country_name: string | null;
 };
 
 export function useNavUserDetails() {
@@ -20,7 +22,9 @@ export function useNavUserDetails() {
     isEmailVerified: false,
     verificationStatus: "none",
     name: null,
-    role: "user"
+    role: "user",
+    country_code: null,
+    country_name: null
   });
 
   const isFullyVerified = data.isPhoneVerified && data.isEmailVerified;
@@ -34,6 +38,8 @@ export function useNavUserDetails() {
       const cachedStatus = typeof window !== "undefined" ? window.localStorage.getItem("verification_status") || "none" : "none";
       const cachedName = typeof window !== "undefined" ? window.localStorage.getItem("profile_name") : null;
       const role = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
+      const cachedCC = typeof window !== "undefined" ? window.localStorage.getItem("country_code") : null;
+      const cachedCN = typeof window !== "undefined" ? window.localStorage.getItem("country_name") : null;
       
       if (cached) setData(prev => ({ ...prev, url: cached }));
       if (cachedName) setData(prev => ({ ...prev, name: cachedName }));
@@ -43,7 +49,9 @@ export function useNavUserDetails() {
         isPhoneVerified: cachedPhoneVerified,
         isEmailVerified: cachedEmailVerified,
         verificationStatus: cachedStatus,
-        role: role
+        role: role,
+        country_code: cachedCC,
+        country_name: cachedCN
       }));
 
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
@@ -67,6 +75,8 @@ export function useNavUserDetails() {
             const vs = d?.data?.verification_status || "none";
             const n = d?.data?.name;
             const r = (d?.data?.role || "user").toLowerCase();
+            const cc = d?.data?.country_code;
+            const cn = d?.data?.country_name;
             
             setData({ 
               url: u || null, 
@@ -75,12 +85,16 @@ export function useNavUserDetails() {
               isEmailVerified: ev,
               verificationStatus: vs,
               name: n || null,
-              role: r
+              role: r,
+              country_code: cc || null,
+              country_name: cn || null
             });
             
             if (typeof window !== "undefined") {
               if (u) window.localStorage.setItem("profile_image_url", u);
               if (n) window.localStorage.setItem("profile_name", n);
+              if (cc) window.localStorage.setItem("country_code", cc);
+              if (cn) window.localStorage.setItem("country_name", cn);
               window.localStorage.setItem("is_verified", String(v));
               window.localStorage.setItem("is_phone_verified", String(pv));
               window.localStorage.setItem("is_email_verified", String(ev));
