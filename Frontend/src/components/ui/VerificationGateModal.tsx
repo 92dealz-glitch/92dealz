@@ -14,7 +14,7 @@ export default function VerificationGateModal({
   isOpen, 
   onClose, 
   title = "Verification Required", 
-  message = "For security reasons and to provide the best user experience, please complete your profile verification (Email & Phone) to access vendor contact details." 
+  message = "Please complete signup and verify your profile (Email & Phone) to view seller contact information. This is for security reasons and to provide the best user experience." 
 }: Props) {
   const { role } = useNavUserDetails();
   const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);

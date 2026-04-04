@@ -12,7 +12,8 @@ import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
 import ReportModal from "@/components/ReportModal";
-import { useNavUserDetails } from "@/components/Navbar";
+import { useNavUserDetails } from "@/hooks/useNavUserDetails";
+import { sendMessage } from "@/services/messages.service";
 import VerificationGateModal from "@/components/ui/VerificationGateModal";
 import { useAlert } from "@/context/AlertContext";
 import { useFavorites } from "@/context/FavoritesProvider";
@@ -145,7 +146,7 @@ export default function ProductPage({ params }: Props) {
   };
 
   const [messageModal, setMessageModal] = useState(false);
-  const [messageText, setMessageText] = useState("");
+  const [messageText, setMessageText] = useState("I am interested in this item. Is it still available?");
   const [sendingMessage, setSendingMessage] = useState(false)
   const [orderMessage, setOrderMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -194,44 +195,24 @@ export default function ProductPage({ params }: Props) {
         return;
       }
 
-      if (product.sellerPhone) {
-        const cleanPhone = product.sellerPhone.replace(/\D/g, '');
-        const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(finalMsg.trim())}`;
-        window.open(waUrl, '_blank');
-        try { await logContactView(Number(product.id)); } catch {}
+      // Reverting to built-in messaging as requested by user
+      const res = await sendMessage(Number(product.sellerId), finalMsg.trim(), Number(id));
+      
+      if (res.success) {
+        showAlert("Message sent successfully!", "Success");
         setMessageModal(false);
-        setMessageText("");
-        showAlert("Redirecting to WhatsApp...", "Redirecting");
+        setMessageText("I am interested in this item. Is it still available?");
+        try { await logContactView(Number(id), 'chat'); } catch {}
       } else {
-        const res = await fetch(`${API_BASE}/messages`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            to_user_id: Number(product.sellerId),
-            deal_id: Number(product.id),
-            content: finalMsg.trim(),
-          }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          showAlert("Message sent successfully!", "Message Sent");
-          setMessageModal(false);
-          setMessageText("");
-          try { await logContactView(Number(product.id)); } catch {}
-        } else {
-          showAlert(data.message || "Failed to send message");
-        }
+        showAlert(res.message || "Failed to send message.");
       }
     } catch (err) {
-      showAlert("An error occurred while sending the message");
+      console.error("Failed to send message:", err);
+      showAlert("Error sending message. Please try again.");
     } finally {
       setSendingMessage(false);
     }
   };
-
 
   const handlePlaceOrder = async () => {
     const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
@@ -835,6 +816,10 @@ export default function ProductPage({ params }: Props) {
       </main>
 
       <SimilarItems />
+      <VerificationGateModal 
+        isOpen={showGateModal} 
+        onClose={() => setShowGateModal(false)} 
+      />
       <Footer />
     </div>
   )

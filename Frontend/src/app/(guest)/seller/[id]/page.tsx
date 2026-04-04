@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { API_BASE } from "@/services/apiClient";
 import ReportModal from "@/components/ReportModal";
-import { useNavUserDetails } from "@/components/Navbar";
+import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 import VerificationGateModal from "@/components/ui/VerificationGateModal";
 
 type Props = { params: Promise<{ id: string }> };

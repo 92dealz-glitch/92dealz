@@ -22,7 +22,7 @@ export async function getThread(userId: number, dealId?: number) {
 }
 
 export async function sendMessage(to_user_id: number, content: string, deal_id?: number) {
-  return apiFetch<{ success: boolean; data: { id: number } }>(
+  return apiFetch<{ success: boolean; data: { id: number }; message?: string }>(
     "/messages",
     { method: "POST", body: JSON.stringify({ to_user_id, content, deal_id }) },
     true
