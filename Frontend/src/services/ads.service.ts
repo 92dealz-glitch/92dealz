@@ -90,6 +90,10 @@ export async function createAd(payload: AdPayload) {
   return apiFetch<{ success: boolean; data: any }>(path, { method: "POST", body: JSON.stringify(body) }, true);
 }
 
+export async function getAdById(id: number) {
+  return apiFetch<{ success: boolean; data: any }>(`${BASE}/${id}`, { method: "GET" }, false);
+}
+
 export async function updateAd(id: number, payload: Partial<AdPayload>) {
   const body: any = { ...payload };
   if (payload.images) {

@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Search, Trash2, Loader2, ChevronLeft, ChevronRight, Package, AlertCircle } from "lucide-react";
+import { Search, Trash2, Loader2, ChevronLeft, ChevronRight, Package, AlertCircle, Pencil } from "lucide-react";
 import { getDealsAdmin, deleteDealAdmin, approveDealAdmin, rejectDealAdmin, setPendingDealAdmin } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 import { Check, X, Timer } from "lucide-react";
+import Link from "next/link";
 
 export default function ProductManagement() {
   const { showAlert } = useAlert();
@@ -184,6 +185,13 @@ export default function ProductManagement() {
                           <X size={18} />
                         </button>
                       )}
+                      <Link
+                        href={`/admin/deals/${deal.id}/edit`}
+                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Edit Product"
+                      >
+                        <Pencil size={18} />
+                      </Link>
                       <button
                         onClick={() => setDeleteModal({ show: true, id: deal.id, title: deal.title })}
                         className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
