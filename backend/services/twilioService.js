@@ -16,8 +16,12 @@ if (accountSid && authToken) {
  * @returns {Promise<object>} - Twilio verification response
  */
 exports.sendTwilioOtp = async (phoneNumber) => {
-  if (!client || !verifyServiceSid) {
-    throw new Error('Twilio credentials not configured');
+  if (!accountSid || !authToken || !verifyServiceSid) {
+    const missing = [];
+    if (!accountSid) missing.push('TWILIO_ACCOUNT_SID');
+    if (!authToken) missing.push('TWILIO_AUTH_TOKEN');
+    if (!verifyServiceSid) missing.push('TWILIO_VERIFY_SERVICE_ID');
+    throw new Error(`Twilio configuration missing: ${missing.join(', ')}`);
   }
 
   try {
@@ -39,8 +43,12 @@ exports.sendTwilioOtp = async (phoneNumber) => {
  * @returns {Promise<object>} - Twilio verification check response
  */
 exports.verifyTwilioOtp = async (phoneNumber, code) => {
-  if (!client || !verifyServiceSid) {
-    throw new Error('Twilio credentials not configured');
+  if (!accountSid || !authToken || !verifyServiceSid) {
+    const missing = [];
+    if (!accountSid) missing.push('TWILIO_ACCOUNT_SID');
+    if (!authToken) missing.push('TWILIO_AUTH_TOKEN');
+    if (!verifyServiceSid) missing.push('TWILIO_VERIFY_SERVICE_ID');
+    throw new Error(`Twilio configuration missing: ${missing.join(', ')}`);
   }
 
   try {
