@@ -64,6 +64,9 @@ exports.search = async (req, res, next) => {
       where.push(`store_id = $${bind.length}`);
     }
 
+    // Only show active deals in search result
+    where.push("status = 'active'");
+
     const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
     const orderSql = `ORDER BY ${sortSql(req.query.sort)}`;
 

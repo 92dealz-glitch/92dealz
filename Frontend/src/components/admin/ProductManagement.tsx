@@ -161,28 +161,31 @@ export default function ProductManagement() {
                       {deal.status !== 'active' && (
                         <button
                           onClick={() => handleStatusAction(deal.id, 'approve')}
-                          className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                          title="Approve"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-lg text-[10px] font-black uppercase transition-all active:scale-95 border border-emerald-100"
+                          title="Approve Listing"
                         >
-                          <Check size={18} />
+                          <Check size={14} />
+                          Approve
                         </button>
                       )}
                       {deal.status !== 'pending' && (
                         <button
                           onClick={() => handleStatusAction(deal.id, 'pending')}
-                          className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                          title="Set Pending"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white rounded-lg text-[10px] font-black uppercase transition-all active:scale-95 border border-amber-100"
+                          title="Set to Pending"
                         >
-                          <Timer size={18} />
+                          <Timer size={14} />
+                          Pending
                         </button>
                       )}
                       {deal.status !== 'rejected' && (
                         <button
                           onClick={() => setActionModal({ show: true, id: deal.id, type: 'reject' })}
-                          className="p-1.5 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                          title="Reject"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white rounded-lg text-[10px] font-black uppercase transition-all active:scale-95 border border-orange-100"
+                          title="Reject Listing"
                         >
-                          <X size={18} />
+                          <X size={14} />
+                          Reject
                         </button>
                       )}
                       
