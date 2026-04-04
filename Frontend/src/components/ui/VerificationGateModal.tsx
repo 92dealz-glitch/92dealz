@@ -13,8 +13,8 @@ interface Props {
 export default function VerificationGateModal({ 
   isOpen, 
   onClose, 
-  title = "Verification Required", 
-  message = "Please complete signup and verify your profile (Email & Phone) to view seller contact information. This is for security reasons and to provide the best user experience." 
+  title = "Complete Your Signup", 
+  message = "Please complete your signup by verifying both your Email and Phone Number to access chat, messaging, and seller contact information. This ensures a secure and trusted experience for all users." 
 }: Props) {
   const { role } = useNavUserDetails();
   const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);

@@ -202,7 +202,7 @@ export default function ProductPage({ params }: Props) {
         showAlert("Message sent successfully!", "Success");
         setMessageModal(false);
         setMessageText("I am interested in this item. Is it still available?");
-        try { await logContactView(Number(id), 'chat'); } catch {}
+        try { await logContactView(Number(id)); } catch {}
       } else {
         showAlert(res.message || "Failed to send message.");
       }
@@ -484,8 +484,10 @@ export default function ProductPage({ params }: Props) {
               <div className="mt-6 space-y-3">
                 <Button 
                   onClick={() => {
-                    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-                    if (!token) { showAlert("Please login to contact seller", "Authentication Required"); return; }
+                    if (!isLoggedIn || !isFullyVerified) {
+                      setShowGateModal(true);
+                      return;
+                    }
                     setMessageText("I am interested in your product.");
                     setMessageModal(true);
                   }} 
@@ -493,16 +495,18 @@ export default function ProductPage({ params }: Props) {
                 >
                   Send Message to seller
                 </Button>
-                <Link 
-                  href={`/messages?userId=${product.sellerId}&dealId=${product.id}`}
-                  className="w-full"
+                <Button 
+                  onClick={() => {
+                    if (!isLoggedIn || !isFullyVerified) {
+                      setShowGateModal(true);
+                      return;
+                    }
+                    router.push(`/messages?userId=${product.sellerId}&dealId=${product.id}`);
+                  }}
+                  className="w-full bg-orange-600 text-white py-3 font-bold"
                 >
-                  <Button 
-                    className="w-full bg-orange-600 text-white py-3 font-bold"
-                  >
-                    💬 Chat Seller
-                  </Button>
-                </Link>
+                  💬 Chat Seller
+                </Button>
               </div>
             </div>
 
@@ -578,19 +582,48 @@ export default function ProductPage({ params }: Props) {
               {showContactOptions && (
                 <div className="p-4 pt-0 space-y-3">
                   {product.sellerPhone ? (
-                    <a 
-                      href={`tel:${product.sellerPhone.replace(/\D/g,'')}`}
+                    <button 
+                      onClick={() => {
+                        if (!isLoggedIn || !isFullyVerified) {
+                          setShowGateModal(true);
+                          return;
+                        }
+                        window.location.href = `tel:${product.sellerPhone.replace(/\D/g,'')}`;
+                      }}
                       className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors"
                     >
                       📞 {product.sellerPhone}
-                    </a>
+                    </button>
                   ) : (
                     <button type="button" onClick={() => showAlert("Phone number not available", "Seller Contact")} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold opacity-70 cursor-not-allowed">
                       📞 Not Available
                     </button>
                   )}
-                  <a href={`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`} className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold hover:bg-green-600 transition-colors">💬 Whatsapp</a>
-                  <button type="button" onClick={() => setMessageModal(true)} className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors">💬 Chat Seller</button>
+                  <button 
+                    onClick={() => {
+                      if (!isLoggedIn || !isFullyVerified) {
+                        setShowGateModal(true);
+                        return;
+                      }
+                      window.open(`https://wa.me/${product.sellerPhone?.replace(/\D/g,'')}`, '_blank');
+                    }}
+                    className="w-full inline-flex bg-green-500 text-white py-3 rounded items-center justify-center gap-2 font-bold hover:bg-green-600 transition-colors"
+                  >
+                    💬 Whatsapp
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      if (!isLoggedIn || !isFullyVerified) {
+                        setShowGateModal(true);
+                        return;
+                      }
+                      setMessageModal(true);
+                    }} 
+                    className="w-full bg-orange-600 text-white py-3 rounded flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition-colors"
+                  >
+                    💬 Chat Seller
+                  </button>
                   <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
                   <button 
                     onClick={() => {
@@ -750,11 +783,6 @@ export default function ProductPage({ params }: Props) {
           vendorId={reportTarget.vendorId}
           reportedReviewId={reportTarget.reportedReviewId}
           itemName={reportTarget.itemName}
-        />
-
-        <VerificationGateModal 
-          isOpen={showGateModal} 
-          onClose={() => setShowGateModal(false)} 
         />
 
         {/* --- Message Seller Modal --- */}
