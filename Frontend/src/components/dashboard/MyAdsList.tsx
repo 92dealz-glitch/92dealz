@@ -109,12 +109,23 @@ export default function MyAdsList() {
                             </div>
 
                             <div className="mt-6 flex flex-wrap items-center gap-3">
-                                <Link
-                                    href={`/vendor-dashboard/edit-ad/${ad.id}`}
+                                <button
+                                    onClick={async () => {
+                                        const newTitle = await showPrompt("Enter new title", ad.title, "Edit Title") ?? ad.title;
+                                        const newPriceStr = await showPrompt("Enter new price", String(ad.price), "Edit Price") ?? String(ad.price);
+                                        const newPrice = Number(newPriceStr);
+                                        if (Number.isNaN(newPrice)) return;
+                                        try {
+                                            await updateAd(ad.id, { title: newTitle, price: newPrice });
+                                            await load();
+                                        } catch (e: any) {
+                                            showAlert(e.message || "Action failed");
+                                        }
+                                    }}
                                     className="flex items-center gap-2 border border-zinc-300 hover:border-[#f45c03] hover:text-[#f45c03] text-zinc-700 font-bold py-1.5 px-4 rounded-md text-sm transition-all">
                                     <Edit2 size={14} />
                                     Edit
-                                </Link>
+                                </button>
                                 <button
                                     onClick={async () => {
                                         try {
