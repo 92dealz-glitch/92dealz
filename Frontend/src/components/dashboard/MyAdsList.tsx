@@ -24,7 +24,7 @@ export default function MyAdsList() {
                 published: "active",
                 pending: "pending",
                 draft: "draft",
-                closed: "closed",
+                closed: "sold",
                 rejected: "rejected"
             };
             const res = await listMyAds(statusMap[activeTab]);

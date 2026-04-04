@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { Search, Trash2, Loader2, ChevronLeft, ChevronRight, Package, AlertCircle } from "lucide-react";
-import { getDealsAdmin, deleteDealAdmin } from "@/lib/api";
+import { getDealsAdmin, deleteDealAdmin, approveDealAdmin, rejectDealAdmin, setPendingDealAdmin } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
+import { Check, X, Timer } from "lucide-react";
 
 export default function ProductManagement() {
   const { showAlert } = useAlert();
@@ -19,6 +20,13 @@ export default function ProductManagement() {
   });
   const [reason, setReason] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [actionModal, setActionModal] = useState<{ show: boolean, id: number | null, type: 'reject' | null }>({
+    show: false,
+    id: null,
+    type: null
+  });
+  const [actionReason, setActionReason] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
 
   const fetchDeals = async (p = page, s = search) => {
     setLoading(true);
@@ -62,6 +70,26 @@ export default function ProductManagement() {
       showAlert("Failed to delete deal", "Delete Error");
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleStatusAction = async (id: number, type: 'approve' | 'pending' | 'reject', reason?: string) => {
+    setActionLoading(true);
+    try {
+      let res;
+      if (type === 'approve') res = await approveDealAdmin(id);
+      else if (type === 'pending') res = await setPendingDealAdmin(id);
+      else res = await rejectDealAdmin(id, reason || "Does not meet guidelines");
+
+      if (res.success) {
+        setActionModal({ show: false, id: null, type: null });
+        setActionReason("");
+        fetchDeals(page, search);
+      }
+    } catch (err: any) {
+      showAlert(err.message || "Action failed", "Error");
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -128,13 +156,42 @@ export default function ProductManagement() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => setDeleteModal({ show: true, id: deal.id, title: deal.title })}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Remove Product"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex items-center justify-end gap-1">
+                      {deal.status !== 'active' && (
+                        <button
+                          onClick={() => handleStatusAction(deal.id, 'approve')}
+                          className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                          title="Approve"
+                        >
+                          <Check size={18} />
+                        </button>
+                      )}
+                      {deal.status !== 'pending' && (
+                        <button
+                          onClick={() => handleStatusAction(deal.id, 'pending')}
+                          className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                          title="Set Pending"
+                        >
+                          <Timer size={18} />
+                        </button>
+                      )}
+                      {deal.status !== 'rejected' && (
+                        <button
+                          onClick={() => setActionModal({ show: true, id: deal.id, type: 'reject' })}
+                          className="p-1.5 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                          title="Reject"
+                        >
+                          <X size={18} />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setDeleteModal({ show: true, id: deal.id, title: deal.title })}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete Permanently"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -221,6 +278,48 @@ export default function ProductManagement() {
                 >
                   {deleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
                   Delete Product
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reject Reason Modal */}
+      {actionModal.show && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl relative overflow-hidden">
+            <div className="p-6 bg-orange-50 border-b border-orange-100 flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
+                <AlertCircle size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-orange-900">Reject Ad</h3>
+                <p className="text-orange-600 text-[10px] font-bold uppercase tracking-wider">Please provide a reason</p>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <textarea
+                placeholder="Reason for rejection..."
+                value={actionReason}
+                onChange={(e) => setActionReason(e.target.value)}
+                className="w-full h-24 rounded-xl border border-zinc-200 p-4 text-sm outline-none focus:ring-2 focus:ring-orange-300 transition-all resize-none"
+              />
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setActionModal({ show: false, id: null, type: null })}
+                  className="flex-1 px-4 py-3 border border-zinc-200 rounded-xl font-bold text-zinc-600 hover:bg-zinc-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={!actionReason.trim() || actionLoading}
+                  onClick={() => actionModal.id && handleStatusAction(actionModal.id, 'reject', actionReason)}
+                  className="flex-[1.5] px-4 py-3 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {actionLoading ? <Loader2 size={18} className="animate-spin" /> : <X size={18} />}
+                  Reject Ad
                 </button>
               </div>
             </div>

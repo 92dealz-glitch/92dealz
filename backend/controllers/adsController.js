@@ -15,13 +15,23 @@ exports.listMine = async (req, res, next) => {
     const userId = req.user && req.user.id;
     if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
     
+    let status = req.query.status;
+    const bind = [userId];
+    let statusFilter = '';
+    
+    if (status) {
+      if (status === 'closed') status = 'sold'; // Handle frontend 'closed' to backend 'sold' mapping
+      statusFilter = `AND d.status = $2`;
+      bind.push(status);
+    }
+
     const [rows] = await sequelize.query(
       `SELECT d.id, d.title, d.description, d.price, d."createdAt", d.image_url, d.status,
               (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id AND ce.type = 'view') as views
        FROM deals d
-       WHERE d."userId" = $1
+       WHERE d."userId" = $1 ${statusFilter}
        ORDER BY d."createdAt" DESC`,
-      { bind: [userId] }
+      { bind }
     );
     return res.json({ success: true, data: rows });
   } catch (err) {

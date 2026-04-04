@@ -228,6 +228,13 @@ export async function rejectDealAdmin(id: number, reason: string) {
   );
 }
 
+export async function setPendingDealAdmin(id: number) {
+  return apiFetch<{ success: boolean; message: string }>(
+    `/admin/deals/${id}/pending`,
+    { method: "PUT", auth: true }
+  );
+}
+
 export async function deleteReviewAdmin(id: number) {
   return apiFetch<{ success: boolean; message: string }>(
     `/admin/reviews/${id}`,

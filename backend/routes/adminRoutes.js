@@ -15,6 +15,7 @@ router.put('/deals/:id', ctrl.updateDeal);
 router.delete('/deals/:id', ctrl.deleteDeal);
 router.put('/deals/:id/approve', ctrl.approveDeal);
 router.put('/deals/:id/reject', ctrl.rejectDeal);
+router.put('/deals/:id/pending', ctrl.setPendingDeal);
 
 // Categories
 router.get('/categories', ctrl.getCategories);

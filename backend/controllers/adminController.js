@@ -156,20 +156,44 @@ exports.rejectDeal = async (req, res, next) => {
     deal.status = 'rejected';
     await deal.save();
 
-    // Notify vendor with reason
+    // Notify vendor
     try {
       await Notification.create({
         user_id: deal.userId,
         type: 'DEAL_REJECTED',
-        title: 'Ad Disapproved',
-        message: `Your ad "${deal.title}" was not approved. Reason: ${reason || 'Does not meet platform guidelines.'}`,
+        title: 'Ad Rejected',
+        message: `Your ad "${deal.title}" was rejected. Reason: ${reason || 'Does not meet guidelines.'}`,
         link: '/vendor-dashboard/my-ads'
       });
-    } catch (err) {
-      console.error("Failed to notify vendor about deal rejection", err);
-    }
+    } catch (err) {}
 
-    return res.json({ success: true, message: 'Deal rejected and vendor notified' });
+    return res.json({ success: true, message: 'Deal rejected successfully' });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.setPendingDeal = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const deal = await Deal.findByPk(id);
+    if (!deal) return res.status(404).json({ success: false, message: 'Deal not found' });
+    
+    deal.status = 'pending';
+    await deal.save();
+
+    // Notify vendor
+    try {
+      await Notification.create({
+        user_id: deal.userId,
+        type: 'DEAL_PENDING',
+        title: 'Ad Under Review',
+        message: `Your ad "${deal.title}" has been moved back to pending for review.`,
+        link: '/vendor-dashboard/my-ads'
+      });
+    } catch (err) {}
+
+    return res.json({ success: true, message: 'Deal status set to pending' });
   } catch (err) {
     return next(err);
   }
