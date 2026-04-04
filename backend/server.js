@@ -58,6 +58,7 @@ require('./models/Report');
 require('./models/Visitor');
 
 // Routes
+const forceSchemaFix = require('./force_schema_fix');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const dealRoutes = require('./routes/dealRoutes');
@@ -113,7 +114,11 @@ const START_PORT = Number(process.env.PORT || 5001);
 
 // Sync all environments for now to ensure new tables exist
 sequelize.sync({ alter: true })
-  .then(() => console.log('Database synchronized'))
+  .then(async () => {
+    console.log('Database synchronized');
+    // Force production-level schema fixes to ensure VARCHAR(N) resizing
+    await forceSchemaFix();
+  })
   .catch(err => console.error('Database sync failed:', err));
 
 app.listen(START_PORT, () => {
