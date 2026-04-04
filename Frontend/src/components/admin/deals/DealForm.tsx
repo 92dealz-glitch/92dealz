@@ -4,9 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { 
   ChevronLeft, 
-  Eye, 
   Save, 
-  Plus, 
   X, 
   ChevronDown,
   Upload,
@@ -15,7 +13,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useNotification } from "@/context/NotificationContext";
-import { createDeal, updateDeal, getAdminCategories, getAdminVendors } from "@/lib/api";
+import { createDeal, updateDeal, getAdminCategories } from "@/lib/api";
 import { apiFetch } from "@/services/apiClient";
 
 interface DealFormProps {
@@ -28,7 +26,6 @@ export default function DealForm({ initialData, type }: DealFormProps) {
   const { showNotification } = useNotification();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
-  const [merchants, setMerchants] = useState<any[]>([]);
   
   const [isFeatured, setIsFeatured] = useState(initialData?.isFeatured || false);
   const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image_url || initialData?.image || null);
@@ -37,12 +34,8 @@ export default function DealForm({ initialData, type }: DealFormProps) {
   useEffect(() => {
     async function loadResources() {
       try {
-        const [catRes, merRes] = await Promise.all([
-          getAdminCategories(),
-          getAdminVendors()
-        ]);
+        const catRes = await getAdminCategories();
         if (catRes.success) setCategories(catRes.data);
-        if (merRes.success) setMerchants(merRes.data);
       } catch (err) {
         console.error("Failed to load resources", err);
       }
@@ -86,10 +79,15 @@ export default function DealForm({ initialData, type }: DealFormProps) {
       const data: any = Object.fromEntries(formData.entries());
       
       // Handle numeric fields
-      data.price = Number(data.price.replace(/,/g, ""));
-      data.originalPrice = data.originalPrice ? Number(data.originalPrice.replace(/,/g, "")) : undefined;
+      const priceVal = String(data.price || "").replace(/[^0-9.]/g, "");
+      data.price = Number(priceVal);
+      
+      if (data.originalPrice) {
+          const origVal = String(data.originalPrice).replace(/[^0-9.]/g, "");
+          data.originalPrice = Number(origVal);
+      }
+      
       data.category_id = data.category_id ? Number(data.category_id) : undefined;
-      data.store_id = data.store_id ? Number(data.store_id) : undefined;
       data.isFeatured = isFeatured;
 
       // Image upload
@@ -126,7 +124,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
         <div className="lg:col-span-2 space-y-8">
           {/* Deal Details */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-8">
-            <h3 className="text-lg text-zinc-900 mb-2 font-bold">Deal Details</h3>
+            <h3 className="text-lg text-zinc-900 mb-2 font-bold uppercase tracking-tight">Deal Details</h3>
             <p className="text-sm text-zinc-500 mb-8 font-medium">Basic information about the deal</p>
 
             <div className="space-y-6">
@@ -194,107 +192,64 @@ export default function DealForm({ initialData, type }: DealFormProps) {
  
               <div className="space-y-2">
                 <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
-                  Deal URL (Affiliate Link) <span className="text-red-500">*</span>
+                  Deal URL (Affiliate Link)
                 </label>
                 <input
                   type="url"
-                  required
                   name="url"
                   defaultValue={initialData?.url}
                   placeholder="https://example.com/deal"
                   className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
                 />
               </div>
- 
-              <div className="space-y-2">
-                <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
-                  Expiry Date
-                </label>
-                <input
-                  type="date"
-                  name="expiry_date"
-                  defaultValue={initialData?.expiry_date ? new Date(initialData.expiry_date).toISOString().split('T')[0] : ""}
-                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
-                />
-              </div>
             </div>
           </div>
 
-          {/* Pricing & Merchant */}
+          {/* Pricing Details */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-8">
-            <h3 className="text-lg text-zinc-900 mb-2 font-bold">Pricing & Merchant</h3>
-            <p className="text-sm text-zinc-500 mb-8 font-medium">Deal pricing and merchant information</p>
-
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-bold">
-                <div className="space-y-2 font-bold">
-                  <label className="text-sm text-zinc-900 flex items-center gap-1">
-                    Deal price <span className="text-red-500">*</span>
+            <h3 className="text-lg text-zinc-900 mb-2 font-bold uppercase tracking-tight">Pricing</h3>
+            <p className="text-sm text-zinc-500 mb-8 font-medium">Set the current and original price</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
+                    Deal price (₦) <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative font-bold">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400">₦</span>
-                    <input
-                      type="text"
-                      required
-                      name="price"
-                      defaultValue={initialData?.price}
-                      placeholder="450,000"
-                      className="w-full pl-8 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    required
+                    name="price"
+                    defaultValue={initialData?.price}
+                    placeholder="450,000"
+                    className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
+                  />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-zinc-900 flex items-center gap-1">
-                    Original price <span className="text-red-500">*</span>
+                  <label className="text-sm text-zinc-900 flex items-center gap-1 font-bold">
+                    Original Price (₦)
                   </label>
-                  <div className="relative font-bold">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400">₦</span>
-                    <input
-                      type="text"
-                      required
-                      name="originalPrice"
-                      defaultValue={initialData?.originalPrice}
-                      placeholder="950,000"
-                      className="w-full pl-8 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    name="originalPrice"
+                    defaultValue={initialData?.originalPrice}
+                    placeholder="950,000"
+                    className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
+                  />
                 </div>
-              </div>
- 
-              <div className="space-y-2">
-                <label className="text-sm text-zinc-900 flex items-center gap-1">
-                  Merchant <span className="text-red-500">*</span>
-                </label>
-                <div className="relative font-bold">
-                  <select 
-                    required 
-                    name="store_id"
-                    defaultValue={initialData?.store_id}
-                    className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium cursor-pointer"
-                  >
-                    <option value="">Select merchant</option>
-                    {merchants.map(mer => (
-                      <option key={mer.id} value={mer.id}>{mer.name}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
-                </div>
-              </div>
             </div>
           </div>
           
           {/* Image Upload */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-8">
-            <h3 className="text-lg text-zinc-900 mb-2 font-bold">Deal Image</h3>
+            <h3 className="text-lg text-zinc-900 mb-2 font-bold uppercase tracking-tight">Deal Image</h3>
             <p className="text-sm text-zinc-500 mb-8 font-medium">Upload a high-quality image of the product</p>
             
             <div className="flex flex-col items-center justify-center border-2 border-dashed border-zinc-200 rounded-2xl p-10 bg-zinc-50 hover:bg-zinc-100/50 transition-colors group relative overflow-hidden">
               {imagePreview ? (
                 <div className="relative w-full h-full min-h-[200px] flex items-center justify-center">
-                  <Image src={imagePreview} alt="Preview" width={300} height={200} className="max-h-[200px] object-contain rounded-lg" />
+                  <img src={imagePreview} alt="Preview" className="max-h-[200px] object-contain rounded-lg" />
                   <button 
                     type="button"
-                    onClick={() => setImagePreview(null)}
+                    onClick={() => { setImagePreview(null); setSelectedFile(null); }}
                     className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors"
                   >
                     <X size={16} />
@@ -318,7 +273,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
         <div className="space-y-8">
           {/* Publish Controls */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-8">
-            <h3 className="text-lg text-zinc-900 mb-8 font-bold">Publish Controls</h3>
+            <h3 className="text-lg text-zinc-900 mb-8 font-bold uppercase tracking-tight">Moderation</h3>
 
             <div className="space-y-8">
               <div className="flex items-center justify-between">
@@ -341,13 +296,14 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                   <select 
                     required 
                     name="status"
-                    defaultValue={initialData?.status || "active"}
-                    className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium"
+                    defaultValue={initialData?.status}
+                    className="w-full appearance-none px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors font-medium capitalize"
                   >
-                    <option value="active">Active</option>
+                    <option value="active">Active (Live)</option>
+                    <option value="pending">Pending (Review)</option>
+                    <option value="rejected">Rejected</option>
                     <option value="draft">Draft</option>
-                    <option value="sold">Sold</option>
-                    <option value="closed">Closed</option>
+                    <option value="sold">Sold / Closed</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
                 </div>
@@ -374,7 +330,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
 
           {/* Statistics */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-8 font-bold">
-            <h3 className="text-lg text-zinc-900 mb-8 font-bold">Status & Stats</h3>
+            <h3 className="text-lg text-zinc-900 mb-8 font-bold uppercase tracking-tight">Status & Stats</h3>
             
             <div className="space-y-6">
               <div className="flex items-center justify-between py-2 border-b border-zinc-100">
@@ -387,7 +343,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
               </div>
               <div className="flex items-center justify-between py-2 border-b border-zinc-100">
                 <span className="text-sm font-medium text-zinc-500 italic">Created</span>
-                <span className="text-sm font-bold text-zinc-900">{initialData?.createdAt || "Just now"}</span>
+                <span className="text-sm font-bold text-zinc-900">{initialData?.createdAt ? new Date(initialData.createdAt).toLocaleDateString() : "Just now"}</span>
               </div>
             </div>
           </div>
@@ -396,4 +352,3 @@ export default function DealForm({ initialData, type }: DealFormProps) {
     </form>
   );
 }
-

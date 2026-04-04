@@ -270,6 +270,13 @@ export async function getDeals() {
   );
 }
 
+export async function getDealById(id: number) {
+  return apiFetch<{ success: boolean; data: any }>(
+    `/deals/${id}`,
+    { method: "GET", auth: true }
+  );
+}
+
 export async function createDeal(payload: any) {
   return apiFetch<{ success: boolean; data: any }>(
     "/deals",
