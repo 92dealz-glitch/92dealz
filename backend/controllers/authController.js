@@ -14,6 +14,7 @@ const PendingRegistration = require('../models/PendingRegistration');
 const PasswordReset = require('../models/PasswordReset');
 const { Op } = require('sequelize');
 const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
+const { sendTwilioOtp, verifyTwilioOtp } = require('../services/twilioService');
 const verifyRecaptcha = require('../utils/verifyRecaptcha');
 const formatPhone = require('../utils/formatPhone');
 
@@ -64,25 +65,41 @@ exports.registerInitiate = async (req, res, next) => {
 
     if (method === 'phone') {
       try {
-        const termiiRes = await sendTermiiOtp(contact);
-        if (!termiiRes || !termiiRes.pinId) {
-          return res.status(400).json({ 
-            success: false, 
-            message: 'Failed to send verification SMS. Please check your phone number or try again later.' 
-          });
+        const isNigeria = contact.startsWith('+234');
+        let otpValue;
+
+        if (isNigeria) {
+          const termiiRes = await sendTermiiOtp(contact);
+          if (!termiiRes || !termiiRes.pinId) {
+            return res.status(400).json({ 
+              success: false, 
+              message: 'Failed to send verification SMS (Termii). Please check your phone number.' 
+            });
+          }
+          otpValue = termiiRes.pinId;
+        } else {
+          // Twilio Verify Flow
+          const twilioRes = await sendTwilioOtp(contact);
+          if (!twilioRes || twilioRes.status !== 'pending') {
+            return res.status(400).json({ 
+              success: false, 
+              message: 'Failed to send verification SMS (Twilio). Please check your international phone number.' 
+            });
+          }
+          otpValue = 'TWILIO_VERIFY';
         }
 
         await PendingRegistration.create({
           contact,
-          otp: termiiRes.pinId, // Store pinId for verification
+          otp: otpValue,
           data: JSON.stringify(signupData),
           expires_at: expiresAt
         });
         
-        return res.json({ success: true, message: 'Verification code sent to phone via Termii' });
+        return res.json({ success: true, message: `Verification code sent to ${isNigeria ? 'phone' : 'international phone'}` });
       } catch (err) {
-        console.error('Termii SMS failed:', err);
-        return res.status(500).json({ success: false, message: `Termii Error: ${err.message}` });
+        console.error('SMS Send Error:', err);
+        return res.status(500).json({ success: false, message: `SMS Error: ${err.message}` });
       }
     } else {
       try {
@@ -128,14 +145,21 @@ exports.registerVerify = async (req, res, next) => {
 
     if (method === 'phone') {
       try {
-        const pinId = pending.otp;
-        const verification = await verifyTermiiOtp(pinId, otp);
-        if (String(verification.verified).toLowerCase() !== 'true') {
-          return res.status(400).json({ success: false, message: 'Invalid or expired Termii OTP' });
+        const otpValue = pending.otp;
+        if (otpValue === 'TWILIO_VERIFY') {
+          const verification = await verifyTwilioOtp(contact, otp);
+          if (verification.status !== 'approved') {
+            return res.status(400).json({ success: false, message: 'Invalid or expired Twilio code' });
+          }
+        } else {
+          const verification = await verifyTermiiOtp(otpValue, otp);
+          if (String(verification.verified).toLowerCase() !== 'true') {
+            return res.status(400).json({ success: false, message: 'Invalid or expired Termii OTP' });
+          }
         }
       } catch (err) {
-        console.error('Termii verify error:', err);
-        return res.status(400).json({ success: false, message: 'Invalid or expired Termii OTP' });
+        console.error('Phone verify error:', err);
+        return res.status(400).json({ success: false, message: 'Verification failed. Please try again.' });
       }
     } else {
       if (pending.otp !== otp) {
@@ -347,17 +371,35 @@ exports.sendVerificationOtp = async (req, res, next) => {
 
     if (isPhone) {
       try {
-        const termii = await sendTermiiOtp(formattedContact);
-        if (!termii || !termii.pinId) {
-          return res.status(400).json({ 
-            success: false, 
-            message: 'Could not send verification code to this phone number. Please try again later.' 
-          });
+        const isNigeria = formattedContact.startsWith('+234');
+        let otpValue;
+
+        if (isNigeria) {
+          const termii = await sendTermiiOtp(formattedContact);
+          if (!termii || !termii.pinId) {
+            return res.status(400).json({ 
+              success: false, 
+              message: 'Could not send verification code via Termii. Please check your phone number.' 
+            });
+          }
+          otpValue = termii.pinId;
+        } else {
+          // Twilio Flow
+          const twilioRes = await sendTwilioOtp(formattedContact);
+          if (!twilioRes || twilioRes.status !== 'pending') {
+            return res.status(400).json({ 
+              success: false, 
+              message: 'Could not send verification code via Twilio. Please check your international phone number.' 
+            });
+          }
+          otpValue = 'TWILIO_VERIFY';
         }
-        await upsertOtp(userId, termii.pinId); // Store pinId
-        return res.json({ success: true, message: 'Verification code sent to your phone' });
+
+        await upsertOtp(userId, otpValue); 
+        return res.json({ success: true, message: `Verification code sent to ${isNigeria ? 'phone' : 'international phone'}` });
       } catch (err) {
-        return res.status(400).json({ success: false, message: err.message || 'SMS service error' });
+        console.error('SMS Send Error:', err);
+        return res.status(500).json({ success: false, message: `SMS Error: ${err.message}` });
       }
     } else {
       const otp = generateOtp();
@@ -388,10 +430,22 @@ exports.verifyContactOtp = async (req, res, next) => {
     }
 
     if (isPhone) {
-      const pinId = record.otp;
-      const verification = await verifyTermiiOtp(pinId, otp);
-      if (String(verification.verified).toLowerCase() !== 'true') {
-        return res.status(400).json({ success: false, message: 'Invalid or expired Phone OTP' });
+      try {
+        const otpValue = record.otp;
+        if (otpValue === 'TWILIO_VERIFY') {
+          const verification = await verifyTwilioOtp(formattedContact, otp);
+          if (verification.status !== 'approved') {
+            return res.status(400).json({ success: false, message: 'Invalid or expired Twilio code' });
+          }
+        } else {
+          const verification = await verifyTermiiOtp(otpValue, otp);
+          if (String(verification.verified).toLowerCase() !== 'true') {
+            return res.status(400).json({ success: false, message: 'Invalid or expired Phone OTP' });
+          }
+        }
+      } catch (err) {
+        console.error('Phone verify error:', err);
+        return res.status(400).json({ success: false, message: 'Verification failed. Please try again.' });
       }
     } else {
       if (record.otp !== otp) {
