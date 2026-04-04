@@ -6,6 +6,7 @@
 const sequelize = require('../config/database');
 const User = require('../models/userModel');
 const formatPhone = require('../utils/formatPhone');
+const { getCountryFromRequest, getCountryFromPhone } = require('../utils/locationUtils');
 
 // POST /api/users/create
 exports.createUser = async (req, res, next) => {
@@ -63,6 +64,19 @@ exports.getUserById = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
+    // Self-healing: if country is missing, try to detect it
+    if (!user.country_code) {
+      let detected = { code: null, name: null };
+      if (user.phone) detected = getCountryFromPhone(user.phone);
+      if (!detected.code) detected = getCountryFromRequest(req);
+      
+      if (detected.code) {
+        user.country_code = detected.code;
+        user.country_name = detected.name;
+        await user.save();
+      }
+    }
+
     // Get total ads count
     const [[adsRow]] = await sequelize.query(
       `SELECT COUNT(*)::INT AS total_ads FROM deals WHERE "userId" = $1 AND status = 'active'`,
@@ -103,6 +117,19 @@ exports.getProfile = async (req, res, next) => {
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Self-healing: if country is missing, try to detect it
+    if (!user.country_code) {
+      let detected = { code: null, name: null };
+      if (user.phone) detected = getCountryFromPhone(user.phone);
+      if (!detected.code) detected = getCountryFromRequest(req);
+      
+      if (detected.code) {
+        user.country_code = detected.code;
+        user.country_name = detected.name;
+        await user.save();
+      }
     }
     return res.json({ success: true, data: user });
   } catch (err) {

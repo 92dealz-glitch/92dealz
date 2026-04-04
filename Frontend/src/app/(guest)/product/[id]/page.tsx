@@ -17,6 +17,7 @@ import { sendMessage } from "@/services/messages.service";
 import VerificationGateModal from "@/components/ui/VerificationGateModal";
 import { useAlert } from "@/context/AlertContext";
 import { useFavorites } from "@/context/FavoritesProvider";
+import { getFlagEmoji } from "@/utils/flagUtils";
 
 type Props = {
   params: Promise<{ id: string }>
@@ -88,6 +89,8 @@ export default function ProductPage({ params }: Props) {
           sellerImage: seller.profile_image_url || null,
           isVerified: seller.is_verified || false,
           likes: d.clicks || 0,
+          country_code: seller.country_code,
+          country_name: seller.country_name,
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -528,6 +531,7 @@ export default function ProductPage({ params }: Props) {
                     <div>
                       <div className="font-semibold flex items-center gap-1.5">
                         <Link href={`/seller/${product.sellerId}`} className="hover:underline text-orange-600">{product.sellerName || 'Seller'}</Link>
+                        {product.country_code && <span className="text-xl" title={product.country_name}>{getFlagEmoji(product.country_code)}</span>}
                         {product.isVerified && <VerifiedBadge size={16} showText />}
                       </div>
                       <div className="text-yellow-400">
@@ -543,6 +547,7 @@ export default function ProductPage({ params }: Props) {
 
                 <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
                   <div>Member Since:</div><div className="font-medium">{product.sellerMemberSince || "January 2023"}</div>
+                  <div>Location:</div><div className="font-medium">{product.country_name || product.location}</div>
                   <div>Total Ads Posted:</div><div className="font-medium">{product.sellerTotalAds || 0} items</div>
                   <div>Response Time:</div><div className="font-medium">{product.sellerResponseTime || "Within 1 hour"}</div>
                   <div>Customer Rating:</div><div className="font-medium">{(product.sellerRating || 2.9).toFixed(1)}/5.0</div>

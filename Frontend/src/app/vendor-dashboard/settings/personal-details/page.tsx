@@ -5,10 +5,12 @@ import { Camera } from "lucide-react";
 import { uploadImage } from "@/services/upload.service";
 import { getMyProfile, updateProfileImage, updateProfile } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
+import { getFlagEmoji } from "@/utils/flagUtils";
 
 export default function PersonalDetailsPage() {
     const [profile, setProfile] = useState<any>({
-        name: "", email: "", phone: "", businessName: "", businessCategory: "", businessAddress: "", about: ""
+        name: "", email: "", phone: "", businessName: "", businessCategory: "", businessAddress: "", about: "",
+        country_code: "", country_name: ""
     });
     const [photo, setPhoto] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
@@ -33,6 +35,8 @@ export default function PersonalDetailsPage() {
                         businessCategory: data.businessCategory || "",
                         businessAddress: data.businessAddress || "",
                         about: data.about || "",
+                        country_code: data.country_code || "",
+                        country_name: data.country_name || "",
                     });
                     setPhoto(data.profile_image_url || null);
                 }
@@ -125,7 +129,15 @@ export default function PersonalDetailsPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="flex flex-col gap-2">
-                            <label className="text-black font-black text-[15px]">Phone Number</label>
+                            <div className="flex items-center justify-between">
+                                <label className="text-black font-black text-[15px]">Phone Number</label>
+                                {profile.country_code && (
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-zinc-50 rounded-full border border-zinc-100">
+                                        <span className="text-sm">{getFlagEmoji(profile.country_code)}</span>
+                                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-tight">{profile.country_name}</span>
+                                    </div>
+                                )}
+                            </div>
                             <input type="text" name="phone" value={profile.phone} onChange={handleChange} className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors" placeholder="+234 8100909 000" />
                         </div>
                         <div className="flex flex-col gap-2">
