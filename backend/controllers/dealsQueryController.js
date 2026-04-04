@@ -97,11 +97,11 @@ exports.list = async (req, res, next) => {
     // Default to active status if not specified
     if (req.query.status && has('status')) {
       params.push(String(req.query.status));
-      where.push('status = $' + params.length);
+      where.push('deals.status = $' + params.length);
     } else if (has('status')) {
       // If no status is requested, we strongly default to active for public safety
       params.push('active');
-      where.push('status = $' + params.length);
+      where.push('deals.status = $' + params.length);
     }
 
     const whereSql = where.length ? 'WHERE ' + where.join(' AND ') : '';
@@ -125,7 +125,7 @@ exports.list = async (req, res, next) => {
     }
 
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals JOIN users u ON u.id = deals."userId" ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'`;
-    const dataSql = `SELECT ${baseSelectCols.join(', ')}, 
+    const dataSql = `SELECT ${baseSelectCols.map(c => c.includes('"') ? `deals.${c}` : `deals.${c}`).join(', ')}, 
                      u.rating AS rating,
                      u.is_verified AS is_verified,
                      (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = deals.id) AS clicks

@@ -101,16 +101,14 @@ export default function DashboardSidebar() {
                                         { label: "Personal details", href: "/vendor-dashboard/settings/personal-details" },
                                         { label: "Verification", href: "/vendor-dashboard/settings/verification" },
                                         { label: "Change phone number", href: "/vendor-dashboard/settings/change-phone-number" },
-                                        { label: "Change email", href: "/vendor-dashboard/settings/change-email" },
                                         { label: "Change password", href: "/vendor-dashboard/settings/change-password" },
-                                        { label: "Delete my account", href: "/vendor-dashboard/settings/delete-account", isDestructive: true },
                                     ].map((subItem) => (
                                         <li key={subItem.href}>
                                             <Link
                                                 href={subItem.href}
                                                 className={`block py-2 text-[14px] font-bold transition-colors ${pathname === subItem.href
                                                     ? "text-[#f45c03]"
-                                                    : subItem.isDestructive ? "text-red-500 hover:text-red-600" : "text-zinc-500 hover:text-black"
+                                                    : "text-zinc-500 hover:text-black"
                                                     }`}
                                             >
                                                 {subItem.label}

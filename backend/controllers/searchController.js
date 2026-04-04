@@ -65,7 +65,7 @@ exports.search = async (req, res, next) => {
     }
 
     // Only show active deals in search result
-    where.push("status = 'active'");
+    where.push("deals.status = 'active'");
 
     const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
     const orderSql = `ORDER BY ${sortSql(req.query.sort)}`;
@@ -82,7 +82,7 @@ exports.search = async (req, res, next) => {
     }
 
     const countSql = `SELECT COUNT(*)::INT AS count FROM deals JOIN users u ON u.id = deals."userId" ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'`;
-    const dataSql = `SELECT ${selectCols.join(', ')},
+    const dataSql = `SELECT ${selectCols.map(c => c.includes('"') ? `deals.${c}` : `deals.${c}`).join(', ')},
                      u.rating AS rating,
                      u.is_verified AS is_verified,
                      (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = deals.id) AS clicks

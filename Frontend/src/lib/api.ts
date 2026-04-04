@@ -181,10 +181,10 @@ export async function reviewAdminVerification(id: number, status: 'approved' | '
   );
 }
 
-export async function updateVendorStatusAdmin(id: number, status: string) {
+export async function updateVendorStatusAdmin(id: number, status: string, reason?: string) {
   return apiFetch<{ success: boolean; message: string }>(
     `/admin/vendors/${id}/status`,
-    { method: "PUT", body: { status }, auth: true }
+    { method: "PUT", body: { status, reason }, auth: true }
   );
 }
 
