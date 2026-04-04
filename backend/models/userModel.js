@@ -127,6 +127,10 @@ const User = sequelize.define('User', {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  suspension_reason: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: true,

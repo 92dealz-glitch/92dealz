@@ -383,7 +383,7 @@ exports.getVendors = async (req, res, next) => {
   try {
     const vendors = await User.findAll({
       where: { role: 'vendor' },
-      attributes: ['id', 'name', 'email', 'phone', 'status', 'businessName', 'createdAt', 'government_id_url', 'businessAddress', 'about', 'is_verified'],
+      attributes: ['id', 'name', 'email', 'phone', 'status', 'businessName', 'createdAt', 'government_id_url', 'businessAddress', 'about', 'is_verified', 'suspension_reason'],
       order: [['createdAt', 'DESC']]
     });
     return res.json({ success: true, data: vendors });
@@ -395,7 +395,7 @@ exports.getVendors = async (req, res, next) => {
 exports.updateVendorStatus = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
-    const { status } = req.body;
+    const { status, reason } = req.body;
     
     if (!['pending', 'active', 'rejected', 'suspended'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid status' });
@@ -407,6 +407,12 @@ exports.updateVendorStatus = async (req, res, next) => {
     }
     
     vendor.status = status;
+    if (status === 'suspended' && reason) {
+      vendor.suspension_reason = reason;
+    } else if (status === 'active') {
+      // Option: Keep or clear? Keeping as history but user might want it cleared.
+      // For now, let's keep it but maybe the notification can say it's restored.
+    }
     await vendor.save();
     
     // Notify vendor
@@ -417,7 +423,9 @@ exports.updateVendorStatus = async (req, res, next) => {
         title: `Account ${status.charAt(0).toUpperCase() + status.slice(1)}`,
         message: status === 'active' 
           ? "Your vendor account has been activated/restored. You can now manage your deals."
-          : `Your vendor account has been ${status}. Please contact support for more information.`,
+          : status === 'suspended' 
+            ? `Your vendor account has been suspended. Reason: ${reason || "Violation of platform policies."}`
+            : `Your vendor account has been ${status}. Please contact support for more information.`,
         link: '/vendor-dashboard'
       });
     } catch (err) {

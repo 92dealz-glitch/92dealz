@@ -1,14 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Upload, Plus, CheckCircle2, Clock, AlertCircle, Loader2 } from "lucide-react";
-import { getMyProfile, requestVerification } from "@/lib/api";
+import { Upload, Plus, CheckCircle2, Clock, AlertCircle, Loader2, Phone, ShieldCheck, ArrowRight, X } from "lucide-react";
+import { getMyProfile, requestVerification, sendVerificationOtp, verifyContactOtp } from "@/lib/api";
 import { uploadImage } from "@/services/upload.service";
+import { useNotification } from "@/context/NotificationContext";
 
 export default function VerificationPage() {
+    const { showNotification } = useNotification();
     const [status, setStatus] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
-    const [message, setMessage] = useState({ text: "", type: "" });
+    
+    // OTP States
+    const [showOtpInput, setShowOtpInput] = useState(false);
+    const [otp, setOtp] = useState("");
+    const [verifyingOtp, setVerifyingOtp] = useState(false);
+    const [sendingOtp, setSendingOtp] = useState(false);
 
     const fetchStatus = async () => {
         try {
@@ -32,16 +39,54 @@ export default function VerificationPage() {
         if (!file) return;
 
         setUploading(true);
-        setMessage({ text: "", type: "" });
         try {
             const { url } = await uploadImage(file);
             await requestVerification(url);
-            setMessage({ text: "ID uploaded and verification request submitted!", type: "success" });
+            showNotification("success", "ID uploaded and verification request submitted!");
             fetchStatus();
         } catch (err: any) {
-            setMessage({ text: err.message || "Failed to submit verification", type: "error" });
+            showNotification("error", err.message || "Failed to submit verification");
         } finally {
             setUploading(false);
+        }
+    };
+
+    const handleSendPhoneOtp = async () => {
+        if (!status?.phone) {
+            showNotification("error", "No phone number found in profile. Please update it in settings first.");
+            return;
+        }
+        setSendingOtp(true);
+        try {
+            const res = await sendVerificationOtp({ contact: status.phone, method: "phone" });
+            if (res.success) {
+                setShowOtpInput(true);
+                showNotification("success", "Verification code sent to your phone!");
+            }
+        } catch (err: any) {
+            showNotification("error", err.message || "Failed to send OTP");
+        } finally {
+            setSendingOtp(false);
+        }
+    };
+
+    const handleVerifyOtp = async () => {
+        if (!otp || otp.length < 4) {
+            showNotification("error", "Please enter a valid code");
+            return;
+        }
+        setVerifyingOtp(true);
+        try {
+            const res = await verifyContactOtp({ contact: status.phone, method: "phone", otp });
+            if (res.success) {
+                showNotification("success", "Phone number verified successfully!");
+                setShowOtpInput(false);
+                fetchStatus(); // Refresh profile
+            }
+        } catch (err: any) {
+            showNotification("error", err.message || "Verification failed");
+        } finally {
+            setVerifyingOtp(false);
         }
     };
 
@@ -49,121 +94,191 @@ export default function VerificationPage() {
 
     const vStatus = status?.verification_status || 'none';
     const isVerified = status?.is_verified;
+    const isPhoneVerified = status?.is_phone_verified;
+    const isEmailVerified = status?.is_email_verified;
 
     return (
-        <div className="animate-in fade-in duration-500 space-y-8">
-            {/* Account Verification */}
-            <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden p-8 lg:p-12">
-                <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-black font-black text-2xl">Account verification</h2>
-                    <span className={`px-3 py-1 rounded text-[10px] font-black uppercase text-white ${
-                        isVerified ? 'bg-emerald-500' : 
-                        vStatus === 'pending' ? 'bg-amber-500' : 
-                        vStatus === 'rejected' ? 'bg-red-500' : 'bg-zinc-500'
+        <div className="animate-in fade-in duration-700 space-y-12 pb-20">
+            {/* Account Verification Section */}
+            <div className="bg-white rounded-3xl border border-zinc-200 shadow-xl shadow-zinc-100 overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-8">
+                     <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-white shadow-lg ${
+                        isVerified ? 'bg-emerald-500 shadow-emerald-100' : 
+                        vStatus === 'pending' ? 'bg-amber-500 shadow-amber-100' : 
+                        vStatus === 'rejected' ? 'bg-red-500 shadow-red-100' : 'bg-zinc-500 shadow-zinc-100'
                     }`}>
-                        {isVerified ? 'Verified' : vStatus === 'none' ? 'Not verified' : vStatus}
-                    </span>
-                </div>
-                <p className="text-zinc-500 font-bold text-sm mb-8">Help other users trust you by verifying your account.</p>
-
-                {message.text && (
-                    <div className={`mb-6 p-4 rounded-lg font-bold text-sm ${message.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
-                        {message.text}
+                        {isVerified ? 'TRUSTED SELLER' : vStatus === 'none' ? 'UNVERIFIED' : vStatus}
                     </div>
-                )}
+                </div>
 
-                <div className="max-w-2xl space-y-8">
-                    {vStatus === 'none' || vStatus === 'rejected' ? (
-                        <>
-                            <div className="flex flex-col gap-4">
-                                <label className="text-black font-black text-lg">Upload a valid government ID (NIN, Passport, Driver&apos;s License)</label>
-                                <div className="relative">
-                                    <select className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white">
-                                        <option>NIN</option>
-                                        <option>Passport</option>
-                                        <option>Driver&apos;s License</option>
-                                    </select>
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
-                                        <ChevronDownIcon />
+                <div className="p-8 lg:p-14">
+                    <h2 className="text-zinc-900 font-black text-3xl mb-3 uppercase tracking-tighter italic">Identity Verification</h2>
+                    <p className="text-zinc-500 font-bold text-sm mb-12 max-w-xl">Build absolute trust within the marketplace by providing a valid government-issued identifier.</p>
+
+                    <div className="max-w-3xl space-y-10">
+                        {vStatus === 'none' || vStatus === 'rejected' ? (
+                            <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+                                    <div className="space-y-4">
+                                        <label className="text-zinc-900 font-black text-xs uppercase tracking-widest block pl-1">Select Identity Type</label>
+                                        <div className="relative group">
+                                            <select className="appearance-none w-full border-2 border-zinc-100 rounded-2xl p-5 text-zinc-900 font-black text-sm focus:outline-none focus:border-[#f45c03] transition-all bg-zinc-50 group-hover:bg-white">
+                                                <option>NIN (Slip or Card)</option>
+                                                <option>International Passport</option>
+                                                <option>Driver&apos;s License</option>
+                                                <option>Voter&apos;s Card</option>
+                                            </select>
+                                            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 group-hover:text-orange-500 transition-colors">
+                                                <ChevronDownIcon />
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <label className="aspect-[1.8/1] rounded-3xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-300 hover:text-[#f45c03] group relative overflow-hidden bg-zinc-50/50">
+                                        {uploading ? (
+                                            <div className="flex flex-col items-center gap-3">
+                                                <Loader2 className="animate-spin" size={40} />
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 animate-pulse">Scanning Document...</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                     <Plus size={32} className="text-zinc-400 group-hover:text-[#f45c03]" />
+                                                </div>
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Upload Front View</span>
+                                            </>
+                                        )}
+                                        <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" disabled={uploading} />
+                                    </label>
+                                </div>
+                                {vStatus === 'rejected' && (
+                                    <div className="flex items-center gap-3 p-5 bg-red-50 border border-red-100 rounded-2xl text-red-600 animate-in shake-in duration-300">
+                                        <AlertCircle size={20} />
+                                        <span className="text-xs font-black uppercase tracking-tight">Your previous verification was rejected. Please upload a clearer document.</span>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="bg-zinc-900 p-10 rounded-[40px] border border-white/10 flex flex-col md:flex-row items-center gap-8 shadow-2xl relative overflow-hidden group">
+                                <div className="absolute -top-20 -right-20 w-60 h-60 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors duration-700" />
+                                {isVerified ? (
+                                    <div className="w-20 h-20 bg-emerald-500 text-white rounded-[24px] flex items-center justify-center shadow-xl shadow-emerald-500/20 rotate-6">
+                                        <CheckCircle2 size={40} />
+                                    </div>
+                                ) : (
+                                    <div className="w-20 h-20 bg-amber-500 text-white rounded-[24px] flex items-center justify-center shadow-xl shadow-amber-500/20 animate-pulse">
+                                        <Clock size={40} />
+                                    </div>
+                                )}
+                                <div className="flex-1 text-center md:text-left">
+                                    <h4 className="text-white font-black text-2xl uppercase tracking-tighter italic">
+                                        {isVerified ? "IDENTITY SECURED" : "PENDING REVIEW"}
+                                    </h4>
+                                    <p className="text-zinc-400 font-bold text-sm mt-2 leading-relaxed opacity-80">
+                                        {isVerified 
+                                            ? "Expert level trust unlocked. Your listings will now feature the verified merchant badge globally."
+                                            : "Our security team is manually authenticating your credentials. This typically concludes within 24 business hours."}
+                                    </p>
                                 </div>
                             </div>
+                        )}
+                    </div>
+                </div>
+            </div>
 
-                            <label className="aspect-[2/1] max-w-sm rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-400 hover:text-[#f45c03] group">
-                                {uploading ? (
-                                    <Loader2 className="animate-spin" size={32} />
-                                ) : (
-                                    <>
-                                        <Plus size={32} className="group-hover:scale-110 transition-transform" />
-                                        <span className="text-sm font-black uppercase">Upload ID Image</span>
-                                    </>
-                                )}
-                                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" disabled={uploading} />
-                            </label>
-                        </>
-                    ) : (
-                        <div className="bg-zinc-50 p-6 rounded-xl border border-zinc-100 flex items-start gap-4">
-                            {isVerified ? (
-                                <CheckCircle2 className="text-emerald-500 mt-1" size={24} />
-                            ) : (
-                                <Clock className="text-amber-500 mt-1" size={24} />
-                            )}
-                            <div>
-                                <h4 className="text-black font-black text-lg">
-                                    {isVerified ? "ID Verified" : "Verification in Progress"}
-                                </h4>
-                                <p className="text-zinc-500 font-bold text-sm mt-1">
-                                    {isVerified 
-                                        ? "Your account is fully verified. You now have a verified vendor badge."
-                                        : "We are currently reviewing your government ID. This usually takes 24-48 hours."}
-                                </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Phone Verification Section */}
+                <div className="bg-white rounded-3xl border border-zinc-200 p-8 lg:p-12 shadow-xl shadow-zinc-100/50 flex flex-col justify-between group">
+                    <div>
+                        <div className="flex justify-between items-start mb-6">
+                            <div className="w-12 h-12 bg-orange-100 text-[#f45c03] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                                <Phone size={24} />
                             </div>
+                            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${
+                                isPhoneVerified ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
+                            }`}>
+                                {isPhoneVerified ? 'FULLY SECURED' : 'UNVERIFIED'}
+                            </span>
                         </div>
-                    )}
+                        <h2 className="text-zinc-900 font-black text-2xl mb-2 uppercase tracking-tight italic">Commercial Contact</h2>
+                        <p className="text-zinc-500 font-bold text-xs mb-10 italic opacity-80">Direct verification ensures buyers can reach you reliably for transactions.</p>
+
+                        {!showOtpInput ? (
+                            <div className="space-y-6">
+                                <div className="bg-zinc-50 p-5 rounded-2xl border border-zinc-100">
+                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 pl-1">Registered Number</p>
+                                    <p className="text-zinc-900 font-black text-lg tracking-wider italic">{status?.phone || "+234 XXX XXX XXXX"}</p>
+                                </div>
+
+                                {isPhoneVerified ? (
+                                    <div className="flex items-center gap-3 text-emerald-600 bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/50">
+                                        <ShieldCheck size={20} />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Phone verified successfully</span>
+                                    </div>
+                                ) : (
+                                    <button 
+                                        disabled={sendingOtp || !status?.phone}
+                                        onClick={handleSendPhoneOtp}
+                                        className="w-full bg-[#f45c03] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#f45c03] shadow-lg shadow-orange-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {sendingOtp ? <Loader2 className="animate-spin" size={16} /> : <ArrowRight size={16} />}
+                                        Verify This Number
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="space-y-6 animate-in zoom-in-95 duration-200">
+                                <div className="bg-orange-50 p-5 rounded-2xl border border-orange-100 relative">
+                                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-3 pl-1">Enter 6-Digit Code</p>
+                                    <input 
+                                        type="text" 
+                                        maxLength={6}
+                                        value={otp}
+                                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                                        placeholder="0 0 0 0 0 0"
+                                        className="w-full bg-transparent border-none outline-none text-2xl font-black tracking-[1em] text-center text-[#f45c03] placeholder:text-orange-200"
+                                    />
+                                    <button onClick={() => setShowOtpInput(false)} className="absolute top-2 right-2 p-1 text-orange-300 hover:text-orange-600 transition-colors">
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                                <button 
+                                    disabled={verifyingOtp || otp.length < 4}
+                                    onClick={handleVerifyOtp}
+                                    className="w-full bg-zinc-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-black shadow-xl transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {verifyingOtp ? <Loader2 className="animate-spin" size={16} /> : "Finalize Verification"}
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            {/* Phone Number */}
-            <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden p-8 lg:p-12">
-                <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-black font-black text-2xl">Phone Number</h2>
-                    <span className="bg-[#EAB308] text-white px-3 py-1 rounded text-[10px] font-black uppercase">In review</span>
-                </div>
-                <p className="text-zinc-500 font-bold text-sm mb-12">Confirm your phone number so buyers and sellers can reach you.</p>
+                {/* Email Verification Section */}
+                <div className="bg-white rounded-3xl border border-zinc-200 p-8 lg:p-12 shadow-xl shadow-zinc-100/50 flex flex-col justify-between opacity-80 border-dashed">
+                    <div>
+                        <div className="flex justify-between items-start mb-6">
+                            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center">
+                                <ShieldCheck size={24} />
+                            </div>
+                            <span className="bg-emerald-100 text-emerald-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm shadow-emerald-50">
+                                {isEmailVerified ? 'LOCKED & VERIFIED' : 'PENDING'}
+                            </span>
+                        </div>
+                        <h2 className="text-zinc-900 font-black text-2xl mb-2 uppercase tracking-tight italic">Email Authenticity</h2>
+                        <p className="text-zinc-500 font-bold text-xs mb-10 italic">Core authentication channel for password resets and security alerts.</p>
 
-                <div className="max-w-2xl space-y-8">
-                    <input
-                        type="text"
-                        defaultValue="+234 8100909 000"
-                        disabled
-                        className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-400 font-bold bg-zinc-50"
-                    />
+                        <div className="space-y-6">
+                            <div className="bg-zinc-50/50 p-5 rounded-2xl border border-zinc-100">
+                                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 pl-1">Authorized Email</p>
+                                <p className="text-zinc-900 font-bold text-sm tracking-tight truncate">{status?.email || "example@domain.com"}</p>
+                            </div>
 
-                    <button className="bg-orange-200 text-white font-black py-4 px-12 rounded-xl cursor-not-allowed min-w-[200px]">
-                        Under review
-                    </button>
-                </div>
-            </div>
-
-            {/* Email Address */}
-            <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden p-8 lg:p-12">
-                <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-black font-black text-2xl">Email Address</h2>
-                    <span className="bg-[#10B981] text-white px-3 py-1 rounded text-[10px] font-black uppercase">Verified</span>
-                </div>
-                <p className="text-zinc-500 font-bold text-sm mb-12">Secure your account and receive important updates.</p>
-
-                <div className="max-w-2xl space-y-8">
-                    <input
-                        type="text"
-                        defaultValue="example@email.com"
-                        disabled
-                        className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-400 font-bold bg-zinc-50"
-                    />
-
-                    <button className="bg-orange-300 text-white font-black py-4 px-12 rounded-xl cursor-not-allowed min-w-[200px]">
-                        Verified
-                    </button>
+                            <button className="w-full bg-zinc-100 text-zinc-400 py-4 rounded-2xl font-black uppercase tracking-widest text-[9px] cursor-not-allowed border border-zinc-200/50 italic">
+                                Automatically Verified On Startup
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -173,4 +288,3 @@ export default function VerificationPage() {
 function ChevronDownIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
-

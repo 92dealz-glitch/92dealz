@@ -81,12 +81,15 @@ exports.search = async (req, res, next) => {
       }
     }
 
-    const countSql = `SELECT COUNT(*)::INT AS count FROM deals ${whereSql}`;
+    const countSql = `SELECT COUNT(*)::INT AS count FROM deals JOIN users u ON u.id = deals."userId" ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'`;
     const dataSql = `SELECT ${selectCols.join(', ')},
-                     (SELECT rating FROM users u WHERE u.id = deals."userId") AS rating,
-                     (SELECT is_verified FROM users u WHERE u.id = deals."userId") AS is_verified,
+                     u.rating AS rating,
+                     u.is_verified AS is_verified,
                      (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = deals.id) AS clicks
-                     FROM deals ${whereSql} ${orderSql} LIMIT ${limit} OFFSET ${offset}`;
+                     FROM deals
+                     JOIN users u ON u.id = deals."userId"
+                     ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'
+                     ${orderSql} LIMIT ${limit} OFFSET ${offset}`;
 
     const [[countRow]] = await sequelize.query(countSql, { bind });
     const [rows] = await sequelize.query(dataSql, { bind });
