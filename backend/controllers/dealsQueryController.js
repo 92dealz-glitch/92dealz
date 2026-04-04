@@ -212,7 +212,6 @@ exports.create = async (req, res, next) => {
       bind.push(typeof images_json === 'string' ? images_json : JSON.stringify(images_json)); 
     }
     if (has('expiry_date') && typeof expiry_date !== 'undefined') { idx += 1; cols.push('expiry_date'); vals.push(`$${idx}`); bind.push(expiry_date); }
-    if (has('status') && typeof status !== 'undefined') { idx += 1; cols.push('status'); vals.push(`$${idx}`); bind.push(status); }
     
     const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location', 'subcategory', 'specifications'];
     for (const f of extraFields) {
@@ -291,6 +290,12 @@ exports.update = async (req, res, next) => {
         if (k === 'status') {
           const allowedStatus = ['active', 'sold', 'draft', 'closed', 'pending', 'rejected'];
           if (!allowedStatus.includes(value)) value = 'pending';
+          
+          // Role-based enforcement
+          const isAdmin = req.user && req.user.role === 'admin';
+          if (!isAdmin && (value === 'active' || value === 'rejected')) {
+             value = 'pending'; // Force re-approval if non-admin tries to set active/rejected
+          }
         }
         bind.push(value);
       }
