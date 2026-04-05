@@ -202,7 +202,8 @@ export default function VendorManagement() {
             <tbody className="divide-y divide-zinc-50">
               {vendors
                 .filter(v => {
-                  const matchesSearch = v.name.toLowerCase().includes(searchQuery.toLowerCase()) || v.email.toLowerCase().includes(searchQuery.toLowerCase());
+                  const matchesSearch = (v.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      (v.email || "").toLowerCase().includes(searchQuery.toLowerCase());
                   const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
                   return matchesSearch && matchesStatus;
                 })

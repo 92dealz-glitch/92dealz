@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Users, FileCheck, LogOut } from 'lucide-react';
+import { Users, FileCheck, LogOut, Flag } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
 export default function CSRSidebar() {
@@ -18,7 +18,9 @@ export default function CSRSidebar() {
   };
 
   const navItems = [
-    { label: "Vendor Management", icon: Users, path: "/csr-dashboard" },
+    { label: "Vendor Management", icon: Users, path: "/csr-dashboard?tab=vendors" },
+    { label: "Verification Requests", icon: FileCheck, path: "/csr-dashboard?tab=verifications" },
+    { label: "Reports & Appeals", icon: Flag, path: "/csr-dashboard?tab=reports" },
   ];
 
   return (
