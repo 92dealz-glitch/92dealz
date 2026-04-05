@@ -49,7 +49,7 @@ router.get('/analytics/clicks-by-day', admin, analytics.clicksByDay);
 router.get('/vendors', staff, ctrl.getVendors);
 router.post('/vendors', staff, ctrl.createVendor);
 router.put('/vendors/:id/status', staff, ctrl.updateVendorStatus);
-router.delete('/vendors/:id', staff, ctrl.deleteVendor);
+router.delete('/vendors/:id', admin, ctrl.deleteVendor);
 
 // Verification
 // Verification - Staff Access

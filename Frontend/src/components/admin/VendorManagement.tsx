@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { UserPlus, Loader2, X, Trash2, ShieldAlert, CheckCircle, ShieldOff, User, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { UserPlus, Loader2, X, Trash2, ShieldAlert, CheckCircle, ShieldOff, User, Eye, EyeOff, AlertCircle, ExternalLink } from "lucide-react";
 import { getVendorsAdmin, updateVendorStatusAdmin, deleteVendorAdmin } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 
@@ -36,6 +36,9 @@ export default function VendorManagement() {
     password: "",
     phone: "",
   });
+  const [role, setRole] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   // Suspension Modal State
   const [suspensionModal, setSuspensionModal] = useState<{ show: boolean, id: number | null }>({
@@ -60,6 +63,9 @@ export default function VendorManagement() {
 
   useEffect(() => {
     fetchVendors();
+    if (typeof window !== "undefined") {
+      setRole(window.localStorage.getItem("role") || "");
+    }
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,21 +137,51 @@ export default function VendorManagement() {
 
   return (
     <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm mt-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2 font-black uppercase tracking-tight">
-            <User className="text-orange-500" />
-            Vendor Management
-          </h3>
-          <p className="text-zinc-500 text-sm font-medium italic">Manage existing vendors and their account status</p>
+      <div className="mb-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2 font-black uppercase tracking-tight">
+              <User className="text-orange-500" />
+              Vendor Management
+            </h3>
+            <p className="text-zinc-500 text-sm font-medium italic">Manage existing vendors and their account status</p>
+          </div>
+          {role !== 'csr' && (
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-[#f45c03] text-white px-4 py-2 rounded-lg font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all shadow-md active:scale-95"
+            >
+              <UserPlus size={18} />
+              Add New Vendor
+            </button>
+          )}
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-[#f45c03] text-white px-4 py-2 rounded-lg font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all shadow-md active:scale-95"
-        >
-          <UserPlus size={18} />
-          Add New Vendor
-        </button>
+
+        <div className="flex flex-col sm:flex-row gap-4 items-center bg-zinc-50 p-4 rounded-xl border border-zinc-100">
+           <div className="flex-1 w-full">
+              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 block">Search Vendors</label>
+              <input 
+                type="text"
+                placeholder="Search by name or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-orange-300 outline-none transition-all"
+              />
+           </div>
+           <div className="w-full sm:w-48">
+              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 block">Status Filter</label>
+              <select 
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-orange-300 outline-none transition-all appearance-none cursor-pointer"
+              >
+                <option value="all">All Vendors</option>
+                <option value="active">Active Only</option>
+                <option value="suspended">Suspended Only</option>
+                <option value="pending">Pending Only</option>
+              </select>
+           </div>
+        </div>
       </div>
 
       {loading ? (
@@ -164,7 +200,13 @@ export default function VendorManagement() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-50">
-              {vendors.map((v) => (
+              {vendors
+                .filter(v => {
+                  const matchesSearch = v.name.toLowerCase().includes(searchQuery.toLowerCase()) || v.email.toLowerCase().includes(searchQuery.toLowerCase());
+                  const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
+                  return matchesSearch && matchesStatus;
+                })
+                .map((v) => (
                 <tr key={v.id} className="group hover:bg-zinc-50/50 transition-colors">
                   <td className="px-4 py-4">
                     <div className="font-bold text-zinc-900 text-sm">{v.name}</div>
@@ -185,6 +227,15 @@ export default function VendorManagement() {
                   </td>
                   <td className="px-4 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
+                       <a
+                        href={`/seller/${v.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-lg transition-all bg-zinc-100 text-zinc-600 hover:bg-zinc-900 hover:text-white"
+                        title="Visit Seller Profile"
+                      >
+                        <ExternalLink size={18} />
+                      </a>
                       <button
                         onClick={() => setSelectedVendor(v)}
                         className="p-2 rounded-lg transition-all bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white"
@@ -217,14 +268,16 @@ export default function VendorManagement() {
                         </button>
                       )}
 
-                      <button
-                        onClick={() => handleDelete(v.id)}
-                        disabled={actionLoading === v.id}
-                        className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all"
-                        title="Delete Permanently"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      {role !== 'csr' && (
+                        <button
+                          onClick={() => handleDelete(v.id)}
+                          disabled={actionLoading === v.id}
+                          className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all"
+                          title="Delete Permanently"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

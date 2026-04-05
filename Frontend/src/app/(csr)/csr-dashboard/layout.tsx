@@ -1,7 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import CSRSidebar from "@/components/csr/CSRSidebar";
 import { useRouter } from "next/navigation";
 
@@ -64,23 +62,19 @@ export default function CSRLayout({
 
   return (
     <div className="min-h-screen bg-zinc-50 flex flex-col">
-      <Navbar />
-
-      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 lg:px-8 py-8 lg:py-10">
+      <main className="flex-1 w-full mx-auto max-w-full lg:px-0">
         <div className="flex flex-col lg:flex-row gap-8 min-h-[800px]">
           {/* Left Sidebar */}
-          <aside className="w-full lg:w-64 flex-shrink-0 bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden">
+          <aside className="w-full lg:w-72 flex-shrink-0 bg-white border-r border-zinc-200 overflow-hidden min-h-screen hidden lg:block">
             <CSRSidebar />
           </aside>
 
           {/* Main Content Area */}
-          <div className="flex-1">
+          <div className="flex-1 p-6 lg:p-10">
             {children}
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
