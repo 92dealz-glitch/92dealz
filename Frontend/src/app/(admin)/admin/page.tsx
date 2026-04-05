@@ -19,6 +19,7 @@ import VendorApplications from "@/components/admin/VendorApplications";
 import VendorVerificationRequests from "@/components/admin/VendorVerificationRequests";
 import ProductManagement from "@/components/admin/ProductManagement";
 import AdminReportManagement from "@/components/admin/AdminReportManagement";
+import StaffManagement from "@/components/admin/StaffManagement";
 
 import {
   ResponsiveContainer,
@@ -249,6 +250,7 @@ export default function AdminDashboardPage() {
       <VendorVerificationRequests />
       <ProductManagement />
       <AdminReportManagement />
+      <StaffManagement />
     </div>
   );
 }

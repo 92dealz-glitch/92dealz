@@ -46,7 +46,7 @@ const User = sequelize.define('User', {
     },
   },
   role: {
-    type: DataTypes.ENUM('user', 'vendor', 'admin'),
+    type: DataTypes.ENUM('user', 'vendor', 'admin', 'csr'),
     allowNull: false,
     defaultValue: 'user',
   },
@@ -129,6 +129,18 @@ const User = sequelize.define('User', {
   },
   suspension_reason: {
     type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  note: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  total_time_spent: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  last_seen: {
+    type: DataTypes.DATE,
     allowNull: true,
   },
   country_name: {

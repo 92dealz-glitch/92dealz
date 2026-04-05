@@ -78,6 +78,7 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const marketerRoutes = require('./routes/marketerRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const staffRoutes = require('./routes/staffRoutes');
 
 // Helper to register routes with and without /api prefix
 function registerRoutes(prefix, router) {
@@ -95,6 +96,7 @@ registerRoutes('/favorites', favoriteRoutes);
 registerRoutes('/search', searchRoutes);
 registerRoutes('/alerts', alertRoutes);
 registerRoutes('/admin', adminRoutes);
+registerRoutes('/staff', staffRoutes);
 registerRoutes('/submissions', submissionRoutes);
 registerRoutes('/uploads', uploadRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

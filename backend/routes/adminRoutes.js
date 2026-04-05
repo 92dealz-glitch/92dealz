@@ -56,5 +56,11 @@ router.put('/reports/:id', reportCtrl.updateReportStatus);
 // Reviews
 const reviewCtrl = require('../controllers/reviewController');
 router.delete('/reviews/:id', reviewCtrl.deleteReviewAdmin);
+// Staff
+const staffCtrl = require('../controllers/staffController');
+router.get('/staff', staffCtrl.getAllStaff);
+router.post('/staff', staffCtrl.createStaff);
+router.put('/staff/:id', staffCtrl.updateStaff);
+router.delete('/staff/:id', staffCtrl.deleteStaff);
 
 module.exports = router;
