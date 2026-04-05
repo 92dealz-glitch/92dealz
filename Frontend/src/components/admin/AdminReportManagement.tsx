@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Flag, Loader2, CheckCircle, XCircle, ExternalLink, Trash2, UserX } from "lucide-react";
-import { getAdminReports, updateReportStatusAdmin, deleteDealAdmin, updateVendorStatusAdmin, deleteReviewAdmin } from "@/lib/api";
+import { getAdminReports, updateReportStatusAdmin, deleteDealAdmin, updateVendorStatusAdmin, deleteReviewAdmin, rejectDealAdmin } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 import Link from "next/link";
 
@@ -26,7 +26,11 @@ export default function AdminReportManagement() {
     }
   };
 
+  const [role, setRole] = useState("");
+
   useEffect(() => {
+    const r = localStorage.getItem("role") || "";
+    setRole(r.toLowerCase());
     fetchReports();
   }, []);
 
@@ -44,28 +48,40 @@ export default function AdminReportManagement() {
     }
   };
 
-  const handleQuickAction = async (reportId: number, type: 'product' | 'vendor' | 'review', targetId: number, title: string) => {
-    const reason = await showPrompt(`Reason for removing this ${type}? (User/Vendor will be notified)`, "", "Moderation Reason");
+  const handleQuickAction = async (id: number, action: 'deleteProduct' | 'deleteReview' | 'suspendVendor') => {
+    const reason = await showPrompt(`Reason for this action? (User/Vendor will be notified)`, "", "Moderation Reason");
     if (!reason) return;
 
-    setActionLoading(reportId);
+    setActionLoading(id);
+    const isCSR = role === 'csr';
+    
+    if (isCSR && action === 'deleteProduct') {
+      try {
+        const res = await rejectDealAdmin(id, reason);
+        if (res.success) {
+          showAlert("Product has been rejected and removed from public view", "Moderation Success");
+          fetchReports();
+        }
+      } catch (err) {
+        showAlert("Failed to reject product", "Moderation Error");
+      } finally {
+        setActionLoading(null);
+      }
+      return;
+    }
+
     try {
       let res;
-      if (type === 'product') {
-        res = await deleteDealAdmin(targetId, reason);
-      } else if (type === 'review') {
-        res = await deleteReviewAdmin(targetId);
-      } else {
-        res = await updateVendorStatusAdmin(targetId, 'suspended');
-      }
-      
+      if (action === 'deleteProduct') res = await deleteDealAdmin(id, reason);
+      else if (action === 'deleteReview') res = await deleteReviewAdmin(id);
+      else if (action === 'suspendVendor') res = await updateVendorStatusAdmin(id, 'suspended');
+
       if (res && res.success) {
-        await updateReportStatusAdmin(reportId, 'resolved');
-        setReports(prev => prev.map(r => r.id === reportId ? { ...r, status: 'resolved' } : r));
-        showAlert(`${type.charAt(0).toUpperCase() + type.slice(1)} removed correctly.`, "Action Successful");
+        showAlert(`${action} completed successfully`, "Success");
+        fetchReports();
       }
     } catch (err) {
-      showAlert("Action failed.", "Report Error");
+      showAlert(`Failed to ${action}`, "Error");
     } finally {
       setActionLoading(null);
     }
@@ -166,40 +182,35 @@ export default function AdminReportManagement() {
                           >
                             <XCircle size={18} />
                           </button>
-                          
-                          {report.Product && (
+                          <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-50">
+                          {report.product_id && (
                             <button
-                              onClick={() => handleQuickAction(report.id, 'product', report.Product.id, report.Product.title)}
-                              disabled={actionLoading === report.id}
-                              className="p-2 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
-                              title="Delete Product"
+                              onClick={() => handleQuickAction(report.product_id, 'deleteProduct')}
+                              className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-[10px] font-black uppercase hover:bg-red-600 hover:text-white transition-all flex items-center gap-1.5"
                             >
-                              <Trash2 size={18} />
+                              <Trash2 size={12} />
+                              {role === 'csr' ? 'Reject Ad' : 'Delete Ad'}
                             </button>
                           )}
-
-                          {report.ReportedReview && (
+                          {report.review_id && (
                             <button
-                              onClick={() => handleQuickAction(report.id, 'review', report.ReportedReview.id, "Review")}
-                              disabled={actionLoading === report.id}
-                              className="p-2 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
-                              title="Delete Review"
+                              onClick={() => handleQuickAction(report.review_id, 'deleteReview')}
+                              className="px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase hover:bg-amber-600 hover:text-white transition-all flex items-center gap-1.5"
                             >
-                              <Trash2 size={18} />
+                              <XCircle size={12} />
+                              {role === 'csr' ? 'Hide Review' : 'Delete Review'}
                             </button>
                           )}
-
-                          {report.Vendor && (
+                          {report.seller_id && (
                             <button
-                              onClick={() => handleQuickAction(report.id, 'vendor', report.Vendor.id, report.Vendor.name)}
-                              disabled={actionLoading === report.id}
-                              className="p-2 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
-                              title="Suspend Vendor"
+                              onClick={() => handleQuickAction(report.seller_id, 'suspendVendor')}
+                              className="px-3 py-1.5 bg-zinc-900 text-white rounded-lg text-[10px] font-black uppercase hover:bg-orange-600 transition-all flex items-center gap-1.5"
                             >
-                              <UserX size={18} />
+                              <UserX size={12} />
+                              Suspend User
                             </button>
                           )}
-
+                        </div>
                           <button
                             onClick={() => handleStatusUpdate(report.id, 'resolved')}
                             disabled={actionLoading === report.id}

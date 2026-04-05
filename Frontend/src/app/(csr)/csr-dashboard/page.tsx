@@ -1,26 +1,29 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import VendorManagement from '@/components/admin/VendorManagement';
 import VendorVerificationRequests from '@/components/admin/VendorVerificationRequests';
 import AdminReportManagement from '@/components/admin/AdminReportManagement';
-import { Users, ShieldCheck, Flag } from 'lucide-react';
+import CSRDealManagement from '@/components/csr/CSRDealManagement';
+import { Users, ShieldCheck, Flag, Package, Loader2 } from 'lucide-react';
 
-export default function CSRDashboardPage() {
+function CSRDashboardContent() {
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('vendors');
 
   useEffect(() => {
-    // Check if there's a tab preference in URL or LocalStorage
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get('tab');
-    if (tab && ['vendors', 'verifications', 'reports'].includes(tab)) {
+    const tab = searchParams.get('tab');
+    if (tab && ['vendors', 'verifications', 'reports', 'deals'].includes(tab)) {
       setActiveTab(tab);
     }
-  }, []);
+  }, [searchParams]);
 
   const tabs = [
-    { id: 'vendors', label: 'Vendor Management', icon: Users },
-    { id: 'verifications', label: 'Verification Requests', icon: ShieldCheck },
-    { id: 'reports', label: 'Reports & Appeals', icon: Flag },
+    { id: 'vendors', label: 'Vendors', icon: Users },
+    { id: 'deals', label: 'Deals', icon: Package },
+    { id: 'verifications', label: 'Verify', icon: ShieldCheck },
+    { id: 'reports', label: 'Reports', icon: Flag },
   ];
 
   return (
@@ -32,39 +35,49 @@ export default function CSRDashboardPage() {
         </div>
       </div>
 
-      {/* Tabs Navigation */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200">
+      {/* Tabs Navigation - HIDDEN ON DESKTOP (Sidebar used instead) */}
+      <div className="flex md:hidden flex-wrap items-center gap-2 border-b border-zinc-200">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-4 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${
               activeTab === tab.id
                 ? 'border-orange-600 text-orange-600 bg-orange-50/50'
                 : 'border-transparent text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50'
             }`}
           >
-            <tab.icon size={16} />
+            <tab.icon size={14} />
             {tab.label}
           </button>
         ))}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-2 lg:mt-6">
         {activeTab === 'vendors' && (
           <section className="animate-in slide-in-from-bottom-4 duration-500">
-             <div className="flex items-center gap-3 mb-2 px-2">
-                <h2 className="text-lg font-black uppercase tracking-tight text-zinc-800">Vendor Management Portal</h2>
+             <div className="flex items-center gap-3 mb-4 px-2">
+                <h2 className="text-lg font-black uppercase tracking-tight text-zinc-800">Merchant Directory</h2>
                 <div className="h-[2px] flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
               </div>
             <VendorManagement />
           </section>
         )}
 
+        {activeTab === 'deals' && (
+          <section className="animate-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center gap-3 mb-4 px-2">
+              <h2 className="text-lg font-black uppercase tracking-tight text-zinc-800">Deal Moderation</h2>
+              <div className="h-[2px] flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+            </div>
+            <CSRDealManagement />
+          </section>
+        )}
+
         {activeTab === 'verifications' && (
           <section className="animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center gap-3 mb-2 px-2">
-              <h2 className="text-lg font-black uppercase tracking-tight text-zinc-800">Verification Box</h2>
+            <div className="flex items-center gap-3 mb-4 px-2">
+              <h2 className="text-lg font-black uppercase tracking-tight text-zinc-800">ID Verification</h2>
               <div className="h-[2px] flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
             </div>
             <VendorVerificationRequests />
@@ -73,8 +86,8 @@ export default function CSRDashboardPage() {
 
         {activeTab === 'reports' && (
           <section className="animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center gap-3 mb-2 px-2">
-              <h2 className="text-lg font-black uppercase tracking-tight text-zinc-800">Reports & Content Appeals</h2>
+            <div className="flex items-center gap-3 mb-4 px-2">
+              <h2 className="text-lg font-black uppercase tracking-tight text-zinc-800">Moderation Box</h2>
               <div className="h-[2px] flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
             </div>
             <AdminReportManagement />
@@ -89,5 +102,18 @@ export default function CSRDashboardPage() {
          </div>
       </div>
     </div>
+  );
+}
+
+export default function CSRDashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[400px] flex flex-col items-center justify-center gap-4 text-orange-600">
+        <Loader2 className="animate-spin" size={40} />
+        <span className="font-black uppercase tracking-widest text-xs">Loading Workspace...</span>
+      </div>
+    }>
+      <CSRDashboardContent />
+    </Suspense>
   );
 }
