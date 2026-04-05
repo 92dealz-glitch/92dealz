@@ -29,7 +29,9 @@ exports.createStaff = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingUser = await User.findOne({ where: { email: normalizedEmail } });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'Email is already in use' });
     }
@@ -38,7 +40,7 @@ exports.createStaff = async (req, res, next) => {
 
     const newStaff = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       phone,
       role: 'csr',

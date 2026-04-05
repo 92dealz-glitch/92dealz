@@ -32,6 +32,14 @@ async function forceSchemaFix() {
     }
 
     console.log('--- SCHEMA FIX COMPLETED SUCCESSFULLY ---');
+
+    // 3. Force ENUM role update
+    try {
+      await sequelize.query(`ALTER TYPE "enum_users_role" ADD VALUE IF NOT EXISTS 'csr';`);
+      console.log('Successfully added csr to enum_users_role');
+    } catch (enumErr) {
+      console.log('Enum csr addition skipped or already exists:', enumErr.message);
+    }
   } catch (err) {
     console.error('--- SCHEMA FIX FAILED ---');
     console.error(err);
