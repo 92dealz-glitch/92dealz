@@ -23,8 +23,8 @@ export default function CSRSidebar() {
 
   return (
     <div className="flex flex-col h-full bg-white h-full min-h-[800px] border-r border-zinc-100">
-      <div className="p-6 border-b border-zinc-100 bg-blue-50/30">
-        <h2 className="text-xl font-black text-zinc-900 tracking-tight uppercase">CSR <span className="text-blue-600">Portal</span></h2>
+      <div className="p-6 border-b border-zinc-100 bg-orange-50/30">
+        <h2 className="text-xl font-black text-zinc-900 tracking-tight uppercase">CSR <span className="text-orange-600">Portal</span></h2>
         <p className="text-zinc-500 text-xs font-medium uppercase tracking-widest mt-1">Customer Service Team</p>
       </div>
 
@@ -37,11 +37,11 @@ export default function CSRSidebar() {
               href={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${
                 isActive 
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-200" 
-                  : "text-zinc-500 hover:bg-zinc-50 hover:text-blue-600"
+                  ? "bg-orange-600 text-white shadow-md shadow-orange-200" 
+                  : "text-zinc-500 hover:bg-zinc-50 hover:text-orange-600"
               }`}
             >
-              <item.icon size={20} className={isActive ? "text-white" : "text-zinc-400 group-hover:text-blue-500"} />
+              <item.icon size={20} className={isActive ? "text-white" : "text-zinc-400 group-hover:text-orange-500"} />
               <span className="uppercase tracking-widest text-[11px]">{item.label}</span>
             </Link>
           );

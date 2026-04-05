@@ -316,13 +316,13 @@ exports.login = async (req, res, next) => {
     });
 
     if (!user) {
-      console.log(`[AUTH_LOGIN_FAIL] User not found for input: ${emailInput} (formatted: ${formattedPhone})`);
+      console.warn(`[AUTH_LOGIN_FAIL] User not found during login. Input: "${emailInput}", Formatted Phone attempted: "${formattedPhone}"`);
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      console.log(`[AUTH_LOGIN_FAIL] Password mismatch for user: ${emailInput}`);
+      console.warn(`[AUTH_LOGIN_FAIL] Password mismatch for user ID: ${user.id} (${user.email}). Input role: ${user.role}`);
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
