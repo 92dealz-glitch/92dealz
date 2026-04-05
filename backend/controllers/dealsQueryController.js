@@ -89,9 +89,10 @@ exports.list = async (req, res, next) => {
       params.push(String(req.query.subcategory));
       where.push('subcategory = $' + params.length);
     }
-    if (req.query.userId && has('"userId"')) {
+    if (req.query.userId && (has('userId') || has('userid'))) {
+      const col = has('userId') ? '"userId"' : 'userid';
       params.push(Number(req.query.userId));
-      where.push('"userId" = $' + params.length);
+      where.push(`${col} = $` + params.length);
     }
 
     // Default to active status if not specified

@@ -96,6 +96,14 @@ const User = sequelize.define('User', {
     defaultValue: 'Within 1 hour',
   },
   government_id_url: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  verification_status: {
+    type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+    defaultValue: 'pending',
+  },
+  verification_rejection_reason: {
     type: DataTypes.TEXT,
     allowNull: true,
   },
@@ -110,10 +118,6 @@ const User = sequelize.define('User', {
   is_email_verified: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
-  },
-  verification_status: {
-    type: DataTypes.ENUM('none', 'pending', 'approved', 'rejected'),
-    defaultValue: 'none',
   },
   poll_category: {
     type: DataTypes.STRING,

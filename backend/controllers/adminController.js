@@ -154,6 +154,7 @@ exports.rejectDeal = async (req, res, next) => {
     if (!deal) return res.status(404).json({ success: false, message: 'Deal not found' });
     
     deal.status = 'rejected';
+    deal.rejection_reason = reason;
     await deal.save();
 
     // Notify vendor
@@ -500,7 +501,7 @@ exports.getVerificationRequests = async (req, res, next) => {
 exports.reviewVerification = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
-    const { status } = req.body; // 'approved' or 'rejected'
+    const { status, reason } = req.body; // 'approved' or 'rejected'
     
     if (!['approved', 'rejected'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid status' });
@@ -514,8 +515,10 @@ exports.reviewVerification = async (req, res, next) => {
     user.verification_status = status;
     if (status === 'approved') {
       user.is_verified = true;
+      user.verification_rejection_reason = null;
     } else {
       user.is_verified = false;
+      user.verification_rejection_reason = reason;
     }
     
     await user.save();
@@ -528,7 +531,7 @@ exports.reviewVerification = async (req, res, next) => {
         title: `Identity Verification ${status.charAt(0).toUpperCase() + status.slice(1)}`,
         message: status === 'approved' 
           ? "Congratulations! Your identity has been verified. You now have a Verified Vendor badge."
-          : "Your identity verification was rejected. Please ensure your ID is clear and valid, and try again.",
+          : `Your identity verification was rejected. Reason: ${reason || "Please ensure your ID is clear and valid, and try again."}`,
         link: '/vendor-dashboard/settings/verification'
       });
     } catch (err) {

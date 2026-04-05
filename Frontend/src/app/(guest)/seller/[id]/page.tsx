@@ -8,6 +8,7 @@ import ReportModal from "@/components/ReportModal";
 import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 import VerificationGateModal from "@/components/ui/VerificationGateModal";
 import { getFlagEmoji } from "@/utils/flagUtils";
+import { Package } from "lucide-react";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -362,129 +363,136 @@ export default function SellerPage({ params }: Props) {
                 Active Listing ({seller.totalAds})
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {listings.map((l) => (
-                  <Link
-                    key={l.id}
-                    href={`/product/${l.id}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <div
-                      style={{
-                        border: "1px solid #e5e7eb",
-                        borderRadius: 10,
-                        overflow: "hidden",
-                        background: "#fff",
-                        transition: "box-shadow 0.2s",
-                      }}
-                      onMouseEnter={(e) =>
-                        ((e.currentTarget as HTMLElement).style.boxShadow =
-                          "0 4px 12px rgba(0,0,0,0.1)")
-                      }
-                      onMouseLeave={(e) =>
-                        ((e.currentTarget as HTMLElement).style.boxShadow =
-                          "none")
-                      }
+                {listings.length > 0 ? (
+                  listings.map((l) => (
+                    <Link
+                      key={l.id}
+                      href={`/product/${l.id}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <div
                         style={{
-                          position: "relative",
-                          height: 140,
-                          background: "#f3f4f6",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: 10,
+                          overflow: "hidden",
+                          background: "#fff",
+                          transition: "box-shadow 0.2s",
                         }}
+                        onMouseEnter={(e) =>
+                          ((e.currentTarget as HTMLElement).style.boxShadow =
+                            "0 4px 12px rgba(0,0,0,0.1)")
+                        }
+                        onMouseLeave={(e) =>
+                          ((e.currentTarget as HTMLElement).style.boxShadow =
+                            "none")
+                        }
                       >
-                        <img
-                          src={l.image}
-                          alt={l.title}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
                         <div
                           style={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            background: "rgba(255,255,255,0.9)",
-                            borderRadius: "50%",
-                            width: 28,
-                            height: 28,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                            position: "relative",
+                            height: 140,
+                            background: "#f3f4f6",
                           }}
                         >
-                          <HeartIcon />
-                        </div>
-                      </div>
-
-                      <div style={{ padding: 12 }}>
-                        <div
-                          style={{
-                            color: "#f97316",
-                            fontWeight: 800,
-                            fontSize: 15,
-                          }}
-                        >
-                          {l.price}
-                        </div>
-                        <h4
-                          style={{
-                            margin: "4px 0 8px",
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: "#111827",
-                            lineHeight: 1.4,
-                            height: 36,
-                            overflow: "hidden",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                          }}
-                        >
-                          {l.title}
-                        </h4>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginTop: 8,
-                          }}
-                        >
+                          <img
+                            src={l.image}
+                            alt={l.title}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
                           <div
                             style={{
+                              position: "absolute",
+                              top: 8,
+                              right: 8,
+                              background: "rgba(255,255,255,0.9)",
+                              borderRadius: "50%",
+                              width: 28,
+                              height: 28,
                               display: "flex",
                               alignItems: "center",
-                              gap: 4,
-                              color: "#6b7280",
-                              fontSize: 11,
+                              justifyContent: "center",
+                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                             }}
                           >
-                            <MapPinIcon />
-                            <span>{l.location}</span>
+                            <HeartIcon />
                           </div>
+                        </div>
+
+                        <div style={{ padding: 12 }}>
                           <div
                             style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 2,
                               color: "#f97316",
-                              fontSize: 11,
-                              fontWeight: 700,
+                              fontWeight: 800,
+                              fontSize: 15,
                             }}
                           >
-                            <FireIcon />
-                            <span>{l.likes}</span>
+                            {l.price}
+                          </div>
+                          <h4
+                            style={{
+                              margin: "4px 0 8px",
+                              fontSize: 13,
+                              fontWeight: 600,
+                              color: "#111827",
+                              lineHeight: 1.4,
+                              height: 36,
+                              overflow: "hidden",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                            }}
+                          >
+                            {l.title}
+                          </h4>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              marginTop: 8,
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 4,
+                                color: "#6b7280",
+                                fontSize: 11,
+                              }}
+                            >
+                              <MapPinIcon />
+                              <span>{l.location}</span>
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
+                                color: "#f97316",
+                                fontSize: 11,
+                                fontWeight: 700,
+                              }}
+                            >
+                              <FireIcon />
+                              <span>{l.likes}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))
+                ) : (
+                  <div className="col-span-full py-12 text-center bg-zinc-50 rounded-2xl border-2 border-dashed border-zinc-200">
+                      <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
+                      <p className="text-zinc-500 font-black uppercase tracking-widest text-xs">None Found</p>
+                  </div>
+                )}
               </div>
 
               {listings.length > 0 && (

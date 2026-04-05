@@ -7,7 +7,7 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart, Timer } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
@@ -91,6 +91,8 @@ export default function ProductPage({ params }: Props) {
           likes: d.clicks || 0,
           country_code: seller.country_code,
           country_name: seller.country_name,
+          status: d.status,
+          rejection_reason: d.rejection_reason
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -251,6 +253,12 @@ export default function ProductPage({ params }: Props) {
     }
   };
 
+  const currentUser = typeof window !== "undefined" ? JSON.parse(window.localStorage.getItem("user") || "{}") : {};
+  const currentUserId = currentUser.id ? String(currentUser.id) : null;
+  const currentUserRole = (currentUser.role || "").toLowerCase();
+  const isStaff = currentUserRole === 'admin' || currentUserRole === 'csr';
+  const isOwner = currentUserId === product.sellerId;
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -279,10 +287,77 @@ export default function ProductPage({ params }: Props) {
     );
   }
 
+  // MODERATION GATE
+  if (product.status !== 'active' && !isStaff && !isOwner) {
+    return (
+      <div className="min-h-screen flex flex-col bg-zinc-50">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center p-6">
+            <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-zinc-200 shadow-xl shadow-zinc-200/50 text-center animate-in zoom-in-95 duration-500">
+                <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6 ${
+                    product.status === 'pending' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600'
+                }`}>
+                    {product.status === 'pending' ? <Timer size={40} /> : <AlertCircle size={40} />}
+                </div>
+                <h1 className="text-2xl font-black text-zinc-900 uppercase tracking-tight mb-2">
+                    {product.status === 'pending' ? 'Pending Approval' : 'Listing Rejected'}
+                </h1>
+                <p className="text-zinc-500 font-medium mb-6">
+                    {product.status === 'pending' 
+                        ? "This ad is currently being reviewed by our moderation team. It will be visible to everyone once approved."
+                        : "This advertisement has been rejected by our team and is hidden from the public marketplace."
+                    }
+                </p>
+
+                {product.status === 'rejected' && product.rejection_reason && (
+                    <div className="mb-6 p-4 bg-red-50 rounded-2xl border border-red-100 text-left">
+                        <span className="text-[10px] font-black uppercase text-red-400 tracking-widest block mb-1">Rejection Reason</span>
+                        <p className="text-red-700 text-sm font-bold leading-relaxed">{product.rejection_reason}</p>
+                    </div>
+                )}
+
+                <Link href="/" className="inline-flex w-full items-center justify-center bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95">
+                    Return to Marketplace
+                </Link>
+            </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar />
-      <main className="max-w-[1200px] mx-auto mt-6 px-4 sm:px-6">
+      <main className="max-w-[1200px] mx-auto mt-6 px-4 sm:px-6"> 
+        {/* Banner for Moderators/Owners */}
+        {product.status !== 'active' && (isStaff || isOwner) && (
+            <div className={`mb-6 p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-4 ${
+                product.status === 'pending' ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-red-50 border-red-200 text-red-800'
+            }`}>
+               <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                         product.status === 'pending' ? 'bg-amber-200' : 'bg-red-200'
+                    }`}>
+                        {product.status === 'pending' ? <Timer size={24} /> : <AlertCircle size={24} />}
+                    </div>
+                    <div>
+                        <h4 className="font-black uppercase tracking-tight text-sm">
+                            {isStaff ? "Moderatation Preview" : "Private Preview"} - {product.status.toUpperCase()}
+                        </h4>
+                        <p className="text-xs font-medium opacity-80">
+                            {isStaff ? "You are viewing this as a moderator. It is currently hidden from other users." : "Only you can see this page. It is currently hidden from the public."}
+                        </p>
+                    </div>
+               </div>
+               {product.status === 'rejected' && product.rejection_reason && (
+                   <div className="flex-1 max-w-lg px-4 border-l border-current/20">
+                        <span className="text-[10px] font-black uppercase opacity-60 tracking-wider">Reason for Rejection</span>
+                        <p className="text-sm font-bold">{product.rejection_reason}</p>
+                   </div>
+               )}
+            </div>
+        )}
         <nav className="text-gray-600 text-sm mb-4">Home &gt; Products &gt; {product.title}</nav>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
           {/* 1. Gallery Section */}

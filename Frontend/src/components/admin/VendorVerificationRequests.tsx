@@ -16,7 +16,7 @@ interface VerificationRequest {
 }
 
 export default function VendorVerificationRequests() {
-  const { showAlert, showConfirm } = useAlert();
+  const { showAlert, showConfirm, showPrompt } = useAlert();
   const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -43,11 +43,17 @@ export default function VendorVerificationRequests() {
   }, []);
 
   const handleReview = async (id: number, status: 'approved' | 'rejected') => {
+    let reason = "";
+    if (status === 'rejected') {
+        reason = await showPrompt("Reason for rejection?", "", "Rejection Reason") || "";
+        if (!reason) return;
+    }
+
     if (!await showConfirm(`Are you sure you want to ${status} this verification?`, "Confirm Review")) return;
     
     setProcessingId(id);
     try {
-      const res = await reviewAdminVerification(id, status);
+      const res = await reviewAdminVerification(id, status, reason);
       if (res.success) {
         setRequests(prev => prev.filter(r => r.id !== id));
       } else {

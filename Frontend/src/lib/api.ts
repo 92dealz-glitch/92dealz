@@ -174,10 +174,10 @@ export async function getVendorsAdmin() {
   );
 }
 
-export async function reviewAdminVerification(id: number, status: 'approved' | 'rejected') {
+export async function reviewAdminVerification(id: number, status: 'approved' | 'rejected', reason?: string) {
   return apiFetch<{ success: boolean; message: string }>(
     `/admin/verifications/${id}/review`,
-    { method: "PUT", body: { status }, auth: true }
+    { method: "PUT", body: { status, reason }, auth: true }
   );
 }
 
