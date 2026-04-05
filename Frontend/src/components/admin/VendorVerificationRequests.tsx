@@ -73,12 +73,12 @@ export default function VendorVerificationRequests() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2">
-            <ShieldCheck className="text-blue-500" />
+            <ShieldCheck className="text-orange-500" />
             Vendor Verification Requests
           </h3>
           <p className="text-zinc-500 text-sm">Review government IDs to grant Verified badges</p>
         </div>
-        <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-black uppercase">
+        <span className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-black uppercase">
           {requests.length} Pending
         </span>
       </div>

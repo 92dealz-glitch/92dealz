@@ -187,7 +187,7 @@ export default function VendorManagement() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => setSelectedVendor(v)}
-                        className="p-2 rounded-lg transition-all bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white"
+                        className="p-2 rounded-lg transition-all bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white"
                         title="View Details"
                       >
                         <Eye size={18} />
