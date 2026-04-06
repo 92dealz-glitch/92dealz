@@ -34,7 +34,7 @@ export default function HotDeals() {
           price: `₦ ${Number(d.price).toLocaleString()}`,
           img: d.image_url || "/assets/images/bgphone.svg",
           location: d.location || d.city || "Nigeria",
-          newLabel: d.condition || "Brand New",
+          newLabel: d.condition || "New",
           isVerified: d.is_verified || d.User?.is_verified || false,
           rating: Number(d.rating || 0),
           views: d.clicks || 0,
@@ -223,7 +223,7 @@ export default function HotDeals() {
                     <span className="text-orange-600 font-bold">{item.views ?? 0} views</span>
                     {item.newLabel && (
                       <span className="font-bold text-[#f45c03] bg-[#f45c03]/10 px-2 py-0.5 rounded-md shrink-0">
-                        {item.newLabel === "Brand New" ? "New" : (item.newLabel ?? "New")}
+                        {item.newLabel || "New"}
                       </span>
                     )}
                   </div>

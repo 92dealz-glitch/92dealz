@@ -76,7 +76,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       desc: l.description || "",
       badge: l.image_url || "/assets/images/bgphone.svg",
       location: l.location || l.city || l.state || "Nigeria",
-      condition: l.condition || "Brand New",
+      condition: l.condition || "New",
       views: l.clicks || 0,
       rating: l.rating || 0,
       isVerified: l.is_verified || l.User?.is_verified || false,

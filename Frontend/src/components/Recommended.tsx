@@ -49,7 +49,7 @@ export default function Recommended() {
           desc: d.description || "",
           badge: d.image_url || "/assets/images/bgphone.svg",
           location: d.location || d.city || "Nigeria",
-          condition: d.condition || "Brand New",
+          condition: d.condition || "New",
           views: d.clicks || 0,
           rating: d.rating || 0,
           isVerified: d.is_verified || d.User?.is_verified || false,

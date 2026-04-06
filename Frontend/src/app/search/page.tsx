@@ -39,7 +39,7 @@ export default async function SearchPage({
     desc: l.description || undefined,
     badge: l.image_url || "/assets/images/bgphone.svg",
     location: l.location || l.city || "Nigeria",
-    condition: l.condition || "Brand New",
+    condition: l.condition || "New",
     rating: l.rating,
     isVerified: l.is_verified || l.User?.is_verified || false,
   }));

@@ -581,8 +581,6 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                     onChange={(v) => {
                         updateData({ location: v, state: "", city: "" });
                     }} 
-                    required 
-                    disabled={isNigerian}
                 />
                 
                 {data.location === "Nigeria" ? (
@@ -604,14 +602,6 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                             />
                         )}
                     </>
-                ) : data.location === "China" ? (
-                    <InputField 
-                        label="State/City in China" 
-                        placeholder="e.g. Guangdong, Shenzhen" 
-                        value={data.state} 
-                        onChange={(v) => updateData({ state: v })} 
-                        required 
-                    />
                 ) : null}
             </div>
 

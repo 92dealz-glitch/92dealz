@@ -63,7 +63,7 @@ export default function SellerPage({ params }: Props) {
             id: d.id,
             title: d.title,
             price: `₦${Number(d.price).toLocaleString()}`,
-            condition: d.condition || "Brand New",
+            condition: d.condition || "New",
             location: d.location || "Lagos",
             likes: d.likes || 40,
             image: d.image_url || "/assets/images/bgphone.svg",

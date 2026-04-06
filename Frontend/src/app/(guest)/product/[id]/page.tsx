@@ -69,7 +69,7 @@ export default function ProductPage({ params }: Props) {
           sellerTotalAds: seller.total_ads || 0,
           sellerResponseTime: seller.responseTime || "Within 1 hour",
           images,
-          condition: d.condition || 'Brand New',
+          condition: d.condition || 'New',
           location: d.location || d.city || 'Nigeria',
           brand: d.brand,
           model: d.model,
@@ -549,7 +549,7 @@ export default function ProductPage({ params }: Props) {
               <div className="mt-4 flex items-center gap-2">
                 <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs font-medium uppercase">Negotiable</span>
                 <span className="bg-green-50 text-green-700 px-3 py-1 rounded text-xs font-bold uppercase">
-                  {product.condition === "Brand New" ? "New" : (product.condition?.replace(/_/g, ' ') || 'New')}
+                  {product.condition || 'New'}
                 </span>
               </div>
 
