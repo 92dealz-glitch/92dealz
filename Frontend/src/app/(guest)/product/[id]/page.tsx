@@ -29,7 +29,7 @@ export default function ProductPage({ params }: Props) {
   const { id } = use(params);
   const { showAlert } = useAlert();
   const { isFavorite, toggle } = useFavorites();
-  const { formatPrice } = useCurrency();
+  const { currency, setCurrency, formatPrice } = useCurrency();
   const fav = isFavorite(id);
   const router = useRouter();
   const [loading, setLoading] = useState(true)
@@ -557,6 +557,26 @@ export default function ProductPage({ params }: Props) {
                 <span className="bg-green-50 text-green-700 px-3 py-1 rounded text-xs font-bold uppercase">
                   {product.condition || 'New'}
                 </span>
+              </div>
+
+              {/* Currency Switcher */}
+              <div className="mt-6 pt-4 border-t border-orange-50">
+                <div className="text-[10px] font-black uppercase text-orange-400 tracking-widest mb-3">Viewing Prices In</div>
+                <div className="flex gap-2">
+                  {(['NGN', 'USD', 'CNY'] as const).map((curr) => (
+                    <button
+                      key={curr}
+                      onClick={() => setCurrency(curr)}
+                      className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all ${
+                        currency === curr 
+                          ? 'bg-orange-600 text-white shadow-xl shadow-orange-100' 
+                          : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100 border border-zinc-200'
+                      }`}
+                    >
+                      {curr}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {orderMessage && (

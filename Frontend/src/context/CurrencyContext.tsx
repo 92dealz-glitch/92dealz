@@ -14,7 +14,7 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
-  const [currency, setCurrencyState] = useState<Currency>("USD");
+  const [currency, setCurrencyState] = useState<Currency>("NGN");
   const [rates, setRates] = useState<Record<string, number>>({ USD: 1, NGN: 1600, CNY: 7.2 });
 
   useEffect(() => {
@@ -40,18 +40,24 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
             setCurrencyState(user.currencyPreference);
             return;
           }
+          
+          // Logic based on phone number prefix
+          const phone = String(user.phone || "");
+          if (phone.startsWith("+234") || phone.startsWith("234")) {
+            setCurrencyState("NGN");
+            return;
+          } else if (phone.startsWith("+86") || phone.startsWith("86")) {
+            setCurrencyState("CNY");
+            return;
+          } else if (phone) {
+            setCurrencyState("USD");
+            return;
+          }
         } catch {}
       }
 
-      // Fallback: Detect via IP
-      fetch(`${API_BASE}/currency/detect`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success && data.currency) {
-            setCurrencyState(data.currency);
-          }
-        })
-        .catch(() => setCurrencyState("USD"));
+      // Default for Guests
+      setCurrencyState("NGN");
     }
   }, []);
 
