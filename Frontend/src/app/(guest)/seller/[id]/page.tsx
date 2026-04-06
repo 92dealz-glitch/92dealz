@@ -196,7 +196,6 @@ export default function SellerPage({ params }: Props) {
   return (
     <div
       style={{
-        fontFamily: "'Nunito', 'Segoe UI', sans-serif",
         background: "#f8f8f8",
         minHeight: "100vh",
       }}

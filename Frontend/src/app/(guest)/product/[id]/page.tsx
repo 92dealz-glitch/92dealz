@@ -131,6 +131,7 @@ export default function ProductPage({ params }: Props) {
       setSubmittingReview(true);
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
       if (!token) { showAlert("Please login to leave a review.", "Authentication Required"); return; }
+      if (!isFullyVerified) { setShowGateModal(true); return; }
       
       const res = await fetch(`${API_BASE}/reviews`, {
         method: "POST",
@@ -749,22 +750,40 @@ export default function ProductPage({ params }: Props) {
                 <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
               </div>
               
-              <div className="p-4 border-b bg-zinc-50">
-                  <h5 className="font-bold text-sm mb-2">Leave a Review for {product.sellerName}</h5>
-                  <div className="flex gap-1 mb-3">
-                    {[1,2,3,4,5].map(star => (
-                       <button key={star} type="button" onClick={() => setReviewRating(star)} className={`text-2xl hover:scale-110 transition-transform ${reviewRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
-                    ))}
-                  </div>
-                  <textarea 
-                     value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                     placeholder="Share your experience with this vendor..."
-                     className="w-full text-sm border-gray-300 rounded-md shadow-sm p-3 focus:ring-orange-500 outline-none focus:border-orange-500 mb-3" rows={3}>
-                  </textarea>
-                  <Button disabled={submittingReview || !reviewText.trim()} onClick={submitReview} className="bg-orange-600 text-white min-w-[120px]">
-                     {submittingReview ? "Submitting..." : "Submit Review"}
-                  </Button>
-              </div>
+              {!isFullyVerified ? (
+                <div className="p-8 text-center bg-zinc-50 border-y border-zinc-100">
+                    <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                        <Shield className="w-8 h-8 text-orange-600" />
+                    </div>
+                    <h5 className="text-xl font-black text-zinc-900 mb-2">Verify Your Account</h5>
+                    <p className="text-zinc-500 text-sm max-w-sm mx-auto mb-6">
+                        Please verify your account to leave a review. This ensures a secure and trusted experience for all users.
+                    </p>
+                    <Button 
+                        onClick={() => setShowGateModal(true)}
+                        className="bg-zinc-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95"
+                    >
+                        Verify Now
+                    </Button>
+                </div>
+              ) : (
+                <div className="p-4 border-b bg-zinc-50">
+                    <h5 className="font-bold text-sm mb-2">Leave a Review for {product.sellerName}</h5>
+                    <div className="flex gap-1 mb-3">
+                      {[1,2,3,4,5].map(star => (
+                         <button key={star} type="button" onClick={() => setReviewRating(star)} className={`text-2xl hover:scale-110 transition-transform ${reviewRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
+                      ))}
+                    </div>
+                    <textarea 
+                       value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+                       placeholder="Share your experience with this vendor..."
+                       className="w-full text-sm border-gray-300 rounded-md shadow-sm p-3 focus:ring-orange-500 outline-none focus:border-orange-500 mb-3" rows={3}>
+                    </textarea>
+                    <Button disabled={submittingReview || !reviewText.trim()} onClick={submitReview} className="bg-orange-600 text-white min-w-[120px]">
+                       {submittingReview ? "Submitting..." : "Submit Review"}
+                    </Button>
+                </div>
+              )}
 
               {reviews.length === 0 ? (
                 <div className="p-6 text-center text-gray-500 italic">No reviews yet for this vendor. Be the first!</div>

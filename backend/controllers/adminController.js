@@ -23,7 +23,7 @@ exports.getDeals = async (req, res, next) => {
     }
 
     const [rows] = await sequelize.query(
-      `SELECT d.id, d.title, d.price, d.status, d."updatedAt",
+      `SELECT d.id, d.title, d.price, d.status, d."updatedAt", d.description, d.image_url, d.images_json,
               u.name as merchant,
               c.name as category,
               (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id AND ce.type = 'view') as clicks

@@ -22,7 +22,16 @@ export default function CSRDealManagement() {
     try {
       const res = await getDealsAdmin(p, 10, s);
       if (res.success) {
-        let filteredData = res.data;
+        let filteredData = res.data.map((d: any) => {
+            let images = [d.image_url || '/assets/images/bgphone.svg'];
+            if (d.images_json) {
+                try {
+                    const parsed = typeof d.images_json === 'string' ? JSON.parse(d.images_json) : d.images_json;
+                    if (Array.isArray(parsed) && parsed.length > 0) images = parsed;
+                } catch (e) { console.error("Failed to parse images_json", e); }
+            }
+            return { ...d, images };
+        });
         if (status !== 'all') {
             filteredData = filteredData.filter((d: any) => d.status === status);
         }

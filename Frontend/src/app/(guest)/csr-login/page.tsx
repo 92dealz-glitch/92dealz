@@ -73,7 +73,7 @@ export default function CSRLoginPage() {
           <div className="inline-flex items-center justify-center p-3 bg-zinc-800 rounded-2xl mb-6 border border-zinc-700 shadow-inner">
             <img src="/234dealslogo.svg" alt="234Deals" width={60} />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight mb-2 uppercase" style={{ fontFamily: "Georgia, serif" }}>
+          <h1 className="text-3xl font-black text-white tracking-tight mb-2 uppercase">
             CSR <span className="text-orange-500">Portal</span>
           </h1>
           <p className="text-zinc-500 text-sm font-medium">Secure access to customer service</p>

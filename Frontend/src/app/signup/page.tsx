@@ -295,7 +295,7 @@ export default function SignupPage() {
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </Link>
-            <h1 className="text-2xl font-extrabold text-orange-500" style={{ fontFamily: "Georgia, serif" }}>
+            <h1 className="text-2xl font-extrabold text-orange-500">
               Create Account
             </h1>
           </div>
@@ -409,7 +409,7 @@ export default function SignupPage() {
 
           {/* Right: Form */}
           <div className="w-7/12 p-10 overflow-y-auto flex flex-col justify-center">
-            <h1 className="text-3xl font-extrabold text-orange-500 mb-1" style={{ fontFamily: "Georgia, serif" }}>
+            <h1 className="text-3xl font-extrabold text-orange-500 mb-1">
               Create Account
             </h1>
             <p className="text-gray-500 text-sm mb-6">Sign up as a customer or register your store as a vendor.</p>
