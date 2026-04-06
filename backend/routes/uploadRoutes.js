@@ -4,7 +4,10 @@ const multer = require('multer');
 const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 3 * 1024 * 1024 } // 3MB limit
+});
 
 router.post('/image', auth, upload.single('image'), (req, res) => {
   if (!req.file) {

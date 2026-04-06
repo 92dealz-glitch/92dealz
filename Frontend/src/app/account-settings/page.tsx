@@ -249,6 +249,13 @@ export default function AccountSettingsPage() {
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
+
+                      // 3MB limit check 
+                      if (file.size > 3 * 1024 * 1024) {
+                        alert("File is too large. Profile photo must be less than 3MB.");
+                        return;
+                      }
+
                       const formData = new FormData();
                       formData.append("image", file);
                       setSaving(true);
@@ -494,9 +501,15 @@ export default function AccountSettingsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">About your business</label>
+                    <div className="flex justify-between items-center mb-2">
+                       <label className="block text-sm font-semibold text-gray-700">About your business</label>
+                       <span className={`text-[10px] font-bold ${ (profile?.about || "").length >= 500 ? 'text-red-500' : 'text-zinc-400'}`}>
+                          {(profile?.about || "").length} / 500
+                       </span>
+                    </div>
                     <textarea 
                       rows={4}
+                      maxLength={500}
                       value={profile?.about || ""} 
                       onChange={(e) => setProfile({...profile, about: e.target.value})}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none resize-none"

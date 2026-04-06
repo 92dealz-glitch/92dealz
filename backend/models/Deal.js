@@ -11,10 +11,16 @@ const Deal = sequelize.define('Deal', {
   title: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      len: { args: [1, 70], msg: 'Title must be between 1 and 70 characters' }
+    },
   },
   description: {
     type: DataTypes.TEXT,
     allowNull: true,
+    validate: {
+      len: { args: [0, 500], msg: 'Description must be at most 500 characters' }
+    },
   },
   price: {
     type: DataTypes.FLOAT,

@@ -230,15 +230,23 @@ function TrashIcon() {
     )
 }
 
-function InputField({ label, placeholder, value, onChange, required = false, type = "text" }: { label: string, placeholder: string, value: string, onChange: (v: string) => void, required?: boolean, type?: string }) {
+function InputField({ label, placeholder, value, onChange, required = false, type = "text", maxLength }: { label: string, placeholder: string, value: string, onChange: (v: string) => void, required?: boolean, type?: string, maxLength?: number }) {
     return (
         <div className="flex flex-col gap-2">
-            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
+            <div className="flex justify-between items-center">
+                <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
+                {maxLength && (
+                    <span className={`text-[10px] font-bold ${value.length >= maxLength ? 'text-red-500' : 'text-zinc-400'}`}>
+                        {value.length} / {maxLength}
+                    </span>
+                )}
+            </div>
             <input
                 type={type}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
+                maxLength={maxLength}
                 className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors"
             />
         </div>
@@ -333,7 +341,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
 
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
-            <InputField label="Product Title" placeholder="e.g. washing machine" value={data.title} onChange={(v) => updateData({ title: v })} required />
+            <InputField label="Product Title" placeholder="e.g. washing machine" value={data.title} onChange={(v) => updateData({ title: v })} required maxLength={70} />
             <div className="flex flex-col gap-2">
                 <label className="text-black font-black text-[15px]">Category<span className="text-[#f45c03] ml-1">*</span></label>
                 <div className="relative">
@@ -439,11 +447,17 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className="text-black font-black text-[15px]">Description <span className="text-[#f45c03] ml-1">*</span></label>
+                <div className="flex justify-between items-center">
+                    <label className="text-black font-black text-[15px]">Description <span className="text-[#f45c03] ml-1">*</span></label>
+                    <span className={`text-[10px] font-bold ${data.description.length >= 500 ? 'text-red-500' : 'text-zinc-400'}`}>
+                        {data.description.length} / 500
+                    </span>
+                </div>
                 <textarea
                     placeholder="Describe your product in detail..."
                     value={data.description}
                     onChange={(e) => updateData({ description: e.target.value })}
+                    maxLength={500}
                     rows={6}
                     className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors resize-none"
                 />
@@ -492,6 +506,13 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
     async function onChooseFile(e: React.ChangeEvent<HTMLInputElement>) {
         const f = e.target.files?.[0];
         if (!f) return;
+
+        // 3MB limit check
+        if (f.size > 3 * 1024 * 1024) {
+            showAlert("File is too large. Each image must be less than 3MB.", "Oops!");
+            return;
+        }
+
         setUploading(true);
         try {
             const res = await uploadImage(f);

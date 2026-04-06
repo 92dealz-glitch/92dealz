@@ -82,6 +82,9 @@ const User = sequelize.define('User', {
   about: {
     type: DataTypes.TEXT,
     allowNull: true,
+    validate: {
+      len: { args: [0, 500], msg: 'About must be at most 500 characters' }
+    },
   },
   rating: {
     type: DataTypes.FLOAT,

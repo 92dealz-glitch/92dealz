@@ -74,7 +74,7 @@ export default function SellerPage({ params }: Props) {
         const revRes = await fetch(`${API_BASE}/reviews/vendor/${id}`);
         const revData = await revRes.json();
         if (active && revData.success) {
-           setReviews(revData.data);
+          setReviews(revData.data);
         }
       } catch (err) {
         console.error("Failed to fetch seller profile", err);
@@ -253,7 +253,7 @@ export default function SellerPage({ params }: Props) {
 
             {/* Info */}
             <div style={{ flex: 1 }}>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <div>
                   <h1 className="text-2xl font-extrabold text-orange-600 flex items-center justify-center md:justify-start gap-2 m-0">
                     {seller.name}
@@ -378,12 +378,12 @@ export default function SellerPage({ params }: Props) {
                           transition: "box-shadow 0.2s",
                         }}
                         onMouseEnter={(e) =>
-                          ((e.currentTarget as HTMLElement).style.boxShadow =
-                            "0 4px 12px rgba(0,0,0,0.1)")
+                        ((e.currentTarget as HTMLElement).style.boxShadow =
+                          "0 4px 12px rgba(0,0,0,0.1)")
                         }
                         onMouseLeave={(e) =>
-                          ((e.currentTarget as HTMLElement).style.boxShadow =
-                            "none")
+                        ((e.currentTarget as HTMLElement).style.boxShadow =
+                          "none")
                         }
                       >
                         <div
@@ -488,8 +488,8 @@ export default function SellerPage({ params }: Props) {
                   ))
                 ) : (
                   <div className="col-span-full py-12 text-center bg-zinc-50 rounded-2xl border-2 border-dashed border-zinc-200">
-                      <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
-                      <p className="text-zinc-500 font-black uppercase tracking-widest text-xs">None Found</p>
+                    <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
+                    <p className="text-zinc-500 font-black uppercase tracking-widest text-xs">None Found</p>
                   </div>
                 )}
               </div>
@@ -534,95 +534,95 @@ export default function SellerPage({ params }: Props) {
                 Customer Reviews <span className="text-sm font-medium text-gray-500 ml-1">({reviews.length})</span>
               </h2>
               {reviews.length === 0 ? (
-                 <div className="text-center italic text-gray-500 py-4">No reviews yet for this vendor.</div>
+                <div className="text-center italic text-gray-500 py-4">No reviews yet for this vendor.</div>
               ) : (
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 14 }}
-              >
-                {reviews.map((r: any) => (
-                  <div
-                    key={r.id}
-                    style={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 10,
-                      padding: "14px 16px",
-                    }}
-                  >
-                    <div style={{ display: "flex", gap: 12 }}>
-                      <div
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: "50%",
-                          background: "#e5e7eb",
-                          flexShrink: 0,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#9ca3af",
-                          fontWeight: 800,
-                          textTransform: "uppercase",
-                          fontSize: "14px",
-                        }}
-                      >
-                       {(r.Reviewer?.name || "U").slice(0, 2)}
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <p
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 14 }}
+                >
+                  {reviews.map((r: any) => (
+                    <div
+                      key={r.id}
+                      style={{
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 10,
+                        padding: "14px 16px",
+                      }}
+                    >
+                      <div style={{ display: "flex", gap: 12 }}>
+                        <div
                           style={{
-                            margin: "0 0 8px",
-                            fontSize: 14,
-                            color: "#374151",
-                            lineHeight: 1.5,
+                            width: 40,
+                            height: 40,
+                            borderRadius: "50%",
+                            background: "#e5e7eb",
+                            flexShrink: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#9ca3af",
+                            fontWeight: 800,
+                            textTransform: "uppercase",
+                            fontSize: "14px",
                           }}
                         >
-                          {r.comment}
-                        </p>
-                        <div
-                          style={{ display: "flex", gap: 2, marginBottom: 6 }}
-                        >
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span
-                              key={i}
-                              style={{
-                                color: i < Math.round(r.rating) ? "#f59e0b" : "#e5e7eb",
-                                fontSize: 14,
-                              }}
-                            >
-                              ★
-                            </span>
-                          ))}
+                          {(r.Reviewer?.name || "U").slice(0, 2)}
                         </div>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                          <div style={{ fontSize: 12, color: "#9ca3af" }}>
-                            {new Date(r.createdAt).toLocaleDateString()} by {r.Reviewer?.name || "Anonymous User"}
-                          </div>
-                          <button 
-                            onClick={() => {
-                              setReportedReviewId(r.id);
-                              setReportItemName(`Review by ${r.Reviewer?.name || 'User'}`);
-                              setShowReportModal(true);
-                            }}
-                            style={{ 
-                              fontSize: 11, 
-                              color: "#ef4444", 
-                              background: "none", 
-                              border: "none", 
-                              cursor: "pointer",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 2,
-                              fontWeight: 600
+                        <div style={{ flex: 1 }}>
+                          <p
+                            style={{
+                              margin: "0 0 8px",
+                              fontSize: 14,
+                              color: "#374151",
+                              lineHeight: 1.5,
                             }}
                           >
-                            🚩 Report
-                          </button>
+                            {r.comment}
+                          </p>
+                          <div
+                            style={{ display: "flex", gap: 2, marginBottom: 6 }}
+                          >
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <span
+                                key={i}
+                                style={{
+                                  color: i < Math.round(r.rating) ? "#f59e0b" : "#e5e7eb",
+                                  fontSize: 14,
+                                }}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div style={{ fontSize: 12, color: "#9ca3af" }}>
+                              {new Date(r.createdAt).toLocaleDateString()} by {r.Reviewer?.name || "Anonymous User"}
+                            </div>
+                            <button
+                              onClick={() => {
+                                setReportedReviewId(r.id);
+                                setReportItemName(`Review by ${r.Reviewer?.name || 'User'}`);
+                                setShowReportModal(true);
+                              }}
+                              style={{
+                                fontSize: 11,
+                                color: "#ef4444",
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
+                                fontWeight: 600
+                              }}
+                            >
+                              🚩 Report
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
               )}
               <button
                 style={{
@@ -667,48 +667,48 @@ export default function SellerPage({ params }: Props) {
               <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 16px" }}>
                 Get in touch with {seller.name} for enquiries or offers.
               </p>
-                  <div className="flex flex-col gap-2 mt-4">
-                    {seller.phone && (
-                      <>
-                        <button
-                          onClick={() => {
-                            if (!isLoggedIn || !isFullyVerified) {
-                              setShowGateModal(true);
-                              return;
-                            }
-                            window.location.href = `tel:${seller.phone}`;
-                          }}
-                          className="w-full bg-[#f97316] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-orange-700 transition"
-                        >
-                          <PhoneIcon /> Call Seller
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (!isLoggedIn || !isFullyVerified) {
-                              setShowGateModal(true);
-                              return;
-                            }
-                            window.open(`https://wa.me/${seller.phone.replace(/\D/g, '')}`, '_blank');
-                          }}
-                          className="w-full bg-[#22c55e] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-green-700 transition"
-                        >
-                          <WAIcon /> WhatsApp
-                        </button>
-                      </>
-                    )}
-                    <button 
+              <div className="flex flex-col gap-2 mt-4">
+                {seller.phone && (
+                  <>
+                    <button
                       onClick={() => {
                         if (!isLoggedIn || !isFullyVerified) {
                           setShowGateModal(true);
                           return;
                         }
-                        window.location.href = `/messages?userId=${seller.id}`;
+                        window.location.href = `tel:${seller.phone}`;
                       }}
-                      className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition"
+                      className="w-full bg-[#f97316] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-orange-700 transition"
                     >
-                      <ChatIcon /> Chat Seller
+                      <PhoneIcon /> Call Seller
                     </button>
-                  </div>
+                    <button
+                      onClick={() => {
+                        if (!isLoggedIn || !isFullyVerified) {
+                          setShowGateModal(true);
+                          return;
+                        }
+                        window.open(`https://wa.me/${seller.phone.replace(/\D/g, '')}`, '_blank');
+                      }}
+                      className="w-full bg-[#22c55e] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-green-700 transition"
+                    >
+                      <WAIcon /> WhatsApp
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => {
+                    if (!isLoggedIn || !isFullyVerified) {
+                      setShowGateModal(true);
+                      return;
+                    }
+                    window.location.href = `/messages?userId=${seller.id}`;
+                  }}
+                  className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition"
+                >
+                  <ChatIcon /> Chat Seller
+                </button>
+              </div>
               <button
                 onClick={() => setShowReportModal(true)}
                 style={{
@@ -912,39 +912,39 @@ export default function SellerPage({ params }: Props) {
                 Share Profile
               </h4>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <div style={{ 
-                  display: "flex", 
-                  background: "#f9fafb", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8, 
-                  overflow: "hidden" 
+                <div style={{
+                  display: "flex",
+                  background: "#f9fafb",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 8,
+                  overflow: "hidden"
                 }}>
-                  <input 
-                    readOnly 
-                    value={typeof window !== 'undefined' ? window.location.href : ""} 
-                    style={{ 
-                      flex: 1, 
-                      padding: "8px 12px", 
-                      fontSize: 12, 
-                      background: "transparent", 
+                  <input
+                    readOnly
+                    value={typeof window !== 'undefined' ? window.location.href : ""}
+                    style={{
+                      flex: 1,
+                      padding: "8px 12px",
+                      fontSize: 12,
+                      background: "transparent",
                       border: "none",
                       outline: "none",
                       color: "#6b7280"
                     }}
                   />
-                  <button 
+                  <button
                     onClick={() => {
                       if (typeof window !== 'undefined') {
                         navigator.clipboard.writeText(window.location.href);
                         alert("Link copied to clipboard!");
                       }
                     }}
-                    style={{ 
-                      padding: "8px 12px", 
-                      background: "#f97316", 
-                      color: "#fff", 
-                      border: "none", 
-                      fontSize: 12, 
+                    style={{
+                      padding: "8px 12px",
+                      background: "#f97316",
+                      color: "#fff",
+                      border: "none",
+                      fontSize: 12,
                       fontWeight: 700,
                       cursor: "pointer"
                     }}
@@ -958,7 +958,7 @@ export default function SellerPage({ params }: Props) {
                       navigator.share({
                         title: `${seller.name} on 234Deals`,
                         url: window.location.href
-                      }).catch(() => {});
+                      }).catch(() => { });
                     } else {
                       alert("Web Share API not supported in this browser.");
                     }
@@ -997,9 +997,9 @@ export default function SellerPage({ params }: Props) {
         />
       </main>
 
-      <VerificationGateModal 
-        isOpen={showGateModal} 
-        onClose={() => setShowGateModal(false)} 
+      <VerificationGateModal
+        isOpen={showGateModal}
+        onClose={() => setShowGateModal(false)}
       />
       <Footer />
     </div>

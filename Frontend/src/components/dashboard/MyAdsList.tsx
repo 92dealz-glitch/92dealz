@@ -112,6 +112,10 @@ export default function MyAdsList() {
                                 <button
                                     onClick={async () => {
                                         const newTitle = await showPrompt("Enter new title", ad.title, "Edit Title") ?? ad.title;
+                                        if (newTitle.length > 70) {
+                                            showAlert("Title must be at most 70 characters.", "Oops!");
+                                            return;
+                                        }
                                         const newPriceStr = await showPrompt("Enter new price", String(ad.price), "Edit Price") ?? String(ad.price);
                                         const newPrice = Number(newPriceStr);
                                         if (Number.isNaN(newPrice)) return;
