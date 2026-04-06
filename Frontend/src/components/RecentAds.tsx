@@ -39,7 +39,7 @@ export default function RecentAds() {
         console.error("Failed to fetch recent ads:", err);
       }
     })();
-  }, []);
+  }, [filter]);
   if (!list.length) return null;
   return (
     <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-8">

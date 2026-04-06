@@ -38,7 +38,7 @@ export default function TrendingAds() {
     // Refresh every 5 minutes to keep it "live"
     const interval = setInterval(fetchTrending, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [filter]);
   return (
     <>
       <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-16">

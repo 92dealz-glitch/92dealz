@@ -13,29 +13,23 @@ import WhyChooseUs from "@/components/WhyChooseUs";
 import NewsletterCTA from "@/components/NewsletterCTA";
 import Footer from "@/components/Footer";
 
-import LocationFilterBar from "@/components/LocationFilterBar";
-import { LocationFilterProvider } from "@/context/LocationFilterContext";
-
 export default function HomePage() {
   return (
-    <LocationFilterProvider>
-      <div className="bg-white">
-        <Navbar />
-        <Hero />
-        <LocationFilterBar />
-        <RecentAds />
-        <Recommended />
-        <FeaturedAds />
-        <PromoBanner />
-        <HotDeals />
-        <TrendingAds />
-        <MarketplaceHero />
-        <PollGame />
-        <FeaturedListing />
-        <WhyChooseUs />
-        <NewsletterCTA />
-        <Footer />
-      </div>
-    </LocationFilterProvider>
+    <div className="bg-white">
+      <Navbar />
+      <Hero />
+      <RecentAds />
+      <Recommended />
+      <FeaturedAds />
+      <PromoBanner />
+      <HotDeals />
+      <TrendingAds />
+      <MarketplaceHero />
+      <PollGame />
+      <FeaturedListing />
+      <WhyChooseUs />
+      <NewsletterCTA />
+      <Footer />
+    </div>
   );
 }

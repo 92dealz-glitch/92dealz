@@ -48,7 +48,7 @@ export default function HotDeals() {
         setList(mapped);
       } catch (err) {}
     })();
-  }, []);
+  }, [filter]);
 
   const { isFavorite, toggle } = useFavorites();
 

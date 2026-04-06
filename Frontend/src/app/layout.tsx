@@ -23,6 +23,7 @@ const nunito = Nunito({
 });
 
 import { AlertProvider } from "../context/AlertContext";
+import { LocationFilterProvider } from "../context/LocationFilterContext";
 
 export const metadata: Metadata = {
   title: "234 Deals",
@@ -40,13 +41,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased pb-20 md:pb-0`}>
-        <Providers>
-          <AlertProvider>
-            <NotificationProvider>
-              <FavoritesProvider>{children}</FavoritesProvider>
-            </NotificationProvider>
-          </AlertProvider>
-        </Providers>
+        <LocationFilterProvider>
+          <Providers>
+            <AlertProvider>
+              <NotificationProvider>
+                <FavoritesProvider>{children}</FavoritesProvider>
+              </NotificationProvider>
+            </AlertProvider>
+          </Providers>
+        </LocationFilterProvider>
       </body>
     </html>
   );

@@ -64,7 +64,7 @@ export default function Recommended() {
         console.error("Failed to fetch recommended ads", err);
       }
     })();
-  }, []);
+  }, [filter]);
 
   if (items.length === 0) return null;
 

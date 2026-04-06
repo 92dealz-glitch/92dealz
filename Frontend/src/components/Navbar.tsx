@@ -35,6 +35,7 @@ import VerifiedBadge from "./VerifiedBadge";
 import { useAlert } from "@/context/AlertContext";
 import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 import { getFlagEmoji } from "@/utils/flagUtils";
+import { useLocationFilter } from "@/context/LocationFilterContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -61,7 +62,24 @@ export default function Navbar() {
   const { isFullyVerified } = useNavUserDetails();
   const hasPendingTasks = isVendor && (!isFullyVerified || verificationStatus !== "approved");
 
+  const { filter, setCountry, setState, resetAll } = useLocationFilter();
   const [topCats, setTopCats] = useState<{ id: string; title: string }[]>([]);
+
+  const handleLocationChange = (loc: string) => {
+    if (loc === "All") {
+      resetAll();
+    } else if (loc === "🇨🇳 CHINA") {
+      setCountry("China");
+    } else {
+      // Must be a Nigerian state
+      setCountry("Nigeria");
+      setTimeout(() => setState(loc), 0);
+    }
+  };
+
+  const currentLocationLabel = filter.country === "China" 
+    ? "🇨🇳 CHINA" 
+    : (filter.state || filter.country);
 
   useEffect(() => {
     getFallbackArray().then(res => setTopCats(res.slice(0, 5)));
@@ -210,7 +228,7 @@ export default function Navbar() {
               </Link>
 
               <div className="flex items-center gap-3">
-                <LocationDropdown value="All" onChange={() => { }} />
+                <LocationDropdown value={currentLocationLabel} onChange={handleLocationChange} />
 
                 <form
                   onSubmit={(e) => {
@@ -426,7 +444,7 @@ export default function Navbar() {
           {/* Mobile Search Row */}
           <div className="flex w-full items-center gap-2">
             <div className="flex-shrink-0 w-auto min-w-[100px] max-w-[130px]">
-              <LocationDropdown value="All" onChange={() => { }} />
+              <LocationDropdown value={currentLocationLabel} onChange={handleLocationChange} />
             </div>
 
             <form
@@ -512,7 +530,7 @@ export default function Navbar() {
 
               <div className="flex w-full items-stretch gap-2 pb-4">
                 <div className="flex-shrink-0 w-auto min-w-[100px] max-w-[130px]">
-                  <LocationDropdown value="All" onChange={() => { }} />
+                  <LocationDropdown value={currentLocationLabel} onChange={handleLocationChange} />
                 </div>
 
                 <form
