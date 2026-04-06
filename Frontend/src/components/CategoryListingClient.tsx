@@ -70,6 +70,7 @@ export default function CategoryListingClient({
 
   const [sortBy, setSortBy] = useState<string>("recommended");
   const [page, setPage] = useState<number>(1);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
   const pageSize = 9;
 
   const customMinNum = customMin !== "" ? Number(customMin) : undefined;
@@ -147,11 +148,38 @@ export default function CategoryListingClient({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-      {/* ── Sidebar ── */}
-      <aside className="md:col-span-3">
+      {/* ── Mobile Filter Toggle ── */}
+      <div className="md:hidden flex items-center justify-between mb-2 col-span-full">
+          <button
+              onClick={() => setIsMobileFilterOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-orange-200 rounded-xl font-bold text-orange-600 shadow-sm active:scale-95 transition-all w-full justify-center"
+          >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M22 3H2l8 9v7l4 3v-10L22 3z" />
+              </svg>
+              <span>Show Filters</span>
+          </button>
+      </div>
+
+      {/* ── Sidebar (Collapsible on Mobile) ── */}
+      <aside className={`md:col-span-3 ${isMobileFilterOpen ? 'fixed inset-0 z-[60] bg-white p-6 overflow-y-auto block' : 'hidden md:block'}`}>
+        {isMobileFilterOpen && (
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+              <h2 className="text-xl font-black text-gray-900">Filters</h2>
+              <button
+                  onClick={() => setIsMobileFilterOpen(false)}
+                  className="p-2 bg-zinc-100 rounded-full text-gray-500 hover:bg-zinc-200 transition-colors"
+              >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+              </button>
+          </div>
+        )}
+
         <div
-          className="bg-white rounded-2xl overflow-hidden shadow-sm sticky top-24"
-          style={{ border: "1.5px solid #fed7aa" }}
+          className={`bg-white rounded-2xl overflow-hidden shadow-sm ${!isMobileFilterOpen ? 'sticky top-24' : ''}`}
+          style={{ border: isMobileFilterOpen ? 'none' : "1.5px solid #fed7aa" }}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 bg-orange-50/50">
@@ -259,6 +287,17 @@ export default function CategoryListingClient({
               )}
             </div>
           </FilterSection>
+
+          {isMobileFilterOpen && (
+              <div className="p-5 mt-4">
+                  <button
+                      onClick={() => setIsMobileFilterOpen(false)}
+                      className="w-full py-4 bg-[#f45c03] text-white font-bold rounded-2xl shadow-lg shadow-orange-200 active:scale-95 transition-all text-lg"
+                  >
+                      Apply Filters
+                  </button>
+              </div>
+          )}
         </div>
       </aside>
 

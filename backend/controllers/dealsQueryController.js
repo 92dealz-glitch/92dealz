@@ -102,6 +102,10 @@ exports.list = async (req, res, next) => {
       params.push(String(req.query.city));
       where.push('city = $' + params.length);
     }
+    if (req.query.location && has('location')) {
+      params.push(String(req.query.location));
+      where.push('location = $' + params.length);
+    }
 
     // Default to active status if not specified
     if (req.query.status && has('status')) {
@@ -379,6 +383,24 @@ exports.trending = async (req, res, next) => {
         selectCols.push(quoted);
       }
     }
+
+    const where = ['d.status = \'active\'', 'u.status = \'active\''];
+    const params = [];
+    if (req.query.location && has('location')) {
+      params.push(String(req.query.location));
+      where.push(`d.location = $${params.length}`);
+    }
+    if (req.query.state && has('state')) {
+      params.push(String(req.query.state));
+      where.push(`d.state = $${params.length}`);
+    }
+    if (req.query.city && has('city')) {
+      params.push(String(req.query.city));
+      where.push(`d.city = $${params.length}`);
+    }
+
+    const whereSql = where.length ? 'WHERE ' + where.join(' AND ') : '';
+
     if (HAS_CLICK_EVENTS) {
       const [rows] = await sequelize.query(
         `SELECT ${selectCols.join(', ')}, COALESCE(counts.clicks, 0) AS clicks,
@@ -392,9 +414,10 @@ exports.trending = async (req, res, next) => {
            WHERE clicked_at > NOW() - INTERVAL '24 hours'
            GROUP BY deal_id
          ) counts ON counts.deal_id = d.id
-         WHERE d.status = 'active' AND u.status = 'active'
+         ${whereSql}
          ORDER BY clicks DESC, d."createdAt" DESC
-         LIMIT 20`
+         LIMIT 20`,
+         { bind: params }
       );
       return res.json({ success: true, data: rows });
     }

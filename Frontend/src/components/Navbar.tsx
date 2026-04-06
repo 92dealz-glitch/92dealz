@@ -62,18 +62,17 @@ export default function Navbar() {
   const { isFullyVerified } = useNavUserDetails();
   const hasPendingTasks = isVendor && (!isFullyVerified || verificationStatus !== "approved");
 
-  const { filter, setCountry, setState, resetAll } = useLocationFilter();
+  const { filter, setCountry, setState, setCity, setLocation, resetAll } = useLocationFilter();
   const [topCats, setTopCats] = useState<{ id: string; title: string }[]>([]);
 
   const handleLocationChange = (loc: string) => {
     if (loc === "All") {
       resetAll();
     } else if (loc === "🇨🇳 CHINA") {
-      setCountry("China");
+      setLocation("China");
     } else {
       // Must be a Nigerian state
-      setCountry("Nigeria");
-      setTimeout(() => setState(loc), 0);
+      setLocation("Nigeria", loc);
     }
   };
 

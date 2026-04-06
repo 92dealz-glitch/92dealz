@@ -13,6 +13,7 @@ type LocationFilterContextType = {
   setCountry: (country: string) => void;
   setState: (state: string) => void;
   setCity: (city: string) => void;
+  setLocation: (country: string, state?: string, city?: string) => void;
   resetAll: () => void;
 };
 
@@ -37,12 +38,16 @@ export function LocationFilterProvider({ children }: { children: ReactNode }) {
     setFilter(prev => ({ ...prev, city }));
   };
 
+  const setLocation = (country: string, state: string = "", city: string = "") => {
+    setFilter({ country, state, city });
+  };
+
   const resetAll = () => {
     setFilter({ country: "All", state: "", city: "" });
   };
 
   return (
-    <LocationFilterContext.Provider value={{ filter, setCountry, setState, setCity, resetAll }}>
+    <LocationFilterContext.Provider value={{ filter, setCountry, setState, setCity, setLocation, resetAll }}>
       {children}
     </LocationFilterContext.Provider>
   );
