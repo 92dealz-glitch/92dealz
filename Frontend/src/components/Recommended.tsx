@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import AdCard, { AdItem } from "./ui/AdCard";
 import { listActiveAds } from "@/services/ads.service";
 import { getMyProfile } from "@/lib/api";
+import { useLocationFilter } from "@/context/LocationFilterContext";
 
 export default function Recommended() {
   const [items, setItems] = useState<AdItem[]>([]);
   const [title, setTitle] = useState("Recommended for you.");
+  const { filter } = useLocationFilter();
 
   useEffect(() => {
     (async () => {
@@ -40,7 +42,10 @@ export default function Recommended() {
           limit: 8,
           category_name: categoryName,
           // @ts-ignore - added random support in backend
-          random: isRandom ? 'true' : undefined
+          random: isRandom ? 'true' : undefined,
+          location: filter.country !== "All" ? filter.country : undefined,
+          state: filter.state || undefined,
+          city: filter.city || undefined
         });
         const mapped: AdItem[] = (res.data || []).slice(0, 8).map((d: any) => ({
           id: d.id,

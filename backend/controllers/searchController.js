@@ -112,7 +112,13 @@ exports.search = async (req, res, next) => {
 exports.suggestions = async (req, res, next) => {
   try {
     const q = req.query.q || '';
-    if (!q.trim()) return res.json({ success: true, data: [] });
+    if (!q.trim()) {
+      // Return popular categories as recommended searches
+      const [cats] = await sequelize.query(
+        'SELECT name FROM categories LIMIT 6'
+      );
+      return res.json({ success: true, data: cats.map(c => c.name), isRecommended: true });
+    }
     
     // Simple ILIKE query for suggestions
     const [rows] = await sequelize.query(

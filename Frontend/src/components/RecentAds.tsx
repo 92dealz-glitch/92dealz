@@ -2,13 +2,23 @@
 import { useEffect, useState } from "react";
 import AdCard, { AdItem } from "./ui/AdCard";
 import { listActiveAds } from "@/services/ads.service";
+import { useLocationFilter } from "@/context/LocationFilterContext";
 
 export default function RecentAds() {
   const [list, setList] = useState<AdItem[]>([]);
+  const { filter } = useLocationFilter();
+
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds({ limit: 50, sort: "created_at", dir: "desc" });
+        const res = await listActiveAds({ 
+          limit: 50, 
+          sort: "created_at", 
+          dir: "desc",
+          location: filter.country !== "All" ? filter.country : undefined,
+          state: filter.state || undefined,
+          city: filter.city || undefined
+        });
         const allMapped: AdItem[] = (res.data || []).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,

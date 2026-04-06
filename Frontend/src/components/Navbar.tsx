@@ -86,10 +86,18 @@ export default function Navbar() {
   // Suggestions Fetcher
   useEffect(() => {
     const q = query.trim();
-    if (q.length < 2) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      return;
+    if (q.length < 1) {
+      // Fetch initial recommendations when empty
+      const timer = setTimeout(async () => {
+        try {
+          const res = await fetch(`${API_BASE}/search/suggestions?q=`);
+          const json = await res.json();
+          if (json.success) {
+            setSuggestions(json.data);
+          }
+        } catch (err) {}
+      }, 100);
+      return () => clearTimeout(timer);
     }
     const timer = setTimeout(async () => {
       try {
@@ -97,7 +105,7 @@ export default function Navbar() {
         const json = await res.json();
         if (json.success) {
           setSuggestions(json.data);
-          setShowSuggestions(json.data.length > 0);
+          setShowSuggestions(true);
         }
       } catch (err) {
         console.error("Suggestions fetch failed", err);
@@ -109,10 +117,18 @@ export default function Navbar() {
   // Mobile Suggestions Fetcher
   useEffect(() => {
     const q = mQuery.trim();
-    if (q.length < 2) {
-      setMSuggestions([]);
-      setShowMSuggestions(false);
-      return;
+    if (q.length < 1) {
+      // Fetch initial recommendations when empty
+      const timer = setTimeout(async () => {
+        try {
+          const res = await fetch(`${API_BASE}/search/suggestions?q=`);
+          const json = await res.json();
+          if (json.success) {
+            setMSuggestions(json.data);
+          }
+        } catch (err) {}
+      }, 100);
+      return () => clearTimeout(timer);
     }
     const timer = setTimeout(async () => {
       try {
@@ -120,7 +136,7 @@ export default function Navbar() {
         const json = await res.json();
         if (json.success) {
           setMSuggestions(json.data);
-          setShowMSuggestions(json.data.length > 0);
+          setShowMSuggestions(true);
         }
       } catch (err) {
         console.error("Mobile suggestions fetch failed", err);
@@ -219,7 +235,12 @@ export default function Navbar() {
                       className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
                     />
                     {showSuggestions && suggestions.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-lg rounded-b-md z-[100] mt-px py-1 overflow-hidden">
+                      <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-b-xl z-[100] mt-1 py-2 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                        {!query.trim() && (
+                          <div className="px-4 py-2 text-[10px] font-black text-orange-600 uppercase tracking-wider bg-orange-50/50 mb-1">
+                            Recommended Searches
+                          </div>
+                        )}
                         {suggestions.map((s, i) => (
                           <button
                             key={i}
@@ -229,8 +250,9 @@ export default function Navbar() {
                               setShowSuggestions(false);
                               router.push(`/search?search=${encodeURIComponent(s)}`);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-orange-50 hover:text-orange-600 transition-colors truncate"
+                            className="w-full text-left px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-orange-50 hover:text-orange-600 transition-all truncate flex items-center gap-3"
                           >
+                            <Search size={14} className="text-zinc-400 group-hover:text-orange-500" />
                             {s}
                           </button>
                         ))}

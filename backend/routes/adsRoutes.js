@@ -6,6 +6,7 @@ const ctrl = require('../controllers/adsController');
 router.get('/', ctrl.listActive);
 router.get('/trending', ctrl.trending);
 router.get('/vendor', auth, ctrl.listMine);
+router.get('/counts/location', ctrl.getLocationCounts);
 router.get('/:id', ctrl.getById);
 router.post('/', auth, ctrl.create);
 router.put('/:id', auth, ctrl.update);

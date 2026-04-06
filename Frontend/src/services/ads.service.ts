@@ -27,7 +27,7 @@ export interface AdPayload {
   specifications?: Record<string, any>;
 }
 
-export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string; random?: string }) {
+export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string; random?: string; state?: string; city?: string; location?: string }) {
   let url = BASE;
   if (params) {
     const q = new URLSearchParams();
@@ -37,14 +37,27 @@ export async function listActiveAds(params?: { limit?: number; page?: number; so
     if (params.dir) q.set("dir", params.dir);
     if (params.category_id) q.set("category_id", params.category_id.toString());
     if (params.category_name) q.set("category_name", params.category_name);
+    if (params.state) q.set("state", params.state);
+    if (params.city) q.set("city", params.city);
+    if (params.location) q.set("location", params.location);
+    if (params.random) q.set("random", params.random);
     const qs = q.toString();
     if (qs) url += `?${qs}`;
   }
   return apiFetch<{ success: boolean; data: any[] }>(url, { method: "GET" }, false);
 }
 
-export async function listTrendingAds() {
-  return apiFetch<{ success: boolean; data: any[] }>(`${BASE}/trending`, { method: "GET" }, false);
+export async function listTrendingAds(params?: { location?: string; state?: string; city?: string }) {
+  let url = `${BASE}/trending`;
+  if (params) {
+    const q = new URLSearchParams();
+    if (params.location) q.set("location", params.location);
+    if (params.state) q.set("state", params.state);
+    if (params.city) q.set("city", params.city);
+    const qs = q.toString();
+    if (qs) url += `?${qs}`;
+  }
+  return apiFetch<{ success: boolean; data: any[] }>(url, { method: "GET" }, false);
 }
 
 export async function listMyAds(status?: string) {

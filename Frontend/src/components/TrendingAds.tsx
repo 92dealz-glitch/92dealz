@@ -2,13 +2,20 @@
 import { useEffect, useState } from "react";
 import AdCard, { AdItem } from "./ui/AdCard";
 import { listTrendingAds } from "@/services/ads.service";
+import { useLocationFilter } from "@/context/LocationFilterContext";
 
 export default function TrendingAds() {
   const [list, setList] = useState<AdItem[]>([]);
+  const { filter } = useLocationFilter();
+
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const res = await listTrendingAds();
+        const res = await listTrendingAds({
+          location: filter.country !== "All" ? filter.country : undefined,
+          state: filter.state || undefined,
+          city: filter.city || undefined
+        });
         const mapped: AdItem[] = (res.data || []).slice(0, 8).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,

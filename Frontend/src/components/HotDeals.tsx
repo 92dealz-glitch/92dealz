@@ -19,15 +19,21 @@ interface HotDeal {
 }
 
 import { useEffect, useState, useRef } from "react";
+import { useLocationFilter } from "@/context/LocationFilterContext";
 
 export default function HotDeals() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [list, setList] = useState<HotDeal[]>([]);
+  const { filter } = useLocationFilter();
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds();
+        const res = await listActiveAds({
+          location: filter.country !== "All" ? filter.country : undefined,
+          state: filter.state || undefined,
+          city: filter.city || undefined
+        });
         const mapped: HotDeal[] = (res.data || []).reverse().slice(0, 8).map((d: any) => ({
           id: d.id,
           title: d.title,

@@ -74,3 +74,42 @@ exports.markSold = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.getLocationCounts = async (req, res, next) => {
+  try {
+    // Get country/location counts
+    const [locations] = await sequelize.query(`
+      SELECT COALESCE(location, 'Nigeria') as name, COUNT(*)::INT as count 
+      FROM deals 
+      WHERE status = 'active' 
+      GROUP BY location
+    `);
+    
+    // Get state counts
+    const [states] = await sequelize.query(`
+      SELECT state as name, COUNT(*)::INT as count 
+      FROM deals 
+      WHERE status = 'active' AND state IS NOT NULL AND state != ''
+      GROUP BY state
+    `);
+    
+    // Get city counts
+    const [cities] = await sequelize.query(`
+      SELECT city as name, state, COUNT(*)::INT as count 
+      FROM deals 
+      WHERE status = 'active' AND city IS NOT NULL AND city != ''
+      GROUP BY state, city
+    `);
+
+    return res.json({
+      success: true,
+      data: {
+        locations,
+        states,
+        cities
+      }
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
