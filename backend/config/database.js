@@ -43,6 +43,12 @@ if (connectionString) {
       underscored: false,
       freezeTableName: true,
     },
+    pool: {
+      max: 20,
+      min: 5,
+      acquire: 30000,
+      idle: 10000,
+    },
   });
 } 
 // Preference 2: Individual Vercel-specific variables
@@ -62,6 +68,12 @@ else if (POSTGRES_HOST && POSTGRES_USER && POSTGRES_DATABASE) {
     define: {
       underscored: false,
       freezeTableName: true,
+    },
+    pool: {
+      max: 20,
+      min: 5,
+      acquire: 30000,
+      idle: 10000,
     },
   });
 } 

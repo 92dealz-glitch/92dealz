@@ -161,6 +161,12 @@ const User = sequelize.define('User', {
 }, {
   tableName: 'users',
   timestamps: true,
+  indexes: [
+    { fields: ['status'] },
+    { fields: ['role'] },
+    { fields: ['is_verified'] },
+    { fields: ['verification_status'] },
+  ]
 });
 
 module.exports = User;

@@ -7,14 +7,16 @@ const authController = require('../controllers/authController');
 
 const auth = require('../middleware/authMiddleware');
 
-router.post('/register', authController.register);
-router.post('/signup', authController.register);
-router.post('/register-initiate', authController.registerInitiate);
-router.post('/register-verify', authController.registerVerify);
-router.post('/login', authController.login);
-router.post('/forgot-password', authController.forgotPassword);
-router.post('/verify-otp', authController.verifyOtp);
-router.post('/reset-password', authController.resetPassword);
+const { authRateLimiter } = require('../middleware/rateLimiter');
+
+router.post('/register', authRateLimiter, authController.register);
+router.post('/signup', authRateLimiter, authController.register);
+router.post('/register-initiate', authRateLimiter, authController.registerInitiate);
+router.post('/register-verify', authRateLimiter, authController.registerVerify);
+router.post('/login', authRateLimiter, authController.login);
+router.post('/forgot-password', authRateLimiter, authController.forgotPassword);
+router.post('/verify-otp', authRateLimiter, authController.verifyOtp);
+router.post('/reset-password', authRateLimiter, authController.resetPassword);
 router.put('/change-password', auth, authController.changePassword);
 
 // New verification routes for logged-in users

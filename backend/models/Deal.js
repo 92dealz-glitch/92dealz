@@ -116,6 +116,12 @@ const Deal = sequelize.define('Deal', {
 }, {
   tableName: 'deals',
   timestamps: true,
+  indexes: [
+    { fields: ['status'] },
+    { fields: ['userId'] },
+    { fields: ['category_id'] },
+    { fields: ['subcategory'] },
+  ]
 });
 
 Deal.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
