@@ -1,6 +1,8 @@
 import { AdItem } from "@/components/ui/AdCard";
 import { searchDeals } from "@/services/search.service";
 import SearchResultsClient from "@/components/SearchResultsClient";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default async function SearchPage({
   searchParams,
@@ -45,6 +47,12 @@ export default async function SearchPage({
   }));
 
   return (
-    <SearchResultsClient items={items} query={qRaw} />
+    <div className="min-h-screen flex flex-col bg-white">
+      <Navbar />
+      <main className="flex-grow">
+        <SearchResultsClient items={items} query={qRaw} />
+      </main>
+      <Footer />
+    </div>
   );
 }

@@ -32,9 +32,10 @@ export default function HotDeals() {
         const res = await listActiveAds({
           location: filter.country !== "All" ? filter.country : undefined,
           state: filter.state || undefined,
-          city: filter.city || undefined
+          city: filter.city || undefined,
+          today_only: true
         });
-        const mapped: HotDeal[] = (res.data || []).reverse().slice(0, 8).map((d: any) => ({
+        const mapped: HotDeal[] = (res.data || []).slice(0, 8).map((d: any) => ({
           id: d.id,
           title: d.title,
           price: `₦ ${Number(d.price).toLocaleString()}`,

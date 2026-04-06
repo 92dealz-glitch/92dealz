@@ -106,6 +106,9 @@ exports.list = async (req, res, next) => {
       params.push(String(req.query.location));
       where.push('location = $' + params.length);
     }
+    if (req.query.today_only === 'true') {
+      where.push('deals."createdAt" >= CURRENT_DATE');
+    }
 
     // Default to active status if not specified
     if (req.query.status && has('status')) {
