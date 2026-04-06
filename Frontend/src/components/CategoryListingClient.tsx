@@ -4,6 +4,7 @@ import AdCard from "./ui/AdCard";
 import LocationDropdown from "./LocationDropdown";
 import SelectDropdown from "./ui/SelectDropdown";
 import Link from "next/link";
+import { NIGERIAN_LOCATIONS } from "@/data/locationData";
 
 import type { AdItem } from "./ui/AdCard";
 
@@ -59,6 +60,7 @@ export default function CategoryListingClient({
   type ListingItem = AdItem & { priceRaw?: number };
 
   const [location, setLocation] = useState<string | undefined>(undefined);
+  const [city, setCity] = useState<string | undefined>(undefined);
   const [pricePreset, setPricePreset] = useState<string | undefined>(undefined);
   const [customMin, setCustomMin] = useState<string>("");
   const [customMax, setCustomMax] = useState<string>("");
@@ -90,10 +92,17 @@ export default function CategoryListingClient({
 
     return (items as ListingItem[])
       .filter((it) => {
-        // Location Filter
-        if (location) {
-          const itemLoc = (it.location || it.desc || "").toLowerCase();
-          if (!itemLoc.includes(location.toLowerCase())) return false;
+        // Location (State) Filter
+        if (location && location !== "All") {
+          const itemState = (it.location || "").toLowerCase();
+          // Fallback to desc check if needed, but primarily use 'location' field if available
+          if (!itemState.includes(location.toLowerCase()) && !(it as any).state?.toLowerCase().includes(location.toLowerCase())) return false;
+        }
+
+        // City Filter
+        if (city && city !== "All") {
+          const itemCity = (it as any).city?.toLowerCase() || "";
+          if (!itemCity.includes(city.toLowerCase())) return false;
         }
 
         // Price Filter
@@ -108,18 +117,20 @@ export default function CategoryListingClient({
         return true;
       })
       .sort((a, b) => {
+        if (a.isVerified !== b.isVerified) return b.isVerified ? 1 : -1;
         if (sortBy === "lowest price") return (a.priceRaw ?? 0) - (b.priceRaw ?? 0);
         if (sortBy === "highest price") return (b.priceRaw ?? 0) - (a.priceRaw ?? 0);
         if (sortBy === "newest") return Number(b.id) - Number(a.id);
         return 0;
       });
-  }, [items, location, pricePreset, customMinNum, customMaxNum, sortBy]);
+  }, [items, location, city, pricePreset, customMinNum, customMaxNum, sortBy]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const clearAll = () => {
     setLocation(undefined);
+    setCity(undefined);
     setPricePreset(undefined);
     setCustomMin("");
     setCustomMax("");
@@ -166,12 +177,23 @@ export default function CategoryListingClient({
               <ChevronRight className={`text-gray-400 transition-transform duration-200 ${openLocation ? 'rotate-90' : ''}`} />
             </button>
             {openLocation && (
-              <div className="px-5 pb-5">
+              <div className="px-5 pb-5 space-y-4">
                 <LocationDropdown
                   openOnMount={false}
                   value={location ?? "Select State"}
-                  onChange={(l) => { setLocation(l); setPage(1); }}
+                  onChange={(l) => { setLocation(l); setCity(undefined); setPage(1); }}
                 />
+                
+                {location && location !== "All" && location !== "🇨🇳 CHINA" && NIGERIAN_LOCATIONS[location] && (
+                  <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+                    <p className="text-[10px] font-black text-orange-600 uppercase mb-2 ml-1">Select City</p>
+                    <SelectDropdown
+                        value={city || "All Cities"}
+                        onChange={(v) => { setCity(v); setPage(1); }}
+                        options={["All Cities", ...NIGERIAN_LOCATIONS[location]]}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

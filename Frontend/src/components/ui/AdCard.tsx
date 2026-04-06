@@ -14,7 +14,9 @@ export type AdItem = {
   desc?: string;
   badge?: string;
   img?: string;
-  location?: string;
+  location?: string; // This usually holds the State or Country
+  state?: string;
+  city?: string;
   likes?: number;
   rating?: number;
   condition?: string;
@@ -30,6 +32,18 @@ type Props = {
 export default function AdCard({ item, className = "" }: Props) {
   const { isFavorite, toggle } = useFavorites();
   const fav = isFavorite(item.id);
+
+  // Helper to format location
+  const displayLocation = () => {
+    const parts = [];
+    if (item.city) parts.push(item.city);
+    if (item.state && item.state !== item.location) parts.push(item.state);
+    if (item.location) parts.push(item.location);
+    
+    if (parts.length === 0) return "Nigeria";
+    return parts.join(", ");
+  };
+
   return (
     <Link href={`/product/${item.id}`}>
       <article
@@ -100,12 +114,14 @@ export default function AdCard({ item, className = "" }: Props) {
           </div>
 
           <div className="text-[10px] sm:text-xs text-gray-500 font-bold bg-gray-100 px-2 py-1 rounded-full break-words text-center min-w-[40px] shrink-0">
-            {item.condition === "Brand New" ? "New" : (item.condition ?? "New")}
+            {item.condition || "New"}
           </div>
         </div>
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-y-2 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
-          <div className="break-all max-w-[80px] sm:max-w-none shrink">{item.location ?? "Nigeria"}</div>
+          <div className="break-all max-w-[120px] sm:max-w-none shrink truncate" title={displayLocation()}>
+            {displayLocation()}
+          </div>
           <div className="flex items-center gap-1 shrink-0">
             <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span>views</span></span>
           </div>

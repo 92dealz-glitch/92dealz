@@ -5,7 +5,7 @@ import { uploadImage } from "@/services/upload.service";
 import { useRouter } from "next/navigation";
 import { getFallbackArray } from "@/data/categoriesData";
 import { getMyProfile } from "@/lib/api";
-import { NIGERIAN_STATES } from "@/data/locationData";
+import { NIGERIAN_STATES, NIGERIAN_LOCATIONS } from "@/data/locationData";
 import { ChevronDown } from "lucide-react";
 import { useAlert } from "@/context/AlertContext";
 
@@ -55,6 +55,7 @@ export default function AddProductForm() {
         images: [] as string[],
         state: "",
         city: "",
+        location: "", // Country
         specifications: {} as Record<string, any>
     });
 
@@ -71,7 +72,7 @@ export default function AddProductForm() {
                 setIsNigerian(isNig);
                 setProfile(res.data);
                 if (isNig) {
-                    setFormData(prev => ({ ...prev, state: "Nigeria" }));
+                    setFormData(prev => ({ ...prev, location: "Nigeria" }));
                 }
             }
             setProfileLoaded(true);
@@ -196,6 +197,7 @@ export default function AddProductForm() {
                                         images: [],
                                         state: "",
                                         city: "",
+                                        location: "",
                                         specifications: {}
                                     });
                                     setStep(1);
@@ -443,6 +445,7 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                     onChange={(v) => updateData({ price: stripCommas(v) })} 
                     required 
                 />
+                <SelectField label="Condition" options={["New", "Used", "Refurbished"]} value={data.condition} onChange={(v) => updateData({ condition: v })} required />
                 <SelectField label="Negotiable" options={["Yes", "No"]} value={data.negotiable} onChange={(v) => updateData({ negotiable: v })} />
             </div>
 
@@ -549,6 +552,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                 model: data.model,
                 color: data.color,
                 negotiable: data.negotiable,
+                location: data.location,
                 state: data.state,
                 city: data.city
             });
@@ -573,23 +577,42 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                 <CustomSelect 
                     label="Country" 
                     options={["Nigeria", "China"]} 
-                    value={data.state || ""} 
+                    value={data.location || ""} 
                     onChange={(v) => {
-                        updateData({ state: v, city: "" });
+                        updateData({ location: v, state: "", city: "" });
                     }} 
                     required 
                     disabled={isNigerian}
                 />
                 
-                {data.state === "Nigeria" && (
-                    <CustomSelect 
-                        label="State" 
-                        options={NIGERIAN_STATES} 
-                        value={data.city || ""} 
-                        onChange={(v) => updateData({ city: v })} 
+                {data.location === "Nigeria" ? (
+                    <>
+                        <CustomSelect 
+                            label="State" 
+                            options={NIGERIAN_STATES} 
+                            value={data.state || ""} 
+                            onChange={(v) => updateData({ state: v, city: "" })} 
+                            required 
+                        />
+                        {data.state && (
+                            <CustomSelect 
+                                label="City" 
+                                options={NIGERIAN_LOCATIONS[data.state] || []} 
+                                value={data.city || ""} 
+                                onChange={(v) => updateData({ city: v })} 
+                                required 
+                            />
+                        )}
+                    </>
+                ) : data.location === "China" ? (
+                    <InputField 
+                        label="State/City in China" 
+                        placeholder="e.g. Guangdong, Shenzhen" 
+                        value={data.state} 
+                        onChange={(v) => updateData({ state: v })} 
                         required 
                     />
-                )}
+                ) : null}
             </div>
 
             <div>

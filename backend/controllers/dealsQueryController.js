@@ -94,6 +94,14 @@ exports.list = async (req, res, next) => {
       params.push(Number(req.query.userId));
       where.push(`${col} = $` + params.length);
     }
+    if (req.query.state && has('state')) {
+      params.push(String(req.query.state));
+      where.push('state = $' + params.length);
+    }
+    if (req.query.city && has('city')) {
+      params.push(String(req.query.city));
+      where.push('city = $' + params.length);
+    }
 
     // Default to active status if not specified
     if (req.query.status && has('status')) {
@@ -133,7 +141,7 @@ exports.list = async (req, res, next) => {
                      FROM deals
                      JOIN users u ON u.id = deals."userId"
                      ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'
-                     ${orderSql}
+                     ORDER BY u.is_verified DESC, ${orderSql.replace('ORDER BY ', '')}
                      LIMIT ${limit} OFFSET ${offset}`;
 
     const [[countRow]] = await sequelize.query(countSql, { bind: params });
