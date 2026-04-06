@@ -18,6 +18,7 @@ import VerificationGateModal from "@/components/ui/VerificationGateModal";
 import { useAlert } from "@/context/AlertContext";
 import { useFavorites } from "@/context/FavoritesProvider";
 import { getFlagEmoji } from "@/utils/flagUtils";
+import { useCurrency } from "@/context/CurrencyContext";
 
 type Props = {
   params: Promise<{ id: string }>
@@ -28,11 +29,12 @@ export default function ProductPage({ params }: Props) {
   const { id } = use(params);
   const { showAlert } = useAlert();
   const { isFavorite, toggle } = useFavorites();
+  const { formatPrice } = useCurrency();
   const fav = isFavorite(id);
   const router = useRouter();
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
-    id, title: '', desc: '', price: '', sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', isVerified: false
+    id, title: '', desc: '', price: '', priceValue: 0, sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', isVerified: false
   })
   useEffect(() => {
     let active = true
@@ -61,9 +63,10 @@ export default function ProductPage({ params }: Props) {
           id: d.id,
           title: d.title,
           desc: d.description || '',
-          price: `₦${Number(d.price).toLocaleString()}`,
           sellerId: String(d.userId),
           sellerName,
+          price: `₦${Number(d.price).toLocaleString()}`,
+          priceValue: Number(d.price),
           sellerRating: seller.rating || 2.9,
           sellerMemberSince: memberSince,
           sellerTotalAds: seller.total_ads || 0,
@@ -374,6 +377,7 @@ export default function ProductPage({ params }: Props) {
                     toggle({
                       id: product.id,
                       title: product.title,
+                      priceValue: product.priceValue,
                       price: product.price,
                       img: sampleImages[selected] || sampleImages[0],
                       desc: product.desc,
@@ -545,7 +549,9 @@ export default function ProductPage({ params }: Props) {
           {/* 3. Sidebar (Price Section + Seller Info) - Spans all rows on desktop to avoid gaps */}
           <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4">
             <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
-              <div className="text-3xl font-extrabold text-orange-600">{product.price}</div>
+              <div className="text-3xl font-extrabold text-orange-600">
+                {product.priceValue ? formatPrice(product.priceValue) : product.price}
+              </div>
               <div className="mt-4 flex items-center gap-2">
                 <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs font-medium uppercase">Negotiable</span>
                 <span className="bg-green-50 text-green-700 px-3 py-1 rounded text-xs font-bold uppercase">

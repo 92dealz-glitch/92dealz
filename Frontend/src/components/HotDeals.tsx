@@ -10,6 +10,7 @@ interface HotDeal {
   id: number;
   title: string;
   price: string;
+  priceValue?: number;
   img: string;
   location: string;
   newLabel?: string;
@@ -20,11 +21,13 @@ interface HotDeal {
 
 import { useEffect, useState, useRef } from "react";
 import { useLocationFilter } from "@/context/LocationFilterContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 export default function HotDeals() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [list, setList] = useState<HotDeal[]>([]);
   const { filter } = useLocationFilter();
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     (async () => {
@@ -39,6 +42,7 @@ export default function HotDeals() {
           id: d.id,
           title: d.title,
           price: `₦ ${Number(d.price).toLocaleString()}`,
+          priceValue: Number(d.price),
           img: d.image_url || "/assets/images/bgphone.svg",
           location: d.location || d.city || "Nigeria",
           newLabel: d.condition || "New",
@@ -144,6 +148,7 @@ export default function HotDeals() {
                             toggle({
                               id: item.id,
                               title: item.title,
+                              priceValue: item.priceValue,
                               price: item.price,
                               img: item.img,
                               desc: undefined,
@@ -199,7 +204,7 @@ export default function HotDeals() {
                 {/* PRICE & TITLE */}
                 <div className="mt-4 flex-1">
                   <p className="text-[#f45c03] font-extrabold text-xl sm:text-2xl">
-                    {item.price}
+                    {item.priceValue ? formatPrice(item.priceValue) : item.price}
                   </p>
                   <h4 className="mt-1 font-semibold text-base sm:text-lg text-black line-clamp-2 group-hover:text-[#f45c03] transition-colors">
                     {item.title}

@@ -6,6 +6,7 @@ export type FavoriteItem = {
   id: number | string;
   title: string;
   price?: string;
+  priceValue?: number;
   img?: string;
   desc?: string;
   location?: string;

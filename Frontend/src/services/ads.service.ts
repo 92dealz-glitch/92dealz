@@ -25,6 +25,8 @@ export interface AdPayload {
   location?: string;
   subcategory?: string;
   specifications?: Record<string, any>;
+  originalCurrency?: "NGN" | "USD" | "CNY";
+  originalPrice?: number;
 }
 
 export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string; random?: string; state?: string; city?: string; location?: string; today_only?: boolean }) {

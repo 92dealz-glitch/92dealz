@@ -24,6 +24,7 @@ const nunito = Nunito({
 
 import { AlertProvider } from "../context/AlertContext";
 import { LocationFilterProvider } from "../context/LocationFilterContext";
+import { CurrencyProvider } from "../context/CurrencyContext";
 
 export const metadata: Metadata = {
   title: "234 Deals",
@@ -45,7 +46,9 @@ export default function RootLayout({
           <Providers>
             <AlertProvider>
               <NotificationProvider>
-                <FavoritesProvider>{children}</FavoritesProvider>
+                <CurrencyProvider>
+                  <FavoritesProvider>{children}</FavoritesProvider>
+                </CurrencyProvider>
               </NotificationProvider>
             </AlertProvider>
           </Providers>

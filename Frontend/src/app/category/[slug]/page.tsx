@@ -72,7 +72,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       id: l.id,
       title: l.title || "Untitled Deal",
       price: `₦${priceStr}`,
-      priceRaw: Number(l.price || 0),
+      priceValue: Number(l.price || 0),
       desc: l.description || "",
       badge: l.image_url || "/assets/images/bgphone.svg",
       location: l.location || l.city || l.state || "Nigeria",

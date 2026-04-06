@@ -22,6 +22,7 @@ export default function RecentAds() {
         const allMapped: AdItem[] = (res.data || []).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,
+          priceValue: Number(d.price),
           title: d.title,
           desc: d.description || "",
           badge: d.image_url || "/assets/images/bgphone.svg",

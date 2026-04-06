@@ -1,4 +1,5 @@
 const sequelize = require('../config/database');
+const currencyService = require('../services/currencyService');
 
 let DEALS_COLUMNS = null;
 let HAS_CLICK_EVENTS = null;
@@ -210,6 +211,11 @@ exports.create = async (req, res, next) => {
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
+
+    // Currency Handling
+    const originalCurrency = req.body.originalCurrency || 'NGN';
+    const finalPrice = await currencyService.convertToBase(Number(price), originalCurrency);
+
     const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"', 'status'];
     const vals = ['$1', '$2', '$3', '$4', 'NOW()', 'NOW()', '$5'];
     
@@ -217,7 +223,7 @@ exports.create = async (req, res, next) => {
     const isAdmin = req.user && req.user.role === 'admin';
     const initialStatus = isAdmin && req.body.status ? req.body.status : 'pending';
     
-    const bind = [title, description || null, price, userId, initialStatus];
+    const bind = [title, description || null, finalPrice, userId, initialStatus];
     let idx = 5;
     if (has('store_id') && typeof store_id !== 'undefined') { idx += 1; cols.push('store_id'); vals.push(`$${idx}`); bind.push(store_id); }
     if (has('category_id') && typeof category_id !== 'undefined') { idx += 1; cols.push('category_id'); vals.push(`$${idx}`); bind.push(category_id); }
@@ -229,6 +235,10 @@ exports.create = async (req, res, next) => {
       bind.push(typeof images_json === 'string' ? images_json : JSON.stringify(images_json)); 
     }
     if (has('expiry_date') && typeof expiry_date !== 'undefined') { idx += 1; cols.push('expiry_date'); vals.push(`$${idx}`); bind.push(expiry_date); }
+
+    // Preserve original price/currency
+    if (has('originalPrice')) { idx += 1; cols.push('"originalPrice"'); vals.push(`$${idx}`); bind.push(Number(price)); }
+    if (has('originalCurrency')) { idx += 1; cols.push('"originalCurrency"'); vals.push(`$${idx}`); bind.push(originalCurrency); }
     
     const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location', 'subcategory', 'specifications'];
     for (const f of extraFields) {
@@ -314,6 +324,27 @@ exports.update = async (req, res, next) => {
              value = 'pending'; // Force re-approval if non-admin tries to set active/rejected
           }
         }
+
+        // Handle Price update with currency conversion
+        if (k === 'price') {
+           const originalPrice = Number(value);
+           const originalCurrency = req.body.originalCurrency || 'NGN';
+           value = await currencyService.convertToBase(originalPrice, originalCurrency);
+           
+           // Also update original fields if they exist
+           if (has('originalPrice')) {
+              // We'll add them to the sets manually here to be safe
+              idx += 1;
+              sets.push(`"originalPrice" = $${idx}`);
+              bind.push(originalPrice);
+           }
+           if (has('originalCurrency')) {
+              idx += 1;
+              sets.push(`"originalCurrency" = $${idx}`);
+              bind.push(originalCurrency);
+           }
+        }
+
         bind.push(value);
       }
     }

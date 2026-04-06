@@ -7,9 +7,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart as HeartIcon } from "lucide-react";
 import { useFavorites } from "../../context/FavoritesProvider";
+import { useCurrency } from "../../context/CurrencyContext";
 
 export default function FavoritesPage() {
   const { items, toggle, isFavorite } = useFavorites();
+  const { formatPrice } = useCurrency();
 
   const [sortOpen, setSortOpen] = useState(false);
   const [sortOption, setSortOption] = useState("Recently Saved");
@@ -137,7 +139,7 @@ export default function FavoritesPage() {
                   <div className="text-sm text-gray-700">
                     <div className="flex items-start gap-2">
                       <p className="text-amber-600 font-extrabold">
-                        {it.price}
+                        {it.priceValue ? formatPrice(it.priceValue) : it.price}
                       </p>
                     </div>
 

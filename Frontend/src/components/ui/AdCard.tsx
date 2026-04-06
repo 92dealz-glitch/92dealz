@@ -4,11 +4,12 @@ import Link from "next/link";
 import React from "react";
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesProvider";
+import { useCurrency } from "@/context/CurrencyContext";
 
 export type AdItem = {
   id: number | string;
   price: string;
-  priceRaw?: number;
+  priceValue?: number; // Base NGN price
   title: string;
   brand?: string;
   desc?: string;
@@ -31,6 +32,7 @@ type Props = {
 
 export default function AdCard({ item, className = "" }: Props) {
   const { isFavorite, toggle } = useFavorites();
+  const { formatPrice } = useCurrency();
   const fav = isFavorite(item.id);
 
   // Helper to format location
@@ -78,6 +80,7 @@ export default function AdCard({ item, className = "" }: Props) {
               toggle({
                 id: item.id,
                 title: item.title,
+                priceValue: item.priceValue,
                 price: item.price,
                 img: item.badge || item.img,
                 desc: item.desc,
@@ -93,7 +96,9 @@ export default function AdCard({ item, className = "" }: Props) {
         </div>
 
         <div className="mt-2 flex-1 min-h-[50px]">
-          <p className="text-orange-600 font-extrabold text-[13px] sm:text-base">{item.price}</p>
+          <p className="text-orange-600 font-extrabold text-[13px] sm:text-base">
+            {item.priceValue ? formatPrice(item.priceValue) : item.price}
+          </p>
           <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm sm:line-clamp-2 leading-tight break-words">{item.title}</h4>
         </div>
 

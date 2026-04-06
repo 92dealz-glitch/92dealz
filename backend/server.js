@@ -79,6 +79,7 @@ const marketerRoutes = require('./routes/marketerRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const currencyRoutes = require('./routes/currencyRoutes');
 
 // Helper to register routes with and without /api prefix
 function registerRoutes(prefix, router) {
@@ -107,6 +108,7 @@ registerRoutes('/marketer', marketerRoutes);
 registerRoutes('/orders', orderRoutes);
 registerRoutes('/notifications', notificationRoutes);
 registerRoutes('/reviews', reviewRoutes);
+registerRoutes('/currency', currencyRoutes);
 
 // Error handling middleware (registered after routes)
 const errorHandler = require('./middleware/errorHandler');

@@ -8,6 +8,7 @@ import { getMyProfile } from "@/lib/api";
 import { NIGERIAN_STATES, NIGERIAN_LOCATIONS } from "@/data/locationData";
 import { ChevronDown } from "lucide-react";
 import { useAlert } from "@/context/AlertContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 type Step = 1 | 2 | 3;
 
@@ -50,6 +51,7 @@ export default function AddProductForm() {
         model: "",
         color: "",
         price: "",
+        originalCurrency: "USD" as "NGN" | "USD" | "CNY",
         negotiable: "No",
         description: "",
         images: [] as string[],
@@ -69,11 +71,19 @@ export default function AddProductForm() {
             if (res.success && res.data) {
                 const phone = String(res.data.phone || "");
                 const isNig = phone.startsWith("+234") || phone.startsWith("234") || (phone.startsWith("0") && phone.length >= 11);
+                const isChina = phone.startsWith("+86") || phone.startsWith("86");
+                
                 setIsNigerian(isNig);
                 setProfile(res.data);
-                if (isNig) {
-                    setFormData(prev => ({ ...prev, location: "Nigeria" }));
-                }
+                
+                const defaultCurrency = isNig ? "NGN" : isChina ? "CNY" : "USD";
+                const defaultLocation = isNig ? "Nigeria" : isChina ? "China" : "";
+
+                setFormData(prev => ({ 
+                    ...prev, 
+                    location: prev.location || defaultLocation,
+                    originalCurrency: defaultCurrency
+                }));
             }
             setProfileLoaded(true);
         }).catch(err => {
@@ -198,6 +208,7 @@ export default function AddProductForm() {
                                         state: "",
                                         city: "",
                                         location: "",
+                                        originalCurrency: "USD",
                                         specifications: {}
                                     });
                                     setStep(1);
@@ -438,13 +449,39 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InputField 
-                    label="Price(₦)" 
-                    placeholder="Enter price here" 
-                    value={formatWithCommas(data.price)} 
-                    onChange={(v) => updateData({ price: stripCommas(v) })} 
-                    required 
-                />
+                <div className="flex flex-col gap-2">
+                    <label className="text-black font-black text-[15px]">Price<span className="text-[#f45c03] ml-1">*</span></label>
+                    <div className="flex gap-2">
+                        <div className="relative w-1/3">
+                            <select 
+                                value={data.originalCurrency}
+                                onChange={(e) => updateData({ originalCurrency: e.target.value as any })}
+                                className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-zinc-50"
+                            >
+                                <option value="NGN">NGN (₦)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="CNY">CNY (¥)</option>
+                            </select>
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">
+                                <ChevronDown size={14} />
+                            </div>
+                        </div>
+                        <div className="w-2/3">
+                            <input
+                                type="text"
+                                value={formatWithCommas(data.price)}
+                                onChange={(e) => updateData({ price: stripCommas(e.target.value) })}
+                                placeholder="Enter price"
+                                className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors"
+                            />
+                        </div>
+                    </div>
+                    {data.price && data.originalCurrency !== "NGN" && (
+                        <p className="text-[10px] font-bold text-zinc-400">
+                           Standardized: {(Number(data.price) * (data.originalCurrency === 'USD' ? 1600 : 222)).toLocaleString()} NGN approx.
+                        </p>
+                    )}
+                </div>
                 <SelectField label="Condition" options={["New", "Used", "Refurbished"]} value={data.condition} onChange={(v) => updateData({ condition: v })} required />
                 <SelectField label="Negotiable" options={["Yes", "No"]} value={data.negotiable} onChange={(v) => updateData({ negotiable: v })} />
             </div>
@@ -554,7 +591,9 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                 negotiable: data.negotiable,
                 location: data.location,
                 state: data.state,
-                city: data.city
+                city: data.city,
+                originalCurrency: data.originalCurrency,
+                originalPrice: p
             });
             await showAlert("Your ad has been submitted and is pending admin approval. It will be listed once reviewed.", "Success!");
             router.push("/vendor-dashboard/my-ads");
@@ -569,7 +608,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 mb-8">
                 <h4 className="text-orange-800 font-black text-sm mb-1">Review your details:</h4>
                 <p className="text-orange-600 text-xs font-bold">
-                    {data.title} • ₦{Number(data.price).toLocaleString()} • {data.category} {data.subcategory && `> ${data.subcategory}`}
+                    {data.title} • {data.originalCurrency === 'NGN' ? '₦' : data.originalCurrency === 'USD' ? '$' : '¥'}{Number(data.price).toLocaleString()} • {data.category} {data.subcategory && `> ${data.subcategory}`}
                 </p>
             </div>
 
