@@ -7,7 +7,7 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart, Timer } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart, Timer, Globe } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
@@ -30,6 +30,13 @@ export default function ProductPage({ params }: Props) {
   const { showAlert } = useAlert();
   const { isFavorite, toggle } = useFavorites();
   const { currency, setCurrency, formatPrice } = useCurrency();
+  const sequence: ("NGN" | "USD" | "CNY")[] = ["NGN", "USD", "CNY"];
+  
+  const cycleCurrency = () => {
+    const currentIndex = sequence.indexOf(currency);
+    const nextIndex = (currentIndex + 1) % sequence.length;
+    setCurrency(sequence[nextIndex]);
+  };
   const fav = isFavorite(id);
   const router = useRouter();
   const [loading, setLoading] = useState(true)
@@ -549,34 +556,24 @@ export default function ProductPage({ params }: Props) {
           {/* 3. Sidebar (Price Section + Seller Info) - Spans all rows on desktop to avoid gaps */}
           <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4">
             <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
-              <div className="text-3xl font-extrabold text-orange-600">
-                {product.priceValue ? formatPrice(product.priceValue) : product.price}
+              <div className="flex items-center justify-between gap-2 mb-4">
+                <div className="text-3xl font-extrabold text-orange-600">
+                  {product.priceValue ? formatPrice(product.priceValue) : product.price}
+                </div>
+                <button 
+                  onClick={cycleCurrency}
+                  title="Click to change currency"
+                  className="flex items-center justify-center p-2 rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 transition-all shadow-sm active:scale-90"
+                >
+                  <Globe size={24} />
+                </button>
               </div>
-              <div className="mt-4 flex items-center gap-2">
+
+              <div className="flex items-center gap-2">
                 <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs font-medium uppercase">Negotiable</span>
                 <span className="bg-green-50 text-green-700 px-3 py-1 rounded text-xs font-bold uppercase">
                   {product.condition || 'New'}
                 </span>
-              </div>
-
-              {/* Currency Switcher */}
-              <div className="mt-6 pt-4 border-t border-orange-50">
-                <div className="text-[10px] font-black uppercase text-orange-400 tracking-widest mb-3">Viewing Prices In</div>
-                <div className="flex gap-2">
-                  {(['NGN', 'USD', 'CNY'] as const).map((curr) => (
-                    <button
-                      key={curr}
-                      onClick={() => setCurrency(curr)}
-                      className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all ${
-                        currency === curr 
-                          ? 'bg-orange-600 text-white shadow-xl shadow-orange-100' 
-                          : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100 border border-zinc-200'
-                      }`}
-                    >
-                      {curr}
-                    </button>
-                  ))}
-                </div>
               </div>
 
               {orderMessage && (
