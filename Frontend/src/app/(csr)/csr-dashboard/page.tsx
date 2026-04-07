@@ -6,7 +6,7 @@ import VendorManagement from '@/components/admin/VendorManagement';
 import VendorVerificationRequests from '@/components/admin/VendorVerificationRequests';
 import AdminReportManagement from '@/components/admin/AdminReportManagement';
 import CSRDealManagement from '@/components/csr/CSRDealManagement';
-import { Users, ShieldCheck, Flag, Package, Loader2 } from 'lucide-react';
+import { Users, ShieldCheck, Flag, Package, Loader2, LogOut } from 'lucide-react';
 
 function CSRDashboardContent() {
   const searchParams = useSearchParams();
@@ -26,13 +26,37 @@ function CSRDashboardContent() {
     { id: 'reports', label: 'Reports', icon: Flag },
   ];
 
+  const handleLogout = async () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("role");
+      window.localStorage.removeItem("user_id");
+      window.localStorage.removeItem("user");
+    }
+    // next-auth signOut if applicable
+    try {
+      const { signOut } = await import('next-auth/react');
+      await signOut({ redirect: false });
+    } catch (e) {}
+    
+    window.location.href = "/";
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-row items-center justify-between gap-4 border-b border-zinc-100 pb-6">
         <div>
           <h1 className="text-2xl font-black text-zinc-900 uppercase tracking-tight text-orange-900">Workspace</h1>
-          <p className="text-zinc-500 text-sm font-medium italic mt-1">Monitor, verify, and resolve issues on the platform</p>
+          <p className="text-zinc-500 text-sm font-medium italic mt-1">Monitor, verify, and resolve issues</p>
         </div>
+        
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-black uppercase text-[10px] tracking-widest shadow-sm border border-red-100"
+        >
+          <LogOut size={16} />
+          <span className="hidden sm:inline">Sign Out</span>
+        </button>
       </div>
 
       {/* Tabs Navigation - HIDDEN ON DESKTOP (Sidebar used instead) */}

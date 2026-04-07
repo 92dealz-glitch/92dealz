@@ -58,10 +58,16 @@ export async function registerInitiate(payload: RegisterPayload & { captchaToken
 }
 
 export async function registerVerify(payload: { contact: string; method: string; otp: string }) {
-  return apiFetch<{ success: boolean; message: string; user?: any }>(
+  const data = await apiFetch<{ success: boolean; message: string; token: string; user?: any }>(
     "/auth/register-verify",
     { method: "POST", body: payload }
   );
+  if (typeof window !== "undefined" && data.token) {
+    window.localStorage.setItem("token", data.token);
+    if (data.user?.role) window.localStorage.setItem("role", String(data.user.role));
+    if (data.user?.id) window.localStorage.setItem("user_id", String(data.user.id));
+  }
+  return data;
 }
 
 export async function sendPhoneOtp(payload: { phone: string }) {

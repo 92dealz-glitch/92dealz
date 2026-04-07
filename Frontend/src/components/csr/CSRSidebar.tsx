@@ -1,21 +1,11 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { Users, FileCheck, LogOut, Flag, Package } from 'lucide-react';
-import { signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
+import { Users, FileCheck, Flag, Package } from 'lucide-react';
 
 export default function CSRSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("role");
-    await signOut({ redirect: false });
-    router.push("/");
-  };
 
   const navItems = [
     { label: "Vendor Management", icon: Users, path: "/csr-dashboard?tab=vendors" },
@@ -25,7 +15,7 @@ export default function CSRSidebar() {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-white h-full min-h-[800px] border-r border-zinc-100">
+    <div className="flex flex-col h-full bg-white min-h-[800px] border-r border-zinc-100">
       <div className="p-6 border-b border-zinc-100 bg-orange-50/30">
         <h2 className="text-xl font-black text-zinc-900 tracking-tight uppercase">CSR <span className="text-orange-600">Portal</span></h2>
         <p className="text-zinc-500 text-xs font-medium uppercase tracking-widest mt-1">Customer Service Team</p>
@@ -44,22 +34,12 @@ export default function CSRSidebar() {
                   : "text-zinc-500 hover:bg-zinc-50 hover:text-orange-600"
               }`}
             >
-              <item.icon size={20} className={isActive ? "text-white" : "text-zinc-400 group-hover:text-orange-500"} />
+              <item.icon size={20} className={isActive ? "text-white" : "text-zinc-400"} />
               <span className="uppercase tracking-widest text-[11px]">{item.label}</span>
             </Link>
           );
         })}
       </nav>
-
-      <div className="p-4 border-t border-zinc-100 bg-zinc-50">
-        <button
-          onClick={handleLogout}
-          className="flex w-full items-center justify-center gap-2 px-4 py-3 text-red-600 font-black uppercase text-[10px] tracking-widest hover:bg-red-50 rounded-xl transition-colors"
-        >
-          <LogOut size={16} />
-          Sign Out
-        </button>
-      </div>
     </div>
   );
 }
