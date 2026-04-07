@@ -197,7 +197,7 @@ exports.registerVerify = async (req, res, next) => {
 
     const allowedRoles = new Set(['user', 'vendor']);
     const roleToSave = role && allowedRoles.has(role) ? role : 'user';
-    const initialStatus = roleToSave === 'vendor' ? 'pending' : 'active';
+    const initialStatus = 'active';
 
     const emailToSave = method === 'email' ? contact : null;
     const phoneToSave = method === 'phone' ? contact : signupData.phone;

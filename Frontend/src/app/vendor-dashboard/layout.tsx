@@ -42,7 +42,7 @@ export default function VendorDashboardLayout({
         return <div className="min-h-screen bg-zinc-50 flex items-center justify-center">Loading...</div>;
     }
 
-    if (status === "pending" || status === "rejected" || status === "upgrade_required") {
+    if (status === "rejected" || status === "upgrade_required") {
         const isUpgrade = status === "upgrade_required";
         return (
             <div className="min-h-screen bg-zinc-50 flex flex-col">
@@ -57,14 +57,12 @@ export default function VendorDashboardLayout({
                             )}
                         </div>
                         <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-                            {isUpgrade ? "Post an Ad" : `Account ${status === "pending" ? "Pending Approval" : "Suspended"}`}
+                            {isUpgrade ? "Post an Ad" : "Account Suspended"}
                         </h2>
                         <p className="text-zinc-500 mb-8">
                             {isUpgrade 
                                 ? "Please Upgrade your account into vendor inorder to add a product."
-                                : status === "pending" 
-                                    ? "Your vendor account is currently under review by our team. You will be able to access your dashboard and start selling once approved." 
-                                    : "Your vendor account has been rejected or suspended. Please contact support for more information."}
+                                : "Your vendor account has been rejected or suspended. Please contact support for more information."}
                         </p>
                         <div className="flex flex-col gap-3">
                             <button 

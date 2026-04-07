@@ -214,7 +214,7 @@ exports.upgradeToVendor = async (req, res, next) => {
     }
 
     user.role = 'vendor';
-    user.status = 'pending';
+    user.status = 'active';
     user.businessName = businessName;
     user.businessCategory = businessCategory;
     user.businessAddress = businessAddress;
@@ -223,7 +223,7 @@ exports.upgradeToVendor = async (req, res, next) => {
 
     return res.json({
       success: true,
-      message: 'Upgrade request submitted. Your vendor account is pending approval.',
+      message: 'Upgrade successful. Your vendor account is now active.',
       data: { role: user.role, status: user.status }
     });
   } catch (err) {
