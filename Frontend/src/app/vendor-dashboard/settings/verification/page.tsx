@@ -102,12 +102,12 @@ export default function VerificationPage() {
             {/* Account Verification Section */}
             <div className="bg-white rounded-3xl border border-zinc-200 shadow-xl shadow-zinc-100 overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-8">
-                     <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg ${
-                        isVerified ? 'bg-emerald-500 shadow-emerald-100' : 
+                    <div className={`px-4 py-1.5 rounded-full text-[10px] font-black text-white shadow-lg ${
+                        (isVerified && vStatus === 'approved') ? 'bg-emerald-500 shadow-emerald-100' : 
                         vStatus === 'pending' ? 'bg-amber-500 shadow-amber-100' : 
                         vStatus === 'rejected' ? 'bg-red-500 shadow-red-100' : 'bg-zinc-500 shadow-zinc-100'
                     }`}>
-                        {isVerified ? 'Trusted Seller' : vStatus === 'none' ? 'Unverified' : vStatus.charAt(0).toUpperCase() + vStatus.slice(1)}
+                        {(isVerified && vStatus === 'approved') ? 'Trusted Seller' : vStatus === 'none' ? 'Unverified' : vStatus === 'pending' ? 'Reviewing' : vStatus.charAt(0).toUpperCase() + vStatus.slice(1)}
                     </div>
                 </div>
 
@@ -161,7 +161,7 @@ export default function VerificationPage() {
                         ) : (
                             <div className="bg-zinc-900 p-10 rounded-[40px] border border-white/10 flex flex-col md:flex-row items-center gap-8 shadow-2xl relative overflow-hidden group">
                                 <div className="absolute -top-20 -right-20 w-60 h-60 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors duration-700" />
-                                {isVerified ? (
+                                { (isVerified && vStatus === 'approved') ? (
                                     <div className="w-20 h-20 bg-emerald-500 text-white rounded-[24px] flex items-center justify-center shadow-xl shadow-emerald-500/20 rotate-6">
                                         <CheckCircle2 size={40} />
                                     </div>
@@ -172,10 +172,10 @@ export default function VerificationPage() {
                                 )}
                                 <div className="flex-1 text-center md:text-left">
                                     <h4 className="text-white font-bold text-xl tracking-tight">
-                                        {isVerified ? "Identity Secured" : "Pending Review"}
+                                        {(isVerified && vStatus === 'approved') ? "Identity Secured" : "Pending Review"}
                                     </h4>
                                     <p className="text-zinc-400 font-bold text-sm mt-2 leading-relaxed opacity-80">
-                                        {isVerified 
+                                        {(isVerified && vStatus === 'approved') 
                                             ? "Expert level trust unlocked. Your listings will now feature the verified merchant badge globally."
                                             : "Our security team is manually authenticating your credentials. This typically concludes within 24 business hours."}
                                     </p>
