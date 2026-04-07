@@ -14,7 +14,7 @@ export default function CSRSidebar() {
     localStorage.removeItem("user");
     localStorage.removeItem("role");
     await signOut({ redirect: false });
-    router.push("/csr-login");
+    router.push("/");
   };
 
   const navItems = [
