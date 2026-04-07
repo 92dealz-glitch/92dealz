@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('../models/User');
 const Deal = require('../models/Deal');
@@ -489,7 +490,11 @@ exports.createVendor = async (req, res, next) => {
 exports.getVerificationRequests = async (req, res, next) => {
   try {
     const requests = await User.findAll({
-      where: { verification_status: 'pending' },
+      where: { 
+        verification_status: 'pending',
+        role: 'vendor',
+        government_id_url: { [Op.ne]: null }
+      },
       attributes: ['id', 'name', 'email', 'phone', 'businessName', 'government_id_url', 'createdAt'],
       order: [['createdAt', 'DESC']]
     });

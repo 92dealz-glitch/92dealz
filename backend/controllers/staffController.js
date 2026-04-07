@@ -46,6 +46,7 @@ exports.createStaff = async (req, res, next) => {
       role: 'csr',
       status: 'active',
       is_verified: true,
+      verification_status: 'approved',
       total_time_spent: 0,
     });
 
