@@ -9,7 +9,7 @@ exports.sendTermiiOtp = async (phone) => {
     api_key: TERMII_API_KEY,
     message_type: 'NUMERIC',
     pin_type: 'NUMERIC',
-    to: phone,
+    to: phone.startsWith('+') ? phone.substring(1) : phone,
     from: 'N-Alert',
     channel: 'dnd',
     pin_attempts: 10,

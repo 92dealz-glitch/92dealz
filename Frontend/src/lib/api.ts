@@ -26,12 +26,17 @@ async function apiFetch<T>(
     headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
     cache: "no-store",
+  }).catch(err => {
+    console.error(`[NetworkError] ${options.method || 'GET'} ${path}:`, err);
+    throw err;
   });
+
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const message =
       (data && (data.message || data.error)) ||
       `Request failed with status ${res.status}`;
+    console.warn(`[ApiError] ${res.status} ${path}:`, message);
     throw new Error(message);
   }
   return data as T;

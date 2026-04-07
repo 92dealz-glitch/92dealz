@@ -73,7 +73,7 @@ exports.registerInitiate = async (req, res, next) => {
         let otpValue;
 
         if (isNigeria) {
-          const termiiRes = await sendTermiiOtp(contact);
+          const termiiRes = await sendTermiiOtp(contact.replace('+', ''));
           if (!termiiRes || !termiiRes.pinId) {
             return res.status(400).json({ 
               success: false, 
