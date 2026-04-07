@@ -21,22 +21,49 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
         captchaToken: { label: "Captcha Token", type: "text" },
+        token: { label: "Direct Token", type: "text" },
       },
       async authorize(credentials): Promise<AppUser | null> {
         if (!credentials) return null;
         
-        const email = String((credentials as Record<string, unknown>).email ?? "").trim();
-        const password = String((credentials as Record<string, unknown>).password ?? "").trim();
+        const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").replace(/\/$/, "");
+        const creds = credentials as Record<string, string>;
+
+        // Support for auto-login after signup/verify using a provided token
+        if (creds.token) {
+          try {
+            const res = await fetch(`${base}/users/profile`, {
+              headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${creds.token}`
+              },
+            });
+            const data = await res.json();
+            if (res.ok && data.success && data.data) {
+              return {
+                id: data.data.id,
+                name: data.data.name,
+                email: data.data.email,
+                role: data.data.role || ROLES.BUYER,
+                accessToken: creds.token,
+              };
+            }
+          } catch (e) {
+            console.error("Token-based authorize failed", e);
+          }
+        }
+
+        const email = String(creds.email ?? "").trim();
+        const password = String(creds.password ?? "").trim();
 
         try {
-          const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").replace(/\/$/, "");
           const res = await fetch(`${base}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
               email, 
               password, 
-              captchaToken: (credentials as Record<string, unknown>).captchaToken 
+              captchaToken: creds.captchaToken 
             }),
           });
 

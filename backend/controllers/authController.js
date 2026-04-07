@@ -209,7 +209,7 @@ exports.registerVerify = async (req, res, next) => {
       phone: phoneToSave,
       role: roleToSave,
       status: initialStatus,
-      is_verified: true,
+      is_verified: false,
       is_phone_verified: method === 'phone',
       is_email_verified: method === 'email',
       businessName: roleToSave === 'vendor' ? businessName : null,

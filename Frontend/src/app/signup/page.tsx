@@ -260,6 +260,17 @@ export default function SignupPage() {
         if (res.user?.role) window.localStorage.setItem("role", String(res.user.role));
       }
       
+      // Sync NextAuth session using our new token-based authorize bypass
+      try {
+        const { signIn } = await import("next-auth/react");
+        await signIn("credentials", { 
+          token: res.token, 
+          redirect: false 
+        });
+      } catch (signInErr) {
+        console.error("NextAuth auto-login sync failed", signInErr);
+      }
+      
       const r = String(res.user?.role || "").toLowerCase();
       if (r === "vendor") {
         showVendorTasks();
