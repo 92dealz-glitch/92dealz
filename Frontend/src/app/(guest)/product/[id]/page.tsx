@@ -7,7 +7,7 @@ import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
 import { logAdView, logContactView } from "@/services/analytics.service"
-import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart, Timer, Globe } from "lucide-react"
+import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart, Timer, Coins } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createOrder } from "@/services/orders.service"
 import VerifiedBadge from "@/components/VerifiedBadge"
@@ -565,7 +565,7 @@ export default function ProductPage({ params }: Props) {
                   title="Click to change currency"
                   className="flex items-center justify-center p-2 rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 transition-all shadow-sm active:scale-90"
                 >
-                  <Globe size={24} />
+                  <Coins size={24} />
                 </button>
               </div>
 
