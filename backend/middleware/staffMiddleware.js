@@ -1,12 +1,13 @@
 module.exports = function staffMiddleware(req, res, next) {
   const user = req.user || {};
+  const role = String(user.role || '').toLowerCase();
   
-  if (user.role === 'admin' || user.role === 'csr') {
+  if (role === 'admin' || role === 'csr') {
     return next();
   }
   
   return res.status(403).json({ 
     success: false, 
-    message: 'Administrative access required' 
+    message: 'Staff access required' 
   });
 };

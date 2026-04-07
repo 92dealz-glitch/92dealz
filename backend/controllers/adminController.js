@@ -1,4 +1,5 @@
 const sequelize = require('../config/database');
+const User = require('../models/User');
 const Deal = require('../models/Deal');
 const Category = require('../models/Category');
 const Store = require('../models/Store');
@@ -378,7 +379,7 @@ exports.updateSubmission = async (req, res, next) => {
 
 // Admin managing Vendors
 const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+// Analytics section
 
 exports.getVendors = async (req, res, next) => {
   try {
