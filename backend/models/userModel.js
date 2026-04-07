@@ -103,8 +103,8 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
   verification_status: {
-    type: DataTypes.ENUM('pending', 'approved', 'rejected'),
-    defaultValue: 'pending',
+    type: DataTypes.ENUM('none', 'pending', 'approved', 'rejected'),
+    defaultValue: 'none',
   },
   verification_rejection_reason: {
     type: DataTypes.TEXT,

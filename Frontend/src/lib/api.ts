@@ -1,3 +1,5 @@
+import { getCookie, setCookie } from "./cookies";
+
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL || "https://234deals-backend.vercel.app/api";
 
@@ -11,9 +13,12 @@ async function apiFetch<T>(
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (options.auth) {
     if (typeof window !== "undefined") {
-      const { getCookie } = require("./cookies");
       const token = getCookie("token") || window.localStorage.getItem("token");
-      if (token) headers["Authorization"] = `Bearer ${token}`;
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      } else {
+        throw new Error("Authorization token missing");
+      }
     }
   }
   const res = await fetch(url, {
@@ -64,7 +69,6 @@ export async function registerVerify(payload: { contact: string; method: string;
     { method: "POST", body: payload }
   );
   if (typeof window !== "undefined" && data.token) {
-    const { setCookie } = require("./cookies");
     setCookie("token", data.token);
     window.localStorage.setItem("token", data.token);
     if (data.user?.role) window.localStorage.setItem("role", String(data.user.role));
@@ -112,7 +116,6 @@ export async function loginUser(payload: {
     user: { id: number; name: string; email: string; role?: string; phone?: string | null };
   }>("/auth/login", { method: "POST", body: payload });
   if (typeof window !== "undefined") {
-    const { setCookie } = require("./cookies");
     setCookie("token", data.token);
     window.localStorage.setItem("token", data.token);
     if (data.user?.role) window.localStorage.setItem("role", String(data.user.role));

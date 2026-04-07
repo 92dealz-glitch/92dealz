@@ -210,6 +210,7 @@ exports.registerVerify = async (req, res, next) => {
       role: roleToSave,
       status: initialStatus,
       is_verified: false,
+      verification_status: 'none',
       is_phone_verified: method === 'phone',
       is_email_verified: method === 'email',
       businessName: roleToSave === 'vendor' ? businessName : null,
