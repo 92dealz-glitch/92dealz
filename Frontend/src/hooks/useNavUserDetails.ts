@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { API_BASE } from "@/services/apiClient";
+import { useSession, signOut } from "next-auth/react";
+import { getCookie, deleteCookie } from "@/lib/cookies";
 
 export type NavUserDetails = {
   url: string | null;
@@ -15,6 +17,7 @@ export type NavUserDetails = {
 };
 
 export function useNavUserDetails() {
+  const { data: session, status: authStatus } = useSession();
   const [data, setData] = useState<Omit<NavUserDetails, 'isFullyVerified'>>({ 
     url: null, 
     isVerified: false, 
@@ -30,6 +33,15 @@ export function useNavUserDetails() {
   const isFullyVerified = data.isPhoneVerified && data.isEmailVerified;
 
   useEffect(() => {
+    if (authStatus === "unauthenticated") {
+      // Clear data if not logged in
+      setData({
+        url: null, isVerified: false, isPhoneVerified: false, isEmailVerified: false,
+        verificationStatus: "none", name: null, role: "user", country_code: null, country_name: null
+      });
+      return;
+    }
+
     try {
       const cached = typeof window !== "undefined" ? window.localStorage.getItem("profile_image_url") : null;
       const cachedVerified = typeof window !== "undefined" ? window.localStorage.getItem("is_verified") === "true" : false;
@@ -54,19 +66,23 @@ export function useNavUserDetails() {
         country_name: cachedCN
       }));
 
-      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
-      if (!token) return;
+      // Use token from session or cookie
+      const token = (session as any)?.accessToken || getCookie("token") || (typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
+      if (!token || authStatus === "loading") return;
+
       fetch(`${API_BASE}/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       })
         .then((r) => r.json())
         .then((d) => {
-          if (d?.success === false && (d?.message === "User not found" || d?.message === "Invalid or expired token")) {
+          if (d?.success === false && (d?.message === "User not found" || d?.message === "Invalid or expired token" || d?.message === "Unauthorized")) {
+            // GLOBAL CLEANUP on 401
             if (typeof window !== "undefined") {
-              window.localStorage.removeItem("token");
-              window.localStorage.removeItem("role");
+              window.localStorage.clear();
+              deleteCookie("token");
             }
+            signOut({ callbackUrl: "/login" });
           } else {
             const u = d?.data?.profile_image_url;
             const v = !!d?.data?.is_verified;
@@ -107,7 +123,7 @@ export function useNavUserDetails() {
           console.error("Profile fetch error:", err);
         });
     } catch { }
-  }, []);
+  }, [authStatus, session]);
 
   return { ...data, isFullyVerified } as NavUserDetails;
 }

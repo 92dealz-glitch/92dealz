@@ -36,6 +36,7 @@ import { useAlert } from "@/context/AlertContext";
 import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 import { getFlagEmoji } from "@/utils/flagUtils";
 import { useLocationFilter } from "@/context/LocationFilterContext";
+import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -48,8 +49,15 @@ export default function Navbar() {
   const [mQuery, setMQuery] = useState("");
   const favorites = useFavorites();
   const { showVendorUpgrade, showVendorTasks } = useAlert();
+  const { data: session, status: authStatus } = useSession();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const { role, isPhoneVerified, verificationStatus } = useNavUserDetails();
-  const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
+  const isLoggedIn = mounted && authStatus === "authenticated";
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mSuggestions, setMSuggestions] = useState<string[]>([]);

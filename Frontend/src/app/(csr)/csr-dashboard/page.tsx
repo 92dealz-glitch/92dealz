@@ -28,6 +28,8 @@ function CSRDashboardContent() {
 
   const handleLogout = async () => {
     if (typeof window !== "undefined") {
+      const { deleteCookie } = require('@/lib/cookies');
+      deleteCookie("token");
       window.localStorage.removeItem("token");
       window.localStorage.removeItem("role");
       window.localStorage.removeItem("user_id");

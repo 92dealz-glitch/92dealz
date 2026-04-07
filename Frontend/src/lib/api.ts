@@ -11,7 +11,8 @@ async function apiFetch<T>(
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (options.auth) {
     if (typeof window !== "undefined") {
-      const token = window.localStorage.getItem("token");
+      const { getCookie } = require("./cookies");
+      const token = getCookie("token") || window.localStorage.getItem("token");
       if (token) headers["Authorization"] = `Bearer ${token}`;
     }
   }
@@ -63,6 +64,8 @@ export async function registerVerify(payload: { contact: string; method: string;
     { method: "POST", body: payload }
   );
   if (typeof window !== "undefined" && data.token) {
+    const { setCookie } = require("./cookies");
+    setCookie("token", data.token);
     window.localStorage.setItem("token", data.token);
     if (data.user?.role) window.localStorage.setItem("role", String(data.user.role));
     if (data.user?.id) window.localStorage.setItem("user_id", String(data.user.id));
@@ -109,6 +112,8 @@ export async function loginUser(payload: {
     user: { id: number; name: string; email: string; role?: string; phone?: string | null };
   }>("/auth/login", { method: "POST", body: payload });
   if (typeof window !== "undefined") {
+    const { setCookie } = require("./cookies");
+    setCookie("token", data.token);
     window.localStorage.setItem("token", data.token);
     if (data.user?.role) window.localStorage.setItem("role", String(data.user.role));
     if (data.user?.id) window.localStorage.setItem("user_id", String(data.user.id));
