@@ -100,96 +100,93 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
   );
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 lg:p-8">
       <div 
         className="absolute inset-0 bg-zinc-900/60 backdrop-blur-sm animate-in fade-in duration-300" 
         onClick={onClose}
       />
       
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in slide-in-from-bottom-4 duration-300 border border-zinc-100">
+      <div className="relative w-full max-w-lg bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 border border-zinc-100">
         {/* Header */}
-        <div className="bg-orange-600 p-6 sm:p-8 relative">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="bg-white/20 p-3 rounded-2xl text-white">
-              <Zap size={24} fill="white" />
+        <div className="bg-[#f45c03] p-5 sm:p-8 shrink-0 relative">
+          <div className="flex items-center gap-3 sm:gap-4 mb-1 sm:mb-2 pr-8">
+            <div className="bg-white/20 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl text-white">
+              <Zap size={20} className="sm:w-6 sm:h-6" fill="white" />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-white tracking-tight leading-none">Info for the Vendor</h3>
-              <p className="text-orange-100 text-sm mt-2 font-medium">Complete these steps to unlock full potential</p>
+              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">Info for the Vendor</h3>
+              <p className="text-orange-100 text-[10px] sm:text-sm mt-1 sm:mt-2 font-medium opacity-90">Essential steps to unlock your potential</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
+            className="absolute top-5 right-5 sm:top-8 sm:right-8 text-white/70 hover:text-white transition-colors"
           >
-            <X size={24} />
+            <X size={20} className="sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 sm:p-8 overflow-y-auto max-h-[70vh]">
+        {/* Content - Scrollable area */}
+        <div className="flex-1 overflow-y-auto px-5 py-6 sm:p-8 custom-scrollbar">
           {loading ? (
             <div className="py-12 flex flex-col items-center justify-center">
               <div className="w-8 h-8 border-3 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
-              <p className="text-zinc-400 text-xs font-bold mt-4">Syncing your progress...</p>
+              <p className="text-zinc-400 text-[10px] font-bold mt-4 tracking-widest uppercase">Syncing your progress...</p>
             </div>
           ) : (
             <div className="space-y-1">
-              {/* Phone Verification Task - Only show if actually missing */}
               {!isPhoneVerified && (
                 <TaskItem 
                   icon={Phone}
-                  title="In order to list an Ad please verify your Phone Number"
+                  title="Verify your Phone Number to start listing Ads"
                   isCompleted={isPhoneVerified}
-                  buttonText="Verify Phone Number"
+                  buttonText="Verify Now"
                   href="/account-settings"
                 />
               )}
 
-              {/* Email Verification Task - Only show if actually missing */}
               {!isEmailVerified && (
                 <TaskItem 
                   icon={Mail} 
-                  title="You have to add and verify an email address in order to post an ad"
+                  title="Verify your email address to post an ad"
                   isCompleted={isEmailVerified}
-                  buttonText="Verify Email Address"
+                  buttonText="Verify Now"
                   href="/account-settings"
                 />
               )}
 
-              {/* Trust/UX Note - Only show if any verification is missing */}
               {(!isPhoneVerified || !isEmailVerified) && (
-                <div className="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex gap-3">
-                  <ShieldCheck className="text-blue-600 shrink-0" size={20} />
+                <div className="mt-6 p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50 flex gap-3">
+                  <ShieldCheck className="text-[#f45c03] shrink-0" size={18} />
                   <div>
-                    <p className="text-sm font-bold text-blue-900 mb-1">Boost User Trust</p>
-                    <p className="text-[11px] text-blue-700 font-bold leading-relaxed">
-                      Verification is mandatory for the <span className="text-blue-900 underline decoration-blue-300">Best User Experience</span>. 
-                      Verified vendors get 3x more visibility and higher trust from potential buyers.
+                    <p className="text-xs font-black text-orange-900 mb-1">Boost Sales 300%</p>
+                    <p className="text-[10px] text-orange-800 font-bold leading-relaxed opacity-80">
+                      Verification is mandatory for a premium experience. 
+                      Verified vendors gain significantly higher trust from buyers globally.
                     </p>
                   </div>
                 </div>
               )}
 
-              <div className="h-4" /> {/* Spacer */}
+              <div className="h-4" /> 
 
               <TaskItem 
                 icon={Clock}
-                title="When a new ad is created, its status is pending, and when 234deals support approves the ad It will be Listed."
+                title="Newly created ads are pending review by our support team."
                 infoOnly
               />
 
               <TaskItem 
                 icon={ShieldCheck}
-                title="Become a verified Vendor to be able to gain trust and get more visibility"
+                title="Gain trust and visibility by becoming a Verified Vendor"
                 isCompleted={isIdentityVerified}
-                buttonText="Get Verified Now"
+                buttonText="Get Verified"
                 href="/vendor-dashboard/settings/verification"
               />
 
               <TaskItem 
                 icon={ExternalLink}
-                title="For Additional Promotion You can use Featured ads Plan."
+                title="Scale your business faster with our Featured Ads plans."
                 infoOnly
               />
             </div>
@@ -197,11 +194,11 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
         </div>
 
         {/* Footer */}
-        <div className="p-6 bg-zinc-50 border-t border-zinc-100 text-center">
-          <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-widest leading-none mb-4">You can revisit this list from your profile</p>
+        <div className="p-5 sm:p-8 bg-zinc-50/80 backdrop-blur-sm border-t border-zinc-100 shrink-0">
+          <p className="text-[9px] sm:text-[10px] text-zinc-400 font-black uppercase tracking-widest leading-none mb-4 text-center opacity-70">Revisit this list anytime from your profile</p>
           <button 
             onClick={onClose}
-            className="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-black py-4 rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-zinc-100"
+            className="w-full bg-zinc-900 hover:bg-black text-white font-black py-4 rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-zinc-200 text-xs sm:text-sm tracking-widest uppercase"
           >
             I Understand
           </button>
