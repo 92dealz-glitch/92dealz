@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { registerUser, loginUser, registerInitiate, registerVerify } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
@@ -154,7 +154,7 @@ const ContactMethodToggle = ({ method, setMethod }: { method: ContactMethod, set
   </div>
 );
 
-export default function SignupPage() {
+function SignupContent() {
   const { showAlert, showVendorTasks } = useAlert();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -499,6 +499,18 @@ export default function SignupPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    }>
+      <SignupContent />
+    </Suspense>
   );
 }
 
