@@ -173,7 +173,7 @@ export default function VendorListingsPage({ params }: Props) {
               <p className="text-sm">This vendor has no ads currently available for purchase.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-start">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {listings.map((it) => (
                 <AdCard key={it.id} item={it} />
               ))}

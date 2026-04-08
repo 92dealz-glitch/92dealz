@@ -35,7 +35,7 @@ export default function SimilarItems() {
     <section className="max-w-[1200px] mx-auto px-4 lg:px-0 pb-12 pt-5">
       <h3 className="text-2xl font-extrabold text-[#f45c03] mb-6">Similar Items You May Like</h3>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {items.map((it) => (
           <AdCard key={it.id} item={it} />
         ))}

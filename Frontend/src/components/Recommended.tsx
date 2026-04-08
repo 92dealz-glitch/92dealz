@@ -75,7 +75,7 @@ export default function Recommended() {
     <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-16">
       <h3 className="text-3xl font-extrabold text-[#f45c03] mb-6">Recommended for you.</h3>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {items.map((it) => (
           <AdCard key={it.id} item={it} />
         ))}

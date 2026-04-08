@@ -121,14 +121,14 @@ export default function HotDeals() {
         <div
           ref={scrollRef}
           className={
-            "flex gap-4 overflow-x-auto pt-6 pb-6 scroll-smooth snap-x snap-mandatory lg:gap-6 items-start " +
+            "flex gap-4 overflow-x-auto pt-6 pb-6 scroll-smooth snap-x snap-mandatory lg:gap-6 " +
             "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           }
         >
           {list.map((item) => (
             <div
               key={item.id}
-              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm flex flex-col snap-start group"
+              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start group"
             >
               {/* HOT BADGE */}
               <div className="absolute -top-3 left-3 z-10 pointer-events-none">
@@ -230,8 +230,11 @@ export default function HotDeals() {
                   <span className="ml-1 text-black font-bold text-xs mt-0.5">({Number(item.rating || 0).toFixed(1)})</span>
                 </div>
 
+                {/* Dynamic spacer to push footer to bottom and keep card height even */}
+                <div className="flex-1" />
+
                 {/* LOCATION & CONDITION */}
-                <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs">
                   <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
                     <span className="break-words font-medium">📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
                   </div>

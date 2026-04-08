@@ -57,11 +57,11 @@ export default function FeaturedAds() {
         <div className="h-0.5 flex-1 bg-[#f45c03] opacity-40 shadow-sm" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {featured.map((it) => {
           const fav = isFavorite(it.id);
           return (
-            <div key={it.id} className="bg-[#f45c03] rounded-[32px] p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row gap-6 items-center transition-all hover:scale-[1.01] relative group">
+            <div key={it.id} className="bg-[#f45c03] rounded-[32px] p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row gap-6 items-center transition-all hover:scale-[1.01] relative group h-full">
               {/* IMAGE SECTION */}
               <div className="w-full sm:w-[45%] aspect-square relative bg-white border-[6px] border-white rounded-[24px] overflow-hidden shrink-0 shadow-lg">
                 <Image
@@ -90,7 +90,7 @@ export default function FeaturedAds() {
               </div>
 
               {/* CONTENT SECTION */}
-              <div className="flex-1 text-white w-full">
+              <div className="flex-1 text-white w-full h-full flex flex-col">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -121,7 +121,7 @@ export default function FeaturedAds() {
                   {it.rating > 0 && <span className="ml-2 font-bold text-white">({Number(it.rating).toFixed(1)})</span>}
                 </div>
 
-                  <div className="flex items-center justify-between mt-4 border-t border-white/20 pt-4">
+                  <div className="flex items-center justify-between mt-auto border-t border-white/20 pt-4">
                     <div className="flex items-center gap-1.5 text-white/90 font-bold max-w-[60%] truncate" title={`${it.city ? it.city + ", " : ""}${it.state ? it.state + ", " : ""}${it.location}`}>
                       <MapPin size={16} />
                       <span className="text-sm truncate">{[it.city, it.state, it.location].filter(Boolean).join(", ")}</span>

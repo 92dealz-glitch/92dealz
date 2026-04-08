@@ -339,7 +339,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 items-start">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {paged.length === 0 ? (
               <div className="p-12 bg-white border-2 border-dashed border-orange-100 rounded-3xl col-span-full text-center">
                 <div className="mx-auto w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4">
