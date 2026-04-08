@@ -57,7 +57,7 @@ export default function FeaturedAds() {
         <div className="h-0.5 flex-1 bg-[#f45c03] opacity-40 shadow-sm" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 auto-rows-[1fr] items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
         {featured.map((it) => {
           const fav = isFavorite(it.id);
           return (

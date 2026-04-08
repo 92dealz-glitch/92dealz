@@ -50,7 +50,7 @@ export default function AdCard({ item, className = "" }: Props) {
     <Link href={`/product/${item.id}`}>
       <article
         className={
-          `relative rounded-2xl border border-emerald-500/30 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group overflow-hidden ${className}`
+          `relative rounded-2xl border border-emerald-500/30 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group overflow-hidden ${className}`
         }
         aria-label={`Ad ${item.title}`}
       >
@@ -95,7 +95,7 @@ export default function AdCard({ item, className = "" }: Props) {
           </button>
         </div>
 
-        <div className="mt-2">
+        <div className="mt-2 text-left">
           <p className="text-orange-600 font-extrabold text-[13px] sm:text-base">
             {item.priceValue ? formatPrice(item.priceValue) : item.price}
           </p>
@@ -123,15 +123,12 @@ export default function AdCard({ item, className = "" }: Props) {
           </div>
         </div>
 
-        {/* Dynamic spacer to push footer to bottom without gap between title and reviews */}
-        <div className="flex-1" />
-
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-y-2 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
-          <div className="break-all max-w-[120px] sm:max-w-none shrink truncate" title={displayLocation()}>
-            {displayLocation()}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
+          <div className="break-words font-medium leading-relaxed max-w-full" title={displayLocation()}>
+             📍 {displayLocation()}
           </div>
-          <div className="flex items-center gap-1 shrink-0">
-            <span className="text-orange-500 font-bold">{item.views ?? item.likes ?? 0} <span>views</span></span>
+          <div className="flex items-center gap-1 shrink-0 ml-auto pt-1">
+            <span className="text-orange-500 font-bold whitespace-nowrap">{item.views ?? item.likes ?? 0} views</span>
           </div>
         </div>
       </article>

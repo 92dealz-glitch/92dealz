@@ -128,7 +128,7 @@ export default function HotDeals() {
           {list.map((item) => (
             <div
               key={item.id}
-              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start min-h-[320px] lg:min-h-0 group"
+              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start group"
             >
               {/* HOT BADGE */}
               <div className="absolute -top-3 left-3 z-10 pointer-events-none">
@@ -206,7 +206,7 @@ export default function HotDeals() {
                 </div>
 
                 {/* PRICE & TITLE */}
-                <div className="mt-4">
+                <div className="mt-4 text-left">
                   <p className="text-[#f45c03] font-extrabold text-xl sm:text-2xl">
                     {item.priceValue ? formatPrice(item.priceValue) : item.price}
                   </p>
@@ -230,13 +230,10 @@ export default function HotDeals() {
                   <span className="ml-1 text-black font-bold text-xs mt-0.5">({Number(item.rating || 0).toFixed(1)})</span>
                 </div>
 
-                {/* Dynamic spacer */}
-                <div className="flex-1" />
-
                 {/* LOCATION & CONDITION */}
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-y-2 text-xs">
-                  <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0 truncate" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
-                    <span>📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs">
+                  <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
+                    <span className="break-words font-medium">📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-orange-600 font-bold">{item.views ?? 0} views</span>
