@@ -1,12 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loginUser } from "@/lib/api";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<"user" | "vendor">("user");
   const [formData, setFormData] = useState({
@@ -69,7 +71,10 @@ export default function LoginPage() {
         return;
       }
 
-      if (role === "vendor" || role === "seller") {
+      // If we have a callbackUrl, prioritize it. Otherwise, use role-based defaults.
+      if (callbackUrl) {
+         router.push(callbackUrl);
+      } else if (role === "vendor" || role === "seller") {
         router.push("/vendor-dashboard");
       } else {
         router.push("/");

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { registerUser, loginUser, registerInitiate, registerVerify } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -157,6 +157,8 @@ const ContactMethodToggle = ({ method, setMethod }: { method: ContactMethod, set
 export default function SignupPage() {
   const { showAlert, showVendorTasks } = useAlert();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [role, setRole] = useState<UserRole>("user");
   const [method, setMethod] = useState<ContactMethod>("email");
   const [showPassword, setShowPassword] = useState(false);
@@ -272,7 +274,11 @@ export default function SignupPage() {
       }
       
       const r = String(res.user?.role || "").toLowerCase();
-      if (r === "vendor") {
+      
+      // Prioritize callbackUrl if provided
+      if (callbackUrl) {
+        router.push(callbackUrl);
+      } else if (r === "vendor") {
         showVendorTasks();
         router.push("/vendor-dashboard");
       } else if (r === "admin") {
