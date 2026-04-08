@@ -101,6 +101,9 @@ export default function AdCard({ item, className = "" }: Props) {
           </p>
           <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm line-clamp-2 leading-tight break-words">{item.title}</h4>
         </div>
+
+        {/* Dynamic spacer to push ratings and footer to bottom and keep card height even */}
+        <div className="flex-1" />
         
         <div className="mt-2 flex flex-wrap items-center justify-between gap-y-2">
           <div className="flex items-center gap-1 shrink-0">
@@ -123,8 +126,6 @@ export default function AdCard({ item, className = "" }: Props) {
           </div>
         </div>
 
-        {/* Dynamic spacer to push footer to bottom and keep card height even */}
-        <div className="flex-1" />
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
           <div className="break-words font-medium leading-relaxed max-w-full" title={displayLocation()}>

@@ -215,6 +215,9 @@ export default function HotDeals() {
                   </h4>
                 </div>
 
+                {/* Dynamic spacer to push ratings and footer to bottom and keep card height even */}
+                <div className="flex-1" />
+
                 {/* RATING */}
                 <div className="mt-1.5 flex gap-0.5 text-yellow-400">
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -230,8 +233,6 @@ export default function HotDeals() {
                   <span className="ml-1 text-black font-bold text-xs mt-0.5">({Number(item.rating || 0).toFixed(1)})</span>
                 </div>
 
-                {/* Dynamic spacer to push footer to bottom and keep card height even */}
-                <div className="flex-1" />
 
                 {/* LOCATION & CONDITION */}
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs">
