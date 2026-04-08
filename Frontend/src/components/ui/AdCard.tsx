@@ -102,7 +102,7 @@ export default function AdCard({ item, className = "" }: Props) {
           <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm sm:line-clamp-2 leading-tight break-words">{item.title}</h4>
         </div>
         
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-y-2">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-y-2">
           <div className="flex items-center gap-1 shrink-0">
             {item.rating && item.rating > 0 ? (
               <div className="flex items-center text-yellow-400">
@@ -123,7 +123,7 @@ export default function AdCard({ item, className = "" }: Props) {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
           <div className="break-words font-medium leading-relaxed max-w-full" title={displayLocation()}>
              📍 {displayLocation()}
           </div>

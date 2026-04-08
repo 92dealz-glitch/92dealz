@@ -121,7 +121,7 @@ export default function FeaturedAds() {
                   {it.rating > 0 && <span className="ml-2 font-bold text-white">({Number(it.rating).toFixed(1)})</span>}
                 </div>
 
-                  <div className="flex items-center justify-between mt-auto border-t border-white/20 pt-4">
+                  <div className="flex items-center justify-between mt-4 border-t border-white/20 pt-4">
                     <div className="flex items-center gap-1.5 text-white/90 font-bold max-w-[60%] truncate" title={`${it.city ? it.city + ", " : ""}${it.state ? it.state + ", " : ""}${it.location}`}>
                       <MapPin size={16} />
                       <span className="text-sm truncate">{[it.city, it.state, it.location].filter(Boolean).join(", ")}</span>

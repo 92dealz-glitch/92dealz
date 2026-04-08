@@ -121,14 +121,14 @@ export default function HotDeals() {
         <div
           ref={scrollRef}
           className={
-            "flex gap-4 overflow-x-auto pt-6 pb-6 scroll-smooth snap-x snap-mandatory lg:gap-6 " +
+            "flex gap-4 overflow-x-auto pt-6 pb-6 scroll-smooth snap-x snap-mandatory lg:gap-6 items-start " +
             "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           }
         >
           {list.map((item) => (
             <div
               key={item.id}
-              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start group"
+              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm flex flex-col snap-start group"
             >
               {/* HOT BADGE */}
               <div className="absolute -top-3 left-3 z-10 pointer-events-none">
@@ -206,7 +206,7 @@ export default function HotDeals() {
                 </div>
 
                 {/* PRICE & TITLE */}
-                <div className="mt-4 text-left">
+                <div className="mt-2 text-left">
                   <p className="text-[#f45c03] font-extrabold text-xl sm:text-2xl">
                     {item.priceValue ? formatPrice(item.priceValue) : item.price}
                   </p>
@@ -231,7 +231,7 @@ export default function HotDeals() {
                 </div>
 
                 {/* LOCATION & CONDITION */}
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs">
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs">
                   <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
                     <span className="break-words font-medium">📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
                   </div>
