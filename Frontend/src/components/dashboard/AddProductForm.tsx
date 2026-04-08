@@ -40,6 +40,8 @@ export default function AddProductForm() {
     const [profileLoaded, setProfileLoaded] = useState(false);
     const { showVendorTasks, showAlert } = useAlert();
     
+    const { rates } = useCurrency();
+    
     // Shared state for all steps
     const [formData, setFormData] = useState({
         title: "",
@@ -100,7 +102,7 @@ export default function AddProductForm() {
                     setFormData(prev => ({ 
                         ...prev, 
                         location: prev.location || defaultLocation,
-                        originalCurrency: prev.originalCurrency || defaultCurrency
+                        originalCurrency: (prev.originalCurrency === "USD" && !prev.price) ? defaultCurrency : prev.originalCurrency
                     }));
                 }
             } catch (err) {
@@ -466,6 +468,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
 }
 
 function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data: any, updateData: (d: any) => void, onNext: () => void, onBack: () => void, selectedCategory?: CategoryItem }) {
+    const { rates } = useCurrency();
 
     return (
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
@@ -499,7 +502,7 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                     </div>
                     {data.price && data.originalCurrency !== "NGN" && (
                         <p className="text-[10px] font-bold text-zinc-400">
-                           Standardized: {(Number(data.price) * (data.originalCurrency === 'USD' ? 1600 : 222)).toLocaleString()} NGN approx.
+                           Standardized: {(Number(data.price) / (rates[data.originalCurrency] || 1) * rates.NGN).toLocaleString(undefined, { maximumFractionDigits: 0 })} NGN approx.
                         </p>
                     )}
                 </div>
