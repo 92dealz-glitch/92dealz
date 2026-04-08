@@ -95,13 +95,13 @@ export default function AdCard({ item, className = "" }: Props) {
           </button>
         </div>
 
-        <div className="mt-2 flex-1 min-h-[50px]">
+        <div className="mt-2">
           <p className="text-orange-600 font-extrabold text-[13px] sm:text-base">
             {item.priceValue ? formatPrice(item.priceValue) : item.price}
           </p>
           <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm sm:line-clamp-2 leading-tight break-words">{item.title}</h4>
         </div>
-
+        
         <div className="mt-4 flex flex-wrap items-center justify-between gap-y-2">
           <div className="flex items-center gap-1 shrink-0">
             {item.rating && item.rating > 0 ? (
@@ -123,7 +123,10 @@ export default function AdCard({ item, className = "" }: Props) {
           </div>
         </div>
 
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-y-2 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
+        {/* Dynamic spacer to push footer to bottom without gap between title and reviews */}
+        <div className="flex-1" />
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-y-2 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
           <div className="break-all max-w-[120px] sm:max-w-none shrink truncate" title={displayLocation()}>
             {displayLocation()}
           </div>

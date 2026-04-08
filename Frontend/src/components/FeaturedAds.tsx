@@ -13,6 +13,8 @@ export type FeaturedAdItem = {
   desc: string;
   img: string;
   location: string;
+  state?: string;
+  city?: string;
   views: number;
   rating: number;
   isVerified: boolean;
@@ -33,6 +35,8 @@ export default function FeaturedAds() {
           desc: d.description || "",
           img: d.image_url || "/assets/images/bgphone.svg",
           location: d.location || "Nigeria",
+          state: d.state,
+          city: d.city,
           views: d.clicks || 0,
           rating: Number(d.rating || 0),
           isVerified: d.is_verified || d.User?.is_verified || false,
@@ -117,11 +121,11 @@ export default function FeaturedAds() {
                   {it.rating > 0 && <span className="ml-2 font-bold text-white">({Number(it.rating).toFixed(1)})</span>}
                 </div>
 
-                <div className="flex items-center justify-between mt-auto border-t border-white/20 pt-4">
-                  <div className="flex items-center gap-1.5 text-white/90 font-bold">
-                    <MapPin size={16} />
-                    <span className="text-sm">{it.location}</span>
-                  </div>
+                  <div className="flex items-center justify-between mt-auto border-t border-white/20 pt-4">
+                    <div className="flex items-center gap-1.5 text-white/90 font-bold max-w-[60%] truncate" title={`${it.city ? it.city + ", " : ""}${it.state ? it.state + ", " : ""}${it.location}`}>
+                      <MapPin size={16} />
+                      <span className="text-sm truncate">{[it.city, it.state, it.location].filter(Boolean).join(", ")}</span>
+                    </div>
                   <div className="flex items-center gap-1.5 text-white/90 font-bold">
                     <Flame size={18} className="text-yellow-300" />
                     <span className="text-sm">{it.views} views</span>

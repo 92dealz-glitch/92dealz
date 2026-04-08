@@ -13,6 +13,8 @@ interface HotDeal {
   priceValue?: number;
   img: string;
   location: string;
+  state?: string;
+  city?: string;
   newLabel?: string;
   isVerified?: boolean;
   rating?: number;
@@ -44,7 +46,9 @@ export default function HotDeals() {
           price: `₦ ${Number(d.price).toLocaleString()}`,
           priceValue: Number(d.price),
           img: d.image_url || "/assets/images/bgphone.svg",
-          location: d.location || d.city || "Nigeria",
+          location: d.location || "Nigeria",
+          state: d.state,
+          city: d.city,
           newLabel: d.condition || "New",
           isVerified: d.is_verified || d.User?.is_verified || false,
           rating: Number(d.rating || 0),
@@ -202,7 +206,7 @@ export default function HotDeals() {
                 </div>
 
                 {/* PRICE & TITLE */}
-                <div className="mt-4 flex-1">
+                <div className="mt-4">
                   <p className="text-[#f45c03] font-extrabold text-xl sm:text-2xl">
                     {item.priceValue ? formatPrice(item.priceValue) : item.price}
                   </p>
@@ -226,10 +230,13 @@ export default function HotDeals() {
                   <span className="ml-1 text-black font-bold text-xs mt-0.5">({Number(item.rating || 0).toFixed(1)})</span>
                 </div>
 
+                {/* Dynamic spacer */}
+                <div className="flex-1" />
+
                 {/* LOCATION & CONDITION */}
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-y-2 text-xs">
-                  <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0">
-                    <span>📍 {item.location}</span>
+                  <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0 truncate" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
+                    <span>📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-orange-600 font-bold">{item.views ?? 0} views</span>

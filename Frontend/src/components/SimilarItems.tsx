@@ -16,7 +16,9 @@ export default function SimilarItems() {
           title: d.title,
           desc: d.description || "",
           badge: d.image_url || "/assets/images/bgphone.svg",
-          location: d.location || d.city || "Nigeria",
+          location: d.location || "Nigeria",
+          state: d.state,
+          city: d.city,
           condition: d.condition || "Used",
           isVerified: d.is_verified || d.User?.is_verified || false,
         }));
