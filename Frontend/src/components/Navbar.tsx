@@ -576,47 +576,49 @@ export default function Navbar() {
               )}
 
               {/* Menu Links */}
-              <div className="py-2 border-b border-zinc-100">
-                {typeof window !== "undefined" && (window.localStorage.getItem("role") || "user").toLowerCase() !== "user" && (
+              {isLoggedIn && (
+                <div className="py-2 border-b border-zinc-100">
+                  {typeof window !== "undefined" && (window.localStorage.getItem("role") || "user").toLowerCase() !== "user" && (
+                    <button
+                      onClick={() => {
+                        const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
+                        setMobileMenuOpen(false);
+                        router.push(r === "vendor" ? "/vendor-dashboard" : r === "admin" ? "/admin" : "/user/dashboard/settings");
+                      }}
+                      className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
+                    >
+                      <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Settings size={16} /></span>
+                      Dashboard
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
-                      setMobileMenuOpen(false);
-                      router.push(r === "vendor" ? "/vendor-dashboard" : r === "admin" ? "/admin" : "/user/dashboard/settings");
+                      if (r === "vendor") {
+                        setMobileMenuOpen(false);
+                        router.push("/vendor-dashboard/add-product");
+                      } else {
+                        handleSellClick();
+                      }
                     }}
                     className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                   >
-                    <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Settings size={16} /></span>
-                    Dashboard
+                    <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Plus size={16} /></span>
+                    {(typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals"}
                   </button>
-                )}
-                <button
-                  onClick={() => {
-                    const r = typeof window !== "undefined" ? (window.localStorage.getItem("role") || "user").toLowerCase() : "user";
-                    if (r === "vendor") {
-                       setMobileMenuOpen(false);
-                       router.push("/vendor-dashboard/add-product");
-                    } else {
-                       handleSellClick();
-                    }
-                  }}
-                  className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
-                >
-                  <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Plus size={16} /></span>
-                  {(typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals"}
-                </button>
-              </div>
+                </div>
+              )}
 
               <div className="divide-y divide-zinc-100">
                 {[
-                  { icon: Bell, label: "Notifications", path: "/notifications" },
-                  { icon: Mail, label: "Messages", path: "/messages" },
-                  { icon: Settings, label: "Account Settings", path: "/account-settings" },
-                  { icon: Heart, label: "Favorites", path: "/favorites" },
-                  { icon: HelpCircle, label: "Help & Support", path: "/contact" },
-                  { icon: Shield, label: "Safety Tips", path: "/safety-tips" },
-                ].concat(
-                  hasPendingTasks 
+                  { icon: Bell, label: "Notifications", path: "/notifications", authRequired: true },
+                  { icon: Mail, label: "Messages", path: "/messages", authRequired: true },
+                  { icon: Settings, label: "Account Settings", path: "/account-settings", authRequired: true },
+                  { icon: Heart, label: "Favorites", path: "/favorites", authRequired: true },
+                  { icon: HelpCircle, label: "Help & Support", path: "/contact", authRequired: false },
+                  { icon: Shield, label: "Safety Tips", path: "/safety-tips", authRequired: true },
+                ].filter(item => !item.authRequired || isLoggedIn).concat(
+                  hasPendingTasks && isLoggedIn
                   ? [{ icon: ClipboardList as any, label: "Tasks", path: "#" } as any] 
                   : []
                 ).map((item, idx) => (
@@ -639,16 +641,18 @@ export default function Navbar() {
                     )}
                   </button>
                 ))}
-                <button
-                  onClick={() => {
-                    signOut();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-red-500"
-                >
-                  <LogoutButton className="text-red-500" size={20} />
-                  <div className="text-sm font-medium">Logout</div>
-                </button>
+                {isLoggedIn && (
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-red-500"
+                  >
+                    <LogoutButton className="text-red-500" size={20} />
+                    <div className="text-sm font-medium">Logout</div>
+                  </button>
+                )}
               </div>
 
               {/* Bottom Fixed Navigation in Modal */}
@@ -667,14 +671,16 @@ export default function Navbar() {
                       <Plus size={22} />
                       <span className="text-[10px] mt-1 text-center">Sell</span>
                     </button>
-                    <Link href="/messages" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                    <Link href="/messages" onClick={(e) => { if (!isLoggedIn) { e.preventDefault(); router.push("/login"); } setMobileMenuOpen(false); }} className="flex flex-col items-center text-sm text-zinc-700">
                       <Mail size={22} />
-                      <span className="text-[10px] mt-1 text-center">Chat</span>
+                      <span className="text-[10px] mt-1 text-center">{isLoggedIn ? "Chat" : "Login"}</span>
                     </Link>
-                    <Link href="/vendor-dashboard/my-ads" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
-                      <Grid size={22} />
-                      <span className="text-[10px] mt-1 text-center">My Ads</span>
-                    </Link>
+                    {isLoggedIn && (
+                      <Link href="/vendor-dashboard/my-ads" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
+                        <Grid size={22} />
+                        <span className="text-[10px] mt-1 text-center">My Ads</span>
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -702,14 +708,21 @@ export default function Navbar() {
                 </div>
                 <span className="text-[10px] mt-1 text-center">Sell</span>
               </button>
-              <Link href="/messages" className="flex flex-col items-center text-sm text-zinc-700">
+              <Link href="/messages" onClick={(e) => { if (!isLoggedIn) { e.preventDefault(); router.push("/login"); } }} className="flex flex-col items-center text-sm text-zinc-700">
                 <Mail size={22} />
-                <span className="text-[10px] mt-1 text-center">Chat</span>
+                <span className="text-[10px] mt-1 text-center">{isLoggedIn ? "Chat" : "Login"}</span>
               </Link>
-              <Link href="/vendor-dashboard/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
-                <Grid size={22} />
-                <span className="text-[10px] mt-1 text-center">My Ads</span>
-              </Link>
+              {isLoggedIn ? (
+                <Link href="/vendor-dashboard/my-ads" className="flex flex-col items-center text-sm text-zinc-700">
+                  <Grid size={22} />
+                  <span className="text-[10px] mt-1 text-center">My Ads</span>
+                </Link>
+              ) : (
+                <Link href="/signup" className="flex flex-col items-center text-sm text-zinc-700">
+                  <User size={22} />
+                  <span className="text-[10px] mt-1 text-center">Profile</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
