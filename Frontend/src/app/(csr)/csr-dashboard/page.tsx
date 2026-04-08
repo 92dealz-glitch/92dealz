@@ -41,7 +41,8 @@ function CSRDashboardContent() {
       await signOut({ redirect: false });
     } catch (e) {}
     
-    window.location.href = "/";
+    // Redirect to the custom CSR login path
+    window.location.href = process.env.NEXT_PUBLIC_CSR_LOGIN_PATH || "/843901globallink-234deals-cr-485n9485n02";
   };
 
   return (

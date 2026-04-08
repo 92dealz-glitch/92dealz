@@ -66,30 +66,51 @@ export default function AddProductForm() {
             setCategories(res as any);
         });
         
-        // Fetch profile to detect location
-        getMyProfile().then(res => {
-            if (res.success && res.data) {
-                const phone = String(res.data.phone || "");
-                const isNig = phone.startsWith("+234") || phone.startsWith("234") || (phone.startsWith("0") && phone.length >= 11);
-                const isChina = phone.startsWith("+86") || phone.startsWith("86");
-                
-                setIsNigerian(isNig);
-                setProfile(res.data);
-                
-                const defaultCurrency = isNig ? "NGN" : isChina ? "CNY" : "USD";
-                const defaultLocation = isNig ? "Nigeria" : isChina ? "China" : "";
+        const detectLocation = async () => {
+            try {
+                const res = await getMyProfile();
+                if (res.success && res.data) {
+                    const phone = String(res.data.phone || "");
+                    const isPhoneNig = (res.data.is_phone_verified || false) && (phone.startsWith("+234") || phone.startsWith("234"));
+                    const isPhoneChina = (res.data.is_phone_verified || false) && (phone.startsWith("+86") || phone.startsWith("86"));
+                    
+                    let finalIsNig = isPhoneNig;
+                    let finalIsChina = isPhoneChina;
 
-                setFormData(prev => ({ 
-                    ...prev, 
-                    location: prev.location || defaultLocation,
-                    originalCurrency: defaultCurrency
-                }));
+                    // Fallback to IP location if phone is not verified or not matching known regions
+                    if (!isPhoneNig && !isPhoneChina) {
+                        try {
+                            const ipRes = await fetch("https://ipapi.co/json/").then(r => r.json());
+                            if (ipRes && ipRes.country_code === "NG") {
+                                finalIsNig = true;
+                            } else if (ipRes && ipRes.country_code === "CN") {
+                                finalIsChina = true;
+                            }
+                        } catch (ipErr) {
+                            console.warn("IP Geolocation failed, defaulting to phone detection", ipErr);
+                        }
+                    }
+                    
+                    setIsNigerian(finalIsNig);
+                    setProfile(res.data);
+                    
+                    const defaultCurrency = finalIsNig ? "NGN" : finalIsChina ? "CNY" : "USD";
+                    const defaultLocation = finalIsNig ? "Nigeria" : finalIsChina ? "China" : "";
+
+                    setFormData(prev => ({ 
+                        ...prev, 
+                        location: prev.location || defaultLocation,
+                        originalCurrency: prev.originalCurrency || defaultCurrency
+                    }));
+                }
+            } catch (err) {
+                console.error("Failed to load profile or detect location", err);
+            } finally {
+                setProfileLoaded(true);
             }
-            setProfileLoaded(true);
-        }).catch(err => {
-            console.error("Failed to load profile", err);
-            setProfileLoaded(true);
-        });
+        };
+
+        detectLocation();
     }, []);
 
     const updateFormData = (newData: Partial<typeof formData>) => {
@@ -615,7 +636,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <CustomSelect 
                     label="Country" 
-                    options={["Nigeria", "China"]} 
+                    options={isNigerian ? ["Nigeria"] : ["Nigeria", "China"]} 
                     value={data.location || ""} 
                     onChange={(v) => {
                         updateData({ location: v, state: "", city: "" });
