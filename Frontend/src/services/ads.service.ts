@@ -91,6 +91,8 @@ export async function createAd(payload: AdPayload) {
     location: payload.location || (payload.city && payload.state ? `${payload.city}, ${payload.state}` : payload.state || payload.city),
     subcategory: payload.subcategory,
     specifications: payload.specifications,
+    originalCurrency: payload.originalCurrency,
+    originalPrice: payload.originalPrice,
   };
   if (payload.category_id !== undefined) body.category_id = payload.category_id;
   if (payload.images) {
