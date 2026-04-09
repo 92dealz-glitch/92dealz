@@ -711,5 +711,6 @@ export default function VendorManagement() {
         </div>
       )}
     </div>
+  </div>
   );
 }
