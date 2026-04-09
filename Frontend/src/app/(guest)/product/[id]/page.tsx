@@ -814,8 +814,12 @@ export default function ProductPage({ params }: Props) {
                 <div className="max-h-[400px] overflow-y-auto">
                 {reviews.map((r: any) => (
                   <div key={r.id} className="p-4 border-b flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 uppercase font-bold text-sm">
-                      {(r.Reviewer?.name || 'U').slice(0, 2)}
+                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 uppercase font-bold text-sm overflow-hidden flex-shrink-0">
+                      {r.Reviewer?.profile_image_url ? (
+                        <img src={r.Reviewer.profile_image_url} alt={r.Reviewer.name} className="w-full h-full object-cover" />
+                      ) : (
+                        (r.Reviewer?.name || 'U').slice(0, 2)
+                      )}
                     </div>
                     <div>
                       <div className="font-medium text-gray-800">{r.comment}</div>

@@ -563,9 +563,14 @@ export default function SellerPage({ params }: Props) {
                             fontWeight: 800,
                             textTransform: "uppercase",
                             fontSize: "14px",
+                            overflow: "hidden"
                           }}
                         >
-                          {(r.Reviewer?.name || "U").slice(0, 2)}
+                          {r.Reviewer?.profile_image_url ? (
+                            <img src={r.Reviewer.profile_image_url} alt={r.Reviewer.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          ) : (
+                            (r.Reviewer?.name || "U").slice(0, 2)
+                          )}
                         </div>
                         <div style={{ flex: 1 }}>
                           <p

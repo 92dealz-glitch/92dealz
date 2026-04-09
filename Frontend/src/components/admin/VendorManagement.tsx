@@ -164,38 +164,38 @@ export default function VendorManagement() {
   return (
     <div className="space-y-8 mt-8">
       {/* VERIFIED VENDORS SECTION */}
-      <div className="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 shadow-2xl relative overflow-hidden">
+      <div className="bg-white p-8 rounded-[2rem] border border-zinc-200 shadow-sm relative overflow-hidden">
         {/* Background purely aesthetic pattern */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] -mr-32 -mt-32 rounded-full" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 blur-[100px] -mr-32 -mt-32 rounded-full" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] -ml-32 -mb-32 rounded-full" />
         
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-8">
              <div>
-                <h3 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-3">
+                <h3 className="text-2xl font-black text-zinc-900 uppercase tracking-tight flex items-center gap-3">
                   <CheckCircle className="text-emerald-500" size={28} />
                   Verified Vendors
                 </h3>
-                <p className="text-zinc-400 text-sm font-medium mt-1">Identity-verified partners with official platform trust badges</p>
+                <p className="text-zinc-500 text-sm font-medium mt-1">Identity-verified partners with official platform trust badges</p>
              </div>
-             <div className="bg-zinc-800/50 px-4 py-2 rounded-xl border border-zinc-700/50 backdrop-blur-sm">
-                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block">Total Verified</span>
-                <span className="text-xl font-black text-white">{vendors.filter(v => v.is_verified).length}</span>
+             <div className="bg-zinc-50 px-4 py-2 rounded-xl border border-zinc-200 backdrop-blur-sm">
+                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] block">Total Verified</span>
+                <span className="text-xl font-black text-zinc-900">{vendors.filter(v => v.is_verified).length}</span>
              </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {vendors.filter(v => v.is_verified).length === 0 ? (
-              <div className="col-span-full py-12 flex flex-col items-center justify-center bg-zinc-800/20 rounded-2xl border border-dashed border-zinc-700">
-                <ShieldAlert className="text-zinc-600 mb-3" size={48} />
-                <p className="text-zinc-500 font-bold uppercase text-[10px] tracking-widest">No verified vendors found</p>
+              <div className="col-span-full py-12 flex flex-col items-center justify-center bg-zinc-50 rounded-2xl border border-dashed border-zinc-200">
+                <ShieldAlert className="text-zinc-300 mb-3" size={48} />
+                <p className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">No verified vendors found</p>
               </div>
             ) : (
               vendors.filter(v => v.is_verified).map((v) => (
-                <div key={v.id} className="bg-zinc-800/40 border border-zinc-700/50 rounded-2xl p-5 hover:border-emerald-500/30 transition-all group relative overflow-hidden">
+                <div key={v.id} className="bg-zinc-50/50 border border-zinc-200/60 rounded-2xl p-5 hover:border-emerald-500/30 transition-all group relative overflow-hidden shadow-sm hover:shadow-md">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex flex-col">
-                      <span className="text-white font-black text-base group-hover:text-emerald-400 transition-colors">{v.name}</span>
+                      <span className="text-zinc-900 font-black text-base group-hover:text-emerald-600 transition-colors">{v.name}</span>
                       <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">{v.businessName || "Personal Business"}</span>
                     </div>
                     {v.government_id_url && (
@@ -203,7 +203,7 @@ export default function VendorManagement() {
                         href={v.government_id_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-zinc-700 hover:bg-zinc-600 text-white p-2 rounded-lg transition-colors cursor-pointer"
+                        className="bg-zinc-100 hover:bg-zinc-200 text-zinc-600 p-2 rounded-lg transition-colors cursor-pointer border border-zinc-200"
                         title="View Government ID"
                       >
                         <FileText size={16} />
@@ -212,20 +212,20 @@ export default function VendorManagement() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-6">
-                    <div className="bg-zinc-900/50 border border-zinc-700 rounded-lg px-3 py-1.5 flex flex-col">
-                      <span className="text-[8px] text-zinc-500 font-black uppercase">Email</span>
-                      <span className="text-[10px] text-zinc-300 font-bold truncate max-w-[120px]">{v.email}</span>
+                    <div className="bg-white border border-zinc-200 rounded-lg px-3 py-1.5 flex flex-col shadow-sm">
+                      <span className="text-[8px] text-zinc-400 font-black uppercase">Email</span>
+                      <span className="text-[10px] text-zinc-600 font-bold truncate max-w-[120px]">{v.email}</span>
                     </div>
-                    <div className="bg-zinc-900/50 border border-zinc-700 rounded-lg px-3 py-1.5 flex flex-col">
-                      <span className="text-[8px] text-zinc-500 font-black uppercase">Phone</span>
-                      <span className="text-[10px] text-zinc-300 font-bold">{v.phone || "N/A"}</span>
+                    <div className="bg-white border border-zinc-200 rounded-lg px-3 py-1.5 flex flex-col shadow-sm">
+                      <span className="text-[8px] text-zinc-400 font-black uppercase">Phone</span>
+                      <span className="text-[10px] text-zinc-600 font-bold">{v.phone || "N/A"}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button 
                       onClick={() => setSelectedVendor(v)}
-                      className="flex-1 bg-white text-black text-[10px] font-black uppercase py-2.5 rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 bg-zinc-900 text-white text-[10px] font-black uppercase py-2.5 rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-zinc-200"
                     >
                       <Eye size={14} /> Details
                     </button>

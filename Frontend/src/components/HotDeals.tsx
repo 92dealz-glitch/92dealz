@@ -189,20 +189,6 @@ export default function HotDeals() {
                     </div>
                   </div>
 
-                  {/* VERIFIED */}
-                  <div className="absolute right-0 bottom-2">
-                    <div className="w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                  </div>
                 </div>
 
                 {/* PRICE & TITLE */}
