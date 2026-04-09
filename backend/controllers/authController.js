@@ -481,6 +481,7 @@ exports.verifyContactOtp = async (req, res, next) => {
       }
     }
 
+    
     // Success! Update user
     const user = await User.findByPk(userId);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
@@ -502,9 +503,6 @@ exports.verifyContactOtp = async (req, res, next) => {
       user.is_email_verified = true;
     }
     
-    // Also set general is_verified
-    user.is_verified = true;
-
     // Update country if verifying phone and user doesn't have it yet
     if (isPhone) {
       const phoneCountry = getCountryFromPhone(formattedContact);

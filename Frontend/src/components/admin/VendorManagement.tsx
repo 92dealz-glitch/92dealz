@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { UserPlus, Loader2, X, Trash2, ShieldAlert, CheckCircle, ShieldOff, User, Eye, EyeOff, AlertCircle, ExternalLink } from "lucide-react";
-import { getVendorsAdmin, updateVendorStatusAdmin, deleteVendorAdmin } from "@/lib/api";
+import { UserPlus, Loader2, X, Trash2, ShieldAlert, CheckCircle, ShieldOff, User, Eye, EyeOff, AlertCircle, ExternalLink, ShieldX, FileText } from "lucide-react";
+import { getVendorsAdmin, updateVendorStatusAdmin, deleteVendorAdmin, reviewAdminVerification } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 
 interface Vendor {
@@ -46,6 +46,13 @@ export default function VendorManagement() {
     id: null
   });
   const [suspensionReason, setSuspensionReason] = useState("");
+
+  // Revoke Verification Modal State
+  const [revokeModal, setRevokeModal] = useState<{ show: boolean, id: number | null }>({
+    show: false,
+    id: null
+  });
+  const [revokeReason, setRevokeReason] = useState("");
 
   const fetchVendors = async () => {
     setLoading(true);
@@ -135,8 +142,108 @@ export default function VendorManagement() {
     }
   };
 
+  const handleRevokeVerification = async (id: number, reason: string) => {
+    setActionLoading(id);
+    try {
+      const res = await reviewAdminVerification(id, 'rejected', reason);
+      if (res.success) {
+        setVendors(prev => prev.map(v => v.id === id ? { ...v, is_verified: false } : v));
+        setRevokeModal({ show: false, id: null });
+        setRevokeReason("");
+        showAlert("Verification has been revoked.", "Success");
+      } else {
+        throw new Error(res.message);
+      }
+    } catch (err: any) {
+      showAlert(err.message, "Revocation Error");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   return (
-    <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm mt-8">
+    <div className="space-y-8 mt-8">
+      {/* VERIFIED VENDORS SECTION */}
+      <div className="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 shadow-2xl relative overflow-hidden">
+        {/* Background purely aesthetic pattern */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] -mr-32 -mt-32 rounded-full" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] -ml-32 -mb-32 rounded-full" />
+        
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-8">
+             <div>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-3">
+                  <CheckCircle className="text-emerald-500" size={28} />
+                  Verified Vendors
+                </h3>
+                <p className="text-zinc-400 text-sm font-medium mt-1">Identity-verified partners with official platform trust badges</p>
+             </div>
+             <div className="bg-zinc-800/50 px-4 py-2 rounded-xl border border-zinc-700/50 backdrop-blur-sm">
+                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block">Total Verified</span>
+                <span className="text-xl font-black text-white">{vendors.filter(v => v.is_verified).length}</span>
+             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {vendors.filter(v => v.is_verified).length === 0 ? (
+              <div className="col-span-full py-12 flex flex-col items-center justify-center bg-zinc-800/20 rounded-2xl border border-dashed border-zinc-700">
+                <ShieldAlert className="text-zinc-600 mb-3" size={48} />
+                <p className="text-zinc-500 font-bold uppercase text-[10px] tracking-widest">No verified vendors found</p>
+              </div>
+            ) : (
+              vendors.filter(v => v.is_verified).map((v) => (
+                <div key={v.id} className="bg-zinc-800/40 border border-zinc-700/50 rounded-2xl p-5 hover:border-emerald-500/30 transition-all group relative overflow-hidden">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex flex-col">
+                      <span className="text-white font-black text-base group-hover:text-emerald-400 transition-colors">{v.name}</span>
+                      <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">{v.businessName || "Personal Business"}</span>
+                    </div>
+                    {v.government_id_url && (
+                      <a 
+                        href={v.government_id_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-zinc-700 hover:bg-zinc-600 text-white p-2 rounded-lg transition-colors cursor-pointer"
+                        title="View Government ID"
+                      >
+                        <FileText size={16} />
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <div className="bg-zinc-900/50 border border-zinc-700 rounded-lg px-3 py-1.5 flex flex-col">
+                      <span className="text-[8px] text-zinc-500 font-black uppercase">Email</span>
+                      <span className="text-[10px] text-zinc-300 font-bold truncate max-w-[120px]">{v.email}</span>
+                    </div>
+                    <div className="bg-zinc-900/50 border border-zinc-700 rounded-lg px-3 py-1.5 flex flex-col">
+                      <span className="text-[8px] text-zinc-500 font-black uppercase">Phone</span>
+                      <span className="text-[10px] text-zinc-300 font-bold">{v.phone || "N/A"}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setSelectedVendor(v)}
+                      className="flex-1 bg-white text-black text-[10px] font-black uppercase py-2.5 rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Eye size={14} /> Details
+                    </button>
+                    <button 
+                      onClick={() => setRevokeModal({ show: true, id: v.id })}
+                      className="flex-1 bg-red-500/10 text-red-500 border border-red-500/20 text-[10px] font-black uppercase py-2.5 rounded-lg hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2"
+                    >
+                      <ShieldX size={14} /> Revoke
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
       <div className="mb-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -423,6 +530,55 @@ export default function VendorManagement() {
                   className="flex-[1.5] py-3.5 bg-red-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-red-700 shadow-lg shadow-red-100 disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   {actionLoading !== null ? <Loader2 className="animate-spin" size={16} /> : "Suspend Account"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* REVOKE VERIFICATION MODAL */}
+      {revokeModal.show && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 bg-amber-50 border-b border-amber-100 flex items-center gap-3">
+              <div className="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center">
+                <ShieldX size={18} />
+              </div>
+              <h3 className="font-black uppercase tracking-tight text-amber-900">Revoke Verification</h3>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="bg-amber-100/50 p-4 rounded-xl border border-amber-100">
+                <p className="text-amber-800 text-xs font-bold leading-relaxed">
+                  Warning: This will remove the "Verified Vendor" badge and mark their identity documentation as rejected. The vendor will need to re-verify to regain their status.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Reason for Revocation</label>
+                <textarea 
+                  placeholder="e.g., Expired ID, Invalid documentation, Terms violation..."
+                  value={revokeReason}
+                  onChange={(e) => setRevokeReason(e.target.value)}
+                  rows={4}
+                  className="w-full border border-zinc-200 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-amber-200 resize-none transition-all"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button 
+                  onClick={() => setRevokeModal({ show: false, id: null })}
+                  className="flex-1 py-3.5 border border-zinc-200 rounded-xl font-black text-[10px] uppercase tracking-widest text-zinc-500 hover:bg-zinc-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  disabled={!revokeReason.trim() || actionLoading !== null}
+                  onClick={() => revokeModal.id && handleRevokeVerification(revokeModal.id, revokeReason)}
+                  className="flex-[1.5] py-3.5 bg-amber-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-amber-700 shadow-lg shadow-amber-100 disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2"
+                >
+                  {actionLoading !== null ? <Loader2 className="animate-spin" size={16} /> : "Revoke Badge"}
                 </button>
               </div>
             </div>
