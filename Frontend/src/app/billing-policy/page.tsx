@@ -11,14 +11,14 @@ export default function BillingPolicyPage() {
           <p>Last updated: {new Date().toLocaleDateString()}</p>
           <p>This Billing Policy applies to users and vendors transacting on the 234Deals platform.</p>
           
-          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">1. Accepted Payment Methods</h2>
-          <p>We accept major credit and debit cards, secure bank transfers, and selected digital wallets. All transactions are processed securely through our trusted payment gateways.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">1. Payment for Platform Services</h2>
+          <p>This policy governs payments made to 234Deals for platform-specific services, including Vendor Premium Subscriptions, Featured Deal listings, and Boosting services. All such payments are processed securely through our verified payment partners.</p>
           
-          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">2. Vendor Fees and Payouts</h2>
-          <p>Vendors operating on Premium plans will be billed monthly. Sales proceeds are held in escrow until the buyer confirms receipt of the goods, after which funds are disbursed to the vendor's designated bank account within 3 business days, deducting the applicable commission rates.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">2. Peer-to-Peer Transactions</h2>
+          <p>As 234Deals is a marketplace facilitator, most transactions for physical goods occur directly between the buyer and the seller. The method of payment for these goods (e.g., cash on delivery, direct bank transfer) is negotiated between both parties. 234Deals is not responsible for refunding or mediating payments made outside of our official platform service fees.</p>
           
-          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">3. Refunds and Disputes</h2>
-          <p>If a buyer is unsatisfied with a purchase due to it being significantly not as described or damaged upon arrival, they must initiate a dispute within 48 hours of delivery. 234Deals will mediate the dispute and, if resolved in favor of the buyer, issue a full refund to the original payment method.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">3. Subscriptions & Cancellations</h2>
+          <p>Vendor subscriptions are billed periodically. While you can cancel your subscription at any time, previously paid fees for Featured Listings or Boosting services are non-refundable as the service is rendered immediately upon activation.</p>
         </div>
       </main>
       <Footer />

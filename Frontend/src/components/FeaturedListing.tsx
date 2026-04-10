@@ -5,10 +5,10 @@ export default function FeaturedListing() {
     <>
       <div className="max-w-[1200px] mx-auto mt-8 px-4 sm:px-6">
         <div className="relative bg-white rounded-lg overflow-hidden">
-          <div className="flex flex-row items-center justify-center gap-x-4 sm:gap-x-12">
+          <div className="flex flex-row items-center justify-center gap-x-1 sm:gap-x-4">
 
             {/* Text block */}
-            <div className="max-w-[65%] p-4 sm:p-8 lg:pl-12 lg:pr-6 z-10 flex flex-col justify-center">
+            <div className="max-w-[65%] p-4 sm:p-8 lg:pl-12 lg:pr-2 z-10 flex flex-col justify-center">
               <h2 className="text-xs sm:text-lg uppercase tracking-[0.2em] font-bold text-zinc-400 mb-1 sm:mb-2">Let&apos;s get one thing straight:</h2>
               
               <div className="text-lg xs:text-xl sm:text-4xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight">
@@ -35,8 +35,8 @@ export default function FeaturedListing() {
             </div>
 
             {/* Image block - Stay next to text even on mobile */}
-            <div className="flex-shrink-0 p-2 sm:p-8 flex items-center justify-start">
-              <div className="relative w-[80px] xs:w-[100px] sm:w-[280px] md:w-[320px] aspect-square">
+            <div className="flex-shrink-0 p-1 sm:p-8 flex items-center justify-start">
+              <div className="relative w-[110px] xs:w-[130px] sm:w-[280px] md:w-[320px] aspect-square">
                 <Image
                   src="/images/litsingimage.svg"
                   alt="Quality Deals"

@@ -12,30 +12,37 @@ export default function SafetyTipsPage() {
           
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mt-8">
             <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <span className="text-orange-500">1.</span> Protect Your Personal Information
+              <span className="text-orange-500">1.</span> Meet in Safe, Public Places
             </h2>
-            <p>Never share sensitive personal information such as your bank account details, BVN, or passwords unless proceeding through our secure, verified payment channels.</p>
+            <p>For community safety, always meet in visible, busy public areas like popular malls, petrol stations, or coffee shops. Avoid private residences or secluded spots, and always plan meetups during daylight hours.</p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <span className="text-orange-500">2.</span> Meet in Public
+              <span className="text-orange-500">2.</span> Inspect Before You Pay
             </h2>
-            <p>If you are meeting a buyer or seller in person, always choose a busy, public location during daylight hours. Consider bringing a friend with you.</p>
+            <p>The golden rule of marketplace trading: <strong>Never pay before you inspect.</strong> Physically check the item to ensure it matches the listing description and is in the promised condition before handing over any payment.</p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <span className="text-orange-500">3.</span> Inspect Items Carefully
+              <span className="text-orange-500">3.</span> Look for the Verified Badge
             </h2>
-            <p>Before completing a transaction, physically inspect the item to ensure it matches the description provided in the listing. Do not pay before confirming the item's condition.</p>
+            <p>Prioritize transacting with sellers who have the <strong>Verified Vendor</strong> badge. These sellers have submitted government-issued identification to our team, adding an extra layer of transparency to your deal.</p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <span className="text-orange-500">4.</span> Report Suspicious Activity
+              <span className="text-orange-500">4.</span> Protect Your Financial Data
             </h2>
-            <p>If a listing seems too good to be true, it probably is. Use our built-in reporting tools to alert our moderation team of any suspicious users or listings.</p>
+            <p>Be wary of anyone asking for advance payments, "delivery deposits," or bank login details. 234Deals will never ask for your password or BVN over chat or phone call.</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <span className="text-orange-500">5.</span> Trust Your Instincts
+            </h2>
+            <p>If a deal seems too good to be true, it likely is. If you feel uncomfortable at any point during a conversation or meetup, walk away. Use the "Report" button on any listing to flag suspicious activity to our team immediately.</p>
           </div>
 
         </div>

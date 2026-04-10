@@ -15,7 +15,7 @@ export default function CookiePolicyPage() {
           <p>Cookies are small data files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work or work more efficiently.</p>
           
           <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">2. Why do we use cookies?</h2>
-          <p>We use first and third-party cookies for several reasons. Some cookies are required for technical reasons in order for our website to operate, and we refer to these as "essential" or "strictly necessary" cookies. Other cookies also enable us to track and target the interests of our users to enhance the experience on our platform.</p>
+          <p>We use first and third-party cookies for several reasons. Some are required for technical reasons in order for our marketplace to operate (like maintaining your login session). Others enable us to remember your preferences—such as your preferred location filter—to provide a more personalized and efficient browsing experience.</p>
           
           <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">3. How can I control cookies?</h2>
           <p>You have the right to decide whether to accept or reject cookies. You can exercise your cookie rights by setting your preferences in your web browser controls.</p>
