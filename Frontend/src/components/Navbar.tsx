@@ -74,7 +74,7 @@ export default function Navbar() {
   const [topCats, setTopCats] = useState<{ id: string; title: string }[]>([]);
 
   const handleLocationChange = (loc: string) => {
-    if (loc === "All") {
+    if (loc === "Location") {
       resetAll();
     } else if (loc === "🇨🇳 CHINA") {
       setLocation("China");
@@ -86,7 +86,7 @@ export default function Navbar() {
 
   const currentLocationLabel = filter.country === "China" 
     ? "🇨🇳 CHINA" 
-    : (filter.state || filter.country);
+    : (filter.state || (filter.country === "All" ? "Location" : filter.country));
 
   useEffect(() => {
     getFallbackArray().then(res => setTopCats(res.slice(0, 5)));

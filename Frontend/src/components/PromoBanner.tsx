@@ -156,7 +156,7 @@ export default function PromoBanner() {
                       <h1 className="font-black text-[1.8rem] sm:text-[3rem] lg:text-[5.5rem] leading-[0.9] tracking-tighter text-gray-900">
                         {banner.title1}
                       </h1>
-                      <h2 className="font-black text-[1.1rem] sm:text-[1.8rem] lg:text-[3.2rem] leading-[1.1] tracking-tight text-emerald-600 mt-1">
+                      <h2 className="font-black text-[1.1rem] sm:text-[1.8rem] lg:text-[3.2rem] leading-[1.1] tracking-tight text-[#f45c03] mt-1">
                         {banner.accent}
                       </h2>
                       <h2 className="font-black text-[1.1rem] sm:text-[1.8rem] lg:text-[3.2rem] leading-[1.1] tracking-tight text-gray-900">
