@@ -158,6 +158,14 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  subscription_plan: {
+    type: DataTypes.ENUM('free', 'basic', 'star'),
+    defaultValue: 'free',
+  },
+  plan_expires_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: true,

@@ -73,7 +73,7 @@ exports.search = async (req, res, next) => {
     const selectCols = ['id', 'title', 'description', 'price', '"createdAt"'];
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
                     'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
-                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location'];
+                    'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location', 'plan_type'];
     for (const f of fields) {
       if (has(f)) {
         const quoted = /[A-Z]/.test(f) ? `"${f}"` : f;
@@ -89,7 +89,11 @@ exports.search = async (req, res, next) => {
                      FROM deals
                      JOIN users u ON u.id = deals."userId"
                      ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'
-                     ${orderSql} LIMIT ${limit} OFFSET ${offset}`;
+                     ORDER BY 
+                       (CASE WHEN deals.plan_type = 'star' THEN 1 WHEN deals.plan_type = 'basic' THEN 2 ELSE 3 END) ASC,
+                       u.is_verified DESC,
+                       ${orderSql.replace('ORDER BY ', '')}
+                     LIMIT ${limit} OFFSET ${offset}`;
 
     const [[countRow]] = await sequelize.query(countSql, { bind });
     const [rows] = await sequelize.query(dataSql, { bind });

@@ -29,7 +29,7 @@ exports.getUsers = async (req, res, next) => {
 
     const users = await User.findAll({ 
       where,
-      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified', 'is_phone_verified', 'is_email_verified', 'country_code', 'country_name'],
+      attributes: ['id', 'name', 'email', 'phone', 'role', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified', 'is_phone_verified', 'is_email_verified', 'country_code', 'country_name', 'subscription_plan'],
       order: [['id', 'ASC']] 
     });
 
@@ -58,7 +58,7 @@ exports.getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified', 'country_code', 'country_name'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'about', 'is_verified', 'country_code', 'country_name', 'subscription_plan'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -113,7 +113,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getProfile = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status', 'country_code', 'country_name'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status', 'country_code', 'country_name', 'subscription_plan', 'plan_expires_at'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -297,6 +297,34 @@ exports.submitPoll = async (req, res, next) => {
       success: true,
       message: 'Poll submitted successfully!',
       data: { poll_category: user.poll_category, last_poll_date: user.last_poll_date }
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+// POST /api/user/buy-plan (Mock)
+exports.buyPlan = async (req, res, next) => {
+  try {
+    const { plan } = req.body;
+    if (!['free', 'basic', 'star'].includes(plan)) {
+      return res.status(400).json({ success: false, message: 'Invalid plan' });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.subscription_plan = plan;
+    // Set expiry to 30 days from now
+    user.plan_expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: `Successfully upgraded to ${plan} plan.`,
+      data: { subscription_plan: user.subscription_plan, plan_expires_at: user.plan_expires_at }
     });
   } catch (err) {
     return next(err);

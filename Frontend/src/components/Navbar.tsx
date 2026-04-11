@@ -21,6 +21,7 @@ import {
   Grid,
   Package,
   ClipboardList,
+  Star,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -298,14 +299,14 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               {!isLoggedIn ? (
                 <>
-                  <Link href="/signup" className="text-sm text-zinc-700 hover:text-orange-600">
+                  <Link href="/signup" className="text-sm font-bold text-zinc-700 hover:text-orange-600">
                     Sign up
                   </Link>
-                  <Link href="/login" className="text-sm text-zinc-700 hover:text-orange-600">
+                  <Link href="/login" className="text-sm font-bold text-zinc-700 hover:text-orange-600">
                     Log in
                   </Link>
-                  <Link href="/signup" className="text-sm text-zinc-700 hover:text-orange-600">
-                    <button className="hidden lg:inline-flex items-center rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-orange-600 transition-colors">
+                  <Link href="/signup" className="text-sm">
+                    <button className="hidden lg:inline-flex items-center rounded-full bg-orange-500 px-6 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-100 hover:bg-orange-600 transition-all active:scale-95">
                       Start Selling Today!
                     </button>
                   </Link>
@@ -362,13 +363,14 @@ export default function Navbar() {
                       </>
                     )}
                   </div>
-                  {!isFullyVerified && (
+                  )}
+                  {isVendor && (
                     <Link 
-                      href={role === "vendor" || role === "Vendor" ? "/vendor-dashboard/settings/verification" : "/account-settings"}
-                      className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold border border-orange-100 hover:bg-orange-100 transition-colors whitespace-nowrap"
+                      href="/pricing"
+                      className="hidden lg:flex items-center gap-1.5 px-4 py-2 bg-black text-yellow-400 rounded-full text-xs font-black border border-black hover:bg-zinc-800 transition-all shadow-sm group"
                     >
-                      <div className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-ping" />
-                      Verify to Contact Sellers
+                      <Star size={14} className="fill-current group-hover:scale-110 transition-transform" />
+                      Promote Ads
                     </Link>
                   )}
                   <NavUserMenu signOut={signOut} />
@@ -606,6 +608,18 @@ export default function Navbar() {
                     <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Plus size={16} /></span>
                     {(typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals"}
                   </button>
+                  {isVendor && (
+                    <button
+                      onClick={() => {
+                          setMobileMenuOpen(false);
+                          router.push("/pricing");
+                      }}
+                      className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors font-bold text-orange-600"
+                    >
+                      <span className="bg-orange-600 p-1.5 rounded-lg text-white"><Star size={16} /></span>
+                      Promote Your Ads
+                    </button>
+                  )}
                 </div>
               )}
 

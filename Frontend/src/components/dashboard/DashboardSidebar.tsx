@@ -29,6 +29,7 @@ const baseItems: MenuItem[] = [
     { id: "my-ads", label: "My Ads", icon: Package, href: "/vendor-dashboard/my-ads" },
     { id: "add-product", label: "Add Product", icon: PlusSquare, href: "/vendor-dashboard/add-product" },
     { id: "sales-stats", label: "Sales Stats", icon: BarChart2, href: "/vendor-dashboard/analytics" },
+    { id: "subscription", label: "Subscription Plans", icon: ShoppingCart, href: "/pricing" },
     { id: "messages", label: "Messages", icon: MessageSquare, href: "/vendor-dashboard/messages" },
     { id: "settings", label: "Settings", icon: Settings, href: "/vendor-dashboard/settings/personal-details", hasSubmenu: true },
 ];

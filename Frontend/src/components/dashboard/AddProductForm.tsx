@@ -3,6 +3,7 @@ import { ChevronLeft, X, Upload, Plus } from "lucide-react";
 import { createAd } from "@/services/ads.service";
 import { uploadImage } from "@/services/upload.service";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { getFallbackArray } from "@/data/categoriesData";
 import { getMyProfile } from "@/lib/api";
 import { NIGERIAN_STATES, NIGERIAN_LOCATIONS } from "@/data/locationData";
@@ -60,8 +61,11 @@ export default function AddProductForm() {
         state: "",
         city: "",
         location: "", // Country
-        specifications: {} as Record<string, any>
+        specifications: {} as Record<string, any>,
+        plan_type: "free" as "free" | "basic" | "star"
     });
+
+    const [adCounts, setAdCounts] = useState({ current: 0, limit: 1 });
 
     useEffect(() => {
         getFallbackArray().then(res => {
@@ -102,8 +106,28 @@ export default function AddProductForm() {
                     setFormData(prev => ({ 
                         ...prev, 
                         location: prev.location || defaultLocation,
-                        originalCurrency: (prev.originalCurrency === "USD" && !prev.price) ? defaultCurrency : prev.originalCurrency
+                        originalCurrency: (prev.originalCurrency === "USD" && !prev.price) ? defaultCurrency : prev.originalCurrency,
+                        plan_type: res.data.subscription_plan || "free"
                     }));
+
+                    // Fetch current month's ad count
+                    const adsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/ads/vendor`, {
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    }).then(r => r.json());
+                    
+                    if (adsRes.success) {
+                        const now = new Date();
+                        const currentMonthAds = adsRes.data.filter((ad: any) => {
+                            const d = new Date(ad.createdAt);
+                            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                        });
+                        const limitMap = { free: 1, basic: 10, star: 20 };
+                        const userPlan = res.data.subscription_plan || 'free';
+                        setAdCounts({
+                            current: currentMonthAds.length,
+                            limit: limitMap[userPlan as keyof typeof limitMap]
+                        });
+                    }
                 }
             } catch (err) {
                 console.error("Failed to load profile or detect location", err);
@@ -156,6 +180,27 @@ export default function AddProductForm() {
                         />
                     </div>
                 </div>
+
+                {/* Plan Info Badge */}
+                {profile && (
+                    <div className="mb-8 p-4 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-xl ${profile.subscription_plan === 'star' ? 'bg-yellow-100 text-yellow-600' : profile.subscription_plan === 'basic' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'}`}>
+                                {profile.subscription_plan === 'star' ? <Star size={20} /> : <Zap size={20} />}
+                            </div>
+                            <div>
+                                <p className="text-xs font-black text-zinc-400 uppercase tracking-wider">Current Plan</p>
+                                <p className="text-black font-black uppercase">{profile.subscription_plan || 'Free'}</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs font-black text-zinc-400 uppercase tracking-wider">Monthly Limit</p>
+                            <p className={`font-black ${adCounts.current >= adCounts.limit ? 'text-red-500' : 'text-emerald-600'}`}>
+                                {adCounts.current} / {adCounts.limit} Ads
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 {/* Step 1: Product Info */}
                 {step === 1 && (
@@ -728,13 +773,22 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         Back
                     </button>
                     <div className="flex gap-4 w-full sm:w-auto">
-                        <button 
-                            onClick={postAd} 
-                            disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
-                            className="w-full sm:w-auto bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
-                        >
-                            {submitting ? "Posting..." : "Post Ad"}
-                        </button>
+                        {adCounts.current >= adCounts.limit ? (
+                            <Link 
+                                href="/pricing"
+                                className="w-full sm:w-auto bg-black text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg text-center"
+                            >
+                                Upgrade Plan to Post
+                            </Link>
+                        ) : (
+                            <button 
+                                onClick={postAd} 
+                                disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
+                                className="w-full sm:w-auto bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
+                            >
+                                {submitting ? "Posting..." : "Post Ad"}
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

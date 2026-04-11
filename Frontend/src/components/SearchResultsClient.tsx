@@ -116,7 +116,14 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
         return true;
       })
       .sort((a, b) => {
-        if (a.isVerified !== b.isVerified) return b.isVerified ? -1 : 1;
+        if (sortBy === "recommended") {
+            const planPriority = { star: 3, basic: 2, free: 1 };
+            const pA = planPriority[a.plan_type || 'free'] || 1;
+            const pB = planPriority[b.plan_type || 'free'] || 1;
+            if (pA !== pB) return pB - pA;
+            if (a.isVerified !== b.isVerified) return b.isVerified ? -1 : 1;
+            return 0;
+        }
         if (sortBy === "lowest price") {
             const pA = typeof (a as any).priceRaw === "number" ? (a as any).priceRaw : parseInt(a.price.replace(/[^\d]/g, ""));
             const pB = typeof (b as any).priceRaw === "number" ? (b as any).priceRaw : parseInt(b.price.replace(/[^\d]/g, ""));

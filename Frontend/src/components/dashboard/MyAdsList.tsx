@@ -6,7 +6,7 @@ import Link from "next/link";
 import { listMyAds, deleteAd, markAdSold, updateAd } from "@/services/ads.service";
 import { useAlert } from "@/context/AlertContext";
 
-type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any };
+type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any; plan_type?: 'free' | 'basic' | 'star' };
 
 export default function MyAdsList() {
     const { showAlert, showConfirm, showPrompt } = useAlert();
@@ -106,6 +106,23 @@ export default function MyAdsList() {
                                 }`}>
                                     {ad.status || "active"}
                                 </span>
+                                {ad.plan_type && ad.plan_type !== 'free' && (
+                                    <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${
+                                        ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' : 'bg-orange-500 text-white shadow-orange-100'
+                                    }`}>
+                                        {ad.plan_type === 'star' ? (
+                                            <>
+                                                <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                                Star Premium
+                                            </>
+                                        ) : (
+                                            <>
+                                                <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                                Basic Boost
+                                            </>
+                                        )}
+                                    </span>
+                                )}
                             </div>
 
                             <div className="mt-6 flex flex-wrap items-center gap-3">

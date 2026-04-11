@@ -132,7 +132,7 @@ exports.list = async (req, res, next) => {
     const fields = ['image_url', 'images_json', 'expiry_date', 'store_id', 'category_id', 'status',
                     'condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram',
                     'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location',
-                    'subcategory', 'specifications'];
+                    'subcategory', 'specifications', 'plan_type'];
     for (const f of fields) {
       if (has(f)) {
         // Quote if it's camelCase (contains uppercase letters)
@@ -149,7 +149,10 @@ exports.list = async (req, res, next) => {
                      FROM deals
                      JOIN users u ON u.id = deals."userId"
                      ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'
-                     ORDER BY u.is_verified DESC, ${orderSql.replace('ORDER BY ', '')}
+                     ORDER BY 
+                       (CASE WHEN deals.plan_type = 'star' THEN 1 WHEN deals.plan_type = 'basic' THEN 2 ELSE 3 END) ASC,
+                       u.is_verified DESC, 
+                       ${orderSql.replace('ORDER BY ', '')}
                      LIMIT ${limit} OFFSET ${offset}`;
 
     const [[countRow]] = await sequelize.query(countSql, { bind: params });
@@ -212,19 +215,38 @@ exports.create = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
 
+    // --- Subscription Plan Logic & Limits ---
+    const [[userRow]] = await sequelize.query(`SELECT subscription_plan FROM users WHERE id = $1`, { bind: [userId] });
+    const plan = (userRow && userRow.subscription_plan) || 'free';
+    
+    // Check monthly limit
+    const [countRes] = await sequelize.query(
+      `SELECT COUNT(*)::INT as count FROM deals WHERE "userId" = $1 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [userId] }
+    );
+    const existingCount = countRes[0].count;
+
+    const limits = { free: 1, basic: 10, star: 20 };
+    if (existingCount >= limits[plan]) {
+      return res.status(403).json({ 
+        success: false, 
+        message: `Limit exceeded for ${plan} plan. You can only post ${limits[plan]} ad(s) per month.` 
+      });
+    }
+
     // Currency Handling
     const originalCurrency = req.body.originalCurrency || 'NGN';
     const finalPrice = await currencyService.convertToBase(Number(price), originalCurrency);
 
-    const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"', 'status'];
-    const vals = ['$1', '$2', '$3', '$4', 'NOW()', 'NOW()', '$5'];
+    const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"', 'status', 'plan_type'];
+    const vals = ['$1', '$2', '$3', '$4', 'NOW()', 'NOW()', '$5', '$6'];
     
     // Always default to pending for non-admins during initial creation
     const isAdmin = req.user && req.user.role === 'admin';
     const initialStatus = isAdmin && req.body.status ? req.body.status : 'pending';
     
-    const bind = [title, description || null, finalPrice, userId, initialStatus];
-    let idx = 5;
+    const bind = [title, description || null, finalPrice, userId, initialStatus, plan];
+    let idx = 6;
     if (has('store_id') && typeof store_id !== 'undefined') { idx += 1; cols.push('store_id'); vals.push(`$${idx}`); bind.push(store_id); }
     if (has('category_id') && typeof category_id !== 'undefined') { idx += 1; cols.push('category_id'); vals.push(`$${idx}`); bind.push(category_id); }
     if (has('image_url') && typeof image_url !== 'undefined') { idx += 1; cols.push('image_url'); vals.push(`$${idx}`); bind.push(image_url); }
@@ -419,6 +441,9 @@ exports.trending = async (req, res, next) => {
     }
 
     const where = ['d.status = \'active\'', 'u.status = \'active\''];
+    // Trending Ads visibility: Compulsory to have at least Basic or Star plan
+    where.push("d.plan_type IN ('basic', 'star')");
+
     const params = [];
     if (req.query.location && has('location')) {
       params.push(String(req.query.location));
@@ -492,6 +517,44 @@ exports.newest = async (req, res, next) => {
        FROM deals
        ORDER BY "createdAt" DESC
        LIMIT 20`
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.featured = async (req, res, next) => {
+  try {
+    await introspect();
+    const selectCols = ['d.id', 'd.title', 'd.description', 'd.price', 'd."createdAt"', 'd."userId"', 'd.image_url', 'd.plan_type'];
+    const [rows] = await sequelize.query(
+      `SELECT ${selectCols.join(', ')}, u.rating, u.is_verified, 
+              (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id) AS clicks
+       FROM deals d
+       JOIN users u ON u.id = d."userId"
+       WHERE d.status = 'active' AND u.status = 'active' AND d.plan_type = 'star'
+       ORDER BY RANDOM()
+       LIMIT 4`
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.hotDeals = async (req, res, next) => {
+  try {
+    await introspect();
+    const [rows] = await sequelize.query(
+      `SELECT d.id, d.title, d.price, d.image_url, d.location, d.state, d.city, d.condition,
+              u.rating, u.is_verified,
+              (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id) AS clicks
+       FROM deals d
+       JOIN users u ON u.id = d."userId"
+       WHERE d.status = 'active' AND u.status = 'active' AND d.plan_type = 'star'
+       ORDER BY d."createdAt" DESC
+       LIMIT 10`
     );
     return res.json({ success: true, data: rows });
   } catch (err) {

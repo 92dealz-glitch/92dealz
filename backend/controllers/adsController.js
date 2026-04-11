@@ -51,6 +51,8 @@ exports.update = async (req, res, next) => dealsQuery.update(req, res, next);
 exports.remove = async (req, res, next) => dealsQuery.remove(req, res, next);
 exports.getById = async (req, res, next) => dealsQuery.getById(req, res, next);
 exports.trending = async (req, res, next) => dealsQuery.trending(req, res, next);
+exports.featured = async (req, res, next) => dealsQuery.featured(req, res, next);
+exports.hotDeals = async (req, res, next) => dealsQuery.hotDeals(req, res, next);
 
 exports.markSold = async (req, res, next) => {
   try {

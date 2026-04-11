@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { listActiveAds } from "@/services/ads.service";
+import { listHotDeals } from "@/services/ads.service";
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesProvider";
 
@@ -34,13 +34,8 @@ export default function HotDeals() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds({
-          location: filter.country !== "All" ? filter.country : undefined,
-          state: filter.state || undefined,
-          city: filter.city || undefined,
-          today_only: true
-        });
-        const mapped: HotDeal[] = (res.data || []).slice(0, 8).map((d: any) => ({
+        const res = await listHotDeals();
+        const mapped: HotDeal[] = (res.data || []).map((d: any) => ({
           id: d.id,
           title: d.title,
           price: `₦ ${Number(d.price).toLocaleString()}`,

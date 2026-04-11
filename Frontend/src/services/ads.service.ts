@@ -63,6 +63,14 @@ export async function listTrendingAds(params?: { location?: string; state?: stri
   return apiFetch<{ success: boolean; data: any[] }>(url, { method: "GET" }, false);
 }
 
+export async function listFeaturedAds() {
+  return apiFetch<{ success: boolean; data: any[] }>(`${BASE}/featured`, { method: "GET" }, false);
+}
+
+export async function listHotDeals() {
+  return apiFetch<{ success: boolean; data: any[] }>(`${BASE}/hot-deals`, { method: "GET" }, false);
+}
+
 export async function listMyAds(status?: string) {
   let url = `${BASE}/vendor`;
   if (status) url += `?status=${status}`;

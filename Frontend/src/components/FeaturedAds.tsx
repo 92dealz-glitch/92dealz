@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { listActiveAds } from "@/services/ads.service";
+import { listFeaturedAds } from "@/services/ads.service";
 import { Heart, MapPin, Flame } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesProvider";
 
@@ -27,8 +27,8 @@ export default function FeaturedAds() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await listActiveAds();
-        const data = (res.data || []).slice(0, 4).map((d: any) => ({
+        const res = await listFeaturedAds();
+        const data = (res.data || []).map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,
           title: d.title,

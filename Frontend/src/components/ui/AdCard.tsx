@@ -23,6 +23,7 @@ export type AdItem = {
   condition?: string;
   views?: number;
   isVerified?: boolean;
+  plan_type?: 'free' | 'basic' | 'star';
 };
 
 type Props = {

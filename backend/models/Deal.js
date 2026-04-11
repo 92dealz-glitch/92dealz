@@ -113,6 +113,10 @@ const Deal = sequelize.define('Deal', {
     type: DataTypes.JSON,
     allowNull: true,
   },
+  plan_type: {
+    type: DataTypes.ENUM('free', 'basic', 'star'),
+    defaultValue: 'free',
+  },
 }, {
   tableName: 'deals',
   timestamps: true,

@@ -18,6 +18,7 @@ router.get('/', userController.getUsers);
 router.get('/profile', auth, userController.getProfile);
 router.put('/profile', auth, userController.updateProfile);
 router.post('/upgrade-vendor', auth, userController.upgradeToVendor);
+router.post('/buy-plan', auth, userController.buyPlan);
 router.post('/poll', auth, userController.submitPoll);
 
 // Fetch user by id
