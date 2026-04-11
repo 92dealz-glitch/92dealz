@@ -158,7 +158,9 @@ export interface UserProfile {
       basic: number;
       star: number;
     }
-  }
+  };
+  plan_expires_at?: string | null;
+  plan_started_at?: string | null;
 }
 
 export async function getProfile() {
