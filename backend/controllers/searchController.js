@@ -90,7 +90,11 @@ exports.search = async (req, res, next) => {
                      JOIN users u ON u.id = deals."userId"
                      ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'
                      ORDER BY 
-                       (CASE WHEN deals.plan_type = 'star' THEN 1 WHEN deals.plan_type = 'basic' THEN 2 ELSE 3 END) ASC,
+                       (CASE 
+                         WHEN deals.plan_type = 'star' AND u.star_plan_expires_at > NOW() THEN 1 
+                         WHEN deals.plan_type = 'basic' AND u.basic_plan_expires_at > NOW() THEN 2 
+                         ELSE 3 
+                       END) ASC,
                        u.is_verified DESC,
                        ${orderSql.replace('ORDER BY ', '')}
                      LIMIT ${limit} OFFSET ${offset}`;

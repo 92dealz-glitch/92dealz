@@ -14,6 +14,9 @@ interface Vendor {
   status: "pending" | "active" | "rejected";
   businessName: string | null;
   createdAt: string;
+  subscription_plan?: string;
+  basic_plan_expires_at?: string;
+  star_plan_expires_at?: string;
 }
 
 export default function VendorsManagement() {
@@ -112,6 +115,7 @@ export default function VendorsManagement() {
                   <th className="p-4 font-semibold text-zinc-600">Business/Owner</th>
                   <th className="p-4 font-semibold text-zinc-600">Contact</th>
                   <th className="p-4 font-semibold text-zinc-600">Registered</th>
+                  <th className="p-4 font-semibold text-zinc-600">Plans</th>
                   <th className="p-4 font-semibold text-zinc-600">Status</th>
                   <th className="p-4 font-semibold text-zinc-600 text-right">Actions</th>
                 </tr>
@@ -136,6 +140,25 @@ export default function VendorsManagement() {
                     </td>
                     <td className="p-4 text-zinc-600">
                       {new Date(vendor.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex flex-col gap-1">
+                        {(!vendor.basic_plan_expires_at && !vendor.star_plan_expires_at) && (
+                          <span className="text-[10px] font-black text-zinc-400 uppercase">None</span>
+                        )}
+                        {vendor.basic_plan_expires_at && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 text-[10px] font-black uppercase">Featured</span>
+                            <span className="text-[10px] text-zinc-400 font-bold">{new Date(vendor.basic_plan_expires_at).toLocaleDateString()}</span>
+                          </div>
+                        )}
+                        {vendor.star_plan_expires_at && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 text-[10px] font-black uppercase">Premium</span>
+                            <span className="text-[10px] text-zinc-400 font-bold">{new Date(vendor.star_plan_expires_at).toLocaleDateString()}</span>
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4">
                       {vendor.status === "pending" && (

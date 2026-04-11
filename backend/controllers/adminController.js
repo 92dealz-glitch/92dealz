@@ -25,7 +25,7 @@ exports.getDeals = async (req, res, next) => {
     }
 
     const [rows] = await sequelize.query(
-      `SELECT d.id, d.title, d.price, d.status, d."updatedAt", d.description, d.image_url, d.images_json,
+      `SELECT d.id, d.title, d.price, d.status, d."updatedAt", d.description, d.image_url, d.images_json, d.plan_type,
               u.name as merchant,
               c.name as category,
               (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id AND ce.type = 'view') as clicks
@@ -386,7 +386,7 @@ exports.getVendors = async (req, res, next) => {
   try {
     const vendors = await User.findAll({
       where: { role: 'vendor' },
-      attributes: ['id', 'name', 'email', 'phone', 'status', 'businessName', 'createdAt', 'government_id_url', 'businessAddress', 'about', 'is_verified', 'suspension_reason'],
+      attributes: ['id', 'name', 'email', 'phone', 'status', 'businessName', 'createdAt', 'government_id_url', 'businessAddress', 'about', 'is_verified', 'suspension_reason', 'subscription_plan', 'basic_plan_expires_at', 'star_plan_expires_at'],
       order: [['createdAt', 'DESC']]
     });
     return res.json({ success: true, data: vendors });

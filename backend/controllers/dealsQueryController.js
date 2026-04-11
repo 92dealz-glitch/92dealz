@@ -150,7 +150,11 @@ exports.list = async (req, res, next) => {
                      JOIN users u ON u.id = deals."userId"
                      ${whereSql}${whereSql ? ' AND ' : 'WHERE '}u.status = 'active'
                      ORDER BY 
-                       (CASE WHEN deals.plan_type = 'star' THEN 1 WHEN deals.plan_type = 'basic' THEN 2 ELSE 3 END) ASC,
+                       (CASE 
+                          WHEN deals.plan_type = 'star' AND u.star_plan_expires_at > NOW() THEN 1 
+                          WHEN deals.plan_type = 'basic' AND u.basic_plan_expires_at > NOW() THEN 2 
+                          ELSE 3 
+                        END) ASC,
                        u.is_verified DESC, 
                        ${orderSql.replace('ORDER BY ', '')}
                      LIMIT ${limit} OFFSET ${offset}`;
@@ -216,17 +220,25 @@ exports.create = async (req, res, next) => {
     }
 
     // --- Subscription Plan Logic & Limits ---
-    const [[userRow]] = await sequelize.query(`SELECT subscription_plan FROM users WHERE id = $1`, { bind: [userId] });
-    const userOverallPlan = (userRow && userRow.subscription_plan) || 'free';
+    const [[user]] = await sequelize.query(
+      `SELECT subscription_plan, basic_plan_expires_at, star_plan_expires_at FROM users WHERE id = $1`, 
+      { bind: [userId] }
+    );
     
     const targetPlanType = req.body.plan_type || 'free';
+    const now = new Date();
     
-    // Validate authorization for paid tiers
-    if (targetPlanType === 'basic' && userOverallPlan === 'free') {
-      return res.status(403).json({ success: false, message: 'You must upgrade to Basic or Star to post a Featured ad.' });
-    }
-    if (targetPlanType === 'star' && userOverallPlan !== 'star') {
-      return res.status(403).json({ success: false, message: 'You must upgrade to Star Premium to post a Premium ad.' });
+    // Validate authorization for paid tiers based on specific expiries
+    if (targetPlanType === 'basic') {
+      const isExpired = !user.basic_plan_expires_at || new Date(user.basic_plan_expires_at) < now;
+      if (isExpired) {
+        return res.status(403).json({ success: false, message: 'Your Featured (Basic) subscription has expired. Please renew to post Featured ads.' });
+      }
+    } else if (targetPlanType === 'star') {
+      const isExpired = !user.star_plan_expires_at || new Date(user.star_plan_expires_at) < now;
+      if (isExpired) {
+        return res.status(403).json({ success: false, message: 'Your Premium (Star) subscription has expired. Please renew to post Premium ads.' });
+      }
     }
 
     // Check monthly limit specifically for the chosen plan tier

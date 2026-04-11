@@ -126,16 +126,23 @@ exports.updateVisibility = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid plan type' });
     }
 
-    // 1. Check user plan
-    const [[user]] = await sequelize.query(`SELECT subscription_plan FROM users WHERE id = $1`, { bind: [userId] });
-    const currentSub = user.subscription_plan || 'free';
+    // 1. Check user plan specific expiries
+    const [[user]] = await sequelize.query(
+      `SELECT basic_plan_expires_at, star_plan_expires_at FROM users WHERE id = $1`, 
+      { bind: [userId] }
+    );
+    const now = new Date();
 
-    // Basic vendors can only use basic visibility. Star can use both.
-    if (plan_type === 'star' && currentSub !== 'star') {
-      return res.status(403).json({ success: false, message: 'Upgrade to Star Premium to use this tier' });
-    }
-    if (plan_type === 'basic' && currentSub === 'free') {
-      return res.status(403).json({ success: false, message: 'Upgrade to Basic or Star to use this tier' });
+    if (plan_type === 'star') {
+      const isExpired = !user.star_plan_expires_at || new Date(user.star_plan_expires_at) < now;
+      if (isExpired) {
+        return res.status(403).json({ success: false, message: 'Your Premium (Star) subscription has expired. Please renew to use this tier.' });
+      }
+    } else if (plan_type === 'basic') {
+      const isExpired = !user.basic_plan_expires_at || new Date(user.basic_plan_expires_at) < now;
+      if (isExpired) {
+        return res.status(403).json({ success: false, message: 'Your Featured (Basic) subscription has expired. Please renew to use this tier.' });
+      }
     }
 
     // 2. Check quota

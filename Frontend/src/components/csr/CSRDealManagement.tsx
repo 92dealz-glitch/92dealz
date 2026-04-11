@@ -127,6 +127,7 @@ export default function CSRDealManagement() {
               <tr className="bg-zinc-50 text-zinc-500 text-[12px] font-bold uppercase tracking-wider">
                 <th className="px-6 py-4">Product Details</th>
                 <th className="px-6 py-4">Merchant</th>
+                <th className="px-6 py-4 text-center">Plan</th>
                 <th className="px-6 py-4 text-center">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
@@ -171,6 +172,15 @@ export default function CSRDealManagement() {
                     <td className="px-6 py-4">
                        <div className="text-sm text-zinc-600 font-bold">{deal.merchant || "Standard Merchant"}</div>
                        <div className="text-[10px] text-zinc-400 uppercase tracking-widest font-black">Vendor Account</div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                       <span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${
+                          deal.plan_type === 'star' ? 'bg-yellow-100 text-yellow-700' : 
+                          deal.plan_type === 'basic' ? 'bg-orange-100 text-orange-700' : 
+                          'bg-zinc-100 text-zinc-500'
+                        }`}>
+                          {deal.plan_type === 'star' ? 'Premium' : deal.plan_type === 'basic' ? 'Featured' : 'Standard'}
+                        </span>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex flex-col items-center gap-1">

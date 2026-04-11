@@ -116,23 +116,28 @@ export default function MyAdsList() {
                                 }`}>
                                     {ad.status || "active"}
                                 </span>
-                                {ad.plan_type && ad.plan_type !== 'free' && (
-                                    <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${
-                                        ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' : 'bg-orange-500 text-white shadow-orange-100'
-                                    }`}>
-                                        {ad.plan_type === 'star' ? (
-                                            <>
-                                                <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                                                Star Premium
-                                            </>
-                                        ) : (
-                                            <>
-                                                <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                                Basic Boost
-                                            </>
-                                        )}
-                                    </span>
-                                )}
+                                <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${
+                                    ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' : 
+                                    ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' : 
+                                    'bg-zinc-200 text-zinc-600'
+                                }`}>
+                                    {ad.plan_type === 'star' ? (
+                                        <>
+                                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                            Premium Plan
+                                        </>
+                                    ) : ad.plan_type === 'basic' ? (
+                                        <>
+                                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                            Featured Plan
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                            Standard Plan (Free)
+                                        </>
+                                    )}
+                                </span>
                             </div>
 
                             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -238,7 +243,7 @@ export default function MyAdsList() {
                                 id="basic"
                                 title="Featured Boost"
                                 perk="Appears in Trending Ads"
-                                disabled={!profile?.basic_plan_expires_at && !profile?.star_plan_expires_at}
+                                disabled={!profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at) < new Date()}
                                 slots={`${profile?.subscription_stats?.basic || 0} / ${profile?.subscription_stats?.limits?.basic || 10}`}
                                 onSelect={async () => {
                                     try {
@@ -255,7 +260,7 @@ export default function MyAdsList() {
                                 id="star"
                                 title="Star Premium"
                                 perk="Hot Deals & Featured Section"
-                                disabled={!profile?.star_plan_expires_at}
+                                disabled={!profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at) < new Date()}
                                 slots={`${profile?.subscription_stats?.star || 0} / ${profile?.subscription_stats?.limits?.star || 20}`}
                                 onSelect={async () => {
                                     try {
@@ -270,16 +275,17 @@ export default function MyAdsList() {
                             />
                         </div>
 
-                        {!profile?.basic_plan_expires_at && !profile?.star_plan_expires_at && (
+                        {/* Plan Status Help */}
+                        {(!profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at) < new Date()) && (!profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at) < new Date()) && (
                             <div className="mb-8 p-4 bg-orange-50 border border-orange-100 rounded-2xl flex items-center gap-4">
                                 <div className="p-2 bg-white rounded-xl shadow-sm">
                                     <Star className="text-orange-600" size={20} />
                                 </div>
                                 <div>
                                     <p className="text-sm font-black text-orange-900">Subscription Required</p>
-                                    <p className="text-xs font-bold text-orange-700">You need a Basic or Star plan to use these premium tiers.</p>
+                                    <p className="text-xs font-bold text-orange-700">You need a valid Featured or Premium subscription to unlock these slots.</p>
                                 </div>
-                                <Link href="/pricing" className="ml-auto bg-black text-white px-5 py-2 rounded-xl text-xs font-black">Upgrade</Link>
+                                <Link href="/pricing" className="ml-auto bg-black text-white px-5 py-2 rounded-xl text-xs font-black">Get Plan</Link>
                             </div>
                         )}
 

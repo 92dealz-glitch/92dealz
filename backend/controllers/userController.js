@@ -132,6 +132,20 @@ exports.getProfile = async (req, res, next) => {
       }
     }
 
+    // --- Dynamic Plan Calculation & Sync ---
+    const now = new Date();
+    let calculatedPlan = 'free';
+    if (user.star_plan_expires_at && new Date(user.star_plan_expires_at) > now) {
+      calculatedPlan = 'star';
+    } else if (user.basic_plan_expires_at && new Date(user.basic_plan_expires_at) > now) {
+      calculatedPlan = 'basic';
+    }
+
+    if (user.subscription_plan !== calculatedPlan) {
+      user.subscription_plan = calculatedPlan;
+      await user.save();
+    }
+
     // Add subscription stats
     const [[totalAdsRow]] = await sequelize.query(
       `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
@@ -162,7 +176,7 @@ exports.getProfile = async (req, res, next) => {
       }
     };
 
-    return res.json({ success: true, data: { ...user.toJSON(), subscription_stats } });
+    return res.json({ success: true, data: { ...user.toJSON(), subscription_plan: calculatedPlan, subscription_stats } });
   } catch (err) {
     return next(err);
   }
@@ -346,14 +360,23 @@ exports.buyPlan = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    user.subscription_plan = plan; // Keeping as main track for now, but extending:
-    const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    const now = Date.now();
+    const duration = 30 * 24 * 60 * 60 * 1000;
     
     if (plan === 'basic') {
-      user.basic_plan_expires_at = expires;
+      const currentExpiry = user.basic_plan_expires_at ? new Date(user.basic_plan_expires_at).getTime() : 0;
+      const baseTime = currentExpiry > now ? currentExpiry : now;
+      user.basic_plan_expires_at = new Date(baseTime + duration);
     } else if (plan === 'star') {
-      user.star_plan_expires_at = expires;
+      const currentExpiry = user.star_plan_expires_at ? new Date(user.star_plan_expires_at).getTime() : 0;
+      const baseTime = currentExpiry > now ? currentExpiry : now;
+      user.star_plan_expires_at = new Date(baseTime + duration);
     }
+
+    // Recalculate main plan
+    const futureStar = user.star_plan_expires_at && new Date(user.star_plan_expires_at) > new Date();
+    const futureBasic = user.basic_plan_expires_at && new Date(user.basic_plan_expires_at) > new Date();
+    user.subscription_plan = futureStar ? 'star' : (futureBasic ? 'basic' : 'free');
     
     await user.save();
 

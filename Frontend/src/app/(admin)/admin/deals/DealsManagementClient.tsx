@@ -203,6 +203,7 @@ export default function DealsManagementPage() {
                 <th className="px-6 py-5">Price</th>
                 <th className="px-6 py-5">Merchant</th>
                 <th className="px-6 py-5">Category</th>
+                <th className="px-6 py-5 text-center">Visibility Plan</th>
                 <th className="px-6 py-5 text-center">Status</th>
                 <th className="px-6 py-5 text-right">Clicks</th>
                 <th className="px-6 py-5 text-right whitespace-nowrap">Last Updated</th>
@@ -223,6 +224,15 @@ export default function DealsManagementPage() {
                   </td>
                   <td className="px-6 py-6">
                     <span className="text-[14px] text-zinc-400 font-medium whitespace-nowrap">{deal.category || "General"}</span>
+                  </td>
+                  <td className="px-6 py-6 text-center">
+                    <span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${
+                      deal.plan_type === 'star' ? 'bg-yellow-100 text-yellow-700' : 
+                      deal.plan_type === 'basic' ? 'bg-orange-100 text-orange-700' : 
+                      'bg-zinc-100 text-zinc-500'
+                    }`}>
+                      {deal.plan_type === 'star' ? 'Premium' : deal.plan_type === 'basic' ? 'Featured' : 'Standard'}
+                    </span>
                   </td>
                   <td className="px-6 py-6 text-center">
                     <span className={`inline-block px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${statusStyles[deal.status as keyof typeof statusStyles] || "bg-gray-400 text-white"}`}>
