@@ -1,4 +1,5 @@
-import { getProfile as coreGetProfile, updateProfile as coreUpdateProfile, apiFetch } from "@/lib/api";
+import { getProfile as coreGetProfile, updateProfile as coreUpdateProfile } from "../lib/api";
+import { apiFetch } from "./apiClient";
 
 export const getProfile = coreGetProfile;
 export const updateProfile = coreUpdateProfile;

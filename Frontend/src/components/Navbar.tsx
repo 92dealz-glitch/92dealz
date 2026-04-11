@@ -363,7 +363,6 @@ export default function Navbar() {
                       </>
                     )}
                   </div>
-                  )}
                   {isVendor && (
                     <Link 
                       href="/pricing"
