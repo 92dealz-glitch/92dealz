@@ -41,7 +41,7 @@ export default function ProductPage({ params }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState<any>({
-    id, title: '', desc: '', price: '', priceValue: 0, sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', isVerified: false
+    id, title: '', desc: '', price: '', priceValue: 0, sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', isVerified: false, sellerAddress: ''
   })
   useEffect(() => {
     let active = true
@@ -101,6 +101,7 @@ export default function ProductPage({ params }: Props) {
           likes: d.clicks || 0,
           country_code: seller.country_code,
           country_name: seller.country_name,
+          sellerAddress: seller.businessAddress || seller.location || '',
           status: d.status,
           rejection_reason: d.rejection_reason
         })
@@ -453,7 +454,7 @@ export default function ProductPage({ params }: Props) {
 
           {/* 2. Description & Specs Section (Now above Price on Mobile) */}
           <section className="lg:col-start-1 space-y-6">
-            <div className="rounded-lg border border-orange-200 bg-white p-4">
+            <div className="rounded-lg border-2 border-orange-100 bg-white p-4">
               <div className="border-b pb-3">
                 <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-1 scrollbar-hide">
                   <button
@@ -555,7 +556,7 @@ export default function ProductPage({ params }: Props) {
 
           {/* 3. Sidebar (Price Section + Seller Info) - Spans all rows on desktop to avoid gaps */}
           <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4">
-            <div className="rounded-lg bg-white border border-orange-200 p-6 shadow-sm relative">
+            <div className="rounded-lg bg-white border-2 border-orange-100 p-6 shadow-sm relative">
               <div className="flex items-center justify-between gap-2 mb-4">
                 <div className="text-3xl font-extrabold text-orange-600">
                   {product.priceValue ? formatPrice(product.priceValue) : product.price}
@@ -613,7 +614,7 @@ export default function ProductPage({ params }: Props) {
             </div>
 
             {/* 4. Seller Information */}
-            <div className="rounded-lg bg-white border border-orange-200 p-4">
+            <div className="rounded-lg bg-white border-2 border-orange-100 p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold">Seller Information</h3>
                 <div className="text-xs text-gray-500">● Last seen 12:01 PM</div>
@@ -638,9 +639,6 @@ export default function ProductPage({ params }: Props) {
                           <span key={i} className="text-lg">{i < Math.floor(product.sellerRating || 0) ? "⭐️" : "☆"}</span>
                         ))}
                       </div>
-                      <div className="mt-2">
-                        <Link href={`/seller/${product.sellerId}`} className="text-sm text-orange-500 font-medium">View Seller Profile</Link>
-                      </div>
                     </div>
                 </div>
 
@@ -654,6 +652,7 @@ export default function ProductPage({ params }: Props) {
               </div>
 
               <div className="mt-4 space-y-2">
+                <Link href={`/seller/${product.sellerId}`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded font-bold transition-all hover:bg-orange-700 shadow-sm mb-1">👤 View Seller Profile</Link>
                 <Link href={`/seller/${product.sellerId}/listings`} className="w-full inline-block text-center bg-orange-600 text-white py-2 rounded font-bold transition-all hover:bg-orange-700 shadow-sm">📋 See All Ads from Seller</Link>
                 <button 
                   onClick={() => {
@@ -668,7 +667,7 @@ export default function ProductPage({ params }: Props) {
             </div>
 
             {/* 5. Contact Options */}
-            <div className="rounded-lg border border-orange-200 bg-white">
+            <div className="rounded-lg border-2 border-orange-100 bg-white">
               <button 
                 onClick={() => {
                   if (!isLoggedIn || !isFullyVerified) {
@@ -728,7 +727,10 @@ export default function ProductPage({ params }: Props) {
                   >
                     💬 Chat Seller
                   </button>
-                  <div className="mt-4 text-sm text-gray-600">📍 {product.location || "Location not specified"}</div>
+                  <div className="mt-4 text-sm text-gray-600 flex items-start gap-2">
+                    <span className="flex-shrink-0">📍</span>
+                    <span className="font-medium whitespace-pre-wrap">{product.sellerAddress || product.location || "Location not specified"}</span>
+                  </div>
                   <button 
                     onClick={() => {
                       setReportTarget({ vendorId: product.sellerId, itemName: product.sellerName || "this seller" });
@@ -743,7 +745,7 @@ export default function ProductPage({ params }: Props) {
             </div>
 
             {/* 8. Share Section */}
-            <div className="rounded-lg border border-orange-200 bg-white p-5 shadow-sm">
+            <div className="rounded-lg border-2 border-orange-100 bg-white p-5 shadow-sm">
               <h5 className="font-bold text-zinc-900 mb-4 flex items-center gap-2">
                 <Share2 size={18} className="text-orange-600" />
                 Share With Friends
@@ -768,7 +770,7 @@ export default function ProductPage({ params }: Props) {
           </aside>
 
           {/* 6. Reviews Section */}
-          <section className="lg:col-start-1 rounded-lg border border-orange-200 bg-white">
+          <section className="lg:col-start-1 rounded-lg border-2 border-orange-100 bg-white">
               <div className="p-4 border-b">
                 <h4 className="font-semibold flex items-center gap-2">Customer Reviews <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs">{reviews.length}</span></h4>
               </div>
@@ -854,10 +856,13 @@ export default function ProductPage({ params }: Props) {
           </section>
 
           {/* 7. Safety / Before you buy Section */}
-          <section className="lg:col-start-1 rounded-lg border border-orange-200 bg-white p-4 pb-8">
+          <section className="lg:col-start-1 rounded-lg border-2 border-orange-100 bg-white p-4 pb-8">
             <h4 className="font-semibold mb-3">Before you buy</h4>
             <ul className="list-disc pl-5 text-sm text-gray-700 space-y-2">
               <li>Check feedbacks to make sure the person is reliable.</li>
+              <li>Make sure that the person is a verified seller.</li>
+              <li>Ensure the seller's profile picture clearly shows the face so you know who you are dealing with.</li>
+              <li>Agree on the product/service before committing yourself.</li>
               <li>For products, ensure that what's in the package is exactly what you expect.</li>
               <li>Avoid sending any prepayments.</li>
               <li>Meet in person at a safe public place.</li>
