@@ -5,6 +5,7 @@ import { Edit2, CheckCircle, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
 import { listMyAds, deleteAd, markAdSold, updateAd, updateAdVisibility } from "@/services/ads.service";
 import { getProfile } from "@/services/user.service";
+import { UserProfile } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 
 type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any; plan_type?: 'free' | 'basic' | 'star' };
@@ -15,7 +16,7 @@ export default function MyAdsList() {
     const [items, setItems] = useState<Ad[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
     const [promotingId, setPromotingId] = useState<number | null>(null);
     const [isPromoteModalOpen, setIsPromoteModalOpen] = useState(false);
 

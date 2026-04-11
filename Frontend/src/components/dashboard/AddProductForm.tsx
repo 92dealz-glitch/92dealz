@@ -5,7 +5,7 @@ import { uploadImage } from "@/services/upload.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getFallbackArray } from "@/data/categoriesData";
-import { getMyProfile } from "@/lib/api";
+import { getMyProfile, UserProfile } from "@/lib/api";
 import { NIGERIAN_STATES, NIGERIAN_LOCATIONS } from "@/data/locationData";
 import { ChevronDown } from "lucide-react";
 import { useAlert } from "@/context/AlertContext";
@@ -36,7 +36,7 @@ export default function AddProductForm() {
     const [step, setStep] = useState<Step>(1);
     const [showClearModal, setShowClearModal] = useState(false);
     const [categories, setCategories] = useState<CategoryItem[]>([]);
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
     const [isNigerian, setIsNigerian] = useState(false);
     const [profileLoaded, setProfileLoaded] = useState(false);
     const { showVendorTasks, showAlert } = useAlert();

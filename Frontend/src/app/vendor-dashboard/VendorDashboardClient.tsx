@@ -19,11 +19,12 @@ import {
 import { getProfile } from "@/services/user.service";
 import { getVendorStats } from "@/services/vendor.service";
 import { listMyAds } from "@/services/ads.service";
+import { UserProfile } from "@/lib/api";
 
 export default function VendorDashboardPage() {
     const [stats, setStats] = useState<{ads:number; views:number; sold:number; msgs:number; unread:number}>({ads:0, views:0, sold:0, msgs:0, unread:0});
     const [recentAds, setRecentAds] = useState<any[]>([]);
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
 
     useEffect(() => {
         (async () => {

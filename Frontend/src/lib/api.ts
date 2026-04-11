@@ -129,8 +129,40 @@ export async function loginUser(payload: {
   return data;
 }
 
+export interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string | null;
+  profile_image_url?: string | null;
+  businessName?: string | null;
+  businessCategory?: string | null;
+  businessAddress?: string | null;
+  about?: string | null;
+  status?: string;
+  is_verified?: boolean;
+  is_phone_verified?: boolean;
+  is_email_verified?: boolean;
+  verification_status?: 'none' | 'pending' | 'approved' | 'rejected';
+  government_id_url?: string | null;
+  last_poll_date?: string | null;
+  poll_category?: string | null;
+  poll_choice?: string | null;
+  subscription_plan?: 'free' | 'basic' | 'star';
+  subscription_stats?: {
+    total: number;
+    basic: number;
+    star: number;
+    limits: {
+      free: number;
+      basic: number;
+      star: number;
+    }
+  }
+}
+
 export async function getProfile() {
-  return apiFetch<{ success: boolean; data: unknown }>(
+  return apiFetch<{ success: boolean; data: UserProfile }>(
     "/users/profile",
     { method: "GET", auth: true }
   );
@@ -145,7 +177,7 @@ export async function updateProfile(payload: {
   businessAddress?: string;
   about?: string;
 }) {
-  return apiFetch<{ success: boolean; data: unknown }>(
+  return apiFetch<{ success: boolean; data: UserProfile }>(
     "/users/profile",
     { method: "PUT", body: payload, auth: true }
   );
@@ -166,7 +198,7 @@ export async function updateProfileImage(url: string | null) {
 }
 
 export async function getMyProfile() {
-  return apiFetch<{ success: boolean; data: { id: number; name: string; email: string; phone?: string | null; profile_image_url?: string | null; businessName?: string | null; businessCategory?: string | null; businessAddress?: string | null; about?: string | null; status?: string; is_verified?: boolean; is_phone_verified?: boolean; is_email_verified?: boolean; verification_status?: 'none' | 'pending' | 'approved' | 'rejected'; government_id_url?: string | null; last_poll_date?: string | null; poll_category?: string | null; poll_choice?: string | null } }>(
+  return apiFetch<{ success: boolean; data: UserProfile }>(
     "/users/profile",
     { method: "GET", auth: true }
   );
