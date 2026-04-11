@@ -61,7 +61,7 @@ export default function FeaturedAds() {
         {featured.map((it) => {
           const fav = isFavorite(it.id);
           return (
-            <div key={it.id} className="bg-[#f45c03] rounded-[32px] p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row gap-6 items-center transition-all hover:scale-[1.01] relative group h-full">
+            <div key={it.id} className="bg-[#f45c03] rounded-[28px] sm:rounded-[32px] p-3 sm:p-6 shadow-2xl flex flex-col sm:flex-row gap-4 sm:gap-6 items-center transition-all hover:scale-[1.01] relative group h-full">
               {/* IMAGE SECTION */}
               <div className="w-full sm:w-[45%] aspect-square relative bg-white border-[6px] border-white rounded-[24px] overflow-hidden shrink-0 shadow-lg">
                 <Image
