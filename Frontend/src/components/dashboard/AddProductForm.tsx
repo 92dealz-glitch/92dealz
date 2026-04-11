@@ -260,12 +260,14 @@ export default function AddProductForm() {
                                         price: "",
                                         negotiable: "No",
                                         description: "",
-                                        images: [],
+                                        images: [] as string[],
                                         state: "",
                                         city: "",
                                         location: "",
+                                        internalStorage: "",
                                         originalCurrency: "USD",
-                                        specifications: {}
+                                        specifications: {} as Record<string, any>,
+                                        plan_type: "free" as "free" | "basic" | "star"
                                     });
                                     setStep(1);
                                     setShowClearModal(false);
