@@ -183,7 +183,7 @@ export default function MyAdsList() {
                                     <Trash2 size={14} />
                                     Delete
                                 </button>
-                                {ad.status === 'active' && ad.plan_type === 'free' && (
+                                {ad.status === 'active' && (
                                     <button
                                         onClick={() => {
                                             setPromotingId(ad.id);
@@ -191,7 +191,7 @@ export default function MyAdsList() {
                                         }}
                                         className="flex items-center gap-2 bg-gradient-to-r from-[#f45c03] to-orange-600 text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg hover:shadow-orange-100 active:scale-95">
                                         <Plus size={16} />
-                                        Promote Ad
+                                        Change Plan
                                     </button>
                                 )}
                             </div>
@@ -212,25 +212,42 @@ export default function MyAdsList() {
                         </button>
                         
                         <div className="mb-8">
-                            <h3 className="text-3xl font-black text-black mb-2">Upgrade Visibility</h3>
-                            <p className="text-zinc-500 font-bold">Choose a promotion tier for your ad to reach more buyers.</p>
+                            <h3 className="text-3xl font-black text-black mb-2">Adjust Visibility</h3>
+                            <p className="text-zinc-500 font-bold">Choose a visibility tier for your ad.</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                            <PromotionTierCard 
+                                id="free"
+                                title="Standard Tier"
+                                perk="Index Visibility"
+                                disabled={false}
+                                slots={`${profile?.subscription_stats?.free || 0} / ${profile?.subscription_stats?.limits?.free || 1}`}
+                                onSelect={async () => {
+                                    try {
+                                        await updateAdVisibility(promotingId, 'free');
+                                        showAlert("Ad changed to Standard visibility!", "Success");
+                                        setIsPromoteModalOpen(false);
+                                        load();
+                                    } catch (e: any) {
+                                        showAlert(e.message || "Failed to switch plan");
+                                    }
+                                }}
+                            />
                             <PromotionTierCard 
                                 id="basic"
                                 title="Featured Boost"
                                 perk="Appears in Trending Ads"
-                                disabled={profile?.subscription_plan === 'free'}
+                                disabled={!profile?.basic_plan_expires_at && !profile?.star_plan_expires_at}
                                 slots={`${profile?.subscription_stats?.basic || 0} / ${profile?.subscription_stats?.limits?.basic || 10}`}
                                 onSelect={async () => {
                                     try {
                                         await updateAdVisibility(promotingId, 'basic');
-                                        showAlert("Ad promoted to Featured Boost!", "Success");
+                                        showAlert("Ad changed to Featured Boost!", "Success");
                                         setIsPromoteModalOpen(false);
                                         load();
                                     } catch (e: any) {
-                                        showAlert(e.message || "Failed to promote");
+                                        showAlert(e.message || "Failed to switch plan");
                                     }
                                 }}
                             />
@@ -238,29 +255,29 @@ export default function MyAdsList() {
                                 id="star"
                                 title="Star Premium"
                                 perk="Hot Deals & Featured Section"
-                                disabled={profile?.subscription_plan !== 'star'}
+                                disabled={!profile?.star_plan_expires_at}
                                 slots={`${profile?.subscription_stats?.star || 0} / ${profile?.subscription_stats?.limits?.star || 20}`}
                                 onSelect={async () => {
                                     try {
                                         await updateAdVisibility(promotingId, 'star');
-                                        showAlert("Ad promoted to Star Premium!", "Success");
+                                        showAlert("Ad changed to Star Premium!", "Success");
                                         setIsPromoteModalOpen(false);
                                         load();
                                     } catch (e: any) {
-                                        showAlert(e.message || "Failed to promote");
+                                        showAlert(e.message || "Failed to switch plan");
                                     }
                                 }}
                             />
                         </div>
 
-                        {profile?.subscription_plan === 'free' && (
+                        {!profile?.basic_plan_expires_at && !profile?.star_plan_expires_at && (
                             <div className="mb-8 p-4 bg-orange-50 border border-orange-100 rounded-2xl flex items-center gap-4">
                                 <div className="p-2 bg-white rounded-xl shadow-sm">
                                     <Star className="text-orange-600" size={20} />
                                 </div>
                                 <div>
                                     <p className="text-sm font-black text-orange-900">Subscription Required</p>
-                                    <p className="text-xs font-bold text-orange-700">You need a Basic or Star plan to use these tiers.</p>
+                                    <p className="text-xs font-bold text-orange-700">You need a Basic or Star plan to use these premium tiers.</p>
                                 </div>
                                 <Link href="/pricing" className="ml-auto bg-black text-white px-5 py-2 rounded-xl text-xs font-black">Upgrade</Link>
                             </div>
@@ -301,13 +318,13 @@ function PromotionTierCard({ title, perk, disabled, slots, onSelect, id }: { tit
                         onClick={onSelect}
                         className="w-full mt-4 bg-black text-white py-3 rounded-xl font-black text-sm hover:bg-zinc-800 active:scale-95 transition-all"
                     >
-                        Activate Now
+                        Select Plan
                     </button>
                 </>
             ) : (
                 <div className="mt-4 flex items-center gap-2 text-[11px] font-black text-zinc-400 uppercase tracking-wider">
                     <Lock size={12} />
-                    Plan Required
+                    Subscription Required
                 </div>
             )}
         </div>

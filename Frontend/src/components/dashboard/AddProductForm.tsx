@@ -65,7 +65,7 @@ export default function AddProductForm() {
         plan_type: "free" as "free" | "basic" | "star"
     });
 
-    const [adCounts, setAdCounts] = useState({ current: 0, limit: 1 });
+
 
     useEffect(() => {
         getFallbackArray().then(res => {
@@ -110,12 +110,6 @@ export default function AddProductForm() {
                         plan_type: 'free' // Default new ads to free visibility
                     }));
 
-                    if (res.data.subscription_stats) {
-                        setAdCounts({
-                            current: res.data.subscription_stats.total,
-                            limit: res.data.subscription_stats.limits[res.data.subscription_plan || 'free']
-                        });
-                    }
                 }
             } catch (err) {
                 console.error("Failed to load profile or detect location", err);
@@ -181,12 +175,6 @@ export default function AddProductForm() {
                                 <p className="text-black font-black uppercase">{profile.subscription_plan || 'Free'}</p>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <p className="text-xs font-black text-zinc-400 uppercase tracking-wider">Monthly Limit</p>
-                            <p className={`font-black ${adCounts.current >= adCounts.limit ? 'text-red-500' : 'text-emerald-600'}`}>
-                                {adCounts.current} / {adCounts.limit} Ads
-                            </p>
-                        </div>
                     </div>
                 )}
 
@@ -220,7 +208,6 @@ export default function AddProductForm() {
                         isNigerian={isNigerian}
                         profile={profile}
                         showVendorTasks={showVendorTasks}
-                        adCounts={adCounts}
                     />
                 )}
             </div>
@@ -589,14 +576,13 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks, adCounts }: { 
+function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks }: { 
     data: any, 
     updateData: (d: any) => void, 
     onBack: () => void, 
     isNigerian?: boolean, 
     profile: any,
-    showVendorTasks: () => void,
-    adCounts: { current: number, limit: number }
+    showVendorTasks: () => void
 }) {
     const router = useRouter();
     const { showAlert } = useAlert();
@@ -748,7 +734,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         active={data.plan_type === 'free'}
                         onClick={() => updateData({ plan_type: 'free' })}
                         disabled={false}
-                        count={null}
+                        count={profile?.subscription_stats ? `${profile.subscription_stats.free} / ${profile.subscription_stats.limits.free}` : null}
                     />
                     <VisibilityOption 
                         id="basic"
@@ -795,23 +781,32 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         Back
                     </button>
                     <div className="flex gap-4 w-full sm:w-auto">
-                        {/* Overall limit check */}
-                        {adCounts.current >= adCounts.limit ? (
-                            <Link 
-                                href="/pricing"
-                                className="w-full sm:w-auto bg-black text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg text-center"
-                            >
-                                Upgrade Plan to Post
-                            </Link>
-                        ) : (
-                            <button 
-                                onClick={postAd} 
-                                disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
-                                className="w-full sm:w-auto bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
-                            >
-                                {submitting ? "Posting..." : "Post Ad"}
-                            </button>
-                        )}
+                        {(() => {
+                            const currentPlanType = data.plan_type || 'free';
+                            const stats = profile?.subscription_stats;
+                            const limitReached = stats ? (stats[currentPlanType as keyof typeof stats] as number) >= (stats.limits[currentPlanType as keyof typeof stats.limits] as number) : false;
+
+                            if (limitReached) {
+                                return (
+                                    <Link 
+                                        href="/pricing"
+                                        className="w-full sm:w-auto bg-black text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg text-center"
+                                    >
+                                        Upgrade Plan to Post
+                                    </Link>
+                                );
+                            }
+
+                            return (
+                                <button 
+                                    onClick={postAd} 
+                                    disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
+                                    className="w-full sm:w-auto bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
+                                >
+                                    {submitting ? "Posting..." : "Post Ad"}
+                                </button>
+                            );
+                        })()}
                     </div>
                 </div>
             </div>

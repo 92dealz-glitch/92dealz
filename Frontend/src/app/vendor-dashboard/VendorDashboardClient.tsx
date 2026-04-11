@@ -77,15 +77,24 @@ export default function VendorDashboardPage() {
                                     <p className="text-zinc-500 font-bold text-sm">
                                         {profile.subscription_plan === 'star' ? '20 Featured & Top Ranking Ads' : profile.subscription_plan === 'basic' ? '10 Featured Ads' : '1 Free Ad per month'}
                                     </p>
-                                    {profile.plan_expires_at && (
-                                        <p className="text-[11px] text-zinc-400 mt-2 font-bold uppercase tracking-wider">Expires: {new Date(profile.plan_expires_at).toLocaleDateString()}</p>
+                                    {profile.basic_plan_expires_at && (
+                                        <p className="text-[11px] text-zinc-400 mt-2 font-bold uppercase tracking-wider">Basic Expires: {new Date(profile.basic_plan_expires_at).toLocaleDateString()}</p>
+                                    )}
+                                    {profile.star_plan_expires_at && (
+                                        <p className="text-[11px] text-zinc-400 mt-1 font-bold uppercase tracking-wider">Star Expires: {new Date(profile.star_plan_expires_at).toLocaleDateString()}</p>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+                            <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl">
                                 <UsageMeter 
-                                    label="Featured Ads (Basic)" 
+                                    label="Standard (Free)" 
+                                    current={profile.subscription_stats?.free || 0} 
+                                    limit={profile.subscription_stats?.limits?.free || 1} 
+                                    color="bg-zinc-500"
+                                />
+                                <UsageMeter 
+                                    label="Featured (Basic)" 
                                     current={profile.subscription_stats?.basic || 0} 
                                     limit={profile.subscription_stats?.limits?.basic || 10} 
                                     color="bg-orange-500"

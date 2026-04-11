@@ -151,6 +151,7 @@ export interface UserProfile {
   subscription_plan?: 'free' | 'basic' | 'star';
   subscription_stats?: {
     total: number;
+    free: number;
     basic: number;
     star: number;
     limits: {
@@ -159,7 +160,8 @@ export interface UserProfile {
       star: number;
     }
   };
-  plan_expires_at?: string | null;
+  basic_plan_expires_at?: string | null;
+  star_plan_expires_at?: string | null;
   plan_started_at?: string | null;
 }
 

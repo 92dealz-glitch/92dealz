@@ -139,15 +139,13 @@ exports.updateVisibility = async (req, res, next) => {
     }
 
     // 2. Check quota
-    const limits = { basic: 10, star: 20 };
-    if (plan_type !== 'free') {
-      const [[countRow]] = await sequelize.query(
-        `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = $2 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
-        { bind: [userId, plan_type] }
-      );
-      if (countRow.count >= limits[plan_type]) {
-        return res.status(403).json({ success: false, message: `You have exhausted your monthly ${plan_type} slots` });
-      }
+    const limits = { free: 1, basic: 10, star: 20 };
+    const [[countRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = $2 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [userId, plan_type] }
+    );
+    if (countRow.count >= limits[plan_type]) {
+      return res.status(403).json({ success: false, message: `You have exhausted your monthly ${plan_type} ad slots (${limits[plan_type]}).` });
     }
 
     // 3. Update

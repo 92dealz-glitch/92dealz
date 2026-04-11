@@ -5,13 +5,15 @@ import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { buyPlan, getProfile } from "@/services/user.service";
+import { UserProfile } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { Check, Star, Zap, Info } from "lucide-react";
 
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [currentPlan, setCurrentPlan] = useState<string | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<'free' | 'basic' | 'star' | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -19,7 +21,8 @@ export default function PricingPage() {
       try {
         const res = await getProfile();
         if (res.success) {
-          setCurrentPlan((res.data as any).subscription_plan);
+          setCurrentPlan((res.data as UserProfile).subscription_plan || 'free');
+          setProfile(res.data as UserProfile);
         }
       } catch (err) {}
     };
@@ -32,14 +35,17 @@ export default function PricingPage() {
     try {
       const res = await buyPlan(plan);
       if (res.success) {
-        setMessage({ type: 'success', text: res.message });
+        setMessage({ type: 'success', text: "Successfully subscribed to the plan." });
         setCurrentPlan(plan);
+        // Refresh profile to get updated dates
+        const profileRes = await getProfile();
+        if (profileRes.success) setProfile(profileRes.data as UserProfile);
         setTimeout(() => setMessage(null), 5000);
       } else {
-        setMessage({ type: 'error', text: "Failed to upgrade plan." });
+        setMessage({ type: 'error', text: "Failed to process subscription." });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: "An error occurred. Are you logged in?" });
+      setMessage({ type: 'error', text: "An error occurred. Please ensure you are authenticated." });
     } finally {
       setLoading(null);
     }
@@ -48,53 +54,51 @@ export default function PricingPage() {
   const plans = [
     {
       id: 'free',
-      name: 'Free Plan',
+      name: 'Standard Tier',
       price: 'Free',
       period: '',
-      description: 'Perfect for casual sellers getting started.',
+      description: 'The foundational entry point for independent sellers establishing their market presence.',
       features: [
-        'Post 1 ad per month',
-        'Standard visibility',
-        'Basic search ranking',
-        '24h support response'
+        '1 Standard Visibility Ad per month',
+        'Index-level search ranking',
+        'Standard 24h support response time'
       ],
-      buttonText: 'Starting Plan',
+      buttonText: 'Default Tier',
       color: 'gray',
       icon: <Info className="w-6 h-6 text-gray-400" />
     },
     {
       id: 'basic',
-      name: 'Basic Plan',
+      name: 'Featured Tier',
       price: '₦1,000',
       period: '/month',
-      description: 'Ideal for small businesses wanting more exposure.',
+      description: 'Designed for scaling businesses requiring enhanced market exposure and priority placement.',
       features: [
-        'Post up to 10 ads per month',
-        'Visible in Trending Ads',
-        'Priority search ranking',
-        'Verified Vendor badge',
-        '8h support response'
+        '10 Featured Visibility Ads per month',
+        'Priority placement in Trending feeds',
+        'Elevated search algorithm ranking',
+        'Official Verified Vendor designation',
+        'Expedited 8h support SLA'
       ],
-      buttonText: 'Upgrade to Basic',
+      buttonText: 'Subscribe to Featured',
       color: 'orange',
       icon: <Zap className="w-6 h-6 text-[#f45c03]" />,
       recommended: true
     },
     {
       id: 'star',
-      name: 'Star Premium',
+      name: 'Premium Enterprise',
       price: '₦5,000',
       period: '/month',
-      description: 'The ultimate visibility for professional vendors.',
+      description: 'Maximum visibility architecture tailored for professional vendors dominating their category.',
       features: [
-        'Post up to 20 products per month',
-        'Listed in Featured Ads (Orange Box)',
-        'Listed in Hot Deals Today',
-        'Top priority in search results',
-        'Instant support response',
-        'Advanced seller analytics'
+        '20 Premium Visibility Ads per month',
+        'Exclusive placement in Prime sections',
+        'Highest priority indexing in search matrices',
+        'Real-time dedicated support routing',
+        'Comprehensive market performance analytics'
       ],
-      buttonText: 'Get Star Premium',
+      buttonText: 'Subscribe to Premium',
       color: 'star',
       icon: <Star className="w-6 h-6 text-yellow-500" />
     }
@@ -171,7 +175,7 @@ export default function PricingPage() {
                   <span className="text-gray-400 font-semibold">{plan.period}</span>
                 </div>
 
-                <div className="flex-grow space-y-4 mb-10">
+                <div className="flex-grow space-y-4 mb-8">
                   {plan.features.map((feature, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className={`mt-1 p-0.5 rounded-full ${plan.id === 'free' ? 'bg-gray-200' : 'bg-[#f45c03]/10'}`}>
@@ -181,6 +185,38 @@ export default function PricingPage() {
                     </div>
                   ))}
                 </div>
+
+                {/* Analytics Block */}
+                {profile?.subscription_stats && (
+                  <div className="mb-6 p-4 rounded-xl border bg-gray-50/50 border-gray-100">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Usage Analytics</p>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold text-gray-700">Ads Posted</span>
+                      <span className="text-xs font-black text-black">
+                        {(profile.subscription_stats[plan.id as 'free'|'basic'|'star'] as number) || 0} / {(profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'] as number) || '-'}
+                      </span>
+                    </div>
+                    {/* Time Left */}
+                    {(plan.id === 'basic' && profile.basic_plan_expires_at) && (
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+                        <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
+                        <span className="text-[10px] font-black text-[#f45c03]">{new Date(profile.basic_plan_expires_at).toLocaleDateString()}</span>
+                      </div>
+                    )}
+                    {(plan.id === 'star' && profile.star_plan_expires_at) && (
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+                        <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
+                        <span className="text-[10px] font-black text-yellow-600">{new Date(profile.star_plan_expires_at).toLocaleDateString()}</span>
+                      </div>
+                    )}
+                    {(plan.id === 'free') && (
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+                        <span className="text-xs font-bold text-gray-700">Renews</span>
+                        <span className="text-[10px] font-black text-gray-500">Monthly</span>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <button
                   onClick={() => handleBuy(plan.id as any)}

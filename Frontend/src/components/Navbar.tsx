@@ -314,14 +314,23 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-5">
                   <TaskIcon showVendorTasks={showVendorTasks} />
+                  {isVendor && (
+                    <Link
+                      href="/pricing"
+                      className="hidden lg:flex items-center gap-1.5 px-4 py-2.5 bg-[#f45c03] text-white rounded-full text-[13px] font-black border border-[#f45c03] hover:bg-orange-600 transition-all shadow-md shadow-orange-100 group"
+                    >
+                      <Star size={14} className="fill-current group-hover:scale-110 transition-transform" />
+                      Promote Ads
+                    </Link>
+                  )}
                   <div className="relative">
                     <button
                       onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
-                      className="p-2 text-zinc-600 hover:text-orange-600 transition-colors relative"
+                      className="p-2 text-zinc-600 hover:text-[#f45c03] transition-colors relative"
                     >
                       <Bell size={24} />
                       {unreadCount > 0 && (
-                        <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-orange-600 text-white text-[10px] font-bold rounded-full border-2 border-white flex items-center justify-center">
+                        <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#f45c03] text-white text-[10px] font-bold rounded-full border-2 border-white flex items-center justify-center">
                           {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
                       )}
@@ -332,7 +341,7 @@ export default function Navbar() {
                         <div className="absolute right-0 mt-3 w-80 bg-white border border-zinc-100 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                           <div className="px-4 py-3 border-b border-zinc-100 bg-zinc-50 flex items-center justify-between">
                             <span className="text-sm font-bold text-zinc-900">Notifications</span>
-                            {unreadCount > 0 && <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">{unreadCount} New</span>}
+                            {unreadCount > 0 && <span className="text-[10px] bg-orange-100 text-[#f45c03] px-2 py-0.5 rounded-full font-bold">{unreadCount} New</span>}
                           </div>
                           <div className="max-h-[350px] overflow-y-auto">
                             {notifications.filter(n => !n.read_at).length > 0 ? (
@@ -346,7 +355,7 @@ export default function Navbar() {
                                   }}
                                   className="px-4 py-3 border-b border-zinc-50 hover:bg-orange-50/30 transition-colors cursor-pointer relative bg-orange-50/30"
                                 >
-                                  <div className="absolute left-1 top-4 w-1.5 h-1.5 bg-orange-500 rounded-full" />
+                                  <div className="absolute left-1 top-4 w-1.5 h-1.5 bg-[#f45c03] rounded-full" />
                                   <p className="text-xs font-bold text-zinc-900 mb-0.5">{n.title}</p>
                                   <p className="text-[11px] text-zinc-500 line-clamp-2 leading-relaxed">{n.message}</p>
                                   <p className="text-[10px] text-zinc-400 mt-1.5">{new Date(n.createdAt).toLocaleDateString()} at {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
@@ -363,15 +372,6 @@ export default function Navbar() {
                       </>
                     )}
                   </div>
-                  {isVendor && (
-                    <Link
-                      href="/pricing"
-                      className="hidden lg:flex items-center gap-1.5 px-4 py-2 bg-black text-yellow-400 rounded-full text-xs font-black border border-black hover:bg-zinc-800 transition-all shadow-sm group"
-                    >
-                      <Star size={14} className="fill-current group-hover:scale-110 transition-transform" />
-                      Promote Ads
-                    </Link>
-                  )}
                   <NavUserMenu signOut={signOut} />
                 </div>
               )}

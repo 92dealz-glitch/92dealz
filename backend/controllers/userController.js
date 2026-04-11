@@ -113,7 +113,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getProfile = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status', 'country_code', 'country_name', 'subscription_plan', 'plan_expires_at'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status', 'country_code', 'country_name', 'subscription_plan', 'basic_plan_expires_at', 'star_plan_expires_at'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -141,6 +141,10 @@ exports.getProfile = async (req, res, next) => {
       `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = 'star' AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
       { bind: [req.user.id] }
     );
+    const [[freeAdsRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = 'free' AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [req.user.id] }
+    );
     const [[basicAdsRow]] = await sequelize.query(
       `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = 'basic' AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
       { bind: [req.user.id] }
@@ -148,6 +152,7 @@ exports.getProfile = async (req, res, next) => {
 
     const subscription_stats = {
       total: totalAdsRow.count,
+      free: freeAdsRow.count,
       star: starAdsRow.count,
       basic: basicAdsRow.count,
       limits: {
@@ -341,9 +346,14 @@ exports.buyPlan = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    user.subscription_plan = plan;
-    // Set expiry to 30 days from now
-    user.plan_expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    user.subscription_plan = plan; // Keeping as main track for now, but extending:
+    const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    
+    if (plan === 'basic') {
+      user.basic_plan_expires_at = expires;
+    } else if (plan === 'star') {
+      user.star_plan_expires_at = expires;
+    }
     
     await user.save();
 

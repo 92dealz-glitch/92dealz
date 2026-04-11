@@ -217,20 +217,30 @@ exports.create = async (req, res, next) => {
 
     // --- Subscription Plan Logic & Limits ---
     const [[userRow]] = await sequelize.query(`SELECT subscription_plan FROM users WHERE id = $1`, { bind: [userId] });
-    const plan = (userRow && userRow.subscription_plan) || 'free';
+    const userOverallPlan = (userRow && userRow.subscription_plan) || 'free';
     
-    // Check monthly limit
+    const targetPlanType = req.body.plan_type || 'free';
+    
+    // Validate authorization for paid tiers
+    if (targetPlanType === 'basic' && userOverallPlan === 'free') {
+      return res.status(403).json({ success: false, message: 'You must upgrade to Basic or Star to post a Featured ad.' });
+    }
+    if (targetPlanType === 'star' && userOverallPlan !== 'star') {
+      return res.status(403).json({ success: false, message: 'You must upgrade to Star Premium to post a Premium ad.' });
+    }
+
+    // Check monthly limit specifically for the chosen plan tier
     const [countRes] = await sequelize.query(
-      `SELECT COUNT(*)::INT as count FROM deals WHERE "userId" = $1 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
-      { bind: [userId] }
+      `SELECT COUNT(*)::INT as count FROM deals WHERE "userId" = $1 AND plan_type = $2 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [userId, targetPlanType] }
     );
     const existingCount = countRes[0].count;
 
     const limits = { free: 1, basic: 10, star: 20 };
-    if (existingCount >= limits[plan]) {
+    if (existingCount >= limits[targetPlanType]) {
       return res.status(403).json({ 
         success: false, 
-        message: `Limit exceeded for ${plan} plan. You can only post ${limits[plan]} ad(s) per month.` 
+        message: `Limit exceeded for ${targetPlanType} slot. You can only post ${limits[targetPlanType]} ${targetPlanType} ad(s) per month.` 
       });
     }
 
@@ -245,7 +255,7 @@ exports.create = async (req, res, next) => {
     const isAdmin = req.user && req.user.role === 'admin';
     const initialStatus = isAdmin && req.body.status ? req.body.status : 'pending';
     
-    const bind = [title, description || null, finalPrice, userId, initialStatus, plan];
+    const bind = [title, description || null, finalPrice, userId, initialStatus, targetPlanType];
     let idx = 6;
     if (has('store_id') && typeof store_id !== 'undefined') { idx += 1; cols.push('store_id'); vals.push(`$${idx}`); bind.push(store_id); }
     if (has('category_id') && typeof category_id !== 'undefined') { idx += 1; cols.push('category_id'); vals.push(`$${idx}`); bind.push(category_id); }
