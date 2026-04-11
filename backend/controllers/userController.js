@@ -131,7 +131,33 @@ exports.getProfile = async (req, res, next) => {
         await user.save();
       }
     }
-    return res.json({ success: true, data: user });
+
+    // Add subscription stats
+    const [[totalAdsRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [req.user.id] }
+    );
+    const [[starAdsRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = 'star' AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [req.user.id] }
+    );
+    const [[basicAdsRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = 'basic' AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [req.user.id] }
+    );
+
+    const subscription_stats = {
+      total: totalAdsRow.count,
+      star: starAdsRow.count,
+      basic: basicAdsRow.count,
+      limits: {
+        free: 1,
+        basic: 10,
+        star: 20
+      }
+    };
+
+    return res.json({ success: true, data: { ...user.toJSON(), subscription_stats } });
   } catch (err) {
     return next(err);
   }

@@ -27,6 +27,7 @@ export interface AdPayload {
   specifications?: Record<string, any>;
   originalCurrency?: "NGN" | "USD" | "CNY";
   originalPrice?: number;
+  plan_type?: "free" | "basic" | "star";
 }
 
 export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string; random?: string; state?: string; city?: string; location?: string; today_only?: boolean }) {
@@ -101,6 +102,7 @@ export async function createAd(payload: AdPayload) {
     specifications: payload.specifications,
     originalCurrency: payload.originalCurrency,
     originalPrice: payload.originalPrice,
+    plan_type: payload.plan_type || 'free'
   };
   if (payload.category_id !== undefined) body.category_id = payload.category_id;
   if (payload.images) {
@@ -132,4 +134,11 @@ export async function deleteAd(id: number) {
 
 export async function markAdSold(id: number) {
   return apiFetch<{ success: boolean; data: any }>(`${BASE}/${id}/sold`, { method: "PATCH" }, true);
+}
+
+export async function updateAdVisibility(id: number, plan_type: "free" | "basic" | "star") {
+  return apiFetch<{ success: boolean; data: any }>(`${BASE}/${id}/visibility`, { 
+    method: "PATCH", 
+    body: JSON.stringify({ plan_type }) 
+  }, true);
 }

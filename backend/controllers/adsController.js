@@ -115,3 +115,50 @@ exports.getLocationCounts = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.updateVisibility = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const { plan_type } = req.body;
+    const userId = req.user && req.user.id;
+    if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    if (!['free', 'basic', 'star'].includes(plan_type)) {
+      return res.status(400).json({ success: false, message: 'Invalid plan type' });
+    }
+
+    // 1. Check user plan
+    const [[user]] = await sequelize.query(`SELECT subscription_plan FROM users WHERE id = $1`, { bind: [userId] });
+    const currentSub = user.subscription_plan || 'free';
+
+    // Basic vendors can only use basic visibility. Star can use both.
+    if (plan_type === 'star' && currentSub !== 'star') {
+      return res.status(403).json({ success: false, message: 'Upgrade to Star Premium to use this tier' });
+    }
+    if (plan_type === 'basic' && currentSub === 'free') {
+      return res.status(403).json({ success: false, message: 'Upgrade to Basic or Star to use this tier' });
+    }
+
+    // 2. Check quota
+    const limits = { basic: 10, star: 20 };
+    if (plan_type !== 'free') {
+      const [[countRow]] = await sequelize.query(
+        `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = $2 AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+        { bind: [userId, plan_type] }
+      );
+      if (countRow.count >= limits[plan_type]) {
+        return res.status(403).json({ success: false, message: `You have exhausted your monthly ${plan_type} slots` });
+      }
+    }
+
+    // 3. Update
+    const [rows] = await sequelize.query(
+      `UPDATE deals SET plan_type = $1, "updatedAt" = NOW() WHERE id = $2 AND "userId" = $3 RETURNING id`,
+      { bind: [plan_type, id, userId] }
+    );
+
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Ad not found or not owned by user' });
+    return res.json({ success: true, data: { id: rows[0].id, plan_type } });
+  } catch (err) {
+    return next(err);
+  }
+};

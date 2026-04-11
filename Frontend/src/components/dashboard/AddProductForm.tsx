@@ -59,6 +59,8 @@ export default function AddProductForm() {
         description: "",
         images: [] as string[],
         state: "",
+        internalStorage: "",
+        state: "",
         city: "",
         location: "", // Country
         specifications: {} as Record<string, any>,
@@ -107,25 +109,13 @@ export default function AddProductForm() {
                         ...prev, 
                         location: prev.location || defaultLocation,
                         originalCurrency: (prev.originalCurrency === "USD" && !prev.price) ? defaultCurrency : prev.originalCurrency,
-                        plan_type: res.data.subscription_plan || "free"
+                        plan_type: 'free' // Default new ads to free visibility
                     }));
 
-                    // Fetch current month's ad count
-                    const adsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/ads/vendor`, {
-                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-                    }).then(r => r.json());
-                    
-                    if (adsRes.success) {
-                        const now = new Date();
-                        const currentMonthAds = adsRes.data.filter((ad: any) => {
-                            const d = new Date(ad.createdAt);
-                            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-                        });
-                        const limitMap = { free: 1, basic: 10, star: 20 };
-                        const userPlan = res.data.subscription_plan || 'free';
+                    if (res.data.subscription_stats) {
                         setAdCounts({
-                            current: currentMonthAds.length,
-                            limit: limitMap[userPlan as keyof typeof limitMap]
+                            current: res.data.subscription_stats.total,
+                            limit: res.data.subscription_stats.limits[res.data.subscription_plan || 'free']
                         });
                     }
                 }
@@ -662,7 +652,8 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                 state: data.state,
                 city: data.city,
                 originalCurrency: data.originalCurrency,
-                originalPrice: p
+                originalPrice: p,
+                plan_type: data.plan_type
             });
             await showAlert("Your ad has been submitted and is pending admin approval. It will be listed once reviewed.", "Success!");
             router.push("/vendor-dashboard/my-ads");
@@ -743,20 +734,49 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             </div>
 
             <div>
-                <h4 className="text-[24px] font-black text-black mb-2">Promote your Ad</h4>
-                <p className="text-zinc-500 font-bold text-sm mb-6">Reach more buyers by promoting your ad.</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <PromoteCard
-                        title="Promote Ad"
-                        price="₦2,000"
-                        desc="Get more visibility by featuring your ad in search results and category listings."
+                <h4 className="text-[24px] font-black text-black mb-2">Visibility Tier</h4>
+                <p className="text-zinc-500 font-bold text-sm mb-6">Choose how you want this ad to appear on the platform.</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <VisibilityOption 
+                        id="free"
+                        title="Standard"
+                        price="FREE"
+                        perk="Standard listing"
+                        active={data.plan_type === 'free'}
+                        onClick={() => updateData({ plan_type: 'free' })}
+                        disabled={false}
+                        count={null}
                     />
-                    <PromoteCard
-                        title="Premium Boost"
-                        price="₦4,000"
-                        desc="Maximum exposure for your ad across key sections of the platform."
+                    <VisibilityOption 
+                        id="basic"
+                        title="Featured"
+                        price="BASIC"
+                        perk="Trending Ads list"
+                        active={data.plan_type === 'basic'}
+                        onClick={() => updateData({ plan_type: 'basic' })}
+                        disabled={profile?.subscription_plan === 'free'}
+                        count={profile?.subscription_stats ? `${profile.subscription_stats.basic} / ${profile.subscription_stats.limits.basic}` : null}
+                    />
+                    <VisibilityOption 
+                        id="star"
+                        title="Star Premium"
+                        price="PREMIUM"
+                        perk="Hot Deals & Featured"
+                        active={data.plan_type === 'star'}
+                        onClick={() => updateData({ plan_type: 'star' })}
+                        disabled={profile?.subscription_plan !== 'star'}
+                        count={profile?.subscription_stats ? `${profile.subscription_stats.star} / ${profile.subscription_stats.limits.star}` : null}
                     />
                 </div>
+                {profile?.subscription_plan === 'free' && (
+                    <div className="mt-4 p-4 bg-orange-50 border border-orange-100 rounded-xl flex items-center gap-3">
+                        <Info size={18} className="text-orange-600" />
+                        <p className="text-xs font-bold text-orange-800">
+                            Upgrade to <Link href="/pricing" className="underline font-black">Basic or Star</Link> to unlock premium visibility tiers for your products.
+                        </p>
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col gap-4 pt-8">
@@ -773,6 +793,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         Back
                     </button>
                     <div className="flex gap-4 w-full sm:w-auto">
+                        {/* Overall limit check */}
                         {adCounts.current >= adCounts.limit ? (
                             <Link 
                                 href="/pricing"
@@ -794,6 +815,47 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             </div>
         </div>
     )
+}
+
+function VisibilityOption({ id, title, price, perk, active, onClick, disabled, count }: { id: string, title: string, price: string, perk: string, active: boolean, onClick: () => void, disabled: boolean, count: string | null }) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            disabled={disabled}
+            className={`flex flex-col p-5 rounded-[24px] border-2 transition-all text-left relative overflow-hidden ${
+                active 
+                    ? 'border-[#f45c03] bg-orange-50/50 shadow-md shadow-orange-100' 
+                    : disabled 
+                        ? 'border-zinc-100 bg-zinc-50 opacity-40 grayscale cursor-not-allowed' 
+                        : 'border-zinc-200 hover:border-zinc-300 bg-white'
+            }`}
+        >
+            {active && (
+                <div className="absolute top-3 right-3 text-[#f45c03]">
+                    <CheckCircle2 size={24} />
+                </div>
+            )}
+            <div className={`mb-3 text-[10px] font-black uppercase tracking-widest ${active ? 'text-[#f45c03]' : 'text-zinc-400'}`}>
+                {price}
+            </div>
+            <h5 className="text-black font-black text-lg mb-1">{title}</h5>
+            <p className="text-zinc-500 font-bold text-[11px] mb-4">{perk}</p>
+            
+            {count && (
+                <div className={`mt-auto pt-3 border-t ${active ? 'border-orange-200' : 'border-zinc-100'}`}>
+                    <span className="text-[9px] font-black uppercase text-zinc-400">Used Slots</span>
+                    <div className="text-xs font-black text-black">{count}</div>
+                </div>
+            )}
+            
+            {disabled && (
+                <div className="mt-auto pt-3 border-t border-zinc-100">
+                    <span className="text-[9px] font-black uppercase text-zinc-400 italic">Plan Required</span>
+                </div>
+            )}
+        </button>
+    );
 }
 
 function PromoteCard({ title, price, desc }: { title: string, price: string, desc: string }) {
