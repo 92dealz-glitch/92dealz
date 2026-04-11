@@ -220,6 +220,7 @@ export default function AddProductForm() {
                         isNigerian={isNigerian}
                         profile={profile}
                         showVendorTasks={showVendorTasks}
+                        adCounts={adCounts}
                     />
                 )}
             </div>
@@ -588,13 +589,14 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks }: { 
+function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks, adCounts }: { 
     data: any, 
     updateData: (d: any) => void, 
     onBack: () => void, 
     isNigerian?: boolean, 
     profile: any,
-    showVendorTasks: () => void 
+    showVendorTasks: () => void,
+    adCounts: { current: number, limit: number }
 }) {
     const router = useRouter();
     const { showAlert } = useAlert();
