@@ -19,7 +19,7 @@ export default function PricingPage() {
       try {
         const res = await getProfile();
         if (res.success) {
-          setCurrentPlan(res.data.subscription_plan);
+          setCurrentPlan((res.data as any).subscription_plan);
         }
       } catch (err) {}
     };
