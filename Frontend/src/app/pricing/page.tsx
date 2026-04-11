@@ -3,6 +3,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { buyPlan, getProfile } from "@/services/user.service";
 import { useRouter } from "next/navigation";
 import { Check, Star, Zap, Info } from "lucide-react";
