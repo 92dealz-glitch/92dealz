@@ -364,7 +364,7 @@ export default function Navbar() {
                     )}
                   </div>
                   {isVendor && (
-                    <Link 
+                    <Link
                       href="/pricing"
                       className="hidden lg:flex items-center gap-1.5 px-4 py-2 bg-black text-yellow-400 rounded-full text-xs font-black border border-black hover:bg-zinc-800 transition-all shadow-sm group"
                     >
@@ -820,8 +820,7 @@ export default function Navbar() {
   );
 }
 
-export 
-function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
+export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
   const { isFullyVerified, verificationStatus, role } = useNavUserDetails();
   const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isFullyVerified || verificationStatus !== "approved");
 
