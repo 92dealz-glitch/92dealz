@@ -60,7 +60,6 @@ export default function AddProductForm() {
         images: [] as string[],
         state: "",
         internalStorage: "",
-        state: "",
         city: "",
         location: "", // Country
         specifications: {} as Record<string, any>,
