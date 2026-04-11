@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { ChevronLeft, X, Upload, Plus } from "lucide-react";
+import { ChevronLeft, X, Upload, Plus, Star, Zap, Info, CheckCircle2, ChevronDown } from "lucide-react";
 import { createAd } from "@/services/ads.service";
 import { uploadImage } from "@/services/upload.service";
 import { useRouter } from "next/navigation";
@@ -7,7 +7,6 @@ import Link from "next/link";
 import { getFallbackArray } from "@/data/categoriesData";
 import { getMyProfile, UserProfile } from "@/lib/api";
 import { NIGERIAN_STATES, NIGERIAN_LOCATIONS } from "@/data/locationData";
-import { ChevronDown } from "lucide-react";
 import { useAlert } from "@/context/AlertContext";
 import { useCurrency } from "@/context/CurrencyContext";
 
