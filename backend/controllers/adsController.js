@@ -26,7 +26,7 @@ exports.listMine = async (req, res, next) => {
     }
 
     const [rows] = await sequelize.query(
-      `SELECT d.id, d.title, d.description, d.price, d."createdAt", d.image_url, d.status,
+      `SELECT d.id, d.title, d.description, d.price, d."createdAt", d.image_url, d.status, d.plan_type,
               (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id AND ce.type = 'view') as views
        FROM deals d
        WHERE d."userId" = $1 ${statusFilter}

@@ -790,6 +790,8 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                                 return (
                                     <Link 
                                         href="/pricing"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="w-full sm:w-auto bg-black text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg text-center"
                                     >
                                         Upgrade Plan to Post

@@ -133,20 +133,7 @@ function LoginContent() {
           )}
 
           <form onSubmit={handleSubmit}>
-            {/* Role Toggle */}
-            <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1 mb-4">
-              {(["user", "vendor"] as const).map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRole(r)}
-                  className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${role === r ? "bg-white text-orange-500 shadow-sm" : "text-gray-500"}`}
-                >
-                  {r === "user" ? "User" : "Vendor"}
-                </button>
-              ))}
-            </div>
-            {/* Phone / Username / Email */}
+            {/* Role selection removed per user request - account type is handled automatically */}
             <div className="mb-4">
               <label className="block text-sm font-semibold text-gray-900 mb-1.5">
                 Phone Number/{" "}
@@ -254,19 +241,7 @@ function LoginContent() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Role Toggle */}
-              <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1">
-                {(["user", "vendor"] as const).map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => setRole(r)}
-                    className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${role === r ? "bg-white text-orange-500 shadow-sm" : "text-gray-500"}`}
-                  >
-                    {r === "user" ? "User" : "Vendor"}
-                  </button>
-                ))}
-              </div>
+              {/* Role selection removed per user request - account type is handled automatically */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number/ Username/ Email Address
