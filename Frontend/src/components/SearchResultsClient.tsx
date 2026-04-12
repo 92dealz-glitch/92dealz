@@ -169,7 +169,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
         <div className="md:hidden flex items-center justify-between mb-2">
             <button
                 onClick={() => setIsMobileFilterOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-orange-200 rounded-xl font-bold text-orange-600 shadow-sm active:scale-95 transition-all w-full justify-center"
+                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-orange-200 rounded-md font-bold text-orange-600 shadow-sm active:scale-95 transition-all w-full justify-center"
             >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M22 3H2l8 9v7l4 3v-10L22 3z" />
@@ -195,7 +195,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
           )}
           
           <div
-            className={`bg-white rounded-2xl overflow-hidden shadow-sm ${!isMobileFilterOpen ? 'sticky top-24' : ''}`}
+            className={`bg-white rounded-md overflow-hidden shadow-sm ${!isMobileFilterOpen ? 'sticky top-24' : ''}`}
             style={{ border: isMobileFilterOpen ? 'none' : "1.5px solid #fed7aa" }}
           >
             {/* Header */}
@@ -319,7 +319,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                 <div className="p-5 mt-4">
                     <button
                         onClick={() => setIsMobileFilterOpen(false)}
-                        className="w-full py-4 bg-[#f45c03] text-white font-bold rounded-2xl shadow-lg shadow-orange-200 active:scale-95 transition-all text-lg"
+                        className="w-full py-4 bg-[#f45c03] text-white font-bold rounded-md shadow-lg shadow-orange-200 active:scale-95 transition-all text-lg"
                     >
                         Apply Filters
                     </button>
@@ -348,7 +348,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {paged.length === 0 ? (
-              <div className="p-12 bg-white border-2 border-dashed border-orange-100 rounded-3xl col-span-full text-center">
+              <div className="p-12 bg-white border-2 border-dashed border-orange-100 rounded-md col-span-full text-center">
                 <div className="mx-auto w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2">
                     <circle cx="11" cy="11" r="8" />
@@ -379,7 +379,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
               <button
                 disabled={page === 1}
                 onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="w-10 h-10 flex items-center justify-center border-2 rounded-xl text-sm bg-white disabled:opacity-30 border-orange-100 hover:border-orange-500 transition-colors"
+                className="w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm bg-white disabled:opacity-30 border-orange-100 hover:border-orange-500 transition-colors"
               >
                 <ChevronRight className="w-5 h-5 rotate-180" />
               </button>
@@ -389,7 +389,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                   <button
                     key={i}
                     onClick={() => { setPage(i + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className={`w-10 h-10 flex items-center justify-center border-2 rounded-xl text-sm font-bold transition-all shadow-sm ${
+                    className={`w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm font-bold transition-all shadow-sm ${
                       page === i + 1
                         ? "bg-orange-600 border-orange-600 text-white shadow-orange-200"
                         : "bg-white border-orange-100 text-gray-600 hover:border-orange-400"
@@ -403,7 +403,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
               <button
                 disabled={page === totalPages}
                 onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="w-10 h-10 flex items-center justify-center border-2 rounded-xl text-sm bg-white disabled:opacity-30 border-orange-100 hover:border-orange-500 transition-colors"
+                className="w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm bg-white disabled:opacity-30 border-orange-100 hover:border-orange-500 transition-colors"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>

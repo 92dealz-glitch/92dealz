@@ -149,7 +149,12 @@ export default function MyAdsList() {
                                             return;
                                         }
                                         const newPriceStr = await showPrompt("Enter new price", String(ad.price), "Edit Price") ?? String(ad.price);
-                                        const newPrice = Number(newPriceStr);
+                                        const cleanPrice = newPriceStr.replace(/\D/g, "");
+                                        if (cleanPrice.length > 12) {
+                                            showAlert("Price must be at most 12 digits.", "Oops!");
+                                            return;
+                                        }
+                                        const newPrice = Number(cleanPrice);
                                         if (Number.isNaN(newPrice)) return;
                                         try {
                                             await updateAd(ad.id, { title: newTitle, price: newPrice });

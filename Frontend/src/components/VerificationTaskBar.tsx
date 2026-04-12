@@ -30,7 +30,7 @@ export default function VerificationTaskBar() {
         
         <Link 
           href={verificationLink} 
-          className="bg-white text-orange-600 px-4 py-1 rounded-full text-xs font-bold hover:bg-orange-50 transition-all transform hover:scale-105 active:scale-95 shadow-sm whitespace-nowrap"
+          className="bg-white text-orange-600 px-4 py-1 rounded-md text-xs font-bold hover:bg-orange-50 transition-all transform hover:scale-105 active:scale-95 shadow-sm whitespace-nowrap"
         >
           Verify Profile Now
         </Link>

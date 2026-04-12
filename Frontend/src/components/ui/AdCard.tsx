@@ -51,27 +51,20 @@ export default function AdCard({ item, className = "" }: Props) {
     <Link href={`/product/${item.id}`}>
       <article
         className={
-          `relative rounded-2xl border border-emerald-500/30 p-3 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group overflow-hidden ${className}`
+          `relative rounded-md border-[2.5px] border-emerald-600 p-1.5 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group overflow-hidden ${className}`
         }
         aria-label={`Ad ${item.title}`}
       >
-        <div className="flex-none relative w-full rounded-md overflow-hidden border border-zinc-100">
-          <div className="w-full pb-[66%]"></div>
+        <div className="flex-none relative w-full overflow-hidden bg-zinc-50 rounded-sm">
+          <div className="w-full pb-[72%] shrink-0"></div>
           {(item.badge || item.img) ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={item.badge || item.img}
               alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-center transition-transform group-hover:scale-105"
             />
           ) : null}
-
-          {item.isVerified && (
-            <div className="absolute top-2 left-2 z-20 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-sm flex items-center gap-1">
-              <span>✓</span>
-              <span className="hidden sm:inline">Verified</span>
-            </div>
-          )}
 
           {/* Heart button: positioned top-right over the image */}
           <button
@@ -90,50 +83,67 @@ export default function AdCard({ item, className = "" }: Props) {
               });
             }}
             aria-label={fav ? "Remove from favorites" : "Add to favorites"}
-            className={`absolute right-2 top-2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-1 shadow ${fav ? "text-red-500" : "text-gray-400"}`}
+            className={`absolute right-1 top-1 z-20 bg-white/90 backdrop-blur-sm rounded-full p-1 shadow ${fav ? "text-red-500" : "text-gray-400"}`}
           >
-            <Heart className="w-5 h-5" />
+            <Heart className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="mt-2 text-left">
-          <p className="text-orange-600 font-extrabold text-[13px] sm:text-base">
-            {item.priceValue ? formatPrice(item.priceValue) : item.price}
-          </p>
-          <h4 className="mt-0.5 font-bold text-black text-[12px] sm:text-sm line-clamp-2 leading-tight break-words">{item.title}</h4>
+        <div className="mt-2.5 px-0.5 text-left flex items-start justify-between gap-1">
+          <div className="min-w-0 flex-1">
+            <p className={`text-orange-600 font-extrabold leading-tight break-all ${
+              (item.price || "").length > 12 ? "text-[12px] sm:text-[14px]" : "text-[15px] sm:text-lg"
+            }`}>
+              {item.priceValue ? formatPrice(item.priceValue) : item.price}
+            </p>
+            <h4 className="mt-1 font-bold text-black text-[13px] sm:text-[16px] line-clamp-2 leading-tight break-words">{item.title}</h4>
+          </div>
+
+          {item.isVerified && (
+            <div className="shrink-0 mt-0.5" title="Verified Vendor">
+              <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 sm:w-8 sm:h-8" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="#10b981" />
+                <path 
+                  d="M8 12L11 15L16 9" 
+                  stroke="white" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          )}
         </div>
 
         {/* Dynamic spacer to push ratings and footer to bottom and keep card height even */}
         <div className="flex-1" />
         
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-y-2">
-          <div className="flex items-center gap-1 shrink-0">
-            {item.rating && item.rating > 0 ? (
-              <div className="flex items-center text-yellow-400">
-                <div className="flex items-center text-lg leading-none">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <span key={i} className="drop-shadow-sm">{i <= Math.floor(item.rating || 0) ? "★" : "☆"}</span>
-                  ))}
+        <div className="mt-1 px-0.5 space-y-1.5 pb-1">
+          <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center gap-1 shrink-0">
+              {item.rating && item.rating > 0 ? (
+                <div className="flex items-center text-yellow-400">
+                  <div className="flex items-center text-base leading-none">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <span key={i} className="drop-shadow-sm">{i <= Math.floor(item.rating || 0) ? "★" : "☆"}</span>
+                    ))}
+                  </div>
+                  <span className="ml-1 text-black font-extrabold text-[10px] sm:text-xs">({Number(item.rating).toFixed(1)})</span>
                 </div>
-                <span className="ml-1.5 text-black font-extrabold text-xs sm:text-sm">({Number(item.rating).toFixed(1)})</span>
-              </div>
-            ) : (
-              <span className="text-gray-400 italic text-[10px] sm:text-xs">No reviews</span>
-            )}
+              ) : (
+                <span className="text-gray-400 italic text-[9px] sm:text-[10px]">No reviews</span>
+              )}
+            </div>
+            <div className="text-[9px] sm:text-[10px] text-gray-500 font-bold bg-zinc-100 px-2 py-0.5 rounded-md shrink-0">
+              {item.condition || "New"}
+            </div>
           </div>
 
-          <div className="text-[10px] sm:text-xs text-gray-500 font-bold bg-gray-100 px-2 py-1 rounded-full break-words text-center min-w-[40px] shrink-0">
-            {item.condition || "New"}
-          </div>
-        </div>
-
-
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[10px] sm:text-xs text-gray-600 border-t border-gray-50 pt-2">
-          <div className="break-words font-medium leading-relaxed max-w-full" title={displayLocation()}>
-             📍 {displayLocation()}
-          </div>
-          <div className="flex items-center gap-1 shrink-0 ml-auto pt-1">
-            <span className="text-orange-500 font-bold whitespace-nowrap">{item.views ?? item.likes ?? 0} views</span>
+          <div className="flex items-center justify-between gap-2 text-[10px] sm:text-[12px] text-gray-500 pt-1 border-t border-gray-50">
+            <div className="truncate font-semibold flex-1" title={displayLocation()}>
+               📍 {displayLocation()}
+            </div>
+            <span className="text-[#ff7a2d] font-bold whitespace-nowrap shrink-0">{item.views ?? item.likes ?? 0} views</span>
           </div>
         </div>
       </article>

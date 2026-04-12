@@ -64,7 +64,7 @@ export default function ReportModal({ isOpen, onClose, productId, vendorId, repo
 
   return (
     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="bg-white w-full max-w-md rounded-md shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
           <div className="flex items-center gap-2">
             <div className="bg-orange-100 p-2 rounded-lg text-orange-600">
@@ -97,7 +97,7 @@ export default function ReportModal({ isOpen, onClose, productId, vendorId, repo
                 required
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition-all appearance-none bg-zinc-50 cursor-pointer hover:bg-zinc-100"
+                className="w-full rounded-md border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition-all appearance-none bg-zinc-50 cursor-pointer hover:bg-zinc-100"
               >
                 <option value="">Select a reason</option>
                 {REASONS.map((r) => (
@@ -114,14 +114,14 @@ export default function ReportModal({ isOpen, onClose, productId, vendorId, repo
                 placeholder="Provide more info to help us investigate..."
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
-                className="w-full h-32 rounded-xl border border-zinc-200 p-4 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition-all resize-none bg-zinc-50 hover:bg-zinc-100"
+                className="w-full h-32 rounded-md border border-zinc-200 p-4 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition-all resize-none bg-zinc-50 hover:bg-zinc-100"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading || !reason}
-              className="w-full bg-orange-600 text-white font-bold py-3.5 rounded-xl hover:bg-orange-700 transition-all shadow-md disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-orange-600 text-white font-bold py-3.5 rounded-md hover:bg-orange-700 transition-all shadow-md disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
               Submit Report

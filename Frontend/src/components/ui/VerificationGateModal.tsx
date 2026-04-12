@@ -36,8 +36,8 @@ export default function VerificationGateModal({
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div 
-        className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300"
+      <div
+        className="bg-white rounded-md w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300"
       >
         <div className="p-8 text-center">
           <div className="mx-auto w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6">
@@ -65,14 +65,14 @@ export default function VerificationGateModal({
               <>
                 <Link 
                   href={`/login${callbackQuery}`} 
-                  className="w-full bg-[#f97316] text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
+                  className="w-full bg-[#f97316] text-white py-4 rounded-md font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
                   onClick={onClose}
                 >
                   Login
                 </Link>
                 <Link 
                   href={`/signup${callbackQuery}`} 
-                  className="w-full bg-white text-[#f97316] border-2 border-[#f97316] py-3.5 rounded-xl font-bold text-lg hover:bg-orange-50 transition-colors"
+                  className="w-full bg-white text-[#f97316] border-2 border-[#f97316] py-3.5 rounded-md font-bold text-lg hover:bg-orange-50 transition-colors"
                   onClick={onClose}
                 >
                   Sign Up Now
@@ -81,7 +81,7 @@ export default function VerificationGateModal({
             ) : (
               <Link 
                 href={role === "vendor" || role === "Vendor" ? "/vendor-dashboard/settings/verification" : "/account-settings"} 
-                className="w-full bg-[#f97316] text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
+                className="w-full bg-[#f97316] text-white py-4 rounded-md font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
                 onClick={onClose}
               >
                 Complete Verification

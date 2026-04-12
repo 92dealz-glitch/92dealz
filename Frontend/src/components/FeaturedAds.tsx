@@ -41,7 +41,7 @@ export default function FeaturedAds() {
           rating: Number(d.rating || 0),
           isVerified: d.is_verified || d.User?.is_verified || false,
         }));
-        setFeatured(data);
+        setFeatured(data.sort(() => Math.random() - 0.5).slice(0, 4));
       } catch (err) {
         console.error("Failed to fetch featured ads", err);
       }
@@ -57,13 +57,13 @@ export default function FeaturedAds() {
         <div className="h-0.5 flex-1 bg-[#f45c03] opacity-40 shadow-sm" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+      <div className="flex flex-col sm:grid sm:grid-cols-2 gap-8">
         {featured.map((it) => {
           const fav = isFavorite(it.id);
           return (
-            <div key={it.id} className="bg-[#f45c03] rounded-[28px] sm:rounded-[32px] p-3 sm:p-6 shadow-2xl flex flex-col sm:flex-row gap-4 sm:gap-6 items-center transition-all hover:scale-[1.01] relative group h-full">
+            <div key={it.id} className="bg-[#f45c03] rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row gap-4 sm:gap-6 items-center transition-all hover:scale-[1.01] relative group h-full overflow-hidden">
               {/* IMAGE SECTION */}
-              <div className="w-full sm:w-[45%] aspect-square relative bg-white border-[6px] border-white rounded-[24px] overflow-hidden shrink-0 shadow-lg">
+              <div className="w-full sm:w-[55%] aspect-[1.2/1] relative bg-white border-2 border-white rounded-2xl overflow-hidden shrink-0">
                 <Image
                   src={it.img}
                   alt={it.title}
@@ -90,29 +90,39 @@ export default function FeaturedAds() {
               </div>
 
               {/* CONTENT SECTION */}
-              <div className="flex-1 text-white w-full h-full flex flex-col">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                       <span className="text-2xl sm:text-3xl font-black">{it.price}</span>
-                       {it.isVerified && (
-                         <div className="bg-emerald-400 text-white rounded-full p-1 flex items-center justify-center">
-                            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white stroke-emerald-400 stroke-2">
-                              <path d="M20 6L9 17l-5-5" />
-                            </svg>
-                         </div>
-                       )}
-                    </div>
-                    <h4 className="text-xl sm:text-2xl font-bold leading-tight mb-2 line-clamp-2">{it.title}</h4>
+              <div className="flex-1 text-white w-full h-full flex flex-col items-start text-left min-w-0">
+                <div className="flex items-start justify-between gap-2 w-full">
+                  <div className="text-left w-full">
+                     <span className={`font-black mb-1 block ${
+                       (it.price || "").length > 15 ? "text-lg sm:text-xl" : (it.price || "").length > 12 ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl"
+                     }`}>{it.price}</span>
+                     <h4 className={`font-bold leading-tight mb-2 line-clamp-2 break-words ${
+                       (it.title || "").length > 35 ? "text-base sm:text-lg" : (it.title || "").length > 25 ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"
+                     }`}>{it.title}</h4>
                   </div>
+                  {it.isVerified && (
+                    <div className="shrink-0 mt-1" title="Verified Vendor">
+                       <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 sm:w-9 sm:h-9" xmlns="http://www.w3.org/2000/svg">
+                         <circle cx="12" cy="12" r="10" fill="#10b981" />
+                         <path 
+                           d="M8 12L11 15L16 9" 
+                           stroke="white" 
+                           strokeWidth="2.5" 
+                           strokeLinecap="round" 
+                           strokeLinejoin="round"
+                         />
+                       </svg>
+                    </div>
+                  )}
                 </div>
 
-                <p className="text-white/80 text-sm mb-4 line-clamp-2 sm:line-clamp-3 font-medium">
-                  {it.desc || "No description provided for this premium deal."}
+                {/* DESCRIPTION - Clamped to 3 lines to prevent expansion */}
+                <p className="text-white/80 font-medium line-clamp-3 mb-4 break-words text-left text-sm leading-relaxed">
+                  {it.desc || "A premium listing tailored for high-quality marketplace deals."}
                 </p>
 
                 {/* RATING */}
-                <div className="flex items-center gap-1 mb-6 text-yellow-400">
+                <div className="flex items-center gap-1 mb-3 text-yellow-400">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i} className="text-xl">
                       {i < Math.floor(it.rating || 5) ? '★' : '☆'}
@@ -121,11 +131,11 @@ export default function FeaturedAds() {
                   {it.rating > 0 && <span className="ml-2 font-bold text-white">({Number(it.rating).toFixed(1)})</span>}
                 </div>
 
-                  <div className="flex items-center justify-between mt-auto border-t border-white/20 pt-4">
-                    <div className="flex items-center gap-1.5 text-white/90 font-bold max-w-[60%] truncate" title={`${it.city ? it.city + ", " : ""}${it.state ? it.state + ", " : ""}${it.location}`}>
-                      <MapPin size={16} />
-                      <span className="text-sm truncate">{[it.city, it.state, it.location].filter(Boolean).join(", ")}</span>
-                    </div>
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10 w-full">
+                  <div className="flex items-center gap-1.5 text-white/90 font-bold max-w-[60%] truncate" title={`${it.city ? it.city + ", " : ""}${it.state ? it.state + ", " : ""}${it.location}`}>
+                    <MapPin size={16} className="shrink-0" />
+                    <span className="text-sm truncate">{[it.city, it.state, it.location].filter(Boolean).join(", ")}</span>
+                  </div>
                   <div className="flex items-center gap-1.5 text-white/90 font-bold">
                     <Flame size={18} className="text-yellow-300" />
                     <span className="text-sm">{it.views} views</span>
@@ -142,7 +152,7 @@ export default function FeaturedAds() {
       <div className="mt-12 flex justify-center">
         <Link 
           href="/search"
-          className="bg-[#f45c03] border-2 border-white/20 px-8 py-3.5 rounded-2xl font-black shadow-xl text-white hover:bg-white hover:text-[#f45c03] transition-all text-base tracking-wider uppercase"
+          className="bg-[#f45c03] border-2 border-white/20 px-8 py-3.5 rounded-md font-black shadow-xl text-white hover:bg-white hover:text-[#f45c03] transition-all text-base tracking-wider uppercase"
         >
           Explore Premium Deals
         </Link>
@@ -150,4 +160,3 @@ export default function FeaturedAds() {
     </section>
   );
 }
-

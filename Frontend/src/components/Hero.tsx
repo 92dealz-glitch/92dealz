@@ -165,7 +165,7 @@ export default function Hero() {
                   bg-[#f45c03] hover:bg-black
                   text-white font-bold text-[16px]
                   px-10 py-4
-                  rounded-xl
+                  rounded-md
                   shadow-xl
                   hover:-translate-y-0.5
                   transition-all duration-300 cursor-pointer

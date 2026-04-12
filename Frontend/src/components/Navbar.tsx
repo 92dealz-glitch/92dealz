@@ -261,7 +261,7 @@ export default function Navbar() {
                       className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
                     />
                     {showSuggestions && suggestions.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-b-xl z-[100] mt-1 py-2 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                      <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-md bg-white border border-zinc-200 shadow-xl z-[100] mt-1 py-2 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
                         {!query.trim() && (
                           <div className="px-4 py-2 text-[10px] font-black text-orange-600 uppercase tracking-wider bg-orange-50/50 mb-1">
                             Recommended Searches
@@ -317,7 +317,7 @@ export default function Navbar() {
                   {isVendor && (
                     <Link
                       href="/pricing"
-                      className="hidden lg:flex items-center gap-1.5 px-4 py-2.5 bg-[#f45c03] text-white rounded-full text-[13px] font-black border border-[#f45c03] hover:bg-orange-600 transition-all shadow-md shadow-orange-100 group"
+                      className="hidden lg:flex items-center gap-1.5 px-4 py-2.5 bg-[#f45c03] text-white rounded-md text-[13px] font-black border border-[#f45c03] hover:bg-orange-600 transition-all shadow-md shadow-orange-100 group"
                     >
                       <Star size={14} className="fill-current group-hover:scale-110 transition-transform" />
                       Promote Ads
@@ -338,7 +338,7 @@ export default function Navbar() {
                     {showNotificationDropdown && (
                       <>
                         <div className="fixed inset-0 z-40" onClick={() => setShowNotificationDropdown(false)} />
-                        <div className="absolute right-0 mt-3 w-80 bg-white border border-zinc-100 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="absolute right-0 mt-3 w-80 bg-white border border-zinc-100 rounded-md shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                           <div className="px-4 py-3 border-b border-zinc-100 bg-zinc-50 flex items-center justify-between">
                             <span className="text-sm font-bold text-zinc-900">Notifications</span>
                             {unreadCount > 0 && <span className="text-[10px] bg-orange-100 text-[#f45c03] px-2 py-0.5 rounded-full font-bold">{unreadCount} New</span>}
@@ -463,7 +463,7 @@ export default function Navbar() {
                   router.push(`/search?search=${encodeURIComponent(mQuery.trim())}`);
                 }
               }}
-              className="flex flex-1 items-center overflow-hidden rounded-lg border border-orange-500 bg-white h-[42px]"
+              className="flex flex-1 items-center overflow-hidden rounded-md border border-orange-500 bg-white h-[42px]"
             >
               <div className="flex-1 relative h-full">
                 <input
@@ -478,7 +478,7 @@ export default function Navbar() {
                   className="w-full px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full min-w-0"
                 />
                 {showMSuggestions && mSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-b-lg z-[100] mt-1 py-1 overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-md z-[100] mt-1 py-1 overflow-hidden">
                     {mSuggestions.map((s, i) => (
                       <button
                         key={i}
@@ -549,7 +549,7 @@ export default function Navbar() {
                       router.push(`/search?search=${encodeURIComponent(mQuery.trim())}`);
                     }
                   }}
-                  className="flex flex-1 items-stretch overflow-hidden rounded-lg border border-orange-500 bg-white"
+                  className="flex flex-1 items-stretch overflow-hidden rounded-md border border-orange-500 bg-white"
                 >
                   <input
                     type="text"
@@ -588,7 +588,7 @@ export default function Navbar() {
                       }}
                       className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                     >
-                      <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Settings size={16} /></span>
+                      <span className="bg-orange-100 p-1.5 rounded-md text-orange-600"><Settings size={16} /></span>
                       Dashboard
                     </button>
                   )}
@@ -604,7 +604,7 @@ export default function Navbar() {
                     }}
                     className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                   >
-                    <span className="bg-orange-100 p-1.5 rounded-lg text-orange-600"><Plus size={16} /></span>
+                    <span className="bg-orange-100 p-1.5 rounded-md text-orange-600"><Plus size={16} /></span>
                     {(typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals"}
                   </button>
                   {isVendor && (
@@ -615,7 +615,7 @@ export default function Navbar() {
                       }}
                       className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors font-bold text-orange-600"
                     >
-                      <span className="bg-orange-600 p-1.5 rounded-lg text-white"><Star size={16} /></span>
+                      <span className="bg-orange-600 p-1.5 rounded-md text-white"><Star size={16} /></span>
                       Promote Your Ads
                     </button>
                   )}
@@ -887,7 +887,7 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-3 w-56 bg-white border border-zinc-100 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="absolute right-0 mt-3 w-56 bg-white border border-zinc-100 rounded-md shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="bg-zinc-50 px-4 py-3 border-b border-zinc-100 mb-1">
               {name && (
                 <div className="flex items-center gap-2 mb-0.5">
@@ -903,27 +903,27 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
             </div>
             <div className="p-1.5 space-y-0.5">
               {role !== "user" && (
-                <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                   <Grid size={16} />
                   Dashboard
                 </button>
               )}
               {vendor && (
-                <button onClick={() => go("/vendor-dashboard/add-product")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <button onClick={() => go("/vendor-dashboard/add-product")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                   <Plus size={16} />
                   Add New Deal
                 </button>
               )}
               <div className="h-px bg-zinc-100 my-1 mx-2" />
-              <button onClick={() => go("/messages")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go("/messages")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Mail size={16} />
                 Messages
               </button>
-              <button onClick={() => go("/favorites")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go("/favorites")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Heart size={16} />
                 Favorites
               </button>
-              <button onClick={() => go("/account-settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go("/account-settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
                 <Settings size={16} />
                 Account Settings
               </button>

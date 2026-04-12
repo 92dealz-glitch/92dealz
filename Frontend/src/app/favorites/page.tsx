@@ -23,7 +23,7 @@ export default function FavoritesPage() {
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#f45c03]">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#ff7a2d]">
               My Favourites
             </h1>
             <p className="text-sm text-gray-600 mt-1">
@@ -32,7 +32,7 @@ export default function FavoritesPage() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <button className="px-3 sm:px-4 py-2 rounded-md border border-orange-300 text-orange-600 font-semibold text-sm sm:text-base whitespace-nowrap">
+            <button className="px-3 sm:px-4 py-2 rounded-md border border-orange-300 text-[#ff7a2d] font-semibold text-sm sm:text-base whitespace-nowrap">
               Bulk Select
             </button>
             
@@ -42,7 +42,7 @@ export default function FavoritesPage() {
               
               <button
                 onClick={() => setSortOpen(!sortOpen)}
-                className="bg-orange-500 text-white px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base whitespace-nowrap"
+                className="bg-[#ff7a2d] text-white px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base whitespace-nowrap"
               >
                 {sortOption}
               </button>
@@ -85,7 +85,7 @@ export default function FavoritesPage() {
                 />
               </div>
 
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#f45c03] mb-3">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#ff7a2d] mb-3">
                 No favourites yet
               </h2>
               <p className="text-base text-gray-600">
@@ -94,11 +94,11 @@ export default function FavoritesPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {items.map((it) => (
               <article
                 key={it.id}
-                className="relative rounded-lg border-2 border-emerald-300 p-3 bg-white shadow-sm ring-inset hover:ring-2 hover:ring-orange-200 transition-all"
+                className="relative rounded-lg border-2 border-emerald-300 p-2 sm:p-3 bg-white shadow-sm ring-inset hover:ring-2 hover:ring-orange-200 transition-all"
               >
                 <div className="absolute top-3 right-3 z-10">
                   <button
@@ -143,7 +143,7 @@ export default function FavoritesPage() {
                       </p>
                     </div>
 
-                    <h3 className="mt-2 font-semibold text-lg text-gray-900 group-hover:text-orange-600 transition-colors">
+                    <h3 className="mt-2 font-semibold text-sm sm:text-lg text-gray-900 group-hover:text-[#ff7a2d] transition-colors line-clamp-2">
                       {it.title}
                     </h3>
 

@@ -8,7 +8,7 @@ import ReportModal from "@/components/ReportModal";
 import { useNavUserDetails } from "@/hooks/useNavUserDetails";
 import VerificationGateModal from "@/components/ui/VerificationGateModal";
 import { getFlagEmoji } from "@/utils/flagUtils";
-import { Package } from "lucide-react";
+import { Package, Heart, MapPin, Flame, Share2, Copy, Check, Facebook, Twitter, Instagram, MessageCircle } from "lucide-react";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -361,7 +361,7 @@ export default function SellerPage({ params }: Props) {
               <h2 style={{ fontWeight: 700, fontSize: 17, margin: "0 0 16px" }}>
                 Active Listing ({seller.totalAds})
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {listings.length > 0 ? (
                   listings.map((l) => (
                     <Link
@@ -371,7 +371,7 @@ export default function SellerPage({ params }: Props) {
                     >
                       <div
                         style={{
-                          border: "1px solid #e5e7eb",
+                          border: "2px solid #16a34a",
                           borderRadius: 10,
                           overflow: "hidden",
                           background: "#fff",
@@ -909,19 +909,46 @@ export default function SellerPage({ params }: Props) {
                 background: "#fff",
                 borderRadius: 12,
                 padding: 18,
-                border: "1px solid #fed7aa",
+                border: "1.5px solid #fed7aa",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
               }}
             >
-              <h4 style={{ fontWeight: 700, fontSize: 15, margin: "0 0 12px" }}>
-                Share Profile
+              <h4 style={{ fontWeight: 700, fontSize: 15, margin: "0 0 16px" }}>
+                Share with Friends
               </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => window.open(`https://www.instagram.com/`, '_blank')}
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                  >
+                    <Instagram size={20} />
+                  </button>
+                  <button 
+                    onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`, '_blank')}
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                  >
+                    <Facebook size={20} fill="currentColor" />
+                  </button>
+                  <button 
+                    onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`, '_blank')}
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                  >
+                    <Twitter size={20} fill="currentColor" />
+                  </button>
+                  <button 
+                    onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`, '_blank')}
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                  >
+                    <MessageCircle size={20} fill="currentColor" />
+                  </button>
+                </div>
+
                 <div style={{
                   display: "flex",
                   background: "#f9fafb",
                   border: "1px solid #e5e7eb",
-                  borderRadius: 8,
+                  borderRadius: 20,
                   overflow: "hidden"
                 }}>
                   <input
@@ -929,7 +956,7 @@ export default function SellerPage({ params }: Props) {
                     value={typeof window !== 'undefined' ? window.location.href : ""}
                     style={{
                       flex: 1,
-                      padding: "8px 12px",
+                      padding: "10px 16px",
                       fontSize: 12,
                       background: "transparent",
                       border: "none",
@@ -941,12 +968,13 @@ export default function SellerPage({ params }: Props) {
                     onClick={() => {
                       if (typeof window !== 'undefined') {
                         navigator.clipboard.writeText(window.location.href);
-                        alert("Link copied to clipboard!");
+                        // Using a more subtle way to show success if possible, but alert matches the previous code
+                        alert("Link copied!");
                       }
                     }}
                     style={{
-                      padding: "8px 12px",
-                      background: "#f97316",
+                      padding: "10px 20px",
+                      background: "#ff7a2d",
                       color: "#fff",
                       border: "none",
                       fontSize: 12,
@@ -957,35 +985,6 @@ export default function SellerPage({ params }: Props) {
                     Copy
                   </button>
                 </div>
-                <button
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({
-                        title: `${seller.name} on 234Deals`,
-                        url: window.location.href
-                      }).catch(() => { });
-                    } else {
-                      alert("Web Share API not supported in this browser.");
-                    }
-                  }}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    borderRadius: 8,
-                    background: "#fff",
-                    border: "1px solid #f97316",
-                    color: "#f97316",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8
-                  }}
-                >
-                  <span>🔗</span> Share Profile
-                </button>
               </div>
             </div>
           </aside>

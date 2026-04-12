@@ -132,7 +132,7 @@ export default function CategoryBar() {
                   className="flex-none w-[100px]"
                 >
                   <div
-                    className="relative w-[90px] h-[90px] mx-auto rounded-2xl flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90 overflow-hidden"
+                    className="relative w-[90px] h-[90px] mx-auto rounded-md flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90 overflow-hidden"
                   >
                     {c.id === "post-ad" ? (
                       <PlusCircle size={48} className="text-orange-600" />

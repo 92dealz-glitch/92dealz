@@ -18,7 +18,7 @@ export default function NewsletterCTA() {
       <section className="w-full py-10 px-4 sm:px-6">
         <div className="max-w-[1200px] mx-auto">
           <div
-            className="w-full rounded-[18px] overflow-hidden shadow-lg relative bg-orange-600 text-center py-20 px-8 text-white"
+            className="w-full rounded-md overflow-hidden shadow-lg relative bg-orange-600 text-center py-20 px-8 text-white"
           >
             <h2 className="text-3xl font-bold mb-4">Check your inbox! 📧</h2>
             <p className="text-lg">Thank you for subscribing to our newsletter. We&apos;ll keep you posted!</p>
@@ -38,7 +38,7 @@ export default function NewsletterCTA() {
     <section className="w-full py-10 px-4 sm:px-6">
       <div className="max-w-[1200px] mx-auto">
         <div
-          className="w-full rounded-[18px] overflow-hidden shadow-lg relative"
+          className="w-full rounded-md overflow-hidden shadow-lg relative"
           style={{
             backgroundImage: `url('/assets/images/newsletterbg.svg')`,
             backgroundSize: 'cover',

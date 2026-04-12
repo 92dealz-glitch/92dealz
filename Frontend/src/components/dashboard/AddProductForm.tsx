@@ -517,8 +517,11 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                             <input
                                 type="text"
                                 value={formatWithCommas(data.price)}
-                                onChange={(e) => updateData({ price: stripCommas(e.target.value) })}
-                                placeholder="Enter price"
+                                onChange={(e) => {
+                                    const val = stripCommas(e.target.value);
+                                    if (val.length <= 12) updateData({ price: val });
+                                }}
+                                placeholder="Enter price (Max 12 digits)"
                                 className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors"
                             />
                         </div>

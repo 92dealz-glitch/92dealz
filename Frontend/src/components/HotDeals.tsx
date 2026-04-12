@@ -80,13 +80,13 @@ export default function HotDeals() {
   text-2xl sm:text-3xl md:text-4xl lg:text-5xl 
   font-extrabold text-black text-center"
         >
-          Hot Deals <span className="text-[#f45c03]">Today!</span>
+          Hot Deals <span className="text-[#ff7a2d]">Today!</span>
         </h3>
 
         <div className="ml-auto hidden md:flex">
           <a
             href="#"
-            className="text-sm font-medium text-gray-700 hover:text-[#f45c03] transition"
+            className="text-sm font-medium text-gray-700 hover:text-[#ff7a2d] transition"
           >
             See more
           </a>
@@ -99,7 +99,7 @@ export default function HotDeals() {
         <button
           aria-label="Scroll left"
           onClick={scrollLeft}
-          className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-20 bg-[#f45c03] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#f45c03] transition"
+          className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-20 bg-[#ff7a2d] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#ff7a2d] transition"
         >
           <svg
             className="w-6 h-6"
@@ -123,15 +123,12 @@ export default function HotDeals() {
           {list.map((item) => (
             <div
               key={item.id}
-              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#f45c03] px-4 pt-4 pb-5 shadow-sm h-full flex flex-col snap-start group"
+              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#ff7a2d] p-1.5 pb-5 shadow-sm h-full flex flex-col snap-start group"
             >
               {/* HOT BADGE */}
-              <div className="absolute -top-3 left-3 z-10 pointer-events-none">
-                <div className="relative">
-                  <div className="bg-[#f45c03] text-white text-sm font-bold px-4 py-1.5 rounded-r-lg">
-                    Hot 🔥
-                  </div>
-                  <div className="absolute left-0 -bottom-2 w-0 h-0 border-t-[8px] border-t-[#f45c03] border-r-[8px] border-r-transparent" />
+              <div className="absolute -top-3 left-2 z-30 pointer-events-none">
+                <div className="bg-[#ff7a2d] text-white text-[11px] font-black px-2.5 py-1 rounded-sm uppercase tracking-wider shadow-md">
+                  Hot 🔥
                 </div>
               </div>
 
@@ -166,67 +163,82 @@ export default function HotDeals() {
 
               <Link href={`/product/${item.id}`} className="block h-full">
                 {/* IMAGE */}
-                <div className="mt-6 relative flex-none">
-                  <div className="bg-[#F7F7F7] rounded-2xl p-3 sm:p-6 shadow-md rotate-[-1deg] sm:rotate-[-2deg] transition-transform group-hover:rotate-0">
-                    <div className="relative w-full pb-[66%] sm:pb-[60%] lg:pb-0 lg:h-[180px] rounded-xl overflow-hidden">
+                <div className="mt-2 relative flex-none">
+                  <div className="bg-[#F7F7F7] rounded-2xl p-1 shadow-md transition-transform group-hover:rotate-[-2deg] sm:group-hover:rotate-[-3deg]">
+                    <div className="relative w-full pb-[75%] sm:pb-[70%] lg:pb-0 lg:h-[220px] rounded-xl overflow-hidden">
                       <Image
                         src={item.img}
                         alt={item.title}
                         fill
                         className="absolute inset-0 object-cover transition-transform group-hover:scale-105"
                       />
-                      {item.isVerified && (
-                        <div className="absolute top-2 left-2 z-20 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-sm flex items-center gap-1">
-                          <span>✓</span>
-                          <span className="hidden sm:inline">Verified</span>
-                        </div>
-                      )}
+                      {/* Verified Badge removed from here and moved next to price below */}
                     </div>
                   </div>
-
                 </div>
 
                 {/* PRICE & TITLE */}
-                <div className="mt-2 text-left">
-                  <p className="text-[#f45c03] font-extrabold text-xl sm:text-2xl">
-                    {item.priceValue ? formatPrice(item.priceValue) : item.price}
-                  </p>
-                  <h4 className="mt-1 font-semibold text-base sm:text-lg text-black line-clamp-2 group-hover:text-[#f45c03] transition-colors">
-                    {item.title}
-                  </h4>
+                <div className="mt-2 text-left flex items-start justify-between gap-1">
+                  <div className="min-w-0">
+                    <p className={`text-[#ff7a2d] font-extrabold break-all ${
+                      (item.price || "").length > 12 ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"
+                    }`}>
+                      {item.priceValue ? formatPrice(item.priceValue) : item.price}
+                    </p>
+                    <h4 className="mt-1 font-semibold text-base sm:text-lg text-black line-clamp-2 group-hover:text-[#ff7a2d] transition-colors">
+                      {item.title}
+                    </h4>
+                  </div>
+
+                  {item.isVerified && (
+                    <div className="shrink-0 mt-1" title="Verified Vendor">
+                      <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 sm:w-8 sm:h-8" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" fill="#10b981" />
+                        <path 
+                          d="M8 12L11 15L16 9" 
+                          stroke="white" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </div>
 
                 {/* Dynamic spacer to push ratings and footer to bottom and keep card height even */}
                 <div className="flex-1" />
 
-                {/* RATING */}
-                <div className="mt-1.5 flex gap-0.5 text-yellow-400">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <svg
-                      key={i}
-                      className={`w-5 h-5 ${i <= Math.floor(item.rating || 4) ? "text-yellow-400" : "text-gray-300"}`}
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M12 .587l3.668 7.431L24 9.748l-6 5.858L19.335 24 12 20.201 4.665 24 6 15.606 0 9.748l8.332-1.73L12 .587z" />
-                    </svg>
-                  ))}
-                  <span className="ml-1 text-black font-bold text-xs mt-0.5">({Number(item.rating || 0).toFixed(1)})</span>
-                </div>
-
-
-                {/* LOCATION & CONDITION */}
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs">
-                  <div className="flex items-center gap-1.5 text-gray-600 shrink min-w-0" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
-                    <span className="break-words font-medium">📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-orange-600 font-bold">{item.views ?? 0} views</span>
-                    {item.newLabel && (
-                      <span className="font-bold text-[#f45c03] bg-[#f45c03]/10 px-2 py-0.5 rounded-md shrink-0">
-                        {item.newLabel || "New"}
-                      </span>
+                <div className="mt-1 px-1.5 space-y-1 pb-1">
+                  {/* RATING */}
+                  <div className="flex items-center gap-1 text-yellow-400">
+                    {item.rating && item.rating > 0 ? (
+                      <div className="flex items-center">
+                        <div className="flex items-center text-base leading-none">
+                          {[1, 2, 3, 4, 5].map((i) => (
+                            <span key={i} className="drop-shadow-sm">{i <= Math.floor(item.rating || 0) ? "★" : "☆"}</span>
+                          ))}
+                        </div>
+                        <span className="ml-1 text-black font-bold text-[10px] sm:text-xs">({Number(item.rating).toFixed(1)})</span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 italic text-[10px]">No reviews</span>
                     )}
+                  </div>
+
+                  {/* LOCATION & CONDITION */}
+                  <div className="flex items-center justify-between gap-2 text-[10px] sm:text-[12px] text-gray-500 pt-1.5 border-t border-gray-50">
+                    <div className="truncate font-semibold flex-1" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
+                      <span>📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[#ff7a2d] font-bold whitespace-nowrap">{item.views ?? 0} views</span>
+                      {item.newLabel && (
+                        <span className="font-bold text-[#ff7a2d] bg-orange-50 px-1.5 py-0.5 rounded-sm uppercase text-[9px]">
+                          {item.newLabel}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -238,7 +250,7 @@ export default function HotDeals() {
         <button
           aria-label="Scroll right"
           onClick={scrollRight}
-          className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-20 bg-[#f45c03] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#f45c03] transition"
+          className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-20 bg-[#ff7a2d] w-14 h-14 rounded-full items-center justify-center text-white shadow-lg hover:bg-[#ff7a2d] transition"
         >
           <svg
             className="w-6 h-6"

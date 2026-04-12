@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { submitPoll, getMyProfile } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function PollGame() {
   const [category, setCategory] = useState<string>("");
@@ -18,7 +19,6 @@ export default function PollGame() {
         const res: any = await getMyProfile();
         if (res.success) {
           setUser(res.data);
-          // Check if poll was done recently
           if (res.data?.last_poll_date) {
             const now = new Date();
             const last = new Date(res.data.last_poll_date);
@@ -52,7 +52,6 @@ export default function PollGame() {
       if (res.success) {
         setStatus("completed");
         setMessage("Thank you for participating! Check your 'Recommended' section for personalized deals.");
-        // Optional: reload or update local state
       }
     } catch (err: any) {
       setStatus("error");
@@ -64,10 +63,10 @@ export default function PollGame() {
 
   if (status === "completed") {
     return (
-      <section className="relative w-full bg-[#F5F5F5] py-16 px-4 overflow-hidden text-center">
-        <div className="max-w-[800px] mx-auto bg-white p-12 rounded-[32px] shadow-xl border border-emerald-100">
+      <section className="relative w-full bg-[#F5F5F5] py-10 sm:py-16 px-4 overflow-hidden text-center">
+        <div className="max-w-[800px] mx-auto bg-white p-8 sm:p-12 rounded-xl shadow-xl border border-emerald-100">
           <div className="text-[60px] mb-4">🏆</div>
-          <h2 className="text-[32px] font-bold text-gray-900 mb-4">Poll Completed!</h2>
+          <h2 className="text-[28px] sm:text-[32px] font-bold text-gray-900 mb-4">Poll Completed!</h2>
           <p className="text-gray-600 mb-8">{message || "You've already played this week. Come back next week for fresh options!"}</p>
           <button 
             onClick={() => {
@@ -87,10 +86,12 @@ export default function PollGame() {
     <section className="relative w-full bg-[#F5F5F5] py-16 px-4 overflow-hidden">
       {/* Floating Background Icons */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[10%] left-[5%] text-[60px] opacity-20 animate-float-slow">🎮</div>
-        <div className="absolute top-[30%] right-[10%] text-[70px] opacity-20 animate-float-medium">🕹️</div>
-        <div className="absolute bottom-[20%] left-[15%] text-[65px] opacity-20 animate-float-fast">🎮</div>
-        <div className="absolute bottom-[10%] right-[20%] text-[55px] opacity-20 animate-float-medium">🕹️</div>
+        <div className="absolute top-[10%] left-[5%] text-[80px] sm:text-[100px] opacity-70 animate-float-slow filter drop-shadow-xl">🎮</div>
+        <div className="absolute top-[25%] right-[8%] text-[90px] sm:text-[110px] opacity-70 animate-float-medium filter drop-shadow-xl">🕹️</div>
+        <div className="absolute top-[50%] left-[2%] text-[70px] sm:text-[90px] opacity-70 animate-float-medium filter drop-shadow-xl">🎮</div>
+        <div className="absolute bottom-[20%] left-[12%] text-[85px] sm:text-[115px] opacity-70 animate-float-fast filter drop-shadow-xl">🎮</div>
+        <div className="absolute bottom-[25%] right-[5%] text-[75px] sm:text-[105px] opacity-70 animate-float-medium filter drop-shadow-xl">🕹️</div>
+        <div className="absolute bottom-[5%] right-[30%] text-[60px] sm:text-[80px] opacity-70 animate-float-slow filter drop-shadow-xl">🎮</div>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
@@ -114,30 +115,33 @@ export default function PollGame() {
       `}} />
 
       <div className="max-w-[1200px] mx-auto relative z-10">
-        <h2 className="text-center text-[42px] md:text-[52px] font-bold mb-4">
+        <h2 className="text-center text-[28px] sm:text-[42px] md:text-[52px] font-bold mb-4">
           Let&apos;s Play a Quick <span className="text-[#f45c03]">Poll Game</span> 🎮
         </h2>
-        <p className="text-center text-gray-600 mb-12 max-w-[600px] mx-auto">
+        <p className="text-center text-gray-600 mb-8 sm:mb-12 max-w-[600px] mx-auto text-sm sm:text-base">
           Help us personalize your experience and win insights into what others are shopping for!
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[1100px] mx-auto mb-12">
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-[1100px] mx-auto">
           {/* Question 1 */}
           <div className="relative">
-            <div className="relative bg-[#f45c03] rounded-[28px] p-8 shadow-lg h-full z-10 text-white">
-              <h3 className="text-[20px] font-semibold mb-6">If you could shop only ONE category this week, which would it be?</h3>
-              <div className="flex flex-col gap-3">
-                {["Electronics", "Fashion", "Phones"].map((opt) => (
+            <div className="relative bg-[#f45c03] rounded-xl p-5 sm:p-8 shadow-lg h-full z-10 text-white">
+              <h3 className="text-[18px] sm:text-[20px] font-semibold mb-6 uppercase tracking-wide">If you could shop only ONE category this week, which would it be?</h3>
+              <div className="flex flex-col gap-5">
+                {["Electronics", "Fashion", "Phones & Accessories"].map((opt) => (
                   <button
                     key={opt}
                     onClick={() => setCategory(opt)}
-                    className={`text-left px-6 py-4 rounded-xl border-2 transition-all font-medium ${
-                      category === opt 
-                        ? "bg-white text-[#f45c03] border-white" 
-                        : "bg-white/10 text-white border-white/20 hover:bg-white/20"
-                    }`}
+                    className="flex items-center gap-4 text-left py-1 group/opt cursor-pointer"
                   >
-                    {opt}
+                    <div className={`w-5 h-5 rounded-full border-2 border-white flex items-center justify-center shrink-0 transition-all ${
+                        category === opt ? "bg-white" : "bg-transparent"
+                    }`}>
+                      {category === opt && <div className="w-2 h-2 rounded-full bg-[#f45c03]" />}
+                    </div>
+                    <span className={`text-[17px] sm:text-[19px] font-medium transition-colors ${category === opt ? "font-bold text-white" : "text-white/95"}`}>
+                      {opt}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -146,20 +150,23 @@ export default function PollGame() {
 
           {/* Question 2 */}
           <div className="relative">
-            <div className="relative bg-[#f45c03] rounded-[28px] p-8 shadow-lg h-full z-10 text-white">
-              <h3 className="text-[20px] font-semibold mb-6">What makes you click a product the fastest?</h3>
-              <div className="flex flex-col gap-3">
-                {["Fine pictures", "Popular items", "Good descriptions"].map((opt) => (
+            <div className="relative bg-[#f45c03] rounded-xl p-5 sm:p-8 shadow-lg h-full z-10 text-white">
+              <h3 className="text-[18px] sm:text-[20px] font-semibold mb-6 uppercase tracking-wide">What makes you click a product the fastest?</h3>
+              <div className="flex flex-col gap-5">
+                {["Fine picture", "Popular item", "Good description"].map((opt) => (
                   <button
                     key={opt}
                     onClick={() => setChoice(opt)}
-                    className={`text-left px-6 py-4 rounded-xl border-2 transition-all font-medium ${
-                      choice === opt 
-                        ? "bg-white text-[#f45c03] border-white" 
-                        : "bg-white/10 text-white border-white/20 hover:bg-white/20"
-                    }`}
+                    className="flex items-center gap-4 text-left py-1 group/opt cursor-pointer"
                   >
-                    {opt}
+                    <div className={`w-5 h-5 rounded-full border-2 border-white flex items-center justify-center shrink-0 transition-all ${
+                        choice === opt ? "bg-white" : "bg-transparent"
+                    }`}>
+                      {choice === opt && <div className="w-2 h-2 rounded-full bg-[#f45c03]" />}
+                    </div>
+                    <span className={`text-[17px] sm:text-[19px] font-medium transition-colors ${choice === opt ? "font-bold text-white" : "text-white/95"}`}>
+                      {opt}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -167,11 +174,7 @@ export default function PollGame() {
           </div>
         </div>
 
-        {message && status === "error" && (
-          <div className="text-center text-red-600 font-semibold mb-4">{message}</div>
-        )}
-
-        <div className="text-center">
+        <div className="mt-12 text-center">
           <button
             onClick={handleSubmit}
             disabled={loading}
@@ -184,6 +187,12 @@ export default function PollGame() {
             {loading ? "Submitting..." : user ? "Submit My Vote" : "Login to Vote"}
           </button>
         </div>
+
+        {message && status === "error" && (
+          <div className="mt-8 text-center text-red-600 font-semibold">
+            {message}
+          </div>
+        )}
       </div>
     </section>
   );

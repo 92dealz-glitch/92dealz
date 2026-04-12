@@ -14,13 +14,13 @@
   --color-orange-50: #fff7ed;
   --color-orange-100: #ffedd5;
   --color-orange-200: #fed7aa;
-  --color-orange-300: #f45c03;
-  --color-orange-400: #f45c03;
-  --color-orange-500: #f45c03;
-  --color-orange-600: #f45c03;
-  --color-orange-700: #f45c03;
-  --color-orange-800: #f45c03;
-  --color-orange-900: #f45c03;
+  --color-orange-300: #ff7a2d;
+  --color-orange-400: #ff7a2d;
+  --color-orange-500: #ff7a2d;
+  --color-orange-600: #ff7a2d;
+  --color-orange-700: #ff7a2d;
+  --color-orange-800: #ff7a2d;
+  --color-orange-900: #ff7a2d;
   --color-orange-950: #431407;
 }
 
@@ -75,4 +75,29 @@ button,
 
 .animate-fade-in-up {
   animation: fadeInUp 0.4s ease-out forwards;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 20s linear infinite;
+}
+
+@media (hover: hover) {
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
