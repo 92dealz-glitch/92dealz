@@ -12,7 +12,7 @@ import { Check, Star, Zap, Info } from "lucide-react";
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [currentPlan, setCurrentPlan] = useState<'free' | 'basic' | 'star' | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<'free' | 'basic' | 'star' | 'premium' | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const router = useRouter();
 
