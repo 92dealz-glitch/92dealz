@@ -148,21 +148,27 @@ export interface UserProfile {
   last_poll_date?: string | null;
   poll_category?: string | null;
   poll_choice?: string | null;
-  subscription_plan?: 'free' | 'basic' | 'star';
+  subscription_plan?: 'free' | 'basic' | 'star' | 'premium';
   subscription_stats?: {
     total: number;
     free: number;
     basic: number;
     star: number;
+    premium: number;
     limits: {
       free: number;
       basic: number;
       star: number;
+      premium: number;
     }
   };
   basic_plan_expires_at?: string | null;
   star_plan_expires_at?: string | null;
+  premium_plan_expires_at?: string | null;
   plan_started_at?: string | null;
+  country_code?: string | null;
+  country_name?: string | null;
+  extra_slots_purchased?: number;
 }
 
 export async function getProfile() {

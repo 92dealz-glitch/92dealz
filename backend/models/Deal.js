@@ -114,8 +114,20 @@ const Deal = sequelize.define('Deal', {
     allowNull: true,
   },
   plan_type: {
-    type: DataTypes.ENUM('free', 'basic', 'star'),
+    type: DataTypes.ENUM('free', 'basic', 'star', 'premium'),
     defaultValue: 'free',
+  },
+  is_contacted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  is_locked: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  active_until: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
 }, {
   tableName: 'deals',

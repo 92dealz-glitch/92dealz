@@ -159,7 +159,7 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
   subscription_plan: {
-    type: DataTypes.ENUM('free', 'basic', 'star'),
+    type: DataTypes.ENUM('free', 'basic', 'star', 'premium'),
     defaultValue: 'free',
   },
   basic_plan_expires_at: {
@@ -169,6 +169,14 @@ const User = sequelize.define('User', {
   star_plan_expires_at: {
     type: DataTypes.DATE,
     allowNull: true,
+  },
+  premium_plan_expires_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  extra_slots_purchased: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
 }, {
   tableName: 'users',

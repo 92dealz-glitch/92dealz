@@ -110,6 +110,8 @@ exports.list = async (req, res, next) => {
     if (req.query.today_only === 'true') {
       where.push('deals."createdAt" >= CURRENT_DATE');
     }
+    // Filter out expired ads for public listing
+    where.push("(deals.active_until IS NULL OR deals.active_until > NOW())");
 
     // Default to active status if not specified
     if (req.query.status && has('status')) {
@@ -221,7 +223,7 @@ exports.create = async (req, res, next) => {
 
     // --- Subscription Plan Logic & Limits ---
     const [[user]] = await sequelize.query(
-      `SELECT subscription_plan, basic_plan_expires_at, star_plan_expires_at FROM users WHERE id = $1`, 
+      `SELECT subscription_plan, basic_plan_expires_at, star_plan_expires_at, premium_plan_expires_at, extra_slots_purchased, country_code FROM users WHERE id = $1`, 
       { bind: [userId] }
     );
     
@@ -239,6 +241,17 @@ exports.create = async (req, res, next) => {
       if (isExpired) {
         return res.status(403).json({ success: false, message: 'Your Premium (Star) subscription has expired. Please renew to post Premium ads.' });
       }
+    } else if (targetPlanType === 'premium') {
+      const isExpired = !user.premium_plan_expires_at || new Date(user.premium_plan_expires_at) < now;
+      if (isExpired) {
+        return res.status(403).json({ success: false, message: 'Your Ultimate (Premium) subscription has expired. Please renew to post Ultimate ads.' });
+      }
+    }
+
+    // Chinese Vendor Restriction: No Free Tier
+    const isChina = user.country_code === 'CN';
+    if (isChina && targetPlanType === 'free') {
+      return res.status(403).json({ success: false, message: 'Chinese vendors must purchase a plan to list products. Free tier is not available in your region.' });
     }
 
     // Check monthly limit specifically for the chosen plan tier
@@ -247,12 +260,19 @@ exports.create = async (req, res, next) => {
       { bind: [userId, targetPlanType] }
     );
     const existingCount = countRes[0].count;
+    
+    // Dynamic limits: Free tier can have extra slots purchased via Starter add-on
+    const limits = { 
+      free: 1 + (Number(user.extra_slots_purchased) || 0), 
+      basic: 10, 
+      star: 20,
+      premium: 50 
+    };
 
-    const limits = { free: 1, basic: 10, star: 20 };
     if (existingCount >= limits[targetPlanType]) {
       return res.status(403).json({ 
         success: false, 
-        message: `Limit exceeded for ${targetPlanType} slot. You can only post ${limits[targetPlanType]} ${targetPlanType} ad(s) per month.` 
+        message: `Limit exceeded for ${targetPlanType} slot. Your current monthly capacity for this tier is ${limits[targetPlanType]} ad(s).` 
       });
     }
 
@@ -260,8 +280,8 @@ exports.create = async (req, res, next) => {
     const originalCurrency = req.body.originalCurrency || 'NGN';
     const finalPrice = await currencyService.convertToBase(Number(price), originalCurrency);
 
-    const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"', 'status', 'plan_type'];
-    const vals = ['$1', '$2', '$3', '$4', 'NOW()', 'NOW()', '$5', '$6'];
+    const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"', 'status', 'plan_type', 'active_until'];
+    const vals = ['$1', '$2', '$3', '$4', 'NOW()', 'NOW()', '$5', '$6', "NOW() + INTERVAL '30 days'"];
     
     // Always default to pending for non-admins during initial creation
     const isAdmin = req.user && req.user.role === 'admin';
@@ -341,7 +361,7 @@ exports.update = async (req, res, next) => {
     if (has('images_json')) allowed.push('images_json');
     if (has('expiry_date')) allowed.push('expiry_date');
     if (has('status')) allowed.push('status');
-    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location', 'subcategory', 'specifications'];
+    const extraFields = ['condition', 'brand', 'model', 'color', 'negotiable', 'screenSize', 'ram', 'mainCamera', 'selfieCamera', 'battery', 'internalStorage', 'state', 'city', 'location', 'subcategory', 'specifications', 'active_until'];
     for (const f of extraFields) {
       if (has(f)) allowed.push(f);
     }
@@ -357,6 +377,11 @@ exports.update = async (req, res, next) => {
         let value = req.body[k];
         if ((k === 'specifications' || k === 'images_json') && typeof value === 'object' && value !== null) {
           value = JSON.stringify(value);
+        }
+        if (k === 'active_until' && value === 'reset') {
+          sets.push(`active_until = NOW() + INTERVAL '30 days'`);
+          sets.push(`"createdAt" = NOW()`); // Bump to top
+          continue; 
         }
         if (k === 'status') {
           const allowedStatus = ['active', 'sold', 'draft', 'closed', 'pending', 'rejected'];
@@ -429,19 +454,34 @@ exports.remove = async (req, res, next) => {
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
-    let sql, params;
+
+    // Check strict deletion rule
+    let fetchSql;
     if (isAdmin) {
-      sql = `DELETE FROM deals WHERE id = $1 RETURNING id`;
-      params = [id];
+      fetchSql = `SELECT id, is_contacted, status, is_locked FROM deals WHERE id = $1`;
     } else {
-      sql = `DELETE FROM deals WHERE id = $1 AND "userId" = $2 RETURNING id`;
-      params = [id, userId];
+      fetchSql = `SELECT id, is_contacted, status, is_locked FROM deals WHERE id = $1 AND "userId" = $2`;
     }
-    const [rows] = await sequelize.query(sql, { bind: params });
-    if (!rows.length) {
+    const [existing] = await sequelize.query(fetchSql, { bind: isAdmin ? [id] : [id, userId] });
+    
+    if (!existing.length) {
       return res.status(404).json({ success: false, message: 'Deal not found or not owned by user' });
     }
-    return res.json({ success: true, message: 'Deal deleted' });
+    
+    const deal = existing[0];
+    
+    if (deal.is_contacted || deal.status === 'sold' || deal.is_locked) {
+      // Lock it instead of deleting
+      await sequelize.query(
+        `UPDATE deals SET status = 'closed', is_locked = true, "updatedAt" = NOW() WHERE id = $1`,
+        { bind: [id] }
+      );
+      return res.json({ success: true, message: 'Product has been locked as it was previously contacted or sold.' });
+    } else {
+      // Hard delete
+      await sequelize.query(`DELETE FROM deals WHERE id = $1`, { bind: [id] });
+      return res.json({ success: true, message: 'Deal deleted completely.' });
+    }
   } catch (err) {
     return next(err);
   }

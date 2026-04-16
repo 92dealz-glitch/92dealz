@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 // Using native img here to avoid any remote loader issues for local uploads
-import { Edit2, CheckCircle, Trash2, Plus } from "lucide-react";
+import { Edit2, CheckCircle, Trash2, Plus, Timer, Lock, Star, Zap, X } from "lucide-react";
 import Link from "next/link";
 import { listMyAds, deleteAd, markAdSold, updateAd, updateAdVisibility } from "@/services/ads.service";
 import { getProfile } from "@/services/user.service";
 import { UserProfile } from "@/lib/api";
 import { useAlert } from "@/context/AlertContext";
 
-type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any; plan_type?: 'free' | 'basic' | 'star' };
+type Ad = { id: number; title: string; description?: string | null; price: number; image_url?: string | null; status?: string | null; createdAt?: string; subcategory?: string; specifications?: any; plan_type?: 'free' | 'basic' | 'star' | 'premium'; is_contacted?: boolean; is_locked?: boolean; active_until?: string };
 
 export default function MyAdsList() {
     const { showAlert, showConfirm, showPrompt } = useAlert();
@@ -89,6 +89,36 @@ export default function MyAdsList() {
                 ))}
             </div>
 
+            {/* Stats Summary */}
+            {profile?.subscription_stats && (
+                <div className="flex flex-wrap gap-4 mb-8">
+                    <div className="bg-zinc-50 border border-zinc-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
+                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Free Slots</span>
+                        <span className="text-lg font-black text-black">{profile.subscription_stats.free} / {profile.subscription_stats.limits.free}</span>
+                    </div>
+                    <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
+                        <span className="text-[10px] font-black text-orange-400 uppercase tracking-wider">Featured</span>
+                        <span className="text-lg font-black text-[#f45c03]">{profile.subscription_stats.basic} / {profile.subscription_stats.limits.basic}</span>
+                    </div>
+                    <div className="bg-yellow-50 border border-yellow-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
+                        <span className="text-[10px] font-black text-yellow-600 uppercase tracking-wider">Star</span>
+                        <span className="text-lg font-black text-yellow-600">{profile.subscription_stats.star} / {profile.subscription_stats.limits.star}</span>
+                    </div>
+                    {(profile.subscription_stats.limits.premium > 0 || profile.subscription_plan === 'premium') && (
+                        <div className="bg-purple-50 border border-purple-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
+                            <span className="text-[10px] font-black text-purple-600 uppercase tracking-wider">Ultimate</span>
+                            <span className="text-lg font-black text-purple-600">{profile.subscription_stats.premium} / {profile.subscription_stats.limits.premium}</span>
+                        </div>
+                    )}
+                    {(profile?.extra_slots_purchased && profile.extra_slots_purchased > 0) && (
+                         <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px] border-dashed">
+                             <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Starter Add-ons</span>
+                             <span className="text-lg font-black text-emerald-600">+{profile.extra_slots_purchased} Purchased</span>
+                         </div>
+                    )}
+                </div>
+            )}
+
             {/* List */}
             <div className="space-y-6">
                 {loading && <div className="text-sm text-zinc-500">Loading...</div>}
@@ -119,25 +149,51 @@ export default function MyAdsList() {
                                 <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${
                                     ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' : 
                                     ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' : 
+                                    ad.plan_type === 'premium' ? 'bg-purple-600 text-white shadow-purple-100 ring-2 ring-purple-100' :
                                     'bg-zinc-200 text-zinc-600'
                                 }`}>
                                     {ad.plan_type === 'star' ? (
                                         <>
-                                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                            <Star size={12} className="fill-current" />
                                             Premium Plan
                                         </>
                                     ) : ad.plan_type === 'basic' ? (
                                         <>
-                                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                            <Zap size={12} className="fill-current" />
                                             Featured Plan
+                                        </>
+                                    ) : ad.plan_type === 'premium' ? (
+                                        <>
+                                            <Star size={12} className="fill-current text-purple-200" />
+                                            Ultimate Plan
                                         </>
                                     ) : (
                                         <>
-                                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                            <CheckCircle size={12} className="fill-current opacity-50" />
                                             Standard Plan (Free)
                                         </>
                                     )}
                                 </span>
+                            </div>
+
+                            <div className="mt-2 flex gap-2">
+                                 {(ad.is_locked || ad.status === 'sold' || ad.is_contacted) && (
+                                    <span 
+                                        title="This ad is locked because it was recently contacted by a buyer or marked as sold. This prevents changing product details on a premium slot that has already generated leads."
+                                        className="cursor-help bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded text-[10px] font-black uppercase flex items-center gap-1"
+                                    >
+                                        <Lock size={10} />
+                                        Locked (Interacted)
+                                    </span>
+                                )}
+                                {(ad.active_until && new Date(ad.active_until) < new Date()) && (
+                                    <span 
+                                        title="This listing has reached its 30-day lifecycle and is no longer visible to the public. You can renew it to reactivate it for another 30 days."
+                                        className="cursor-help bg-zinc-100 text-zinc-500 border border-zinc-200 px-2 py-0.5 rounded text-[10px] font-black uppercase"
+                                    >
+                                        Expired
+                                    </span>
+                                )}
                             </div>
 
                             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -181,7 +237,11 @@ export default function MyAdsList() {
                                 </button>
                                 <button
                                     onClick={async () => {
-                                        if (!await showConfirm("Are you sure you want to delete this ad?", "Confirm Deletion")) return;
+                                        const isStrictLocked = ad.is_contacted || ad.status === 'sold' || ad.is_locked;
+                                        const promptMsg = isStrictLocked 
+                                          ? "This product has interacted with buyers and is permanently locked to prevent fraud. Deleting it will irrevocably close it and secure its slot. Proceed?" 
+                                          : "Are you sure you want to delete this ad? It will be permanently removed.";
+                                        if (!await showConfirm(promptMsg, "Confirm Deletion")) return;
                                         try {
                                             await deleteAd(ad.id);
                                             await load();
@@ -201,7 +261,24 @@ export default function MyAdsList() {
                                         }}
                                         className="flex items-center gap-2 bg-gradient-to-r from-[#f45c03] to-orange-600 text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg hover:shadow-orange-100 active:scale-95">
                                         <Plus size={16} />
-                                        Change Plan
+                                        Boost Ad
+                                    </button>
+                                )}
+                                {(ad.active_until && new Date(ad.active_until) < new Date()) && (
+                                    <button
+                                        onClick={async () => {
+                                            if (!await showConfirm("Renewing this ad will reactivate it for 30 days and bump it to the top. It will need to be re-approved by admins. Proceed?", "Renew Listing")) return;
+                                            try {
+                                                await updateAd(ad.id, { active_until: 'reset', status: 'pending' } as any);
+                                                showAlert("Ad renewed successfully and sent for re-approval!", "Success");
+                                                load();
+                                            } catch (e: any) {
+                                                showAlert(e.message || "Failed to renew ad. Ensure you have available slots.");
+                                            }
+                                        }}
+                                        className="flex items-center gap-2 bg-black text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:bg-zinc-800 active:scale-95">
+                                        <Timer size={16} />
+                                        Renew Ad
                                     </button>
                                 )}
                             </div>
@@ -278,6 +355,25 @@ export default function MyAdsList() {
                                     }
                                 }}
                             />
+                            {(profile?.country_name !== 'China' && profile?.country_code !== 'CN') && (
+                                <PromotionTierCard 
+                                    id="premium"
+                                    title="Ultimate Tier"
+                                    perk="Top Rank + VIP Manager"
+                                    disabled={!profile?.premium_plan_expires_at || new Date(profile.premium_plan_expires_at) < new Date()}
+                                    slots={`${profile?.subscription_stats?.premium || 0} / ${profile?.subscription_stats?.limits?.premium || 50}`}
+                                    onSelect={async () => {
+                                        try {
+                                            await updateAdVisibility(promotingId, 'premium');
+                                            showAlert("Ad switched to Ultimate Visibility!", "Success");
+                                            setIsPromoteModalOpen(false);
+                                            load();
+                                        } catch (e: any) {
+                                            showAlert(e.message || "Failed to switch plan");
+                                        }
+                                    }}
+                                />
+                            )}
                         </div>
 
                         {/* Plan Status Help */}
@@ -342,27 +438,6 @@ function PromotionTierCard({ title, perk, disabled, slots, onSelect, id }: { tit
     );
 }
 
-function X(props: any) {
-    return (
-        <svg {...props} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    )
-}
 
-function Zap(props: any) {
-    return (
-        <svg {...props} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-    )
-}
 
-function Star(props: any) {
-    return (
-        <svg {...props} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-    )
-}
-
-function Lock(props: any) {
-    return (
-        <svg {...props} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-    )
-}
 

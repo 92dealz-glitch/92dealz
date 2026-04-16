@@ -135,7 +135,9 @@ exports.getProfile = async (req, res, next) => {
     // --- Dynamic Plan Calculation & Sync ---
     const now = new Date();
     let calculatedPlan = 'free';
-    if (user.star_plan_expires_at && new Date(user.star_plan_expires_at) > now) {
+    if (user.premium_plan_expires_at && new Date(user.premium_plan_expires_at) > now) {
+      calculatedPlan = 'premium';
+    } else if (user.star_plan_expires_at && new Date(user.star_plan_expires_at) > now) {
       calculatedPlan = 'star';
     } else if (user.basic_plan_expires_at && new Date(user.basic_plan_expires_at) > now) {
       calculatedPlan = 'basic';
@@ -164,15 +166,22 @@ exports.getProfile = async (req, res, next) => {
       { bind: [req.user.id] }
     );
 
+    const [[premiumAdsRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = 'premium' AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
+      { bind: [req.user.id] }
+    );
+
     const subscription_stats = {
       total: totalAdsRow.count,
       free: freeAdsRow.count,
       star: starAdsRow.count,
       basic: basicAdsRow.count,
+      premium: premiumAdsRow.count,
       limits: {
-        free: 1,
+        free: 1 + (user.extra_slots_purchased || 0),
         basic: 10,
-        star: 20
+        star: 20,
+        premium: 50
       }
     };
 
@@ -351,13 +360,29 @@ exports.submitPoll = async (req, res, next) => {
 exports.buyPlan = async (req, res, next) => {
   try {
     const { plan } = req.body;
-    if (!['free', 'basic', 'star'].includes(plan)) {
+    if (!['free', 'starter', 'basic', 'star', 'premium'].includes(plan)) {
       return res.status(400).json({ success: false, message: 'Invalid plan' });
     }
 
     const user = await User.findByPk(req.user.id);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Regional Plan Restrictions
+    const isChina = user.country_code === 'CN';
+    if (isChina && !['basic', 'star'].includes(plan)) {
+      return res.status(403).json({ success: false, message: 'Chinese vendors can only purchase Featured (Basic) or Premium (Star) plans.' });
+    }
+
+    if (plan === 'starter') {
+      user.extra_slots_purchased = (user.extra_slots_purchased || 0) + 1;
+      await user.save();
+      return res.json({
+        success: true,
+        message: 'Successfully purchased an extra Starter slot.',
+        data: { extra_slots_purchased: user.extra_slots_purchased }
+      });
     }
 
     const now = Date.now();
@@ -371,12 +396,17 @@ exports.buyPlan = async (req, res, next) => {
       const currentExpiry = user.star_plan_expires_at ? new Date(user.star_plan_expires_at).getTime() : 0;
       const baseTime = currentExpiry > now ? currentExpiry : now;
       user.star_plan_expires_at = new Date(baseTime + duration);
+    } else if (plan === 'premium') {
+      const currentExpiry = user.premium_plan_expires_at ? new Date(user.premium_plan_expires_at).getTime() : 0;
+      const baseTime = currentExpiry > now ? currentExpiry : now;
+      user.premium_plan_expires_at = new Date(baseTime + duration);
     }
 
     // Recalculate main plan
+    const futurePremium = user.premium_plan_expires_at && new Date(user.premium_plan_expires_at) > new Date();
     const futureStar = user.star_plan_expires_at && new Date(user.star_plan_expires_at) > new Date();
     const futureBasic = user.basic_plan_expires_at && new Date(user.basic_plan_expires_at) > new Date();
-    user.subscription_plan = futureStar ? 'star' : (futureBasic ? 'basic' : 'free');
+    user.subscription_plan = futurePremium ? 'premium' : (futureStar ? 'star' : (futureBasic ? 'basic' : 'free'));
     
     await user.save();
 

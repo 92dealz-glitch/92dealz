@@ -23,6 +23,11 @@ exports.logContact = async (req, res, next) => {
       `INSERT INTO click_events (deal_id, user_id, type, clicked_at) VALUES ($1, $2, 'contact', NOW())`,
       { bind: [Number(deal_id), userId] }
     );
+    // Update the deal itself to mark it as interacted
+    await sequelize.query(
+      `UPDATE deals SET is_contacted = true WHERE id = $1`,
+      { bind: [Number(deal_id)] }
+    );
     return res.status(201).json({ success: true });
   } catch (err) { return next(err); }
 };

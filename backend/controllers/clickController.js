@@ -13,14 +13,25 @@ function getUserIdFromHeader(req) {
   return null;
 }
 
+const Deal = require('../models/Deal');
+
 exports.record = async (req, res, next) => {
   try {
     const dealId = Number(req.params.id);
     if (!dealId) {
       return res.status(400).json({ success: false, message: 'Invalid deal id' });
     }
+    const type = req.body.type || 'view';
     const userId = (req.user && req.user.id) || getUserIdFromHeader(req);
-    await ClickEvent.create({ deal_id: dealId, user_id: userId || null });
+    await ClickEvent.create({ deal_id: dealId, user_id: userId || null, type });
+
+    if (type === 'contact') {
+      await Deal.update(
+        { is_contacted: true },
+        { where: { id: dealId } }
+      );
+    }
+
     return res.status(201).json({ success: true, message: 'Click recorded' });
   } catch (err) {
     return next(err);

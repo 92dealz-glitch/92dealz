@@ -242,6 +242,7 @@ export default function ProductPage({ params }: Props) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [showContactOptions, setShowContactOptions] = useState(false);
+  const [hasLoggedContact, setHasLoggedContact] = useState(false);
   const [showGateModal, setShowGateModal] = useState(false);
   const { isFullyVerified } = useNavUserDetails();
   const isLoggedIn = !!(typeof window !== "undefined" ? window.localStorage.getItem("token") : null);
@@ -760,10 +761,18 @@ export default function ProductPage({ params }: Props) {
             {/* 5. Contact Options */}
             <div className="rounded-md border-2 border-orange-200 bg-white">
               <button 
-                onClick={() => {
+                onClick={async () => {
                   if (!isLoggedIn || !isFullyVerified) {
                     setShowGateModal(true);
                     return;
+                  }
+                  if (!showContactOptions && !hasLoggedContact) {
+                    try {
+                      await logContactView(Number(id));
+                      setHasLoggedContact(true);
+                    } catch (err) {
+                      console.error("Failed to log contact view:", err);
+                    }
                   }
                   setShowContactOptions(!showContactOptions);
                 }}

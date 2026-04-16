@@ -37,8 +37,22 @@ async function forceSchemaFix() {
     try {
       await sequelize.query(`ALTER TYPE "enum_users_role" ADD VALUE IF NOT EXISTS 'csr';`);
       console.log('Successfully added csr to enum_users_role');
+      
+      const enumsToAdd = [
+        { type: 'enum_deals_plan_type', val: 'premium' },
+        { type: 'enum_users_subscription_plan', val: 'premium' }
+      ];
+
+      for (let { type, val } of enumsToAdd) {
+        try {
+          await sequelize.query(`ALTER TYPE "${type}" ADD VALUE IF NOT EXISTS '${val}';`);
+          console.log(`Successfully added ${val} to ${type}`);
+        } catch(e) {
+          console.log(`Skipped ${type} addition for ${val}:`, e.message);
+        }
+      }
     } catch (enumErr) {
-      console.log('Enum csr addition skipped or already exists:', enumErr.message);
+      console.log('Enum addition skipped or failed:', enumErr.message);
     }
   } catch (err) {
     console.error('--- SCHEMA FIX FAILED ---');

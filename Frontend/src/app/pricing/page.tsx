@@ -29,18 +29,21 @@ export default function PricingPage() {
     fetchProfile();
   }, []);
 
-  const handleBuy = async (plan: 'free' | 'basic' | 'star') => {
+  const handleBuy = async (plan: 'free' | 'basic' | 'star' | 'premium' | 'starter') => {
     setLoading(plan);
     setMessage(null);
     try {
       const res = await buyPlan(plan);
       if (res.success) {
         setMessage({ type: 'success', text: "Successfully subscribed to the plan." });
-        setCurrentPlan(plan);
+        setCurrentPlan(plan === 'starter' ? currentPlan : plan as any);
         // Refresh profile to get updated dates
         const profileRes = await getProfile();
-        if (profileRes.success) setProfile(profileRes.data as UserProfile);
-        setTimeout(() => setMessage(null), 5000);
+        if (profileRes.success) {
+          setProfile(profileRes.data as UserProfile);
+          if (plan !== 'starter') setCurrentPlan(profileRes.data.subscription_plan as any);
+        }
+        // Success experience: show buttons after a short delay or immediately
       } else {
         setMessage({ type: 'error', text: "Failed to process subscription." });
       }
@@ -51,7 +54,43 @@ export default function PricingPage() {
     }
   };
 
-  const plans = [
+  const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
+
+  const plans = isChina ? [
+    {
+      id: 'basic',
+      name: 'Featured Tier',
+      price: '$9.99',
+      period: '/month',
+      description: 'Designed for scaling businesses requiring enhanced market exposure and priority placement.',
+      features: [
+        '10 Featured Visibility Ads per month',
+        'Priority placement in Trending feeds',
+        'Elevated search algorithm ranking',
+        'Expedited 8h support SLA'
+      ],
+      buttonText: 'Subscribe to Featured',
+      color: 'orange',
+      icon: <Zap className="w-6 h-6 text-[#f45c03]" />,
+      recommended: true
+    },
+    {
+      id: 'star',
+      name: 'Premium Enterprise',
+      price: '$24.99',
+      period: '/month',
+      description: 'Maximum visibility architecture tailored for professional vendors dominating their category.',
+      features: [
+        '20 Premium Visibility Ads per month',
+        'Exclusive placement in Prime sections',
+        'Highest priority indexing in search matrices',
+        'Comprehensive market performance analytics'
+      ],
+      buttonText: 'Subscribe to Premium',
+      color: 'star',
+      icon: <Star className="w-6 h-6 text-yellow-500" />
+    }
+  ] : [
     {
       id: 'free',
       name: 'Standard Tier',
@@ -66,6 +105,21 @@ export default function PricingPage() {
       buttonText: 'Default Tier',
       color: 'gray',
       icon: <Info className="w-6 h-6 text-gray-400" />
+    },
+    {
+      id: 'starter',
+      name: 'Starter Add-on',
+      price: '₦250',
+      period: '/slot',
+      description: 'Add an extra Standard slot to your account without upgrading your full plan. Perfect for single extra uploads.',
+      features: [
+        '+1 Standard Visibility Ad slot',
+        'Can be purchased multiple times',
+        'Does not expire until used'
+      ],
+      buttonText: 'Buy Extra Slot',
+      color: 'gray',
+      icon: <Check className="w-6 h-6 text-gray-500" />
     },
     {
       id: 'basic',
@@ -101,6 +155,23 @@ export default function PricingPage() {
       buttonText: 'Subscribe to Premium',
       color: 'star',
       icon: <Star className="w-6 h-6 text-yellow-500" />
+    },
+    {
+      id: 'premium',
+      name: 'Ultimate Tier',
+      price: '₦50,000',
+      period: '/month',
+      description: 'The absolute highest tier for super-vendors requiring limitless capacity and top-tier marketplace dominance.',
+      features: [
+        '50 Ultimate Visibility Ads per month',
+        'Guaranteed top placements',
+        'Dedicated VIP Account Manager',
+        'Zero-delay instant support routing',
+        'White-glove analytics and insights'
+      ],
+      buttonText: 'Subscribe to Ultimate',
+      color: 'star',
+      icon: <Star className="w-6 h-6 text-purple-500" />
     }
   ];
 
@@ -122,11 +193,25 @@ export default function PricingPage() {
 
           {/* Alert Message */}
           {message && (
-            <div className={`max-w-2xl mx-auto mb-10 p-4 rounded-2xl flex items-center gap-3 border shadow-sm animate-in fade-in slide-in-from-top-4 duration-300 ${
-              message.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'
+            <div className={`max-w-2xl mx-auto mb-10 p-6 rounded-[32px] flex flex-col md:flex-row items-center gap-6 border shadow-2xl animate-in zoom-in-95 duration-300 ${
+              message.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-red-50 border-red-200 text-red-900'
             }`}>
-              {message.type === 'success' ? <Check className="w-5 h-5" /> : <Info className="w-5 h-5" />}
-              <span className="font-medium">{message.text}</span>
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-full ${message.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>
+                  {message.type === 'success' ? <Check className="w-5 h-5" /> : <Info className="w-5 h-5" />}
+                </div>
+                <span className="font-black text-lg">{message.text}</span>
+              </div>
+              
+              {message.type === 'success' && (
+                <div className="flex gap-3 ml-auto">
+                    <Link href="/vendor-dashboard/my-ads" className="bg-white border-2 border-emerald-200 text-emerald-700 px-6 py-2 rounded-xl font-black text-sm hover:bg-emerald-100 transition-all">My Ads</Link>
+                    <Link href="/vendor-dashboard/add-product" className="bg-emerald-600 text-white px-6 py-2 rounded-xl font-black text-sm shadow-lg shadow-emerald-100 hover:bg-emerald-700 active:scale-95 transition-all">Post My Ad</Link>
+                </div>
+              )}
+              {message.type === 'error' && (
+                 <button onClick={() => setMessage(null)} className="ml-auto text-red-400 font-bold text-sm">Dismiss</button>
+              )}
             </div>
           )}
 
@@ -193,7 +278,7 @@ export default function PricingPage() {
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold text-gray-700">Ads Posted</span>
                       <span className="text-xs font-black text-black">
-                        {(profile.subscription_stats[plan.id as 'free'|'basic'|'star'] as number) || 0} / {(profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'] as number) || '-'}
+                        {(profile.subscription_stats[plan.id as 'free'|'basic'|'star'|'premium'|'starter'] as any) || 0} / {(profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'|'premium'|'starter'] as any) || '-'}
                       </span>
                     </div>
                     {/* Time Left */}
@@ -209,6 +294,12 @@ export default function PricingPage() {
                         <span className="text-[10px] font-black text-yellow-600">{new Date(profile.star_plan_expires_at).toLocaleDateString()}</span>
                       </div>
                     )}
+                    {(plan.id === 'premium' && profile.premium_plan_expires_at) && (
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+                        <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
+                        <span className="text-[10px] font-black text-purple-600">{new Date(profile.premium_plan_expires_at).toLocaleDateString()}</span>
+                      </div>
+                    )}
                     {(plan.id === 'free') && (
                       <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
                         <span className="text-xs font-bold text-gray-700">Renews</span>
@@ -220,21 +311,21 @@ export default function PricingPage() {
 
                 <button
                   onClick={() => handleBuy(plan.id as any)}
-                  disabled={loading !== null || currentPlan === plan.id}
-                  className={`w-full py-4 rounded-2xl font-black text-base transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 shadow-lg ${
-                    plan.id === 'star'
+                  disabled={loading !== null || (currentPlan === plan.id && plan.id !== 'starter')}
+                  className={`w-full py-4 rounded-2xl font-black text-base transition-all active:scale-95 shadow-lg ${
+                    plan.id === 'star' || plan.id === 'premium'
                       ? 'bg-black text-yellow-400 hover:shadow-yellow-200'
                       : plan.recommended
                         ? 'bg-[#f45c03] text-white hover:bg-orange-600 hover:shadow-orange-200'
                         : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  }`}
+                  } ${(loading !== null || (currentPlan === plan.id && plan.id !== 'starter')) ? 'opacity-50 cursor-not-allowed active:scale-100' : ''}`}
                 >
                   {loading === plan.id ? (
                     <div className="flex items-center justify-center gap-2">
                       <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                       Processing...
                     </div>
-                  ) : currentPlan === plan.id ? 'Current Plan' : plan.buttonText}
+                  ) : (currentPlan === plan.id && plan.id !== 'starter') ? 'Current Plan' : plan.buttonText}
                 </button>
               </div>
             ))}

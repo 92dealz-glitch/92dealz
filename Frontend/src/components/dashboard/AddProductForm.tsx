@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { ChevronLeft, X, Upload, Plus, Star, Zap, Info, CheckCircle2, ChevronDown } from "lucide-react";
+import { ChevronLeft, X, Upload, Plus, Star, Zap, Info, CheckCircle2, ChevronDown, Lock } from "lucide-react";
 import { createAd } from "@/services/ads.service";
 import { uploadImage } from "@/services/upload.service";
 import { useRouter } from "next/navigation";
@@ -39,9 +39,9 @@ export default function AddProductForm() {
     const [isNigerian, setIsNigerian] = useState(false);
     const [profileLoaded, setProfileLoaded] = useState(false);
     const { showVendorTasks, showAlert } = useAlert();
-    
+
     const { rates } = useCurrency();
-    
+
     // Shared state for all steps
     const [formData, setFormData] = useState({
         title: "",
@@ -62,7 +62,7 @@ export default function AddProductForm() {
         city: "",
         location: "", // Country
         specifications: {} as Record<string, any>,
-        plan_type: "free" as "free" | "basic" | "star"
+        plan_type: "free" as "free" | "basic" | "star" | "premium"
     });
 
 
@@ -71,7 +71,7 @@ export default function AddProductForm() {
         getFallbackArray().then(res => {
             setCategories(res as any);
         });
-        
+
         const detectLocation = async () => {
             try {
                 const res = await getMyProfile();
@@ -79,7 +79,7 @@ export default function AddProductForm() {
                     const phone = String(res.data.phone || "");
                     const isPhoneNig = (res.data.is_phone_verified || false) && (phone.startsWith("+234") || phone.startsWith("234"));
                     const isPhoneChina = (res.data.is_phone_verified || false) && (phone.startsWith("+86") || phone.startsWith("86"));
-                    
+
                     let finalIsNig = isPhoneNig;
                     let finalIsChina = isPhoneChina;
 
@@ -96,18 +96,18 @@ export default function AddProductForm() {
                             console.warn("IP Geolocation failed, defaulting to phone detection", ipErr);
                         }
                     }
-                    
+
                     setIsNigerian(finalIsNig);
                     setProfile(res.data);
-                    
+
                     const defaultCurrency = finalIsNig ? "NGN" : finalIsChina ? "CNY" : "USD";
                     const defaultLocation = finalIsNig ? "Nigeria" : finalIsChina ? "China" : "";
 
-                    setFormData(prev => ({ 
-                        ...prev, 
+                    setFormData(prev => ({
+                        ...prev,
                         location: prev.location || defaultLocation,
                         originalCurrency: (prev.originalCurrency === "USD" && !prev.price) ? defaultCurrency : prev.originalCurrency,
-                        plan_type: 'free' // Default new ads to free visibility
+                        plan_type: finalIsChina ? 'basic' : 'free' // Default new ads
                     }));
 
                 }
@@ -180,31 +180,31 @@ export default function AddProductForm() {
 
                 {/* Step 1: Product Info */}
                 {step === 1 && (
-                    <StepOne 
-                        data={formData} 
-                        updateData={updateFormData} 
-                        onNext={nextStep} 
-                        categories={categories} 
+                    <StepOne
+                        data={formData}
+                        updateData={updateFormData}
+                        onNext={nextStep}
+                        categories={categories}
                     />
                 )}
 
                 {/* Step 2: Pricing & Details */}
                 {step === 2 && (
-                    <StepTwo 
-                        data={formData} 
-                        updateData={updateFormData} 
-                        onNext={nextStep} 
-                        onBack={prevStep} 
+                    <StepTwo
+                        data={formData}
+                        updateData={updateFormData}
+                        onNext={nextStep}
+                        onBack={prevStep}
                         selectedCategory={selectedCategory}
                     />
                 )}
 
                 {/* Step 3: Photos & Location */}
                 {step === 3 && (
-                    <StepThree 
-                        data={formData} 
-                        updateData={updateFormData} 
-                        onBack={prevStep} 
+                    <StepThree
+                        data={formData}
+                        updateData={updateFormData}
+                        onBack={prevStep}
                         isNigerian={isNigerian}
                         profile={profile}
                         showVendorTasks={showVendorTasks}
@@ -317,7 +317,7 @@ function SelectField({ label, options, value, onChange, required = false }: { la
         <div className="flex flex-col gap-2">
             <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
             <div className="relative">
-                <select 
+                <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
@@ -404,7 +404,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
             <div className="flex flex-col gap-2">
                 <label className="text-black font-black text-[15px]">Category<span className="text-[#f45c03] ml-1">*</span></label>
                 <div className="relative">
-                    <select 
+                    <select
                         value={data.category_id || ""}
                         onChange={(e) => {
                             const id = Number(e.target.value);
@@ -423,12 +423,12 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
             </div>
 
             {subcategoryOptions.length > 0 && (
-                <SelectField 
-                    label="Subcategory" 
-                    options={subcategoryOptions} 
-                    value={data.subcategory} 
-                    onChange={(v) => updateData({ subcategory: v })} 
-                    required 
+                <SelectField
+                    label="Subcategory"
+                    options={subcategoryOptions}
+                    value={data.subcategory}
+                    onChange={(v) => updateData({ subcategory: v })}
+                    required
                 />
             )}
 
@@ -437,35 +437,35 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                     <h4 className="text-black font-black text-[17px] mb-6">Product Specifications <span className="text-[#f45c03] ml-1">*</span></h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {specs.map((s: any) => (
-                        <div key={s.label}>
-                            {s.type === "select" ? (
-                                <SelectField 
-                                    label={s.label} 
-                                    options={s.options} 
-                                    value={data.specifications[s.label] || ""} 
-                                    onChange={(v) => handleSpecChange(s.label, v)} 
-                                />
-                            ) : s.type === "number" ? (
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-black font-black text-[15px]">{s.label}</label>
-                                    <input
-                                        type="number"
+                            <div key={s.label}>
+                                {s.type === "select" ? (
+                                    <SelectField
+                                        label={s.label}
+                                        options={s.options}
                                         value={data.specifications[s.label] || ""}
-                                        onChange={(e) => handleSpecChange(s.label, e.target.value)}
-                                        placeholder={s.placeholder || ""}
-                                        className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
+                                        onChange={(v) => handleSpecChange(s.label, v)}
                                     />
-                                </div>
-                            ) : (
-                                <InputField 
-                                    label={s.label} 
-                                    placeholder={s.placeholder || ""} 
-                                    value={data.specifications[s.label] || ""} 
-                                    onChange={(v) => handleSpecChange(s.label, v)} 
-                                />
-                            )}
-                        </div>
-                    ))}
+                                ) : s.type === "number" ? (
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-black font-black text-[15px]">{s.label}</label>
+                                        <input
+                                            type="number"
+                                            value={data.specifications[s.label] || ""}
+                                            onChange={(e) => handleSpecChange(s.label, e.target.value)}
+                                            placeholder={s.placeholder || ""}
+                                            className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
+                                        />
+                                    </div>
+                                ) : (
+                                    <InputField
+                                        label={s.label}
+                                        placeholder={s.placeholder || ""}
+                                        value={data.specifications[s.label] || ""}
+                                        onChange={(v) => handleSpecChange(s.label, v)}
+                                    />
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
@@ -500,7 +500,7 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                     <label className="text-black font-black text-[15px]">Price<span className="text-[#f45c03] ml-1">*</span></label>
                     <div className="flex gap-2">
                         <div className="relative w-1/3">
-                            <select 
+                            <select
                                 value={data.originalCurrency}
                                 onChange={(e) => updateData({ originalCurrency: e.target.value as any })}
                                 className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-zinc-50"
@@ -528,7 +528,7 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                     </div>
                     {data.price && data.originalCurrency !== "NGN" && (
                         <p className="text-[10px] font-bold text-zinc-400">
-                           Standardized: {(Number(data.price) / (rates[data.originalCurrency] || 1) * rates.NGN).toLocaleString(undefined, { maximumFractionDigits: 0 })} NGN approx.
+                            Standardized: {(Number(data.price) / (rates[data.originalCurrency] || 1) * rates.NGN).toLocaleString(undefined, { maximumFractionDigits: 0 })} NGN approx.
                         </p>
                     )}
                 </div>
@@ -579,19 +579,21 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks }: { 
-    data: any, 
-    updateData: (d: any) => void, 
-    onBack: () => void, 
-    isNigerian?: boolean, 
+function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks }: {
+    data: any,
+    updateData: (d: any) => void,
+    onBack: () => void,
+    isNigerian?: boolean,
     profile: any,
     showVendorTasks: () => void
 }) {
     const router = useRouter();
-    const { showAlert } = useAlert();
+    const { showAlert, showConfirm } = useAlert();
     const [submitting, setSubmitting] = useState(false);
+    const [limitError, setLimitError] = useState<string | null>(null);
+    const [explanationModal, setExplanationModal] = useState<{ title: string, msg: string, plan: string } | null>(null);
     const [uploading, setUploading] = useState(false);
-    const fileRef = useRef<HTMLInputElement|null>(null);
+    const fileRef = useRef<HTMLInputElement | null>(null);
 
     async function onChooseFile(e: React.ChangeEvent<HTMLInputElement>) {
         const f = e.target.files?.[0];
@@ -620,16 +622,16 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
 
         // Strict dual verification check for vendors
         if (!profile?.is_phone_verified || !profile?.is_email_verified) {
-             showVendorTasks(); // Globally triggers the tasks modal
-             return;
+            showVendorTasks(); // Globally triggers the tasks modal
+            return;
         }
 
         setSubmitting(true);
         try {
-            await createAd({ 
-                title: data.title, 
-                price: p, 
-                description: data.description, 
+            await createAd({
+                title: data.title,
+                price: p,
+                description: data.description,
                 category_id: data.category_id,
                 subcategory: data.subcategory,
                 specifications: data.specifications,
@@ -648,12 +650,27 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             });
             await showAlert("Your ad has been submitted and is pending admin approval. It will be listed once reviewed.", "Success!");
             router.push("/vendor-dashboard/my-ads");
-        } catch (e: any) {
-            console.error(e);
+        } catch (er: any) {
+            console.error(er);
+            if (er.message && (er.message.includes("Limit exceeded") || er.message.includes("expired") || er.message.includes("must purchase a plan"))) {
+                setLimitError(er.message);
+            } else {
+                showAlert(er.message || "Something went wrong. Please try again.");
+            }
         } finally {
             setSubmitting(false);
         }
     }
+
+    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
+
+    const getExplanation = (tier: string) => {
+        if (tier === 'basic') return { title: "Featured Boost", msg: "Featured ads appear in the 'Trending' section and have 5x more visibility than standard ads.", plan: "Featured Tier" };
+        if (tier === 'star') return { title: "Premium Visibility", msg: "Star ads are highlighted in 'Hot Deals' and 'Featured' sections for maximum market dominance.", plan: "Premium Enterprise" };
+        if (tier === 'premium') return { title: "Ultimate Visibility", msg: "Ultimate ads get top-category priority placement and a dedicated badge for absolute trust.", plan: "Ultimate Tier" };
+        return null;
+    };
+
     return (
         <div className="space-y-12 animate-in slide-in-from-right-4 duration-300">
             <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 mb-8">
@@ -664,31 +681,31 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <CustomSelect 
-                    label="Country" 
-                    options={isNigerian ? ["Nigeria"] : ["Nigeria", "China"]} 
-                    value={data.location || ""} 
+                <CustomSelect
+                    label="Country"
+                    options={isNigerian ? ["Nigeria"] : ["Nigeria", "China"]}
+                    value={data.location || ""}
                     onChange={(v) => {
                         updateData({ location: v, state: "", city: "" });
-                    }} 
+                    }}
                 />
-                
+
                 {data.location === "Nigeria" ? (
                     <>
-                        <CustomSelect 
-                            label="State" 
-                            options={NIGERIAN_STATES} 
-                            value={data.state || ""} 
-                            onChange={(v) => updateData({ state: v, city: "" })} 
-                            required 
+                        <CustomSelect
+                            label="State"
+                            options={NIGERIAN_STATES}
+                            value={data.state || ""}
+                            onChange={(v) => updateData({ state: v, city: "" })}
+                            required
                         />
                         {data.state && (
-                            <CustomSelect 
-                                label="City" 
-                                options={NIGERIAN_LOCATIONS[data.state] || []} 
-                                value={data.city || ""} 
-                                onChange={(v) => updateData({ city: v })} 
-                                required 
+                            <CustomSelect
+                                label="City"
+                                options={NIGERIAN_LOCATIONS[data.state] || []}
+                                value={data.city || ""}
+                                onChange={(v) => updateData({ city: v })}
+                                required
                             />
                         )}
                     </>
@@ -702,8 +719,8 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         <div key={url} className="aspect-square rounded-xl border border-zinc-200 relative overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={url} alt={`image-${idx}`} className="absolute inset-0 w-full h-full object-cover" />
-                            <span className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded">{idx === 0 ? "DISPLAY" : `#${idx+1}`}</span>
-                            <button 
+                            <span className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded">{idx === 0 ? "DISPLAY" : `#${idx + 1}`}</span>
+                            <button
                                 onClick={() => updateData({ images: data.images.filter((_: any, i: number) => i !== idx) })}
                                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
                             >
@@ -727,44 +744,119 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             <div>
                 <h4 className="text-[24px] font-black text-black mb-2">Visibility Tier</h4>
                 <p className="text-zinc-500 font-bold text-sm mb-6">Choose how you want this ad to appear on the platform.</p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <VisibilityOption 
-                        id="free"
-                        title="Standard"
-                        price="FREE"
-                        perk="Standard listing"
-                        active={data.plan_type === 'free'}
-                        onClick={() => updateData({ plan_type: 'free' })}
-                        disabled={false}
-                        count={profile?.subscription_stats ? `${profile.subscription_stats.free} / ${profile.subscription_stats.limits.free}` : null}
-                    />
-                    <VisibilityOption 
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {!isChina && (
+                        <VisibilityOption
+                            id="free"
+                            title="Standard"
+                            price="FREE"
+                            perk="Standard listing"
+                            active={data.plan_type === 'free'}
+                            onClick={() => updateData({ plan_type: 'free' })}
+                            disabled={false}
+                            count={profile?.subscription_stats ? `${profile.subscription_stats.free} / ${profile.subscription_stats.limits.free}` : null}
+                        />
+                    )}
+                    <VisibilityOption
                         id="basic"
                         title="Featured"
-                        price="BASIC"
+                        price={isChina ? "$9.99" : "BASIC"}
                         perk="Trending Ads list"
                         active={data.plan_type === 'basic'}
-                        onClick={() => updateData({ plan_type: 'basic' })}
-                        disabled={profile?.subscription_plan === 'free'}
+                        onClick={() => {
+                            const disabled = profile?.subscription_plan === 'free' && !isChina;
+                            if (disabled) setExplanationModal(getExplanation('basic'));
+                            else updateData({ plan_type: 'basic' });
+                        }}
+                        disabled={false}
+                        isLocked={profile?.subscription_plan === 'free' && !isChina}
                         count={profile?.subscription_stats ? `${profile.subscription_stats.basic} / ${profile.subscription_stats.limits.basic}` : null}
                     />
-                    <VisibilityOption 
+                    <VisibilityOption
                         id="star"
-                        title="Star Premium"
-                        price="PREMIUM"
+                        title="Premium"
+                        price={isChina ? "$24.99" : "STAR"}
                         perk="Hot Deals & Featured"
                         active={data.plan_type === 'star'}
-                        onClick={() => updateData({ plan_type: 'star' })}
-                        disabled={profile?.subscription_plan !== 'star'}
+                        onClick={() => {
+                            const disabled = (profile?.subscription_plan !== 'star' && profile?.subscription_plan !== 'premium') && !isChina;
+                            if (disabled) setExplanationModal(getExplanation('star'));
+                            else updateData({ plan_type: 'star' });
+                        }}
+                        disabled={false}
+                        isLocked={(profile?.subscription_plan !== 'star' && profile?.subscription_plan !== 'premium') && !isChina}
                         count={profile?.subscription_stats ? `${profile.subscription_stats.star} / ${profile.subscription_stats.limits.star}` : null}
                     />
+                    {!isChina && (
+                        <VisibilityOption
+                            id="premium"
+                            title="Ultimate"
+                            price="PREMIUM"
+                            perk="Top Category Placement"
+                            active={data.plan_type === 'premium'}
+                            onClick={() => {
+                                const disabled = profile?.subscription_plan !== 'premium';
+                                if (disabled) setExplanationModal(getExplanation('premium'));
+                                else updateData({ plan_type: 'premium' });
+                            }}
+                            disabled={false}
+                            isLocked={profile?.subscription_plan !== 'premium'}
+                            count={profile?.subscription_stats ? `${profile.subscription_stats.premium} / ${profile.subscription_stats.limits.premium}` : null}
+                        />
+                    )}
                 </div>
-                {profile?.subscription_plan === 'free' && (
+
+                {/* Limit Error Dialog */}
+                {limitError && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+                        <div className="bg-white rounded-[32px] p-10 max-w-md w-full animate-in zoom-in-95 duration-200 shadow-2xl text-center border-4 border-orange-500">
+                            <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Info size={40} className="text-[#f45c03]" />
+                            </div>
+                            <h3 className="text-2xl font-black text-black mb-4">Capacity Reached</h3>
+                            <p className="text-zinc-600 font-bold mb-8 leading-relaxed">{limitError}</p>
+                            <div className="flex flex-col gap-3">
+                                <Link href="/pricing" className="w-full bg-[#f45c03] text-white py-4 rounded-xl font-black shadow-lg shadow-orange-100">Upgrade Plan</Link>
+                                <button onClick={() => setLimitError(null)} className="w-full py-2 text-zinc-400 font-bold">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Explanation Modal */}
+                {explanationModal && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <div className="bg-white rounded-[32px] p-8 max-w-md w-full animate-in zoom-in-95 duration-200 shadow-2xl relative">
+                            <button onClick={() => setExplanationModal(null)} className="absolute top-6 right-6 text-zinc-400 hover:text-black focus:outline-none"><X size={24} /></button>
+                            <div className="mb-6">
+                                <h3 className="text-3xl font-black text-black mb-2">{explanationModal.title}</h3>
+                                <p className="text-zinc-500 font-bold text-sm">{explanationModal.msg}</p>
+                            </div>
+                            <div className="p-5 bg-orange-50 border border-orange-100 rounded-2xl mb-8 flex items-center gap-4">
+                                <div className="p-3 bg-white rounded-xl shadow-sm"><Zap className="text-orange-600" size={24} /></div>
+                                <div>
+                                    <p className="text-sm font-black text-orange-900">Required Upgrade</p>
+                                    <p className="text-xs font-bold text-orange-700">Need <span className="underline">{explanationModal.plan}</span> to unlock.</p>
+                                </div>
+                            </div>
+                            <Link href="/pricing" className="block w-full text-center bg-black text-white py-4 rounded-xl font-black">Plan Pricing</Link>
+                        </div>
+                    </div>
+                )}
+                {profile?.subscription_plan === 'free' && !isChina && (
                     <div className="mt-4 p-4 bg-orange-50 border border-orange-100 rounded-xl flex items-center gap-3">
                         <Info size={18} className="text-orange-600" />
                         <p className="text-xs font-bold text-orange-800">
-                            Upgrade to <Link href="/pricing" className="underline font-black">Basic or Star</Link> to unlock premium visibility tiers for your products.
+                            Upgrade to <Link href="/pricing" className="underline font-black">Basic, Star or Ultimate</Link> to unlock premium visibility tiers for your products.
+                        </p>
+                    </div>
+                )}
+                {isChina && !profile?.subscription_plan && (
+                    <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3">
+                        <Info size={18} className="text-red-600" />
+                        <p className="text-xs font-bold text-red-800">
+                            Chinese vendors must have an active <Link href="/pricing" className="underline font-black">Featured or Premium</Link> plan to post.
                         </p>
                     </div>
                 )}
@@ -791,7 +883,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
 
                             if (limitReached) {
                                 return (
-                                    <Link 
+                                    <Link
                                         href="/pricing"
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -803,9 +895,9 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                             }
 
                             return (
-                                <button 
-                                    onClick={postAd} 
-                                    disabled={submitting || data.images.length === 0 || !data.title || !data.price} 
+                                <button
+                                    onClick={postAd}
+                                    disabled={submitting || data.images.length === 0 || !data.title || !data.price}
                                     className="w-full sm:w-auto bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
                                 >
                                     {submitting ? "Posting..." : "Post Ad"}
@@ -819,23 +911,29 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
     )
 }
 
-function VisibilityOption({ id, title, price, perk, active, onClick, disabled, count }: { id: string, title: string, price: string, perk: string, active: boolean, onClick: () => void, disabled: boolean, count: string | null }) {
+function VisibilityOption({ id, title, price, perk, active, onClick, disabled, count, isLocked }: { id: string, title: string, price: string, perk: string, active: boolean, onClick: () => void, disabled: boolean, count: string | null, isLocked?: boolean }) {
     return (
         <button
             type="button"
             onClick={onClick}
             disabled={disabled}
-            className={`flex flex-col p-5 rounded-[24px] border-2 transition-all text-left relative overflow-hidden ${
-                active 
-                    ? 'border-[#f45c03] bg-orange-50/50 shadow-md shadow-orange-100' 
-                    : disabled 
-                        ? 'border-zinc-100 bg-zinc-50 opacity-40 grayscale cursor-not-allowed' 
-                        : 'border-zinc-200 hover:border-zinc-300 bg-white'
-            }`}
+            className={`flex flex-col p-5 rounded-[24px] border-2 transition-all text-left relative overflow-hidden ${active
+                    ? 'border-[#f45c03] bg-orange-50/50 shadow-md shadow-orange-100'
+                    : isLocked
+                        ? 'border-zinc-100 bg-zinc-50'
+                        : disabled
+                            ? 'opacity-40 grayscale cursor-not-allowed'
+                            : 'border-zinc-200 hover:border-zinc-300 bg-white'
+                }`}
         >
             {active && (
                 <div className="absolute top-3 right-3 text-[#f45c03]">
                     <CheckCircle2 size={24} />
+                </div>
+            )}
+            {isLocked && (
+                <div className="absolute top-3 right-3 text-zinc-300">
+                    <Lock size={18} />
                 </div>
             )}
             <div className={`mb-3 text-[10px] font-black uppercase tracking-widest ${active ? 'text-[#f45c03]' : 'text-zinc-400'}`}>
@@ -843,17 +941,19 @@ function VisibilityOption({ id, title, price, perk, active, onClick, disabled, c
             </div>
             <h5 className="text-black font-black text-lg mb-1">{title}</h5>
             <p className="text-zinc-500 font-bold text-[11px] mb-4">{perk}</p>
-            
+
             {count && (
                 <div className={`mt-auto pt-3 border-t ${active ? 'border-orange-200' : 'border-zinc-100'}`}>
                     <span className="text-[9px] font-black uppercase text-zinc-400">Used Slots</span>
                     <div className="text-xs font-black text-black">{count}</div>
                 </div>
             )}
-            
-            {disabled && (
+
+            {isLocked && (
                 <div className="mt-auto pt-3 border-t border-zinc-100">
-                    <span className="text-[9px] font-black uppercase text-zinc-400 italic">Plan Required</span>
+                    <span className="text-[9px] font-black uppercase text-[#f45c03] font-black flex items-center gap-1">
+                        Unlock Tier
+                    </span>
                 </div>
             )}
         </button>
