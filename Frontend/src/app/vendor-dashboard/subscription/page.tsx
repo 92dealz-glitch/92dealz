@@ -166,7 +166,7 @@ export default function SubscriptionStatsPage() {
                                 <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
                                 <div>
                                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Bonus Left</p>
-                                    <p className="text-lg font-black text-emerald-600">{Math.max(0, profile.extra_slots_purchased - Math.max(0, (stats?.free || 0) - 1))}</p>
+                                    <p className="text-lg font-black text-emerald-600">{Math.max(0, (profile.extra_slots_purchased || 0) - Math.max(0, (stats?.free || 0) - 1))}</p>
                                 </div>
                             </div>
                         )}
