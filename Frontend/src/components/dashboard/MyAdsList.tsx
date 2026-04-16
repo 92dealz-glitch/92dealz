@@ -347,35 +347,37 @@ export default function MyAdsList() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                            <PromotionTierCard 
-                                id="free"
-                                title="Standard Tier"
-                                perk="Index Visibility"
-                                disabled={false}
-                                slots={`${profile?.subscription_stats?.free || 0} / ${profile?.subscription_stats?.limits?.free || 1}`}
-                                onSelect={async () => {
-                                    if (!promotingId) return;
-                                    try {
-                                        await updateAdVisibility(promotingId, 'free');
-                                        showAlert("Ad changed to Standard visibility!", "Success");
-                                        setIsPromoteModalOpen(false);
-                                        load();
-                                    } catch (e: any) {
-                                        showAlert(e.message || "Failed to switch plan");
-                                    }
-                                }}
-                            />
+                            {!isChina && (
+                                <PromotionTierCard 
+                                    id="free"
+                                    title="Standard Tier"
+                                    perk="Standard Visibility"
+                                    disabled={false}
+                                    slots={`${profile?.subscription_stats?.free || 0} / ${profile?.subscription_stats?.limits?.free || 1}`}
+                                    onSelect={async () => {
+                                        if (!promotingId) return;
+                                        try {
+                                            await updateAdVisibility(promotingId, 'free');
+                                            showAlert("Ad changed to Standard visibility!", "Success");
+                                            setIsPromoteModalOpen(false);
+                                            load();
+                                        } catch (e: any) {
+                                            showAlert(e.message || "Failed to switch plan");
+                                        }
+                                    }}
+                                />
+                            )}
                             <PromotionTierCard 
                                 id="basic"
-                                title="Featured Boost"
-                                perk="Appears in Trending Ads"
+                                title={isChina ? "Featured Tier" : "Featured Boost"}
+                                perk={isChina ? "Priority Market Feed" : "Appears in Trending Ads"}
                                 disabled={!profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at || 0) < new Date()}
                                 slots={`${profile?.subscription_stats?.basic || 0} / ${profile?.subscription_stats?.limits?.basic || 10}`}
                                 onSelect={async () => {
                                     if (!promotingId) return;
                                     try {
                                         await updateAdVisibility(promotingId, 'basic');
-                                        showAlert("Ad changed to Featured Boost!", "Success");
+                                        showAlert(isChina ? "Ad updated to Featured Tier!" : "Ad changed to Featured Boost!", "Success");
                                         setIsPromoteModalOpen(false);
                                         load();
                                     } catch (e: any) {
@@ -385,15 +387,15 @@ export default function MyAdsList() {
                             />
                             <PromotionTierCard 
                                 id="star"
-                                title="Star Premium"
-                                perk="Hot Deals & Featured Section"
+                                title={isChina ? "Premium Tier" : "Star Premium"}
+                                perk={isChina ? "Maximum Export Visibility" : "Hot Deals & Featured Section"}
                                 disabled={!profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at || 0) < new Date()}
                                 slots={`${profile?.subscription_stats?.star || 0} / ${profile?.subscription_stats?.limits?.star || 20}`}
                                 onSelect={async () => {
                                     if (!promotingId) return;
                                     try {
                                         await updateAdVisibility(promotingId, 'star');
-                                        showAlert("Ad changed to Star Premium!", "Success");
+                                        showAlert(isChina ? "Ad updated to Premium Tier!" : "Ad changed to Star Premium!", "Success");
                                         setIsPromoteModalOpen(false);
                                         load();
                                     } catch (e: any) {
@@ -401,7 +403,7 @@ export default function MyAdsList() {
                                     }
                                 }}
                             />
-                            {(profile?.country_name !== 'China' && profile?.country_code !== 'CN') && (
+                            {!isChina && (
                                 <PromotionTierCard 
                                     id="premium"
                                     title="Ultimate Tier"
@@ -431,7 +433,7 @@ export default function MyAdsList() {
                                 </div>
                                 <div>
                                     <p className="text-sm font-black text-orange-900">Subscription Required</p>
-                                    <p className="text-xs font-bold text-orange-700">You need a valid Featured or Premium subscription to unlock these slots.</p>
+                                    <p className="text-xs font-bold text-orange-700">You need a valid {isChina ? "Featured or Premium Tier" : "Featured or Premium"} subscription to unlock these slots.</p>
                                 </div>
                                 <Link href="/pricing" className="ml-auto bg-black text-white px-5 py-2 rounded-xl text-xs font-black">Get Plan</Link>
                             </div>
