@@ -256,7 +256,7 @@ export default function PricingPage() {
                   <div className="p-3 bg-white rounded-2xl shadow-sm border border-gray-100">
                     {plan.icon}
                   </div>
-                  {currentPlan === plan.id && (
+                  {(plan.id !== 'starter' && currentPlan === (plan.id as any)) && (
                     <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border border-emerald-200">
                       Active Plan
                     </span>
@@ -338,7 +338,7 @@ export default function PricingPage() {
                       <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                       Processing...
                     </div>
-                  ) : (currentPlan === plan.id && plan.id !== 'starter') ? 'Current Plan' : plan.buttonText}
+                  ) : (plan.id !== 'starter' && currentPlan === (plan.id as any)) ? 'Current Plan' : plan.buttonText}
                 </button>
               </div>
             ))}
