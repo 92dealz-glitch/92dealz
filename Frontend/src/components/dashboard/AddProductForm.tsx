@@ -683,7 +683,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <CustomSelect
                     label="Country"
-                    options={isNigerian ? ["Nigeria"] : ["Nigeria", "China"]}
+                    options={isChina ? ["China"] : ["Nigeria"]}
                     value={data.location || ""}
                     onChange={(v) => {
                         updateData({ location: v, state: "", city: "" });
@@ -772,7 +772,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                     )}
                     <VisibilityOption
                         id="basic"
-                        title="Featured"
+                        title={isChina ? "Featured Tier" : "Featured"}
                         price={isChina ? "$9.99" : "BASIC"}
                         perk="Trending Ads list"
                         active={data.plan_type === 'basic'}
@@ -787,7 +787,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                     />
                     <VisibilityOption
                         id="star"
-                        title="Premium"
+                        title={isChina ? "Premium Tier" : "Premium"}
                         price={isChina ? "$24.99" : "STAR"}
                         perk="Hot Deals & Featured"
                         active={data.plan_type === 'star'}
