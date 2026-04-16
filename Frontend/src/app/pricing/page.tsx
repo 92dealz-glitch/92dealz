@@ -71,6 +71,8 @@ function SuccessModal({ isOpen, onClose, planName }: { isOpen: boolean; onClose:
       </div>
     </div>
   );
+}
+
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<'free' | 'basic' | 'star' | 'premium' | null>(null);
