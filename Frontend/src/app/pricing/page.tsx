@@ -311,14 +311,14 @@ export default function PricingPage() {
 
                 <button
                   onClick={() => handleBuy(plan.id as any)}
-                  disabled={loading !== null || (currentPlan === plan.id && plan.id !== 'starter')}
+                  disabled={loading !== null || (plan.id !== 'starter' && currentPlan === (plan.id as any))}
                   className={`w-full py-4 rounded-2xl font-black text-base transition-all active:scale-95 shadow-lg ${
                     plan.id === 'star' || plan.id === 'premium'
                       ? 'bg-black text-yellow-400 hover:shadow-yellow-200'
                       : plan.recommended
                         ? 'bg-[#f45c03] text-white hover:bg-orange-600 hover:shadow-orange-200'
                         : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  } ${(loading !== null || (currentPlan === plan.id && plan.id !== 'starter')) ? 'opacity-50 cursor-not-allowed active:scale-100' : ''}`}
+                  } ${(loading !== null || (plan.id !== 'starter' && currentPlan === (plan.id as any))) ? 'opacity-50 cursor-not-allowed active:scale-100' : ''}`}
                 >
                   {loading === plan.id ? (
                     <div className="flex items-center justify-center gap-2">
