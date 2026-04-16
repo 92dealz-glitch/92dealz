@@ -9,6 +9,19 @@ import { UserProfile } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { Check, Star, Zap, Info } from "lucide-react";
 
+interface PricingPlan {
+  id: 'free' | 'starter' | 'basic' | 'star' | 'premium';
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  buttonText: string;
+  color: string;
+  icon: React.ReactNode;
+  recommended?: boolean;
+}
+
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -56,7 +69,7 @@ export default function PricingPage() {
 
   const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
 
-  const plans = isChina ? [
+  const plans: PricingPlan[] = isChina ? [
     {
       id: 'basic',
       name: 'Featured Tier',
@@ -278,7 +291,7 @@ export default function PricingPage() {
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold text-gray-700">Ads Posted</span>
                       <span className="text-xs font-black text-black">
-                        {(profile.subscription_stats[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium'] as any) || 0} / {(profile.subscription_stats.limits[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium'] as any) || '-'}
+                        {profile.subscription_stats[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium']} / {profile.subscription_stats.limits[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium'] || '-'}
                       </span>
                     </div>
                     {/* Time Left */}
