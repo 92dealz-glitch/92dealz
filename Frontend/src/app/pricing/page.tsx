@@ -285,19 +285,19 @@ export default function PricingPage() {
                     {(plan.id === 'basic' && profile.basic_plan_expires_at) && (
                       <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
                         <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
-                        <span className="text-[10px] font-black text-[#f45c03]">{new Date(profile.basic_plan_expires_at).toLocaleDateString()}</span>
+                        <span className="text-[10px] font-black text-[#f45c03]">{new Date(profile.basic_plan_expires_at || 0).toLocaleDateString()}</span>
                       </div>
                     )}
                     {(plan.id === 'star' && profile.star_plan_expires_at) && (
                       <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
                         <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
-                        <span className="text-[10px] font-black text-yellow-600">{new Date(profile.star_plan_expires_at).toLocaleDateString()}</span>
+                        <span className="text-[10px] font-black text-yellow-600">{new Date(profile.star_plan_expires_at || 0).toLocaleDateString()}</span>
                       </div>
                     )}
                     {(plan.id === 'premium' && profile.premium_plan_expires_at) && (
                       <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
                         <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
-                        <span className="text-[10px] font-black text-purple-600">{new Date(profile.premium_plan_expires_at).toLocaleDateString()}</span>
+                        <span className="text-[10px] font-black text-purple-600">{new Date(profile.premium_plan_expires_at || 0).toLocaleDateString()}</span>
                       </div>
                     )}
                     {(plan.id === 'free') && (

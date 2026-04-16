@@ -311,6 +311,7 @@ export default function MyAdsList() {
                                 disabled={false}
                                 slots={`${profile?.subscription_stats?.free || 0} / ${profile?.subscription_stats?.limits?.free || 1}`}
                                 onSelect={async () => {
+                                    if (!promotingId) return;
                                     try {
                                         await updateAdVisibility(promotingId, 'free');
                                         showAlert("Ad changed to Standard visibility!", "Success");
@@ -325,9 +326,10 @@ export default function MyAdsList() {
                                 id="basic"
                                 title="Featured Boost"
                                 perk="Appears in Trending Ads"
-                                disabled={!profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at) < new Date()}
+                                disabled={!profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at || 0) < new Date()}
                                 slots={`${profile?.subscription_stats?.basic || 0} / ${profile?.subscription_stats?.limits?.basic || 10}`}
                                 onSelect={async () => {
+                                    if (!promotingId) return;
                                     try {
                                         await updateAdVisibility(promotingId, 'basic');
                                         showAlert("Ad changed to Featured Boost!", "Success");
@@ -342,9 +344,10 @@ export default function MyAdsList() {
                                 id="star"
                                 title="Star Premium"
                                 perk="Hot Deals & Featured Section"
-                                disabled={!profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at) < new Date()}
+                                disabled={!profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at || 0) < new Date()}
                                 slots={`${profile?.subscription_stats?.star || 0} / ${profile?.subscription_stats?.limits?.star || 20}`}
                                 onSelect={async () => {
+                                    if (!promotingId) return;
                                     try {
                                         await updateAdVisibility(promotingId, 'star');
                                         showAlert("Ad changed to Star Premium!", "Success");
@@ -360,9 +363,10 @@ export default function MyAdsList() {
                                     id="premium"
                                     title="Ultimate Tier"
                                     perk="Top Rank + VIP Manager"
-                                    disabled={!profile?.premium_plan_expires_at || new Date(profile.premium_plan_expires_at) < new Date()}
+                                    disabled={!profile?.premium_plan_expires_at || new Date(profile.premium_plan_expires_at || 0) < new Date()}
                                     slots={`${profile?.subscription_stats?.premium || 0} / ${profile?.subscription_stats?.limits?.premium || 50}`}
                                     onSelect={async () => {
+                                        if (!promotingId) return;
                                         try {
                                             await updateAdVisibility(promotingId, 'premium');
                                             showAlert("Ad switched to Ultimate Visibility!", "Success");
