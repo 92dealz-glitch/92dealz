@@ -73,7 +73,9 @@ export default function SubscriptionStatsPage() {
                     {expiryDate && (
                         <div className="flex items-center gap-3 text-sm font-bold bg-white/5 border border-white/10 w-fit px-6 py-3 rounded-2xl">
                             <Clock size={16} className="text-orange-500" />
-                            <span>Plan Expires: <span className="text-white">{new Date(expiryDate).toLocaleDateString()}</span></span>
+                            <span>Plan Expires: <span className="text-white">
+                                {new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(expiryDate))}
+                            </span></span>
                         </div>
                     )}
                 </div>

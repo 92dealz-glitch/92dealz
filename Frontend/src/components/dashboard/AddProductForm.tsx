@@ -746,6 +746,18 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                 <p className="text-zinc-500 font-bold text-sm mb-6">Choose how you want this ad to appear on the platform.</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {isChina && profile?.subscription_plan === 'free' && (
+                        <div className="md:col-span-2 lg:col-span-4">
+                            <div className="p-10 bg-black rounded-[32px] text-center border-4 border-[#f45c03] shadow-2xl">
+                                <Info size={56} className="text-[#f45c03] mx-auto mb-6" />
+                                <h3 className="text-3xl font-black text-white mb-3">Subscription Required</h3>
+                                <p className="text-zinc-400 font-bold mb-8 text-lg">Vendors in China must have an active Featured or Premium Choice plan to list products. The Standard (Free) tier is not available in your region.</p>
+                                <Link href="/pricing" className="inline-block bg-[#f45c03] text-white px-12 py-5 rounded-2xl font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-orange-500/20">
+                                    Subscribe To A Plan
+                                </Link>
+                            </div>
+                        </div>
+                    )}
                     {!isChina && (
                         <VisibilityOption
                             id="free"

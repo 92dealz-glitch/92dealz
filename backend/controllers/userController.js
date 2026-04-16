@@ -143,9 +143,18 @@ exports.getProfile = async (req, res, next) => {
       calculatedPlan = 'basic';
     }
 
+    const previousPlan = user.subscription_plan;
     if (user.subscription_plan !== calculatedPlan) {
       user.subscription_plan = calculatedPlan;
       await user.save();
+
+      // If they just dropped from a paid plan to 'free', deactivate all their active ads
+      if (['basic', 'star', 'premium'].includes(previousPlan) && calculatedPlan === 'free') {
+        await sequelize.query(
+          `UPDATE deals SET status = 'inactive' WHERE "userId" = $1 AND status = 'active'`,
+          { bind: [user.id] }
+        );
+      }
     }
 
     // Add subscription stats
@@ -396,6 +405,10 @@ exports.buyPlan = async (req, res, next) => {
         success: false, 
         message: `You are currently on the ${currentPlan} plan. Downgrades are not permitted while an active higher-tier plan exists.` 
       });
+    }
+
+    if (user.country_code === 'CN' && (plan === 'starter' || plan === 'free')) {
+      return res.status(403).json({ success: false, message: 'This plan is not available for vendors in China.' });
     }
 
     if (plan === 'starter') {
