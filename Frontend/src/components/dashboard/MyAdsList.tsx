@@ -19,6 +19,7 @@ export default function MyAdsList() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [promotingId, setPromotingId] = useState<number | null>(null);
     const [isPromoteModalOpen, setIsPromoteModalOpen] = useState(false);
+    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
 
     async function load() {
         setLoading(true);
@@ -197,12 +198,12 @@ export default function MyAdsList() {
                                     {ad.plan_type === 'star' ? (
                                         <>
                                             <Star size={12} className="fill-current" />
-                                            Premium Plan
+                                            {isChina ? "Premium Tier" : "Star Premium"}
                                         </>
                                     ) : ad.plan_type === 'basic' ? (
                                         <>
                                             <Zap size={12} className="fill-current" />
-                                            Featured Plan
+                                            {isChina ? "Featured Tier" : "Featured Plan"}
                                         </>
                                     ) : ad.plan_type === 'premium' ? (
                                         <>
@@ -212,7 +213,7 @@ export default function MyAdsList() {
                                     ) : (
                                         <>
                                             <CheckCircle size={12} className="fill-current opacity-50" />
-                                            Standard Plan (Free)
+                                            Standard Plan
                                         </>
                                     )}
                                 </span>
