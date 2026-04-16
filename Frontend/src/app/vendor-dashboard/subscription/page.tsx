@@ -114,7 +114,7 @@ export default function SubscriptionStatsPage() {
 
                 <div className="space-y-10">
                     {/* Ultimate */}
-                    {(profile.premium_plan_expires_at && new Date(profile.premium_plan_expires_at) > new Date()) && (
+                    {(currentTier === 'premium' || (stats?.premium || 0) > 0) && (
                         <CapacityBar 
                             label={isChina ? "Premium Capacity" : "Ultimate Visibility"} 
                             used={stats?.premium || 0} 
@@ -126,7 +126,7 @@ export default function SubscriptionStatsPage() {
                     )}
                     
                     {/* Star */}
-                    {(profile.star_plan_expires_at && new Date(profile.star_plan_expires_at) > new Date()) && (
+                    {(currentTier === 'star' || (stats?.star || 0) > 0) && (
                         <CapacityBar 
                             label={isChina ? "Premium Choice" : "Star Premium"} 
                             used={stats?.star || 0} 
@@ -137,7 +137,7 @@ export default function SubscriptionStatsPage() {
                     )}
 
                     {/* Basic/Featured */}
-                    {(profile.basic_plan_expires_at && new Date(profile.basic_plan_expires_at) > new Date()) && (
+                    {(currentTier === 'basic' || (stats?.basic || 0) > 0) && (
                         <CapacityBar 
                             label="Featured Boost" 
                             used={stats?.basic || 0} 
@@ -147,34 +147,36 @@ export default function SubscriptionStatsPage() {
                         />
                     )}
 
-                    {/* Standard with Starter Breakdown */}
-                    <div className="space-y-4">
-                        <CapacityBar 
-                            label="Standard Multiplier" 
-                            used={stats?.free || 0} 
-                            limit={stats?.limits.free || 1} 
-                            color="bg-zinc-400" 
-                            icon={<Package size={20} className="text-zinc-500" />} 
-                        />
-                        {(profile.extra_slots_purchased || 0) > 0 && (
-                            <div className="ml-14 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex flex-wrap gap-6 items-center">
-                                <div>
-                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Bonus Slots Owned</p>
-                                    <p className="text-lg font-black text-black">{profile.extra_slots_purchased}</p>
+                    {/* Standard with Add-on Breakdown */}
+                    {(currentTier === 'free' || (profile.extra_slots_purchased || 0) > 0 || (stats?.free || 0) > 0) && (
+                        <div className="space-y-4">
+                            <CapacityBar 
+                                label="Standard Multiplier" 
+                                used={stats?.free || 0} 
+                                limit={stats?.limits.free || 1} 
+                                color="bg-zinc-400" 
+                                icon={<Package size={20} className="text-zinc-500" />} 
+                            />
+                            {(profile.extra_slots_purchased || 0) > 0 && (
+                                <div className="ml-14 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex flex-wrap gap-6 items-center">
+                                    <div>
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Add-on Slots Owned</p>
+                                        <p className="text-lg font-black text-black">{profile.extra_slots_purchased}</p>
+                                    </div>
+                                    <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
+                                    <div>
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Add-on Used</p>
+                                        <p className="text-lg font-black text-[#f45c03]">{Math.max(0, (stats?.free || 0) - 1)}</p>
+                                    </div>
+                                    <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
+                                    <div>
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Add-on Left</p>
+                                        <p className="text-lg font-black text-emerald-600">{Math.max(0, (profile.extra_slots_purchased || 0) - Math.max(0, (stats?.free || 0) - 1))}</p>
+                                    </div>
                                 </div>
-                                <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
-                                <div>
-                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Bonus Used</p>
-                                    <p className="text-lg font-black text-[#f45c03]">{Math.max(0, (stats?.free || 0) - 1)}</p>
-                                </div>
-                                <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
-                                <div>
-                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Bonus Left</p>
-                                    <p className="text-lg font-black text-emerald-600">{Math.max(0, (profile.extra_slots_purchased || 0) - Math.max(0, (stats?.free || 0) - 1))}</p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -185,7 +187,7 @@ export default function SubscriptionStatsPage() {
                 </div>
                 <div className="flex-1">
                     <p className="text-zinc-900 font-black mb-1">Boost Your Visibility</p>
-                    <p className="text-zinc-500 text-sm font-bold">Upgrading to a higher plan automatically promotes your existing products to the new visibility tier for immediate impact.</p>
+                    <p className="text-zinc-500 text-sm font-bold">Upgrading to a higher plan automatically promotes your existing products to the new visibility tier for immediate impact. Renewals reset your 30-day visibility window starting from now.</p>
                 </div>
                 <Link href="/pricing" className="bg-[#f45c03] text-white px-8 py-3 rounded-2xl font-black text-sm whitespace-nowrap shadow-lg shadow-orange-100 active:scale-95 transition-all">
                     View Pricing

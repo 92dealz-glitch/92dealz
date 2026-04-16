@@ -410,19 +410,14 @@ exports.buyPlan = async (req, res, next) => {
 
     const now = Date.now();
     const duration = 30 * 24 * 60 * 60 * 1000;
+    const newExpiry = new Date(now + duration);
     
     if (plan === 'basic') {
-      const currentExpiry = user.basic_plan_expires_at ? new Date(user.basic_plan_expires_at).getTime() : 0;
-      const baseTime = currentExpiry > now ? currentExpiry : now;
-      user.basic_plan_expires_at = new Date(baseTime + duration);
+      user.basic_plan_expires_at = newExpiry;
     } else if (plan === 'star') {
-      const currentExpiry = user.star_plan_expires_at ? new Date(user.star_plan_expires_at).getTime() : 0;
-      const baseTime = currentExpiry > now ? currentExpiry : now;
-      user.star_plan_expires_at = new Date(baseTime + duration);
+      user.star_plan_expires_at = newExpiry;
     } else if (plan === 'premium') {
-      const currentExpiry = user.premium_plan_expires_at ? new Date(user.premium_plan_expires_at).getTime() : 0;
-      const baseTime = currentExpiry > now ? currentExpiry : now;
-      user.premium_plan_expires_at = new Date(baseTime + duration);
+      user.premium_plan_expires_at = newExpiry;
     }
 
     // Recalculate main plan
