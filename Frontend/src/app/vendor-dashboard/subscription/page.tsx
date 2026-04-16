@@ -114,10 +114,10 @@ export default function SubscriptionStatsPage() {
 
                 <div className="space-y-10">
                     {/* Ultimate */}
-                    {stats?.limits.premium && (
+                    {(profile.premium_plan_expires_at && new Date(profile.premium_plan_expires_at) > new Date()) && (
                         <CapacityBar 
-                            label="Ultimate Visibility" 
-                            used={stats.premium} 
+                            label={isChina ? "Premium Capacity" : "Ultimate Visibility"} 
+                            used={stats?.premium || 0} 
                             limit={1000000} 
                             color="bg-purple-600" 
                             icon={<Trophy size={20} className="text-purple-600" />} 
@@ -126,22 +126,26 @@ export default function SubscriptionStatsPage() {
                     )}
                     
                     {/* Star */}
-                    <CapacityBar 
-                        label="Star Premium" 
-                        used={stats?.star || 0} 
-                        limit={stats?.limits.star || 20} 
-                        color="bg-yellow-500" 
-                        icon={<Star size={20} className="text-yellow-600" />} 
-                    />
+                    {(profile.star_plan_expires_at && new Date(profile.star_plan_expires_at) > new Date()) && (
+                        <CapacityBar 
+                            label={isChina ? "Premium Choice" : "Star Premium"} 
+                            used={stats?.star || 0} 
+                            limit={stats?.limits.star || 20} 
+                            color="bg-yellow-500" 
+                            icon={<Star size={20} className="text-yellow-600" />} 
+                        />
+                    )}
 
                     {/* Basic/Featured */}
-                    <CapacityBar 
-                        label="Featured Boost" 
-                        used={stats?.basic || 0} 
-                        limit={stats?.limits.basic || 10} 
-                        color="bg-[#f45c03]" 
-                        icon={<Zap size={20} className="text-[#f45c03]" />} 
-                    />
+                    {(profile.basic_plan_expires_at && new Date(profile.basic_plan_expires_at) > new Date()) && (
+                        <CapacityBar 
+                            label="Featured Boost" 
+                            used={stats?.basic || 0} 
+                            limit={stats?.limits.basic || 10} 
+                            color="bg-[#f45c03]" 
+                            icon={<Zap size={20} className="text-[#f45c03]" />} 
+                        />
+                    )}
 
                     {/* Standard with Starter Breakdown */}
                     <div className="space-y-4">
