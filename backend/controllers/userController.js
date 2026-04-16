@@ -375,6 +375,17 @@ exports.buyPlan = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'Chinese vendors can only purchase Featured (Basic) or Premium (Star) plans.' });
     }
 
+    // Upgrade-Only Enforcement
+    const planPriority = { 'free': 0, 'basic': 1, 'star': 2, 'premium': 3 };
+    const currentPlan = user.subscription_plan || 'free';
+    
+    if (plan !== 'starter' && planPriority[plan] < planPriority[currentPlan]) {
+      return res.status(403).json({ 
+        success: false, 
+        message: `You are currently on the ${currentPlan} plan. Downgrades are not permitted while an active higher-tier plan exists.` 
+      });
+    }
+
     if (plan === 'starter') {
       user.extra_slots_purchased = (user.extra_slots_purchased || 0) + 1;
       await user.save();

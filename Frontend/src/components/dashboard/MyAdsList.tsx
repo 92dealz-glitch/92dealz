@@ -107,7 +107,7 @@ export default function MyAdsList() {
                     {(profile.subscription_stats.limits.premium > 0 || profile.subscription_plan === 'premium') && (
                         <div className="bg-purple-50 border border-purple-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
                             <span className="text-[10px] font-black text-purple-600 uppercase tracking-wider">Ultimate</span>
-                            <span className="text-lg font-black text-purple-600">{profile.subscription_stats.premium} / {profile.subscription_stats.limits.premium}</span>
+                            <span className="text-lg font-black text-purple-600">{profile.subscription_stats.premium} / ∞</span>
                         </div>
                     )}
                     {(profile?.extra_slots_purchased && profile.extra_slots_purchased > 0) && (

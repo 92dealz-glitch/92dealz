@@ -7,7 +7,7 @@ import Link from "next/link";
 import { buyPlan, getProfile } from "@/services/user.service";
 import { UserProfile } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { Check, Star, Zap, Info } from "lucide-react";
+import { Check, Star, Zap, Info, Trophy, Rocket, ShieldCheck, X } from "lucide-react";
 
 interface PricingPlan {
   id: 'free' | 'starter' | 'basic' | 'star' | 'premium';
@@ -17,9 +17,58 @@ interface PricingPlan {
   description: string;
   features: string[];
   buttonText: string;
-  color: string;
+  color: 'orange' | 'purple' | 'gray' | 'black';
   icon: React.ReactNode;
   recommended?: boolean;
+}
+
+const planPriority = { 'free': 0, 'basic': 1, 'star': 2, 'premium': 3 };
+
+function SuccessModal({ isOpen, onClose, planName }: { isOpen: boolean; onClose: () => void; planName: string }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-white rounded-[40px] p-8 md:p-12 max-w-xl w-full text-center relative shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-300">
+        <button 
+          onClick={onClose}
+          className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors"
+        >
+          <X size={24} className="text-gray-400" />
+        </button>
+
+        <div className="mb-8 flex justify-center">
+          <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center animate-bounce">
+            <Trophy className="w-12 h-12 text-[#f45c03]" />
+          </div>
+        </div>
+
+        <h2 className="text-4xl font-black text-black mb-4">Congratulations!</h2>
+        <p className="text-xl text-gray-600 mb-8 font-bold">
+          You have successfully upgraded to the <span className="text-[#f45c03]">{planName}</span>. Your new features are now active!
+        </p>
+
+        <div className="space-y-4">
+          <Link 
+            href="/vendor-dashboard/add-product"
+            className="block w-full py-5 bg-[#f45c03] text-white rounded-2xl font-black text-lg shadow-xl shadow-orange-200 hover:bg-orange-600 transition-all active:scale-95"
+          >
+            Post Your First Ad
+          </Link>
+          <button 
+            onClick={onClose}
+            className="block w-full py-5 bg-black text-white rounded-2xl font-black text-lg hover:bg-gray-900 transition-all active:scale-95"
+          >
+            Back to Pricing
+          </button>
+        </div>
+
+        <p className="mt-8 text-sm text-gray-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+          <ShieldCheck className="w-4 h-4" /> Secure Purchase • 234Deals Verified
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default function PricingPage() {
@@ -27,6 +76,8 @@ export default function PricingPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [currentPlan, setCurrentPlan] = useState<'free' | 'basic' | 'star' | 'premium' | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [purchasedPlanName, setPurchasedPlanName] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -42,26 +93,24 @@ export default function PricingPage() {
     fetchProfile();
   }, []);
 
-  const handleBuy = async (plan: 'free' | 'basic' | 'star' | 'premium' | 'starter') => {
-    setLoading(plan);
+  const handleBuy = async (planId: 'free' | 'basic' | 'star' | 'premium' | 'starter', planName: string) => {
+    setLoading(planId);
     setMessage(null);
     try {
-      const res = await buyPlan(plan);
+      const res = await buyPlan(planId);
       if (res.success) {
-        setMessage({ type: 'success', text: "Successfully subscribed to the plan." });
-        setCurrentPlan(plan === 'starter' ? currentPlan : plan as any);
-        // Refresh profile to get updated dates
+        setPurchasedPlanName(planName);
+        setIsSuccessModalOpen(true);
         const profileRes = await getProfile();
         if (profileRes.success) {
           setProfile(profileRes.data as UserProfile);
-          if (plan !== 'starter') setCurrentPlan(profileRes.data.subscription_plan as any);
+          if (planId !== 'starter') setCurrentPlan(profileRes.data.subscription_plan as any);
         }
-        // Success experience: show buttons after a short delay or immediately
       } else {
-        setMessage({ type: 'error', text: "Failed to process subscription." });
+        setMessage({ type: 'error', text: res.message || "Failed to process subscription." });
       }
-    } catch (err) {
-      setMessage({ type: 'error', text: "An error occurred. Please ensure you are authenticated." });
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || "An error occurred." });
     } finally {
       setLoading(null);
     }
@@ -75,293 +124,248 @@ export default function PricingPage() {
       name: 'Featured Tier',
       price: '$9.99',
       period: '/month',
-      description: 'Designed for scaling businesses requiring enhanced market exposure and priority placement.',
+      description: 'Scale your business with priority feed placement.',
       features: [
-        '10 Featured Visibility Ads per month',
-        'Priority placement in Trending feeds',
-        'Elevated search algorithm ranking',
-        'Expedited 8h support SLA'
+        '10 Featured Ads per month',
+        'Trending feed placement',
+        '8h Support SLA'
       ],
-      buttonText: 'Subscribe to Featured',
+      buttonText: 'Subscribe',
       color: 'orange',
-      icon: <Zap className="w-6 h-6 text-[#f45c03]" />,
+      icon: <Zap className="w-5 h-5 text-[#f45c03]" />,
       recommended: true
     },
     {
       id: 'star',
-      name: 'Premium Enterprise',
+      name: 'Premium Tier',
       price: '$24.99',
       period: '/month',
-      description: 'Maximum visibility architecture tailored for professional vendors dominating their category.',
+      description: 'Maximum market dominance for pro vendors.',
       features: [
-        '20 Premium Visibility Ads per month',
-        'Exclusive placement in Prime sections',
-        'Highest priority indexing in search matrices',
-        'Comprehensive market performance analytics'
+        '20 Premium Ads per month',
+        'Hot Deals placement',
+        'Market insights'
       ],
-      buttonText: 'Subscribe to Premium',
-      color: 'star',
-      icon: <Star className="w-6 h-6 text-yellow-500" />
+      buttonText: 'Subscribe',
+      color: 'black',
+      icon: <Star className="w-5 h-5 text-yellow-500" />
     }
   ] : [
     {
       id: 'free',
-      name: 'Standard Tier',
+      name: 'Standard',
       price: 'Free',
       period: '',
-      description: 'The foundational entry point for independent sellers establishing their market presence.',
+      description: 'Foundational entry for occasional sellers.',
       features: [
-        '1 Standard Visibility Ad per month',
-        'Index-level search ranking',
-        'Standard 24h support response time'
+        '1 Standard Ad per month',
+        'Basic search indexing',
+        '24h Support response'
       ],
-      buttonText: 'Default Tier',
+      buttonText: 'Current Tier',
       color: 'gray',
-      icon: <Info className="w-6 h-6 text-gray-400" />
+      icon: <Info className="w-5 h-5 text-gray-400" />
     },
     {
       id: 'starter',
       name: 'Starter Add-on',
       price: '₦250',
       period: '/slot',
-      description: 'Add an extra Standard slot to your account without upgrading your full plan. Perfect for single extra uploads.',
+      description: 'Instant +1 Standard slot boost.',
       features: [
-        '+1 Standard Visibility Ad slot',
-        'Can be purchased multiple times',
-        'Does not expire until used'
+        'Pay-per-listing',
+        'Unlimited purchases',
+        'Never expires until used'
       ],
-      buttonText: 'Buy Extra Slot',
+      buttonText: 'Buy Slot',
       color: 'gray',
-      icon: <Check className="w-6 h-6 text-gray-500" />
+      icon: <Rocket className="w-5 h-5 text-gray-500" />
     },
     {
       id: 'basic',
-      name: 'Featured Tier',
+      name: 'Featured',
       price: '₦1,000',
       period: '/month',
-      description: 'Designed for scaling businesses requiring enhanced market exposure and priority placement.',
+      description: 'Scaling visibility for growing businesses.',
       features: [
-        '10 Featured Visibility Ads per month',
-        'Priority placement in Trending feeds',
-        'Elevated search algorithm ranking',
-        'Official Verified Vendor designation',
-        'Expedited 8h support SLA'
+        '10 Featured Ads per month',
+        'Trending feed highlight',
+        'Verified Vendor badge',
+        '8h priority support'
       ],
-      buttonText: 'Subscribe to Featured',
+      buttonText: 'Upgrade Now',
       color: 'orange',
-      icon: <Zap className="w-6 h-6 text-[#f45c03]" />,
+      icon: <Zap className="w-5 h-5 text-[#f45c03]" />,
       recommended: true
     },
     {
       id: 'star',
-      name: 'Premium Enterprise',
+      name: 'Star Premium',
       price: '₦5,000',
       period: '/month',
-      description: 'Maximum visibility architecture tailored for professional vendors dominating their category.',
+      description: 'Elite placement for top vendors.',
       features: [
-        '20 Premium Visibility Ads per month',
-        'Exclusive placement in Prime sections',
-        'Highest priority indexing in search matrices',
-        'Real-time dedicated support routing',
-        'Comprehensive market performance analytics'
+        '20 Premium Ads per month',
+        'Home page highlight',
+        'Dedicated VIP channel',
+        'Market performance reports'
       ],
-      buttonText: 'Subscribe to Premium',
-      color: 'star',
-      icon: <Star className="w-6 h-6 text-yellow-500" />
+      buttonText: 'Upgrade Now',
+      color: 'black',
+      icon: <Star className="w-5 h-5 text-yellow-500" />
     },
     {
       id: 'premium',
-      name: 'Ultimate Tier',
+      name: 'Ultimate',
       price: '₦50,000',
       period: '/month',
-      description: 'The absolute highest tier for super-vendors requiring limitless capacity and top-tier marketplace dominance.',
+      description: 'The absolute pinnacle of market dominance.',
       features: [
-        '50 Ultimate Visibility Ads per month',
-        'Guaranteed top placements',
-        'Dedicated VIP Account Manager',
-        'Zero-delay instant support routing',
-        'White-glove analytics and insights'
+        'UNLIMITED Product Listings',
+        'Permanent top placements',
+        'Personal Account Manager',
+        'White-glove data insights'
       ],
-      buttonText: 'Subscribe to Ultimate',
-      color: 'star',
-      icon: <Star className="w-6 h-6 text-purple-500" />
+      buttonText: 'Go Ultimate',
+      color: 'purple',
+      icon: <Trophy className="w-5 h-5 text-purple-500" />
     }
   ];
 
+  const getButtonStatus = (planId: string) => {
+    if (planId === 'starter') return { disabled: false, text: 'Buy Slot' };
+    const priority = planPriority[planId as keyof typeof planPriority];
+    const currentPriority = planPriority[currentPlan as keyof typeof planPriority] || 0;
+    
+    if (planId === currentPlan) return { disabled: true, text: 'Active Plan' };
+    if (priority < currentPriority) return { disabled: true, text: 'Locked' };
+    return { disabled: false, text: 'Upgrade' };
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-[#fafafa]">
       <Navbar />
+      <SuccessModal 
+        isOpen={isSuccessModalOpen} 
+        onClose={() => setIsSuccessModalOpen(false)} 
+        planName={purchasedPlanName} 
+      />
       
-      <main className="flex-grow pt-24 pb-20 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-black mb-6">
-              Empower Your <span className="text-[#f45c03]">Business</span>
+      <main className="flex-grow pt-28 pb-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-6xl font-black text-black mb-4 tracking-tight">
+              Scale Your <span className="text-[#f45c03]">Sales</span> Reach
             </h1>
-            <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto">
-              Reach more customers and boost your sales with our premium visibility plans. Choose the one that fits your scale.
+            <p className="text-gray-500 text-lg md:text-xl font-bold max-w-xl mx-auto">
+              Unlock premium visibility and reach thousands of buyers instantly.
             </p>
           </div>
 
-          {/* Alert Message */}
-          {message && (
-            <div className={`max-w-2xl mx-auto mb-10 p-6 rounded-[32px] flex flex-col md:flex-row items-center gap-6 border shadow-2xl animate-in zoom-in-95 duration-300 ${
-              message.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-red-50 border-red-200 text-red-900'
-            }`}>
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${message.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>
-                  {message.type === 'success' ? <Check className="w-5 h-5" /> : <Info className="w-5 h-5" />}
-                </div>
-                <span className="font-black text-lg">{message.text}</span>
-              </div>
-              
-              {message.type === 'success' && (
-                <div className="flex gap-3 ml-auto">
-                    <Link href="/vendor-dashboard/my-ads" className="bg-white border-2 border-emerald-200 text-emerald-700 px-6 py-2 rounded-xl font-black text-sm hover:bg-emerald-100 transition-all">My Ads</Link>
-                    <Link href="/vendor-dashboard/add-product" className="bg-emerald-600 text-white px-6 py-2 rounded-xl font-black text-sm shadow-lg shadow-emerald-100 hover:bg-emerald-700 active:scale-95 transition-all">Post My Ad</Link>
-                </div>
-              )}
-              {message.type === 'error' && (
-                 <button onClick={() => setMessage(null)} className="ml-auto text-red-400 font-bold text-sm">Dismiss</button>
-              )}
+          {message?.type === 'error' && (
+            <div className="max-w-xl mx-auto mb-8 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-between">
+              <span className="text-red-700 font-bold">{message.text}</span>
+              <button onClick={() => setMessage(null)} className="text-red-400 font-black"><X size={20}/></button>
             </div>
           )}
 
-          {/* Pricing Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            {plans.map((plan) => (
-              <div 
-                key={plan.id}
-                className={`relative flex flex-col p-8 rounded-[32px] transition-all duration-300 border-2 ${
-                  plan.id === 'star' 
-                    ? 'border-yellow-400 shadow-2xl shadow-yellow-100 bg-white ring-8 ring-yellow-50' 
-                    : plan.recommended 
-                      ? 'border-[#f45c03] shadow-xl shadow-orange-50 bg-white scale-105 z-10' 
-                      : 'border-gray-100 bg-gray-50/50 hover:border-gray-300'
-                }`}
-              >
-                {plan.recommended && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#f45c03] text-white px-6 py-1.5 rounded-full text-xs font-black tracking-widest uppercase">
-                    Most Popular
-                  </div>
-                )}
-                {plan.id === 'star' && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-black text-yellow-400 px-6 py-1.5 rounded-full text-xs font-black tracking-widest uppercase flex items-center gap-2">
-                    <Star className="w-3 h-3 fill-current" /> Premium Choice
-                  </div>
-                )}
+          <div className="flex flex-wrap justify-center gap-6 mb-16">
+            {plans.map((plan) => {
+              const status = getButtonStatus(plan.id);
+              const isUltimate = plan.id === 'premium';
+              const isRecommended = plan.recommended;
 
-                <div className="flex items-center justify-between mb-6">
-                  <div className="p-3 bg-white rounded-2xl shadow-sm border border-gray-100">
-                    {plan.icon}
-                  </div>
-                  {(plan.id !== 'starter' && currentPlan === (plan.id as any)) && (
-                    <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border border-emerald-200">
-                      Active Plan
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="text-2xl font-bold text-black mb-2">{plan.name}</h3>
-                <p className="text-gray-500 text-sm mb-6 leading-relaxed">{plan.description}</p>
-                
-                <div className="flex items-baseline gap-1 mb-8">
-                  <span className={`text-4xl md:text-5xl font-black ${plan.id === 'star' ? 'text-black' : plan.recommended ? 'text-[#f45c03]' : 'text-gray-900'}`}>
-                    {plan.price}
-                  </span>
-                  <span className="text-gray-400 font-semibold">{plan.period}</span>
-                </div>
-
-                <div className="flex-grow space-y-4 mb-8">
-                  {plan.features.map((feature, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <div className={`mt-1 p-0.5 rounded-full ${plan.id === 'free' ? 'bg-gray-200' : 'bg-[#f45c03]/10'}`}>
-                        <Check className={`w-3.5 h-3.5 ${plan.id === 'free' ? 'text-gray-500' : 'text-[#f45c03]'}`} />
-                      </div>
-                      <span className="text-gray-700 text-sm font-medium leading-tight">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Analytics Block */}
-                {profile?.subscription_stats && (
-                  <div className="mb-6 p-4 rounded-xl border bg-gray-50/50 border-gray-100">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Usage Analytics</p>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-bold text-gray-700">Ads Posted</span>
-                      <span className="text-xs font-black text-black">
-                        {profile.subscription_stats[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium']} / {profile.subscription_stats.limits[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium'] || '-'}
-                      </span>
-                    </div>
-                    {/* Time Left */}
-                    {(plan.id === 'basic' && profile.basic_plan_expires_at) && (
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
-                        <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
-                        <span className="text-[10px] font-black text-[#f45c03]">{new Date(profile.basic_plan_expires_at || 0).toLocaleDateString()}</span>
-                      </div>
-                    )}
-                    {(plan.id === 'star' && profile.star_plan_expires_at) && (
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
-                        <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
-                        <span className="text-[10px] font-black text-yellow-600">{new Date(profile.star_plan_expires_at || 0).toLocaleDateString()}</span>
-                      </div>
-                    )}
-                    {(plan.id === 'premium' && profile.premium_plan_expires_at) && (
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
-                        <span className="text-xs font-bold text-gray-700">Subscription Valid Until</span>
-                        <span className="text-[10px] font-black text-purple-600">{new Date(profile.premium_plan_expires_at || 0).toLocaleDateString()}</span>
-                      </div>
-                    )}
-                    {(plan.id === 'free') && (
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
-                        <span className="text-xs font-bold text-gray-700">Renews</span>
-                        <span className="text-[10px] font-black text-gray-500">Monthly</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <button
-                  onClick={() => handleBuy(plan.id as any)}
-                  disabled={loading !== null || (plan.id !== 'starter' && currentPlan === (plan.id as any))}
-                  className={`w-full py-4 rounded-2xl font-black text-base transition-all active:scale-95 shadow-lg ${
-                    plan.id === 'star' || plan.id === 'premium'
-                      ? 'bg-black text-yellow-400 hover:shadow-yellow-200'
-                      : plan.recommended
-                        ? 'bg-[#f45c03] text-white hover:bg-orange-600 hover:shadow-orange-200'
-                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  } ${(loading !== null || (plan.id !== 'starter' && currentPlan === (plan.id as any))) ? 'opacity-50 cursor-not-allowed active:scale-100' : ''}`}
+              return (
+                <div 
+                  key={plan.id}
+                  className={`relative w-full sm:w-[320px] flex flex-col bg-white p-8 rounded-[32px] border transition-all duration-300 ${
+                    isRecommended ? 'border-[#f45c03] shadow-2xl shadow-orange-50 scale-[1.02] z-10' : 'border-gray-100 shadow-sm hover:shadow-md'
+                  }`}
                 >
-                  {loading === plan.id ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                      Processing...
+                  {isRecommended && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#f45c03] text-white px-5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
+                      Best Value
                     </div>
-                  ) : (plan.id !== 'starter' && currentPlan === (plan.id as any)) ? 'Current Plan' : plan.buttonText}
-                </button>
-              </div>
-            ))}
+                  )}
+
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                      {plan.icon}
+                    </div>
+                    {plan.id !== 'starter' && currentPlan === plan.id && (
+                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 uppercase animate-pulse">Active</span>
+                    )}
+                  </div>
+
+                  <h3 className="text-xl font-black text-black mb-1">{plan.name}</h3>
+                  <p className="text-gray-400 text-xs font-bold mb-4 line-clamp-1">{plan.description}</p>
+                  
+                  <div className="flex items-baseline gap-1 mb-6 pb-6 border-b border-gray-50">
+                    <span className={`text-3xl font-black ${isUltimate ? 'text-purple-600' : 'text-black'}`}>{plan.price}</span>
+                    <span className="text-gray-400 text-sm font-bold">{plan.period}</span>
+                  </div>
+
+                  <div className="flex-grow space-y-3 mb-8">
+                    {plan.features.map((feature, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <Check className="w-4 h-4 text-[#f45c03] mt-0.5" />
+                        <span className="text-gray-600 text-[13px] font-bold leading-tight">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {profile?.subscription_stats && plan.id !== 'starter' && (
+                    <div className="mb-6 p-4 bg-gray-50/50 rounded-2xl border border-gray-100 text-[11px] backdrop-blur-sm">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-gray-400 font-bold uppercase tracking-tighter">Plan Usage</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-black font-black">
+                            {plan.id === 'premium' ? profile.subscription_stats.premium : profile.subscription_stats[plan.id as 'free'|'basic'|'star']}
+                          </span>
+                          <span className="text-gray-400">/</span>
+                          <span className="text-gray-500 font-bold">
+                            {plan.id === 'premium' ? '∞' : (profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'] || '-')}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full transition-all duration-1000 ${plan.id === 'premium' ? 'bg-purple-500 w-full' : 'bg-[#f45c03]'}`}
+                          style={{ 
+                            width: plan.id === 'premium' ? '100%' : `${Math.min(100, (profile.subscription_stats[plan.id as 'free'|'basic'|'star'] / (profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'] || 1)) * 100)}%` 
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => handleBuy(plan.id, plan.name)}
+                    disabled={loading !== null || status.disabled}
+                    className={`w-full py-4 rounded-2xl font-black text-sm transition-all active:scale-95 ${
+                      status.disabled 
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                        : isRecommended || isUltimate
+                          ? 'bg-black text-white hover:bg-[#f45c03]' 
+                          : 'bg-white border-2 border-black text-black hover:bg-black hover:text-white'
+                    }`}
+                  >
+                    {loading === plan.id ? (
+                      <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    ) : status.text}
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
-          {/* Bottom Info */}
-          <div className="bg-gray-50 rounded-[40px] p-10 flex flex-col md:flex-row items-center justify-between gap-8 border border-gray-100">
-            <div className="max-w-xl text-center md:text-left">
-              <h4 className="text-2xl font-bold text-black mb-3 text-center md:text-left">Frequently Asked Question</h4>
-              <p className="text-gray-600 text-center md:text-left">
-                Once purchased, you can post products through the plan dashboard. The visibility tier is locked at the time of posting. For any issues, contact our support team.
-              </p>
-            </div>
-            <Link 
-              href="/contact" 
-              className="px-10 py-4 bg-white border-2 border-black text-black font-bold rounded-2xl hover:bg-black hover:text-white transition-colors shrink-0"
-            >
-              Contact Support
-            </Link>
+          <div className="max-w-2xl mx-auto p-8 bg-black rounded-[32px] text-center text-white">
+            <h4 className="text-xl font-black mb-2">Need a Custom Scale?</h4>
+            <p className="text-gray-400 font-bold mb-6 text-sm">We provide tailored enterprise solutions for large dealerships and franchise stores.</p>
+            <Link href="/contact" className="inline-block px-8 py-3 bg-[#f45c03] rounded-xl font-black hover:scale-105 transition-transform">Contact Enterprise Support</Link>
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

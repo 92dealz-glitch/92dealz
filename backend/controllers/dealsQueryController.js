@@ -266,7 +266,7 @@ exports.create = async (req, res, next) => {
       free: 1 + (Number(user.extra_slots_purchased) || 0), 
       basic: 10, 
       star: 20,
-      premium: 50 
+      premium: 1000000 
     };
 
     if (existingCount >= limits[targetPlanType]) {

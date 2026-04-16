@@ -802,7 +802,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                             }}
                             disabled={false}
                             isLocked={profile?.subscription_plan !== 'premium'}
-                            count={profile?.subscription_stats ? `${profile.subscription_stats.premium} / ${profile.subscription_stats.limits.premium}` : null}
+                            count={profile?.subscription_stats ? `${profile.subscription_stats.premium} / ∞` : null}
                         />
                     )}
                 </div>
@@ -879,7 +879,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         {(() => {
                             const currentPlanType = data.plan_type || 'free';
                             const stats = profile?.subscription_stats;
-                            const limitReached = stats ? (stats[currentPlanType as keyof typeof stats] as number) >= (stats.limits[currentPlanType as keyof typeof stats.limits] as number) : false;
+                            const limitReached = stats ? (currentPlanType !== 'premium' && (stats[currentPlanType as keyof typeof stats] as number) >= (stats.limits[currentPlanType as keyof typeof stats.limits] as number)) : false;
 
                             if (limitReached) {
                                 return (
