@@ -358,12 +358,6 @@ export default function PricingPage() {
               );
             })}
           </div>
-
-          <div className="max-w-2xl mx-auto p-8 bg-black rounded-[32px] text-center text-white">
-            <h4 className="text-xl font-black mb-2">Need a Custom Scale?</h4>
-            <p className="text-gray-400 font-bold mb-6 text-sm">We provide tailored enterprise solutions for large dealerships and franchise stores.</p>
-            <Link href="/contact" className="inline-block px-8 py-3 bg-[#f45c03] rounded-xl font-black hover:scale-105 transition-transform">Contact Enterprise Support</Link>
-          </div>
         </div>
       </main>
       <Footer />
