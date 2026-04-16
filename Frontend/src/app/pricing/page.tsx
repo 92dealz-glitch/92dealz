@@ -278,7 +278,7 @@ export default function PricingPage() {
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold text-gray-700">Ads Posted</span>
                       <span className="text-xs font-black text-black">
-                        {(profile.subscription_stats[plan.id as 'free'|'basic'|'star'|'premium'|'starter'] as any) || 0} / {(profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'|'premium'|'starter'] as any) || '-'}
+                        {(profile.subscription_stats[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium'] as any) || 0} / {(profile.subscription_stats.limits[plan.id === 'starter' ? 'free' : plan.id as 'free'|'basic'|'star'|'premium'] as any) || '-'}
                       </span>
                     </div>
                     {/* Time Left */}
