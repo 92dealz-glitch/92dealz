@@ -170,6 +170,16 @@ exports.getProfile = async (req, res, next) => {
       `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND plan_type = 'premium' AND "createdAt" >= date_trunc('month', CURRENT_DATE)`,
       { bind: [req.user.id] }
     );
+    
+    // Active vs Inactive total counts
+    const [[activeRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND status = 'active'`,
+      { bind: [req.user.id] }
+    );
+    const [[inactiveRow]] = await sequelize.query(
+      `SELECT COUNT(*)::INT AS count FROM deals WHERE "userId" = $1 AND status != 'active'`,
+      { bind: [req.user.id] }
+    );
 
     const subscription_stats = {
       total: totalAdsRow.count,
@@ -177,11 +187,13 @@ exports.getProfile = async (req, res, next) => {
       star: starAdsRow.count,
       basic: basicAdsRow.count,
       premium: premiumAdsRow.count,
+      active_count: activeRow.count,
+      inactive_count: inactiveRow.count,
       limits: {
         free: 1 + (user.extra_slots_purchased || 0),
         basic: 10,
         star: 20,
-        premium: 50
+        premium: 1000000
       }
     };
 
@@ -421,10 +433,32 @@ exports.buyPlan = async (req, res, next) => {
     
     await user.save();
 
+    // --- Automatic Ad Promotion Logic ---
+    if (['basic', 'star', 'premium'].includes(plan)) {
+      let lowerTiers = [];
+      if (plan === 'premium') lowerTiers = ["'free'", "'basic'", "'star'"];
+      else if (plan === 'star') lowerTiers = ["'free'", "'basic'"];
+      else if (plan === 'basic') lowerTiers = ["'free'"];
+
+      if (lowerTiers.length > 0) {
+        const promoLimit = plan === 'basic' ? 10 : (plan === 'star' ? 20 : 1000000);
+        await sequelize.query(
+          `UPDATE deals SET plan_type = $1, active_until = NOW() + INTERVAL '30 days' 
+           WHERE id IN (
+             SELECT id FROM deals 
+             WHERE "userId" = $2 AND status = 'active' AND plan_type IN (${lowerTiers.join(',')})
+             ORDER BY "createdAt" DESC
+             LIMIT $3
+           )`,
+          { bind: [plan, user.id, promoLimit] }
+        );
+      }
+    }
+
     return res.json({
       success: true,
-      message: `Successfully upgraded to ${plan} plan.`,
-      data: { subscription_plan: user.subscription_plan, plan_expires_at: user.plan_expires_at }
+      message: `Successfully upgraded to ${plan} plan. Your existing ads have been promoted!`,
+      data: { subscription_plan: user.subscription_plan }
     });
   } catch (err) {
     return next(err);

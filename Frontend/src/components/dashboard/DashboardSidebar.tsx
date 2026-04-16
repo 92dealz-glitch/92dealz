@@ -30,6 +30,7 @@ const baseItems: MenuItem[] = [
     { id: "add-product", label: "Add Product", icon: PlusSquare, href: "/vendor-dashboard/add-product" },
     { id: "sales-stats", label: "Sales Stats", icon: BarChart2, href: "/vendor-dashboard/analytics" },
     { id: "subscription", label: "Subscription Plans", icon: ShoppingCart, href: "/pricing" },
+    { id: "stats", label: "Stats & Subscription", icon: BarChart2, href: "/vendor-dashboard/subscription" },
     { id: "messages", label: "Messages", icon: MessageSquare, href: "/vendor-dashboard/messages" },
     { id: "settings", label: "Settings", icon: Settings, href: "/vendor-dashboard/settings/personal-details", hasSubmenu: true },
 ];

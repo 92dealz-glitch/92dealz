@@ -155,6 +155,8 @@ export interface UserProfile {
     basic: number;
     star: number;
     premium: number;
+    active_count: number;
+    inactive_count: number;
     limits: {
       free: number;
       basic: number;
