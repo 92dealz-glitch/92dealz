@@ -92,25 +92,27 @@ export default function MyAdsList() {
             {/* Stats Summary */}
             {profile?.subscription_stats && (
                 <div className="flex flex-wrap gap-4 mb-8">
-                    <div className="bg-zinc-50 border border-zinc-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
-                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Free Slots</span>
-                        <span className="text-lg font-black text-black">{profile.subscription_stats.free} / {profile.subscription_stats.limits.free}</span>
-                    </div>
+                    {!isChina && (
+                        <div className="bg-zinc-50 border border-zinc-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
+                            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Free Slots</span>
+                            <span className="text-lg font-black text-black">{profile.subscription_stats.free} / {profile.subscription_stats.limits.free}</span>
+                        </div>
+                    )}
                     <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
-                        <span className="text-[10px] font-black text-orange-400 uppercase tracking-wider">Featured</span>
+                        <span className="text-[10px] font-black text-orange-400 uppercase tracking-wider">{isChina ? "Featured Tier" : "Featured"}</span>
                         <span className="text-lg font-black text-[#f45c03]">{profile.subscription_stats.basic} / {profile.subscription_stats.limits.basic}</span>
                     </div>
                     <div className="bg-yellow-50 border border-yellow-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
-                        <span className="text-[10px] font-black text-yellow-600 uppercase tracking-wider">Star</span>
+                        <span className="text-[10px] font-black text-yellow-600 uppercase tracking-wider">{isChina ? "Premium Tier" : "Star"}</span>
                         <span className="text-lg font-black text-yellow-600">{profile.subscription_stats.star} / {profile.subscription_stats.limits.star}</span>
                     </div>
-                    {(profile.subscription_stats.limits.premium > 0 || profile.subscription_plan === 'premium') && (
+                    {(!isChina && (profile.subscription_stats.limits.premium > 0 || profile.subscription_plan === 'premium')) && (
                         <div className="bg-purple-50 border border-purple-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
                             <span className="text-[10px] font-black text-purple-600 uppercase tracking-wider">Ultimate</span>
                             <span className="text-lg font-black text-purple-600">{profile.subscription_stats.premium} / ∞</span>
                         </div>
                     )}
-                    {(profile?.extra_slots_purchased && profile.extra_slots_purchased > 0) && (
+                    {(!isChina && profile?.extra_slots_purchased && profile.extra_slots_purchased > 0) && (
                          <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px] border-dashed">
                              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Starter Add-ons</span>
                              <span className="text-lg font-black text-emerald-600">+{profile.extra_slots_purchased} Purchased</span>
@@ -152,23 +154,40 @@ export default function MyAdsList() {
                                 <div>
                                     <h3 className="text-black font-black text-lg mb-1">{ad.title}</h3>
                                     <div className="text-[#f45c03] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
-                                    <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
+                                     <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
                                         <span className="bg-zinc-100 px-2 py-0.5 rounded text-xs">{new Date(ad.createdAt || Date.now()).toLocaleDateString()}</span>
                                         {ad.active_until && (
-                                            <span className="flex items-center gap-1 text-emerald-600 text-xs font-black">
+                                            <span className={`flex items-center gap-1 text-xs font-black ${new Date(ad.active_until) < new Date() ? 'text-red-500' : 'text-emerald-600'}`}>
                                                 <Clock size={12} />
-                                                Visible until: {new Date(ad.active_until).toLocaleDateString()}
+                                                {new Date(ad.active_until) < new Date() ? 'Expired' : `Visible until: ${new Date(ad.active_until).toLocaleDateString()}`}
                                             </span>
                                         )}
                                         {ad.subcategory && <span className="text-[#f45c03] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
                                     </div>
                                 </div>
-                                <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${
-                                    ad.status === 'pending' ? 'bg-orange-500' : 
-                                    ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
-                                }`}>
-                                    {ad.status || "active"}
-                                </span>
+                                <div className="flex flex-col items-end gap-2">
+                                    <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${
+                                        ad.status === 'pending' ? 'bg-orange-500' : 
+                                        ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
+                                    }`}>
+                                        {ad.status || "active"}
+                                    </span>
+                                    {ad.active_until && new Date(ad.active_until) < new Date() && (
+                                        <button 
+                                            onClick={async () => {
+                                                try {
+                                                    await updateAd(ad.id, { active_until: 'reset' } as any);
+                                                    window.location.reload();
+                                                } catch (er: any) {
+                                                    alert(er.message || "Failed to renew ad.");
+                                                }
+                                            }}
+                                            className="bg-black text-white px-3 py-1 rounded-md text-[11px] font-black uppercase hover:bg-zinc-800 transition-colors"
+                                        >
+                                            Renew Ad
+                                        </button>
+                                    )}
+                                </div>
                                 <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${
                                     ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' : 
                                     ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' : 

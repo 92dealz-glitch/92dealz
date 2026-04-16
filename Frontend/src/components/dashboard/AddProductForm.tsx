@@ -763,7 +763,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                             id="free"
                             title="Standard"
                             price="FREE"
-                            perk="Standard listing"
+                            perk="Lasts 30 Days"
                             active={data.plan_type === 'free'}
                             onClick={() => updateData({ plan_type: 'free' })}
                             disabled={false}
@@ -777,12 +777,12 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         perk="Trending Ads list"
                         active={data.plan_type === 'basic'}
                         onClick={() => {
-                            const disabled = profile?.subscription_plan === 'free' && !isChina;
-                            if (disabled) setExplanationModal(getExplanation('basic'));
+                            const hasPlan = (profile?.basic_plan_expires_at && new Date(profile.basic_plan_expires_at) > new Date());
+                            if (!hasPlan) setExplanationModal(getExplanation('basic'));
                             else updateData({ plan_type: 'basic' });
                         }}
                         disabled={false}
-                        isLocked={profile?.subscription_plan === 'free' && !isChina}
+                        isLocked={!(profile?.basic_plan_expires_at && new Date(profile.basic_plan_expires_at) > new Date())}
                         count={profile?.subscription_stats ? `${profile.subscription_stats.basic} / ${profile.subscription_stats.limits.basic}` : null}
                     />
                     <VisibilityOption
@@ -792,12 +792,14 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         perk="Hot Deals & Featured"
                         active={data.plan_type === 'star'}
                         onClick={() => {
-                            const disabled = (profile?.subscription_plan !== 'star' && profile?.subscription_plan !== 'premium') && !isChina;
-                            if (disabled) setExplanationModal(getExplanation('star'));
+                            const hasPlan = (profile?.star_plan_expires_at && new Date(profile.star_plan_expires_at) > new Date()) || 
+                                           (profile?.premium_plan_expires_at && new Date(profile.premium_plan_expires_at) > new Date());
+                            if (!hasPlan) setExplanationModal(getExplanation('star'));
                             else updateData({ plan_type: 'star' });
                         }}
                         disabled={false}
-                        isLocked={(profile?.subscription_plan !== 'star' && profile?.subscription_plan !== 'premium') && !isChina}
+                        isLocked={!((profile?.star_plan_expires_at && new Date(profile.star_plan_expires_at) > new Date()) || 
+                                  (profile?.premium_plan_expires_at && new Date(profile.premium_plan_expires_at) > new Date()))}
                         count={profile?.subscription_stats ? `${profile.subscription_stats.star} / ${profile.subscription_stats.limits.star}` : null}
                     />
                     {!isChina && (
@@ -808,12 +810,12 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                             perk="Top Category Placement"
                             active={data.plan_type === 'premium'}
                             onClick={() => {
-                                const disabled = profile?.subscription_plan !== 'premium';
-                                if (disabled) setExplanationModal(getExplanation('premium'));
+                                const hasPlan = (profile?.premium_plan_expires_at && new Date(profile.premium_plan_expires_at) > new Date());
+                                if (!hasPlan) setExplanationModal(getExplanation('premium'));
                                 else updateData({ plan_type: 'premium' });
                             }}
                             disabled={false}
-                            isLocked={profile?.subscription_plan !== 'premium'}
+                            isLocked={!(profile?.premium_plan_expires_at && new Date(profile.premium_plan_expires_at) > new Date())}
                             count={profile?.subscription_stats ? `${profile.subscription_stats.premium} / ∞` : null}
                         />
                     )}

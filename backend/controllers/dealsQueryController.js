@@ -110,8 +110,19 @@ exports.list = async (req, res, next) => {
     if (req.query.today_only === 'true') {
       where.push('deals."createdAt" >= CURRENT_DATE');
     }
-    // Filter out expired ads for public listing
-    where.push("(deals.active_until IS NULL OR deals.active_until > NOW())");
+    
+    // Dynamic Subscription Enforcement Rule:
+    // 1. All ads MUST have a future active_until (Enforces the 30-day individual ad limit)
+    // 2. Multi-region paid tier check:
+    //    - Free tier: Hidden for China (CN), allowed for others.
+    //    - Basic/Star/Premium tiers: MUST have matching unexpired plan in u.basic_plan_expires_at, etc.
+    where.push("deals.active_until > NOW()");
+    where.push(`(
+      (deals.plan_type = 'free' AND u.country_code != 'CN')
+      OR (deals.plan_type = 'basic' AND u.basic_plan_expires_at > NOW())
+      OR (deals.plan_type = 'star' AND u.star_plan_expires_at > NOW())
+      OR (deals.plan_type = 'premium' AND u.premium_plan_expires_at > NOW())
+    )`);
 
     // Default to active status if not specified
     if (req.query.status && has('status')) {

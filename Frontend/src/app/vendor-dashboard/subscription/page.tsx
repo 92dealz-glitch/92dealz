@@ -115,10 +115,10 @@ export default function SubscriptionStatsPage() {
                 </div>
 
                 <div className="space-y-10">
-                    {/* Ultimate */}
-                    {(currentTier === 'premium' || (stats?.premium || 0) > 0) && (
+                    {/* Daily Ad Logic: Show only active or used plans */}
+                    {(!isChina && (currentTier === 'premium' || (stats?.premium || 0) > 0)) && (
                         <CapacityBar 
-                            label={isChina ? "Premium Capacity" : "Ultimate Visibility"} 
+                            label="Ultimate Visibility" 
                             used={stats?.premium || 0} 
                             limit={1000000} 
                             color="bg-purple-600" 
@@ -127,10 +127,10 @@ export default function SubscriptionStatsPage() {
                         />
                     )}
                     
-                    {/* Star */}
+                    {/* Star / Premium Choice */}
                     {(currentTier === 'star' || (stats?.star || 0) > 0) && (
                         <CapacityBar 
-                            label={isChina ? "Premium Choice" : "Star Premium"} 
+                            label={isChina ? "Premium Tier" : "Star Premium"} 
                             used={stats?.star || 0} 
                             limit={stats?.limits.star || 20} 
                             color="bg-yellow-500" 
@@ -138,10 +138,10 @@ export default function SubscriptionStatsPage() {
                         />
                     )}
 
-                    {/* Basic/Featured */}
+                    {/* Basic / Featured Tier */}
                     {(currentTier === 'basic' || (stats?.basic || 0) > 0) && (
                         <CapacityBar 
-                            label="Featured Boost" 
+                            label={isChina ? "Featured Tier" : "Featured Boost"} 
                             used={stats?.basic || 0} 
                             limit={stats?.limits.basic || 10} 
                             color="bg-[#f45c03]" 
@@ -149,8 +149,8 @@ export default function SubscriptionStatsPage() {
                         />
                     )}
 
-                    {/* Standard with Add-on Breakdown */}
-                    {(currentTier === 'free' || (profile.extra_slots_purchased || 0) > 0 || (stats?.free || 0) > 0) && (
+                    {/* Standard (Nigeria Only) */}
+                    {!isChina && (currentTier === 'free' || (profile.extra_slots_purchased || 0) > 0 || (stats?.free || 0) > 0) && (
                         <div className="space-y-4">
                             <CapacityBar 
                                 label="Standard Multiplier" 
