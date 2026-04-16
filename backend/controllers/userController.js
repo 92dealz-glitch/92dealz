@@ -113,7 +113,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getProfile = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status', 'country_code', 'country_name', 'subscription_plan', 'basic_plan_expires_at', 'star_plan_expires_at'],
+      attributes: ['id', 'name', 'email', 'phone', 'profile_image_url', 'createdAt', 'updatedAt', 'role', 'businessName', 'businessCategory', 'businessAddress', 'rating', 'responseTime', 'is_verified', 'is_phone_verified', 'is_email_verified', 'verification_status', 'government_id_url', 'last_poll_date', 'poll_category', 'poll_choice', 'about', 'status', 'country_code', 'country_name', 'subscription_plan', 'basic_plan_expires_at', 'star_plan_expires_at', 'premium_plan_expires_at', 'extra_slots_purchased'],
     });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });

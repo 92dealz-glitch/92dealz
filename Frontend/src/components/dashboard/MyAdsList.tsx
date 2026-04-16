@@ -137,6 +137,12 @@ export default function MyAdsList() {
                                     <div className="text-[#f45c03] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
                                     <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
                                         <span className="bg-zinc-100 px-2 py-0.5 rounded text-xs">{new Date(ad.createdAt || Date.now()).toLocaleDateString()}</span>
+                                        {ad.active_until && (
+                                            <span className="flex items-center gap-1 text-emerald-600 text-xs font-black">
+                                                <Clock size={12} />
+                                                Visible until: {new Date(ad.active_until).toLocaleDateString()}
+                                            </span>
+                                        )}
                                         {ad.subcategory && <span className="text-[#f45c03] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
                                     </div>
                                 </div>

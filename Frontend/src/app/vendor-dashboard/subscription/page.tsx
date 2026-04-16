@@ -143,14 +143,34 @@ export default function SubscriptionStatsPage() {
                         icon={<Zap size={20} className="text-[#f45c03]" />} 
                     />
 
-                    {/* Standard */}
-                    <CapacityBar 
-                        label="Standard Multiplier" 
-                        used={stats?.free || 0} 
-                        limit={stats?.limits.free || 1} 
-                        color="bg-zinc-400" 
-                        icon={<Package size={20} className="text-zinc-500" />} 
-                    />
+                    {/* Standard with Starter Breakdown */}
+                    <div className="space-y-4">
+                        <CapacityBar 
+                            label="Standard Multiplier" 
+                            used={stats?.free || 0} 
+                            limit={stats?.limits.free || 1} 
+                            color="bg-zinc-400" 
+                            icon={<Package size={20} className="text-zinc-500" />} 
+                        />
+                        {(profile.extra_slots_purchased || 0) > 0 && (
+                            <div className="ml-14 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex flex-wrap gap-6 items-center">
+                                <div>
+                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Bonus Slots Owned</p>
+                                    <p className="text-lg font-black text-black">{profile.extra_slots_purchased}</p>
+                                </div>
+                                <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
+                                <div>
+                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Bonus Used</p>
+                                    <p className="text-lg font-black text-[#f45c03]">{Math.max(0, (stats?.free || 0) - 1)}</p>
+                                </div>
+                                <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
+                                <div>
+                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Bonus Left</p>
+                                    <p className="text-lg font-black text-emerald-600">{Math.max(0, profile.extra_slots_purchased - Math.max(0, (stats?.free || 0) - 1))}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
