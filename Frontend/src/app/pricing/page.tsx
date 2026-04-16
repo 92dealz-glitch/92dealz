@@ -8,6 +8,8 @@ import { buyPlan, getProfile } from "@/services/user.service";
 import { UserProfile } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { Check, Star, Zap, Info, Trophy, Rocket, ShieldCheck, X } from "lucide-react";
+import { useAlert } from "@/context/AlertContext"; // Use professional alerts
+
 
 interface PricingPlan {
   id: 'free' | 'starter' | 'basic' | 'star' | 'premium';
@@ -69,16 +71,14 @@ function SuccessModal({ isOpen, onClose, planName }: { isOpen: boolean; onClose:
       </div>
     </div>
   );
-}
-
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [currentPlan, setCurrentPlan] = useState<'free' | 'basic' | 'star' | 'premium' | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [purchasedPlanName, setPurchasedPlanName] = useState("");
   const router = useRouter();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -95,7 +95,6 @@ export default function PricingPage() {
 
   const handleBuy = async (planId: 'free' | 'basic' | 'star' | 'premium' | 'starter', planName: string) => {
     setLoading(planId);
-    setMessage(null);
     try {
       const res = await buyPlan(planId);
       if (res.success) {
@@ -107,14 +106,15 @@ export default function PricingPage() {
           if (planId !== 'starter') setCurrentPlan(profileRes.data.subscription_plan as any);
         }
       } else {
-        setMessage({ type: 'error', text: res.message || "Failed to process subscription." });
+        showAlert(res.message || "Failed to process subscription.", "error");
       }
     } catch (err: any) {
-      setMessage({ type: 'error', text: err.message || "An error occurred." });
+      showAlert(err.message || "An error occurred during subscription.", "error");
     } finally {
       setLoading(null);
     }
   };
+
 
   const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
 
@@ -262,12 +262,7 @@ export default function PricingPage() {
             </p>
           </div>
 
-          {message?.type === 'error' && (
-            <div className="max-w-xl mx-auto mb-8 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-between">
-              <span className="text-red-700 font-bold">{message.text}</span>
-              <button onClick={() => setMessage(null)} className="text-red-400 font-black"><X size={20}/></button>
-            </div>
-          )}
+
 
           <div className="flex flex-wrap justify-center gap-6 mb-16">
             {plans.map((plan) => {

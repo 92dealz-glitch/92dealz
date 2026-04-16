@@ -1,4 +1,5 @@
 const sequelize = require('../config/database');
+const User = require('../models/User'); // Required for renewal plan validation
 const currencyService = require('../services/currencyService');
 
 let DEALS_COLUMNS = null;
@@ -390,6 +391,22 @@ exports.update = async (req, res, next) => {
           value = JSON.stringify(value);
         }
         if (k === 'active_until' && value === 'reset') {
+          // Hardened Renewal Logic: Check subscription before resetting 30-day window
+          const [[adData]] = await sequelize.query(`SELECT plan_type, "userId" FROM deals WHERE id = $1`, { bind: [id] });
+          if (!adData || adData.userId !== req.user.id) return res.status(403).json({ success: false, message: 'Unauthorized renewal' });
+          
+          const user = await User.findByPk(req.user.id);
+          const now = new Date();
+          const p = adData.plan_type || 'free';
+          const isPlanValid = (p === 'free' && user.country_code !== 'CN') ||
+            (p === 'basic' && user.basic_plan_expires_at && new Date(user.basic_plan_expires_at) > now) ||
+            (p === 'star' && user.star_plan_expires_at && new Date(user.star_plan_expires_at) > now) ||
+            (p === 'premium' && user.premium_plan_expires_at && new Date(user.premium_plan_expires_at) > now);
+
+          if (!isPlanValid) {
+            return res.status(403).json({ success: false, message: `Cannot renew ${p} ad. Your subscription has expired.` });
+          }
+
           sets.push(`active_until = NOW() + INTERVAL '30 days'`);
           sets.push(`"createdAt" = NOW()`); // Bump to top
           continue; 

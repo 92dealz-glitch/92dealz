@@ -652,10 +652,11 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
             router.push("/vendor-dashboard/my-ads");
         } catch (er: any) {
             console.error(er);
-            if (er.message && (er.message.includes("Limit exceeded") || er.message.includes("expired") || er.message.includes("must purchase a plan"))) {
-                setLimitError(er.message);
+            // Professional pop up for subscription/limit errors
+            if (er.message && (er.message.includes("Capacity Reached") || er.message.includes("expired") || er.message.includes("must select a paid"))) {
+                showAlert(er.message, "Plan Required");
             } else {
-                showAlert(er.message || "Something went wrong. Please try again.");
+                showAlert(er.message || "Something went wrong. Please try again.", "Error");
             }
         } finally {
             setSubmitting(false);

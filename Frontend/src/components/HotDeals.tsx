@@ -38,10 +38,10 @@ export default function HotDeals() {
         const mapped: HotDeal[] = (res.data || []).map((d: any) => ({
           id: d.id,
           title: d.title,
-          price: `₦ ${Number(d.price).toLocaleString()}`,
+          price: formatPrice(Number(d.price)),
           priceValue: Number(d.price),
           img: d.image_url || "/assets/images/bgphone.svg",
-          location: d.location || "Nigeria",
+          location: d.location || (d.User?.country_name || "Africa"),
           state: d.state,
           city: d.city,
           newLabel: d.condition || "New",
