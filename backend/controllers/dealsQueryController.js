@@ -530,7 +530,7 @@ exports.trending = async (req, res, next) => {
       }
     }
 
-    const where = ['d.status = \'active\'', 'u.status = \'active\''];
+    const where = ['d.status = \'active\'', 'u.status = \'active\'', 'd.active_until > NOW()'];
     // Trending Ads visibility: Compulsory to have at least Basic or Star plan
     where.push("d.plan_type IN ('basic', 'star')");
 
@@ -623,7 +623,7 @@ exports.featured = async (req, res, next) => {
               (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id) AS clicks
        FROM deals d
        JOIN users u ON u.id = d."userId"
-       WHERE d.status = 'active' AND u.status = 'active' AND d.plan_type = 'star'
+       WHERE d.status = 'active' AND u.status = 'active' AND d.plan_type = 'star' AND d.active_until > NOW()
        ORDER BY RANDOM()
        LIMIT 4`
     );
@@ -642,7 +642,7 @@ exports.hotDeals = async (req, res, next) => {
               (SELECT COUNT(*)::INT FROM click_events ce WHERE ce.deal_id = d.id) AS clicks
        FROM deals d
        JOIN users u ON u.id = d."userId"
-       WHERE d.status = 'active' AND u.status = 'active' AND d.plan_type = 'star'
+       WHERE d.status = 'active' AND u.status = 'active' AND d.plan_type = 'star' AND d.active_until > NOW()
        ORDER BY d."createdAt" DESC
        LIMIT 10`
     );

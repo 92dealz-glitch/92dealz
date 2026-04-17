@@ -18,6 +18,8 @@ export type FeaturedAdItem = {
   views: number;
   rating: number;
   isVerified: boolean;
+  condition?: string;
+  plan_type?: string;
 };
 
 export default function FeaturedAds() {
@@ -28,7 +30,8 @@ export default function FeaturedAds() {
     (async () => {
       try {
         const res = await listFeaturedAds();
-        const data = (res.data || []).map((d: any) => ({
+        const rawData = res.data || [];
+        const mappedData = rawData.map((d: any) => ({
           id: d.id,
           price: `₦ ${Number(d.price).toLocaleString()}`,
           title: d.title,
@@ -40,8 +43,19 @@ export default function FeaturedAds() {
           views: d.clicks || 0,
           rating: Number(d.rating || 0),
           isVerified: d.is_verified || d.User?.is_verified || false,
+          plan_type: d.plan_type,
+          condition: d.condition || "New"
         }));
-        setFeatured(data.sort(() => Math.random() - 0.5).slice(0, 4));
+
+        // Filter for "star" or "premium" ads, then take 4 random ones
+        const filtered = mappedData.filter((it: any) => 
+          it.plan_type === "star" || it.plan_type === "premium"
+        );
+
+        // Fallback to all if no star/premium found (to avoid empty section during dev)
+        const pool = filtered.length > 0 ? filtered : mappedData;
+        
+        setFeatured(pool.sort(() => Math.random() - 0.5).slice(0, 4));
       } catch (err) {
         console.error("Failed to fetch featured ads", err);
       }
@@ -51,25 +65,39 @@ export default function FeaturedAds() {
   if (featured.length === 0) return null;
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10 text-center sm:text-left">
-      <div className="flex items-center gap-5 mb-10">
-        <h3 className="text-3xl sm:text-4xl font-extrabold text-[#f45c03] uppercase tracking-tight">Featured Ads</h3>
-        <div className="h-0.5 flex-1 bg-[#f45c03] opacity-40 shadow-sm" />
+    <section className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10 text-center sm:text-left">
+      <div className="flex items-center gap-5 mb-6">
+        <h3 className="text-2xl sm:text-3xl font-extrabold text-[#f45c03] uppercase tracking-tight">Featured Ads</h3>
+        <div className="h-0.5 flex-1 bg-[#f45c03] opacity-20 shadow-sm" />
       </div>
 
-      <div className="flex flex-col sm:grid sm:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 text-left">
         {featured.map((it) => {
           const fav = isFavorite(it.id);
           return (
-            <div key={it.id} className="bg-[#f45c03] rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row gap-4 sm:gap-6 items-center transition-all hover:scale-[1.01] relative group h-full overflow-hidden">
+            <div key={it.id} className="bg-white rounded-[2rem] border-2 border-[#f45c03]/60 shadow-sm flex flex-col transition-all hover:shadow-md relative overflow-hidden h-full group">
               {/* IMAGE SECTION */}
-              <div className="w-full sm:w-[55%] aspect-[1.2/1] relative bg-white border-2 border-white rounded-2xl overflow-hidden shrink-0">
+              <div className="w-full aspect-[1.4/1] relative overflow-hidden shrink-0">
                 <Image
                   src={it.img}
                   alt={it.title}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                
+                {/* VERIFIED BADGE */}
+                {it.isVerified && (
+                  <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-[#10b981] text-white px-3 py-1.5 rounded-full shadow-sm">
+                    <div className="bg-white rounded-full p-0.5">
+                       <svg viewBox="0 0 24 24" fill="none" className="w-2.5 h-2.5 text-[#10b981]" xmlns="http://www.w3.org/2000/svg">
+                         <path d="M5 13L9 17L19 7" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                       </svg>
+                    </div>
+                    <span className="text-[10px] font-black tracking-wider uppercase">Verified</span>
+                  </div>
+                )}
+
+                {/* FAVORITE BUTTON */}
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -83,62 +111,37 @@ export default function FeaturedAds() {
                       likes: it.views,
                     });
                   }}
-                  className={`absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-md transition-transform hover:scale-110 ${fav ? 'text-red-500' : 'text-gray-400'}`}
+                  className={`absolute top-4 right-4 z-20 bg-white rounded-xl p-2.5 shadow-md transition-all hover:scale-110 ${fav ? 'text-red-500' : 'text-zinc-800'}`}
                 >
                   <Heart size={20} fill={fav ? "currentColor" : "none"} />
                 </button>
               </div>
 
               {/* CONTENT SECTION */}
-              <div className="flex-1 text-white w-full h-full flex flex-col items-start text-left min-w-0">
-                <div className="flex items-start justify-between gap-2 w-full">
-                  <div className="text-left w-full">
-                     <span className={`font-black mb-1 block ${
-                       (it.price || "").length > 15 ? "text-lg sm:text-xl" : (it.price || "").length > 12 ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl"
-                     }`}>{it.price}</span>
-                     <h4 className={`font-bold leading-tight mb-2 line-clamp-2 break-words ${
-                       (it.title || "").length > 35 ? "text-base sm:text-lg" : (it.title || "").length > 25 ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"
-                     }`}>{it.title}</h4>
-                  </div>
-                  {it.isVerified && (
-                    <div className="shrink-0 mt-1" title="Verified Vendor">
-                       <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 sm:w-9 sm:h-9" xmlns="http://www.w3.org/2000/svg">
-                         <circle cx="12" cy="12" r="10" fill="#10b981" />
-                         <path 
-                           d="M8 12L11 15L16 9" 
-                           stroke="white" 
-                           strokeWidth="2.5" 
-                           strokeLinecap="round" 
-                           strokeLinejoin="round"
-                         />
-                       </svg>
-                    </div>
-                  )}
+              <div className="p-3 sm:p-4 flex flex-col flex-1">
+                <div className="flex justify-between items-start">
+                  <span className="text-lg sm:text-xl font-black text-[#f45c03] leading-none">{it.price}</span>
+                  <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">{it.condition || "New"}</span>
                 </div>
 
-                {/* DESCRIPTION - Clamped to 3 lines to prevent expansion */}
-                <p className="text-white/80 font-medium line-clamp-3 mb-4 break-words text-left text-sm leading-relaxed">
-                  {it.desc || "A premium listing tailored for high-quality marketplace deals."}
-                </p>
-
-                {/* RATING */}
-                <div className="flex items-center gap-1 mb-3 text-yellow-400">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className="text-xl">
-                      {i < Math.floor(it.rating || 5) ? '★' : '☆'}
-                    </span>
-                  ))}
-                  {it.rating > 0 && <span className="ml-2 font-bold text-white">({Number(it.rating).toFixed(1)})</span>}
+                <div className="flex flex-col gap-0.5 mt-1.5">
+                   <h4 className="font-bold text-zinc-900 line-clamp-2 text-sm sm:text-[15px] leading-tight break-words">
+                     {it.title}
+                   </h4>
+                   <div className="flex items-center gap-1 w-fit bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100 mt-0.5">
+                      <span className="text-yellow-500 text-[9px]">★</span>
+                      <span className="text-[9px] font-bold text-zinc-700">{it.rating > 0 ? it.rating.toFixed(1) : "4.9"}</span>
+                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10 w-full">
-                  <div className="flex items-center gap-1.5 text-white/90 font-bold max-w-[60%] truncate" title={`${it.city ? it.city + ", " : ""}${it.state ? it.state + ", " : ""}${it.location}`}>
-                    <MapPin size={16} className="shrink-0" />
-                    <span className="text-sm truncate">{[it.city, it.state, it.location].filter(Boolean).join(", ")}</span>
+                {/* FOOTER */}
+                <div className="flex items-center justify-between mt-auto pt-2.5 border-t border-zinc-50">
+                  <div className="flex items-center gap-1.5 text-zinc-400 font-bold max-w-[60%] truncate">
+                    <MapPin size={12} className="shrink-0" />
+                    <span className="text-[10px] truncate">{[it.city, it.state].filter(Boolean).join(", ") || it.location}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-white/90 font-bold">
-                    <Flame size={18} className="text-yellow-300" />
-                    <span className="text-sm">{it.views} views</span>
+                  <div className="flex items-center gap-1.5 text-zinc-400 font-bold">
+                    <span className="text-[10px]">{it.views.toLocaleString()} views</span>
                   </div>
                 </div>
               </div>
@@ -152,9 +155,9 @@ export default function FeaturedAds() {
       <div className="mt-12 flex justify-center">
         <Link 
           href="/search"
-          className="bg-[#f45c03] border-2 border-white/20 px-8 py-3.5 rounded-md font-black shadow-xl text-white hover:bg-white hover:text-[#f45c03] transition-all text-base tracking-wider uppercase"
+          className="bg-white border-2 border-[#f45c03] px-10 py-3.5 rounded-full font-black shadow-sm text-[#f45c03] hover:bg-[#f45c03] hover:text-white transition-all text-base tracking-wider uppercase"
         >
-          Explore Premium Deals
+          View More Promoted Ads
         </Link>
       </div>
     </section>

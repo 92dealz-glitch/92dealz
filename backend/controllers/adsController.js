@@ -22,6 +22,9 @@ exports.listMine = async (req, res, next) => {
     if (status) {
       if (status === 'closed') status = 'sold'; // Handle frontend 'closed' to backend 'sold' mapping
       statusFilter = `AND d.status = $2`;
+      if (status === 'active') {
+        statusFilter += ` AND d.active_until > NOW()`;
+      }
       bind.push(status);
     }
 
@@ -126,7 +129,25 @@ exports.updateVisibility = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid plan type' });
     }
 
-    // 1. Check user plan specific expiries
+    // 1. Check if ad is locked (already has interactions/sold)
+    const [[adCheck]] = await sequelize.query(
+      `SELECT is_locked, is_contacted, status, plan_type FROM deals WHERE id = $1 AND "userId" = $2`,
+      { bind: [id, userId] }
+    );
+    if (!adCheck) return res.status(404).json({ success: false, message: 'Ad not found or not owned by user' });
+    
+    // Strict block for "Logged" products
+    if (adCheck.is_locked || adCheck.is_contacted || adCheck.status === 'sold') {
+       return res.status(403).json({ 
+         success: false, 
+         message: 'This ad is logged because it has generated leads or is sold. Its visibility tier cannot be changed to ensure consistency for interested buyers.' 
+       });
+    }
+
+    // prevent "downgrade" to free if it's already on a higher tier? The user said "can only upgrade or degrade that hasn't been logged yet".
+    // This implies if NOT logged, they can change.
+
+    // 2. Check user plan specific expiries
     const [[user]] = await sequelize.query(
       `SELECT basic_plan_expires_at, star_plan_expires_at FROM users WHERE id = $1`, 
       { bind: [userId] }

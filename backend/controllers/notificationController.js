@@ -1,8 +1,13 @@
 const Notification = require('../models/Notification');
+const { syncSubscriptionNotifications } = require('../services/subscriptionMonitor');
 
 exports.getNotifications = async (req, res, next) => {
   try {
     const userId = req.user.id;
+    
+    // Sync subscription-related alerts before fetching
+    await syncSubscriptionNotifications(userId);
+
     const items = await Notification.findAll({
       where: { user_id: userId },
       order: [['createdAt', 'DESC']],

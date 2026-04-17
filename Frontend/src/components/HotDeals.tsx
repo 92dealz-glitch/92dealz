@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { listHotDeals } from "@/services/ads.service";
-import { Heart } from "lucide-react";
+import { Heart, MapPin } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesProvider";
 
 interface HotDeal {
@@ -123,122 +123,80 @@ export default function HotDeals() {
           {list.map((item) => (
             <div
               key={item.id}
-              className="relative shrink-0 w-[260px] sm:w-[240px] md:w-[260px] lg:min-w-[260px] bg-white rounded-[24px] border-2 border-[#ff7a2d] p-1.5 pb-5 shadow-sm h-full flex flex-col snap-start group"
+              className="relative shrink-0 w-[160px] xs:w-[180px] sm:w-[200px] md:w-[220px] lg:w-[250px] bg-white rounded-[1.2rem] sm:rounded-[1.5rem] border-2 border-[#10b981] p-2.5 shadow-sm h-full flex flex-col snap-start group"
             >
-              {/* HOT BADGE */}
-              <div className="absolute -top-3 left-2 z-30 pointer-events-none">
-                <div className="bg-[#ff7a2d] text-white text-[11px] font-black px-2.5 py-1 rounded-sm uppercase tracking-wider shadow-md">
-                  Hot 🔥
-                </div>
-              </div>
-
-                  {/* HEART */}
-                  {
-                    (() => {
-                      const fav = isFavorite(item.id);
-                      return (
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggle({
-                              id: item.id,
-                              title: item.title,
-                              priceValue: item.priceValue,
-                              price: item.price,
-                              img: item.img,
-                              desc: undefined,
-                              location: item.location,
-                              likes: 0,
-                            });
-                          }}
-                          aria-label={fav ? "Remove from favorites" : "Add to favorites"}
-                          className={`absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-sm rounded-full p-1 shadow hover:scale-110 active:scale-95 transition-transform ${fav ? "text-red-500" : "text-gray-400"}`}
-                        >
-                          <Heart className="w-5 h-5" />
-                        </button>
-                      );
-                    })()
-                  }
+              {/* FAVORITE BUTTON */}
+              {(() => {
+                const fav = isFavorite(item.id);
+                return (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggle({
+                        id: item.id,
+                        title: item.title,
+                        priceValue: item.priceValue,
+                        price: item.price,
+                        img: item.img,
+                        desc: undefined,
+                        location: item.location,
+                        likes: 0,
+                      });
+                    }}
+                    className={`absolute top-4 right-4 z-20 bg-white/80 backdrop-blur-sm rounded-full p-1 shadow-sm hover:scale-110 transition-transform ${fav ? "text-red-500" : "text-gray-400"}`}
+                  >
+                    <Heart className="w-3.5 h-3.5" fill={fav ? "currentColor" : "none"} />
+                  </button>
+                );
+              })()}
 
               <Link href={`/product/${item.id}`} className="block h-full">
                 {/* IMAGE */}
-                <div className="mt-2 relative flex-none">
-                  <div className="bg-[#F7F7F7] rounded-2xl p-1 shadow-md transition-transform group-hover:rotate-[-2deg] sm:group-hover:rotate-[-3deg]">
-                    <div className="relative w-full pb-[75%] sm:pb-[70%] lg:pb-0 lg:h-[220px] rounded-xl overflow-hidden">
-                      <Image
-                        src={item.img}
-                        alt={item.title}
-                        fill
-                        className="absolute inset-0 object-cover transition-transform group-hover:scale-105"
-                      />
-                      {/* Verified Badge removed from here and moved next to price below */}
-                    </div>
-                  </div>
-                </div>
-
-                {/* PRICE & TITLE */}
-                <div className="mt-2 text-left flex items-start justify-between gap-1">
-                  <div className="min-w-0">
-                    <p className={`text-[#ff7a2d] font-extrabold break-all ${
-                      (item.price || "").length > 12 ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"
-                    }`}>
-                      {item.priceValue ? formatPrice(item.priceValue) : item.price}
-                    </p>
-                    <h4 className="mt-1 font-semibold text-base sm:text-lg text-black line-clamp-2 group-hover:text-[#ff7a2d] transition-colors">
-                      {item.title}
-                    </h4>
-                  </div>
-
+                <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-50">
+                  <Image
+                    src={item.img}
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  
+                  {/* VERIFIED BADGE ON IMAGE */}
                   {item.isVerified && (
-                    <div className="shrink-0 mt-1" title="Verified Vendor">
-                      <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 sm:w-8 sm:h-8" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" fill="#10b981" />
-                        <path 
-                          d="M8 12L11 15L16 9" 
-                          stroke="white" 
-                          strokeWidth="2.5" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                    <div className="absolute top-2 left-2 z-10 bg-white rounded-full p-0.5 shadow-sm">
+                       <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-[#10b981]" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M9 12L11 14L15 10M12 2L3 7V12C3 15.5 5.5 18.5 9 19.5L12 21L15 19.5C18.5 18.5 21 15.5 21 12V7L12 2Z" 
+                            fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+                       </svg>
                     </div>
                   )}
                 </div>
 
-                {/* Dynamic spacer to push ratings and footer to bottom and keep card height even */}
-                <div className="flex-1" />
+                {/* INFO SECTION */}
+                <div className="mt-2.5 flex flex-col flex-1 px-0.5">
+                  <p className="text-[#f45c03] font-black text-base sm:text-lg leading-none">
+                    {item.price}
+                  </p>
+                  <h4 className="mt-0 font-bold text-[13px] sm:text-[14px] text-zinc-900 line-clamp-1 leading-snug">
+                    {item.title}
+                  </h4>
 
-                <div className="mt-1 px-1.5 space-y-1 pb-1">
-                  {/* RATING */}
-                  <div className="flex items-center gap-1 text-yellow-400">
-                    {item.rating && item.rating > 0 ? (
-                      <div className="flex items-center">
-                        <div className="flex items-center text-base leading-none">
-                          {[1, 2, 3, 4, 5].map((i) => (
-                            <span key={i} className="drop-shadow-sm">{i <= Math.floor(item.rating || 0) ? "★" : "☆"}</span>
-                          ))}
-                        </div>
-                        <span className="ml-1 text-black font-bold text-[10px] sm:text-xs">({Number(item.rating).toFixed(1)})</span>
-                      </div>
-                    ) : (
-                      <span className="text-gray-400 italic text-[10px]">No reviews</span>
-                    )}
+                  {/* RATING: Dynamic Stars (Fallback to 5 if no rating) */}
+                  <div className="mt-0.5 flex items-center gap-0.5 text-[#f45c03] leading-none">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i} className="text-[10px]">
+                        {i < Math.floor(item.rating || 5) ? '★' : '☆'}
+                      </span>
+                    ))}
                   </div>
 
-                  {/* LOCATION & CONDITION */}
-                  <div className="flex items-center justify-between gap-2 text-[10px] sm:text-[12px] text-gray-500 pt-1.5 border-t border-gray-50">
-                    <div className="truncate font-semibold flex-1" title={`${item.city ? item.city + ", " : ""}${item.state ? item.state + ", " : ""}${item.location}`}>
-                      <span>📍 {[item.city, item.state, item.location].filter(Boolean).join(", ")}</span>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[#ff7a2d] font-bold whitespace-nowrap">{item.views ?? 0} views</span>
-                      {item.newLabel && (
-                        <span className="font-bold text-[#ff7a2d] bg-orange-50 px-1.5 py-0.5 rounded-sm uppercase text-[9px]">
-                          {item.newLabel}
-                        </span>
-                      )}
-                    </div>
+                  {/* FOOTER: Location & Condition */}
+                  <div className="mt-1.5 flex items-center justify-between gap-1 text-[9px] sm:text-[10px] text-zinc-500 font-bold overflow-hidden border-t border-zinc-50 pt-1.5">
+                    <span className="truncate flex items-center gap-1">
+                      <MapPin size={9} className="shrink-0" />
+                      {item.city || item.location}
+                    </span>
+                    <span className="shrink-0 uppercase tracking-tighter opacity-70">{item.newLabel || "New"}</span>
                   </div>
                 </div>
               </Link>

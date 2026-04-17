@@ -8,12 +8,12 @@ export default function FeaturedListing() {
           <div className="flex flex-row items-center justify-center gap-x-0 py-8 md:py-0 overflow-hidden">
 
             {/* Content Section - Side-by-side layout restored */}
-            <div className="max-w-[65%] sm:max-w-[70%] z-10 flex flex-col justify-center items-end translate-x-4 sm:translate-x-12 text-right">
-              <h2 className="text-[14px] xs:text-base sm:text-3xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight mb-2 sm:mb-4">
+            <div className="max-w-[65%] sm:max-w-[70%] z-10 flex flex-col justify-center items-end translate-x-8 sm:translate-x-12 text-right">
+              <h2 className="text-[20px] xs:text-base sm:text-3xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight mb-2 sm:mb-4">
                 Let&apos;s get one thing straight:
               </h2>
               
-              <div className="text-[12px] xs:text-sm sm:text-3xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight flex flex-col items-end">
+              <div className="text-[16px] xs:text-sm sm:text-3xl lg:text-[56px] font-black leading-[1.1] text-zinc-900 tracking-tight flex flex-col items-end">
                 <span className="block mb-0.5 sm:mb-1">
                   At <span className="text-[#ff7a2d]">234Deals,</span>
                 </span>
@@ -25,10 +25,10 @@ export default function FeaturedListing() {
                 </span>
 
                 <div className="mt-3 sm:mt-8 flex flex-col items-end">
-                  <span className="block text-[11px] xs:text-base sm:text-3xl lg:text-[48px] font-black leading-[1.1] text-zinc-900 tracking-tight opacity-90">
+                  <span className="block text-[14px] xs:text-base sm:text-3xl lg:text-[48px] font-black leading-[1.1] text-zinc-900 tracking-tight opacity-90">
                     There&apos;s truly no such thing
                   </span>
-                  <span className="relative inline-block text-[13px] xs:text-base sm:text-3xl lg:text-[56px] font-black leading-[1.1] text-[#ff7a2d] tracking-tight">
+                  <span className="relative inline-block text-[18px] xs:text-base sm:text-3xl lg:text-[56px] font-black leading-[1.1] text-[#ff7a2d] tracking-tight">
                     as a bad Deal!
                     <span className="absolute right-0 -bottom-1 w-[110%] h-[2px] sm:h-[6px] bg-gradient-to-l from-[#ff7a2d] to-transparent rounded-full opacity-80"></span>
                   </span>
@@ -37,8 +37,8 @@ export default function FeaturedListing() {
             </div>
 
             {/* Visual Section - Side-by-side overlay restored */}
-            <div className="flex-shrink-0 flex items-center justify-center -translate-x-4 sm:-translate-x-12">
-              <div className="relative w-[130px] xs:w-[180px] sm:w-[320px] lg:w-[420px] aspect-square">
+            <div className="flex-shrink-0 flex items-center justify-center translate-x-0 sm:-translate-x-12">
+              <div className="relative w-[180px] xs:w-[180px] sm:w-[320px] lg:w-[420px] aspect-square">
                 <Image
                   src="/images/litsingimage.svg"
                   alt="Quality Deals"

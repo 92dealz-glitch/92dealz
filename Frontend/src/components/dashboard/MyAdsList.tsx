@@ -344,85 +344,115 @@ export default function MyAdsList() {
                         <div className="mb-8">
                             <h3 className="text-3xl font-black text-black mb-2">Adjust Visibility</h3>
                             <p className="text-zinc-500 font-bold">Choose a visibility tier for your ad.</p>
+                            {(() => {
+                                const ad = items.find(a => a.id === promotingId);
+                                const isLocked = ad?.is_locked || ad?.is_contacted || ad?.status === 'sold';
+                                if (isLocked) {
+                                    return (
+                                        <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3">
+                                            <Lock className="text-red-500" size={20} />
+                                            <p className="text-xs font-bold text-red-700">
+                                                This product is <span className="font-black underline">locked</span> because it has generated leads or interest. 
+                                                Visibility cannot be changed to ensure consistency for interested buyers.
+                                            </p>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })()}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                            {!isChina && (
-                                <PromotionTierCard 
-                                    id="free"
-                                    title="Standard Tier"
-                                    perk="Standard Visibility"
-                                    disabled={false}
-                                    slots={`${profile?.subscription_stats?.free || 0} / ${profile?.subscription_stats?.limits?.free || 1}`}
-                                    onSelect={async () => {
-                                        if (!promotingId) return;
-                                        try {
-                                            await updateAdVisibility(promotingId, 'free');
-                                            showAlert("Ad changed to Standard visibility!", "Success");
-                                            setIsPromoteModalOpen(false);
-                                            load();
-                                        } catch (e: any) {
-                                            showAlert(e.message || "Failed to switch plan");
-                                        }
-                                    }}
-                                />
-                            )}
-                            <PromotionTierCard 
-                                id="basic"
-                                title={isChina ? "Featured Tier" : "Featured Boost"}
-                                perk={isChina ? "Priority Market Feed" : "Appears in Trending Ads"}
-                                disabled={!profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at || 0) < new Date()}
-                                slots={`${profile?.subscription_stats?.basic || 0} / ${profile?.subscription_stats?.limits?.basic || 10}`}
-                                onSelect={async () => {
-                                    if (!promotingId) return;
-                                    try {
-                                        await updateAdVisibility(promotingId, 'basic');
-                                        showAlert(isChina ? "Ad updated to Featured Tier!" : "Ad changed to Featured Boost!", "Success");
-                                        setIsPromoteModalOpen(false);
-                                        load();
-                                    } catch (e: any) {
-                                        showAlert(e.message || "Failed to switch plan");
-                                    }
-                                }}
-                            />
-                            <PromotionTierCard 
-                                id="star"
-                                title={isChina ? "Premium Tier" : "Star Premium"}
-                                perk={isChina ? "Maximum Export Visibility" : "Hot Deals & Featured Section"}
-                                disabled={!profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at || 0) < new Date()}
-                                slots={`${profile?.subscription_stats?.star || 0} / ${profile?.subscription_stats?.limits?.star || 20}`}
-                                onSelect={async () => {
-                                    if (!promotingId) return;
-                                    try {
-                                        await updateAdVisibility(promotingId, 'star');
-                                        showAlert(isChina ? "Ad updated to Premium Tier!" : "Ad changed to Star Premium!", "Success");
-                                        setIsPromoteModalOpen(false);
-                                        load();
-                                    } catch (e: any) {
-                                        showAlert(e.message || "Failed to switch plan");
-                                    }
-                                }}
-                            />
-                            {!isChina && (
-                                <PromotionTierCard 
-                                    id="premium"
-                                    title="Ultimate Tier"
-                                    perk="Top Rank + VIP Manager"
-                                    disabled={!profile?.premium_plan_expires_at || new Date(profile.premium_plan_expires_at || 0) < new Date()}
-                                    slots={`${profile?.subscription_stats?.premium || 0} / ${profile?.subscription_stats?.limits?.premium || 50}`}
-                                    onSelect={async () => {
-                                        if (!promotingId) return;
-                                        try {
-                                            await updateAdVisibility(promotingId, 'premium');
-                                            showAlert("Ad switched to Ultimate Visibility!", "Success");
-                                            setIsPromoteModalOpen(false);
-                                            load();
-                                        } catch (e: any) {
-                                            showAlert(e.message || "Failed to switch plan");
-                                        }
-                                    }}
-                                />
-                            )}
+                            {(() => {
+                                const ad = items.find(a => a.id === promotingId);
+                                const isLocked = ad?.is_locked || ad?.is_contacted || ad?.status === 'sold';
+                                const adPlan = ad?.plan_type || 'free';
+
+                                return (
+                                    <>
+                                        {!isChina && (
+                                            <PromotionTierCard 
+                                                id="free"
+                                                title="Standard Tier"
+                                                perk="Standard Visibility"
+                                                disabled={isLocked}
+                                                isActive={adPlan === 'free'}
+                                                slots={`${profile?.subscription_stats?.free || 0} / ${profile?.subscription_stats?.limits?.free || 1}`}
+                                                onSelect={async () => {
+                                                    if (!promotingId) return;
+                                                    try {
+                                                        await updateAdVisibility(promotingId, 'free');
+                                                        showAlert("Ad changed to Standard visibility!", "Success");
+                                                        setIsPromoteModalOpen(false);
+                                                        load();
+                                                    } catch (e: any) {
+                                                        showAlert(e.message || "Failed to switch plan");
+                                                    }
+                                                }}
+                                            />
+                                        )}
+                                        <PromotionTierCard 
+                                            id="basic"
+                                            title={isChina ? "Featured Tier" : "Featured Boost"}
+                                            perk={isChina ? "Priority Market Feed" : "Appears in Trending Ads"}
+                                            disabled={isLocked || !profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at || 0) < new Date()}
+                                            isActive={adPlan === 'basic'}
+                                            slots={`${profile?.subscription_stats?.basic || 0} / ${profile?.subscription_stats?.limits?.basic || 10}`}
+                                            onSelect={async () => {
+                                                if (!promotingId) return;
+                                                try {
+                                                    await updateAdVisibility(promotingId, 'basic');
+                                                    showAlert(isChina ? "Ad updated to Featured Tier!" : "Ad changed to Featured Boost!", "Success");
+                                                    setIsPromoteModalOpen(false);
+                                                    load();
+                                                } catch (e: any) {
+                                                    showAlert(e.message || "Failed to switch plan");
+                                                }
+                                            }}
+                                        />
+                                        <PromotionTierCard 
+                                            id="star"
+                                            title={isChina ? "Premium Tier" : "Star Premium"}
+                                            perk={isChina ? "Maximum Export Visibility" : "Hot Deals & Featured Section"}
+                                            disabled={isLocked || !profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at || 0) < new Date()}
+                                            isActive={adPlan === 'star'}
+                                            slots={`${profile?.subscription_stats?.star || 0} / ${profile?.subscription_stats?.limits?.star || 20}`}
+                                            onSelect={async () => {
+                                                if (!promotingId) return;
+                                                try {
+                                                    await updateAdVisibility(promotingId, 'star');
+                                                    showAlert(isChina ? "Ad updated to Premium Tier!" : "Ad changed to Star Premium!", "Success");
+                                                    setIsPromoteModalOpen(false);
+                                                    load();
+                                                } catch (e: any) {
+                                                    showAlert(e.message || "Failed to switch plan");
+                                                }
+                                            }}
+                                        />
+                                        {!isChina && (
+                                            <PromotionTierCard 
+                                                id="premium"
+                                                title="Ultimate Tier"
+                                                perk="Top Rank + VIP Manager"
+                                                disabled={isLocked || !profile?.premium_plan_expires_at || new Date(profile.premium_plan_expires_at || 0) < new Date()}
+                                                isActive={adPlan === 'premium'}
+                                                slots={`${profile?.subscription_stats?.premium || 0} / ${profile?.subscription_stats?.limits?.premium || 50}`}
+                                                onSelect={async () => {
+                                                    if (!promotingId) return;
+                                                    try {
+                                                        await updateAdVisibility(promotingId, 'premium');
+                                                        showAlert("Ad switched to Ultimate Visibility!", "Success");
+                                                        setIsPromoteModalOpen(false);
+                                                        load();
+                                                    } catch (e: any) {
+                                                        showAlert(e.message || "Failed to switch plan");
+                                                    }
+                                                }}
+                                            />
+                                        )}
+                                    </>
+                                );
+                            })()}
                         </div>
 
                         {/* Plan Status Help */}
@@ -452,17 +482,25 @@ export default function MyAdsList() {
     );
 }
 
-function PromotionTierCard({ title, perk, disabled, slots, onSelect, id }: { title: string, perk: string, disabled: boolean, slots: string, onSelect: () => void, id: string }) {
+function PromotionTierCard({ title, perk, disabled, slots, onSelect, id, isActive }: { title: string, perk: string, disabled: boolean, slots: string, onSelect: () => void, id: string, isActive?: boolean }) {
     return (
-        <div className={`p-6 rounded-[24px] border-2 flex flex-col items-start gap-4 transition-all ${disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-orange-500 hover:bg-orange-50/30'}`}>
+        <div className={`p-6 rounded-[24px] border-2 flex flex-col items-start gap-4 transition-all ${
+            isActive ? 'border-orange-500 bg-orange-50/50 ring-4 ring-orange-100' :
+            disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-orange-500 hover:bg-orange-50/30'
+        }`}>
             <div className={`p-3 rounded-2xl ${id === 'star' ? 'bg-yellow-100 text-yellow-600' : 'bg-orange-100 text-orange-600'}`}>
                 {id === 'star' ? <Star size={24} /> : <Zap size={24} />}
             </div>
             <div>
-                <h4 className="text-xl font-black text-black mb-1">{title}</h4>
+                <div className="flex items-center gap-2 mb-1">
+                    <h4 className="text-xl font-black text-black">{title}</h4>
+                    {isActive && (
+                        <span className="bg-orange-500 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Current</span>
+                    )}
+                </div>
                 <p className="text-zinc-500 font-bold text-xs">{perk}</p>
             </div>
-            {!disabled ? (
+            {!disabled && !isActive ? (
                 <>
                     <div className="mt-2 w-full">
                         <div className="flex justify-between text-[10px] font-black uppercase text-zinc-400 mb-1">
@@ -477,10 +515,15 @@ function PromotionTierCard({ title, perk, disabled, slots, onSelect, id }: { tit
                         Select Plan
                     </button>
                 </>
+            ) : isActive ? (
+                <div className="mt-4 flex items-center gap-2 text-[11px] font-black text-orange-600 uppercase tracking-wider">
+                    <CheckCircle size={12} />
+                    Already Active
+                </div>
             ) : (
                 <div className="mt-4 flex items-center gap-2 text-[11px] font-black text-zinc-400 uppercase tracking-wider">
                     <Lock size={12} />
-                    Subscription Required
+                    {disabled && !isActive ? "Unavailable" : "Subscription Required"}
                 </div>
             )}
         </div>
