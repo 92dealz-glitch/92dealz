@@ -77,6 +77,7 @@ export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<'free' | 'basic' | 'star' | 'premium' | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [purchasedPlanName, setPurchasedPlanName] = useState("");
   const router = useRouter();
@@ -90,10 +91,24 @@ export default function PricingPage() {
           setCurrentPlan((res.data as UserProfile).subscription_plan || 'free');
           setProfile(res.data as UserProfile);
         }
-      } catch (err) {}
+      } catch (err) {} finally {
+        setProfileLoading(false);
+      }
     };
     fetchProfile();
   }, []);
+
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#fafafa]">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+           <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleBuy = async (planId: 'free' | 'basic' | 'star' | 'premium' | 'starter', planName: string) => {
     setLoading(planId);

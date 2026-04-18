@@ -36,7 +36,7 @@ export default function SubscriptionStatsPage() {
         if (isChina) {
             if (currentTier === 'star') return 'Premium';
             if (currentTier === 'basic') return 'Featured';
-            return currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
+            return 'No Active Plan';
         }
         if (currentTier === 'premium') return 'Ultimate';
         if (currentTier === 'star') return 'Star Premium';
@@ -61,13 +61,15 @@ export default function SubscriptionStatsPage() {
             <div className="bg-black rounded-[32px] p-8 md:p-12 text-white relative overflow-hidden">
                 <div className="relative z-10 max-w-2xl">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-400 text-xs font-black uppercase tracking-widest mb-6">
-                        <ShieldCheck size={14} /> Active Subscription
+                        <ShieldCheck size={14} /> {isChina ? 'Market Presence' : 'Active Subscription'}
                     </div>
                     <h1 className="text-3xl md:text-5xl font-black mb-4 capitalize">
-                        {planName} <span className="text-[#f45c03]">Member</span>
+                        {planName} <span className="text-[#f45c03]">{isChina && currentTier === 'free' ? 'Vendor' : 'Member'}</span>
                     </h1>
                     <p className="text-zinc-400 font-bold text-lg mb-8">
-                        Your vendor account is active and optimized for high-conversion visibility.
+                        {isChina && currentTier === 'free' 
+                          ? 'Purchase a professional plan to optimize your listings for maximum conversion.'
+                          : 'Your vendor account is active and optimized for high-conversion visibility.'}
                     </p>
                     
                     {expiryDate && (

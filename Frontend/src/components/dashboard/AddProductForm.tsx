@@ -37,6 +37,7 @@ export default function AddProductForm() {
     const [categories, setCategories] = useState<CategoryItem[]>([]);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [isNigerian, setIsNigerian] = useState(false);
+    const [isChina, setIsChina] = useState(false);
     const [profileLoaded, setProfileLoaded] = useState(false);
     const { showVendorTasks, showAlert } = useAlert();
 
@@ -98,6 +99,7 @@ export default function AddProductForm() {
                     }
 
                     setIsNigerian(finalIsNig);
+                    setIsChina(finalIsChina);
                     setProfile(res.data);
 
                     const defaultCurrency = finalIsNig ? "NGN" : finalIsChina ? "CNY" : "USD";
@@ -172,7 +174,11 @@ export default function AddProductForm() {
                             </div>
                             <div>
                                 <p className="text-xs font-black text-zinc-400 uppercase tracking-wider">Current Plan</p>
-                                <p className="text-black font-black uppercase">{profile.subscription_plan || 'Free'}</p>
+                                <p className="text-black font-black uppercase">
+                                    {isChina 
+                                        ? (profile.subscription_plan === 'free' || !profile.subscription_plan ? 'Plan Required' : profile.subscription_plan === 'basic' ? 'Featured Tier' : profile.subscription_plan === 'star' ? 'Premium Tier' : profile.subscription_plan)
+                                        : (profile.subscription_plan || 'Free')}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -206,6 +212,7 @@ export default function AddProductForm() {
                         updateData={updateFormData}
                         onBack={prevStep}
                         isNigerian={isNigerian}
+                        isChina={isChina}
                         profile={profile}
                         showVendorTasks={showVendorTasks}
                     />
@@ -580,11 +587,12 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTasks }: {
+function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, showVendorTasks }: {
     data: any,
     updateData: (d: any) => void,
     onBack: () => void,
     isNigerian?: boolean,
+    isChina?: boolean,
     profile: any,
     showVendorTasks: () => void
 }) {
@@ -664,7 +672,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
         }
     }
 
-    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
+    // Handled by props now
 
     const getExplanation = (tier: string) => {
         if (tier === 'basic') return { title: "Featured Boost", msg: "Featured ads appear in the 'Trending' section and have 5x more visibility than standard ads.", plan: "Featured Tier" };
@@ -748,14 +756,14 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                 <p className="text-zinc-500 font-bold text-sm mb-6">Choose how you want this ad to appear on the platform.</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {isChina && profile?.subscription_plan === 'free' && (
+                    {(isChina && (profile?.subscription_plan === 'free' || !profile?.subscription_plan)) && (
                         <div className="md:col-span-2 lg:col-span-4">
                             <div className="p-10 bg-black rounded-[32px] text-center border-4 border-[#f45c03] shadow-2xl">
                                 <Info size={56} className="text-[#f45c03] mx-auto mb-6" />
                                 <h3 className="text-3xl font-black text-white mb-3">Subscription Required</h3>
-                                <p className="text-zinc-400 font-bold mb-8 text-lg">Vendors in China must have an active Featured or Premium Choice plan to list products. The Standard (Free) tier is not available in your region.</p>
+                                <p className="text-zinc-400 font-bold mb-8 text-lg">In order to add product you have to purchase a plan for better experience and visibility</p>
                                 <Link href="/pricing" className="inline-block bg-[#f45c03] text-white px-12 py-5 rounded-2xl font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-orange-500/20">
-                                    Subscribe To A Plan
+                                    View Pricing Plans
                                 </Link>
                             </div>
                         </div>
@@ -868,14 +876,7 @@ function StepThree({ data, updateData, onBack, isNigerian, profile, showVendorTa
                         </p>
                     </div>
                 )}
-                {isChina && !profile?.subscription_plan && (
-                    <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3">
-                        <Info size={18} className="text-red-600" />
-                        <p className="text-xs font-bold text-red-800">
-                            Chinese vendors must have an active <Link href="/pricing" className="underline font-black">Featured or Premium</Link> plan to post.
-                        </p>
-                    </div>
-                )}
+                {/* Redundant bar removed as per requirement */}
             </div>
 
             <div className="flex flex-col gap-4 pt-8">

@@ -409,7 +409,7 @@ function SignupContent() {
 
               {role === "vendor" && (
                 <div className="mt-6 space-y-3">
-                  {["Free store setup", "Reach millions of buyers", "Secure & fast payouts"].map((f) => (
+                  {["Professional store setup", "Reach millions of buyers", "Secure & fast payouts"].map((f) => (
                     <div key={f} className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">

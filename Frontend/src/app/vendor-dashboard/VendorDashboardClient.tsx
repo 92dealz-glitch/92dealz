@@ -25,6 +25,7 @@ export default function VendorDashboardPage() {
     const [stats, setStats] = useState<{ads:number; views:number; sold:number; msgs:number; unread:number}>({ads:0, views:0, sold:0, msgs:0, unread:0});
     const [recentAds, setRecentAds] = useState<any[]>([]);
     const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         (async () => {
@@ -42,9 +43,22 @@ export default function VendorDashboardPage() {
                 if (profileRes.success) {
                     setProfile(profileRes.data);
                 }
-            } catch {}
+            } catch {} finally {
+                setLoading(false);
+            }
         })();
     }, []);
+
+    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="mb-8 lg:mb-12">
@@ -68,14 +82,21 @@ export default function VendorDashboardPage() {
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
                                         <h2 className="text-2xl font-black text-black">
-                                            {profile.subscription_plan ? profile.subscription_plan.charAt(0).toUpperCase() + profile.subscription_plan.slice(1) : 'Free'} Plan
+                                            {isChina 
+                                              ? (profile.subscription_plan === 'star' ? 'Premium Tier' : profile.subscription_plan === 'basic' ? 'Featured Tier' : 'No Active Plan')
+                                              : (profile.subscription_plan ? profile.subscription_plan.charAt(0).toUpperCase() + profile.subscription_plan.slice(1) : 'Free') + ' Plan'
+                                            }
                                         </h2>
-                                        {profile.subscription_plan !== 'free' && (
+                                        {(profile.subscription_plan && profile.subscription_plan !== 'free') && (
                                             <span className="bg-emerald-100 text-emerald-600 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Active</span>
                                         )}
                                     </div>
                                     <p className="text-zinc-500 font-bold text-sm">
-                                        {profile.subscription_plan === 'star' ? '20 Featured & Top Ranking Ads' : profile.subscription_plan === 'basic' ? '10 Featured Ads' : '1 Free Ad per month'}
+                                        {profile.subscription_plan === 'star' 
+                                          ? (isChina ? '20 Premium Market Slots' : '20 Featured & Top Ranking Ads') 
+                                          : profile.subscription_plan === 'basic' 
+                                            ? (isChina ? '10 Featured Market Slots' : '10 Featured Ads') 
+                                            : (isChina ? 'Purchase a plan to start listing' : '1 Free Ad per month')}
                                     </p>
                                     {profile.basic_plan_expires_at && (
                                         <p className="text-[11px] text-zinc-400 mt-2 font-bold uppercase tracking-wider">Basic Expires: {new Date(profile.basic_plan_expires_at).toLocaleDateString()}</p>
@@ -86,21 +107,23 @@ export default function VendorDashboardPage() {
                                 </div>
                             </div>
 
-                            <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl">
+                            <div className={`flex-1 grid grid-cols-1 ${isChina ? 'sm:grid-cols-2' : 'sm:grid-cols-3'} gap-6 max-w-3xl`}>
+                                {!isChina && (
+                                    <UsageMeter 
+                                        label="Standard (Free)" 
+                                        current={profile.subscription_stats?.free || 0} 
+                                        limit={profile.subscription_stats?.limits?.free || 1} 
+                                        color="bg-zinc-500"
+                                    />
+                                )}
                                 <UsageMeter 
-                                    label="Standard (Free)" 
-                                    current={profile.subscription_stats?.free || 0} 
-                                    limit={profile.subscription_stats?.limits?.free || 1} 
-                                    color="bg-zinc-500"
-                                />
-                                <UsageMeter 
-                                    label="Featured (Basic)" 
+                                    label={isChina ? "Featured Tier" : "Featured (Basic)"} 
                                     current={profile.subscription_stats?.basic || 0} 
                                     limit={profile.subscription_stats?.limits?.basic || 10} 
                                     color="bg-orange-500"
                                 />
                                 <UsageMeter 
-                                    label="Top Ads (Star)" 
+                                    label={isChina ? "Premium Tier" : "Top Ads (Star)"} 
                                     current={profile.subscription_stats?.star || 0} 
                                     limit={profile.subscription_stats?.limits?.star || 20} 
                                     color="bg-yellow-500"

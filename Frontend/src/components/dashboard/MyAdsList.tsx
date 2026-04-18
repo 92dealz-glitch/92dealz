@@ -126,19 +126,25 @@ export default function MyAdsList() {
                 </div>
             )}
 
-            {profile?.subscription_plan === 'free' && (
+            {(profile?.subscription_plan === 'free' || (!profile?.subscription_plan && isChina)) && (
                 <div className="mb-8 p-6 bg-black rounded-[24px] border-l-8 border-[#f45c03] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-[#f45c03]/10 rounded-full flex items-center justify-center shrink-0">
                             <Info size={24} className="text-[#f45c03]" />
                         </div>
                         <div>
-                            <p className="text-white font-black text-lg">Action Required: Plan Expired</p>
-                            <p className="text-zinc-400 font-bold text-sm">All your products are currently hidden from the public. Subscribe to a plan to bring them back online.</p>
+                            <p className="text-white font-black text-lg">
+                                {isChina ? "Subscription Required" : "Action Required: Plan Expired"}
+                            </p>
+                            <p className="text-zinc-400 font-bold text-sm">
+                                {isChina 
+                                  ? "In order to add product you have to purchase a plan for better experience and visibility" 
+                                  : "All your products are currently hidden from the public. Subscribe to a plan to bring them back online."}
+                            </p>
                         </div>
                     </div>
                     <Link href="/pricing" className="bg-[#f45c03] text-white px-8 py-3 rounded-xl font-black text-sm hover:scale-105 transition-transform shadow-lg shadow-orange-500/20 whitespace-nowrap">
-                        Choose A Plan
+                        {isChina ? "View Pricing" : "Choose A Plan"}
                     </Link>
                 </div>
             )}
@@ -215,7 +221,7 @@ export default function MyAdsList() {
                                     ) : (
                                         <>
                                             <CheckCircle size={12} className="fill-current opacity-50" />
-                                            Standard Plan
+                                            {isChina ? "No Active Plan" : "Standard Plan"}
                                         </>
                                     )}
                                 </span>
