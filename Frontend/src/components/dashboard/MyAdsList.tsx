@@ -12,7 +12,7 @@ type Ad = { id: number; title: string; description?: string | null; price: numbe
 
 export default function MyAdsList() {
     const { showAlert, showConfirm, showPrompt } = useAlert();
-    const [activeTab, setActiveTab] = useState<"published" | "pending" | "draft" | "closed" | "rejected">("published");
+    const [activeTab, setActiveTab] = useState<"published" | "pending" | "draft" | "closed" | "rejected" | "expired">("published");
     const [items, setItems] = useState<Ad[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -31,7 +31,8 @@ export default function MyAdsList() {
                 pending: "pending",
                 draft: "draft",
                 closed: "sold",
-                rejected: "rejected"
+                rejected: "rejected",
+                expired: "expired"
             };
             const res = await listMyAds(statusMap[activeTab]);
             setItems(res.data || []);
@@ -66,12 +67,12 @@ export default function MyAdsList() {
 
             {/* Tabs */}
             <div className="flex items-center gap-8 border-b border-zinc-100 mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                {[
                     { id: "published", label: "Published", icon: CheckCircle },
                     { id: "pending", label: "Pending", icon: Edit2 },
                     { id: "rejected", label: "Rejected", icon: Trash2 },
                     { id: "draft", label: "Draft", icon: Edit2 },
                     { id: "closed", label: "Closed", icon: CheckCircle },
+                    { id: "expired", label: "Expired", icon: Timer },
                 ].map((tab) => (
                     <button
                         key={tab.id}
@@ -296,7 +297,7 @@ export default function MyAdsList() {
                                     <Trash2 size={14} />
                                     Delete
                                 </button>
-                                {ad.status === 'active' && (
+                                {ad.status === 'active' && new Date(ad.active_until || 0) > new Date() && (
                                     <button
                                         onClick={() => {
                                             setPromotingId(ad.id);
@@ -305,6 +306,24 @@ export default function MyAdsList() {
                                         className="flex items-center gap-2 bg-gradient-to-r from-[#f45c03] to-orange-600 text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg hover:shadow-orange-100 active:scale-95">
                                         <Plus size={16} />
                                         Boost Ad
+                                    </button>
+                                )}
+                                {ad.status === 'sold' && (
+                                    <button
+                                        onClick={async () => {
+                                            if (!await showConfirm("Re-activating this ad will move it back to your published or expired list. Proceed?", "Activate Listing")) return;
+                                            try {
+                                                const { activateAd } = await import("@/services/ads.service");
+                                                await activateAd(ad.id);
+                                                showAlert("Product re-activated successfully!", "Success");
+                                                load();
+                                            } catch (e: any) {
+                                                showAlert(e.message || "Failed to activate ad");
+                                            }
+                                        }}
+                                        className="flex items-center gap-2 bg-[#10B981] text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg active:scale-95">
+                                        <CheckCircle size={16} />
+                                        Activate Again
                                     </button>
                                 )}
                                 {(ad.active_until && new Date(ad.active_until) < new Date()) && (

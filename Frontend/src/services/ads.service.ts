@@ -137,6 +137,10 @@ export async function markAdSold(id: number) {
   return apiFetch<{ success: boolean; data: any }>(`${BASE}/${id}/sold`, { method: "PATCH" }, true);
 }
 
+export async function activateAd(id: number) {
+  return apiFetch<{ success: boolean; data: any }>(`${BASE}/${id}/activate`, { method: "PATCH" }, true);
+}
+
 export async function updateAdVisibility(id: number, plan_type: "free" | "basic" | "star" | "premium") {
   return apiFetch<{ success: boolean; data: any }>(`${BASE}/${id}/visibility`, { 
     method: "PATCH", 

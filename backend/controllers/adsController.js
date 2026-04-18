@@ -21,11 +21,17 @@ exports.listMine = async (req, res, next) => {
     
     if (status) {
       if (status === 'closed') status = 'sold'; // Handle frontend 'closed' to backend 'sold' mapping
-      statusFilter = `AND d.status = $2`;
-      if (status === 'active') {
-        statusFilter += ` AND d.active_until > NOW()`;
+      
+      if (status === 'expired') {
+        // Expired logic: status is active but time is up
+        statusFilter = `AND d.status = 'active' AND d.active_until < NOW()`;
+      } else {
+        statusFilter = `AND d.status = $2`;
+        if (status === 'active') {
+          statusFilter += ` AND d.active_until > NOW()`;
+        }
+        bind.push(status);
       }
-      bind.push(status);
     }
 
     const [rows] = await sequelize.query(
@@ -74,6 +80,23 @@ exports.markSold = async (req, res, next) => {
     }
     const [rows] = await sequelize.query(sql, { bind: params });
     if (!rows.length) return res.status(404).json({ success: false, message: 'Ad not found or not owned by user' });
+    return res.json({ success: true, data: { id: rows[0].id } });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.unmarkSold = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const userId = req.user && req.user.id;
+    if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
+
+    const sql = `UPDATE deals SET status = 'active', "is_locked" = false, "updatedAt" = NOW() 
+                 WHERE id = $1 AND "userId" = $2 AND status = 'sold' RETURNING id`;
+    const [rows] = await sequelize.query(sql, { bind: [id, userId] });
+    
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Ad not found, not owned by user, or not currently marked as sold.' });
     return res.json({ success: true, data: { id: rows[0].id } });
   } catch (err) {
     return next(err);
