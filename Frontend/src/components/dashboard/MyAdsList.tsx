@@ -36,7 +36,7 @@ export default function MyAdsList() {
             };
             const res = await listMyAds(statusMap[activeTab]);
             setItems(res.data || []);
-            
+
             const profRes = await getProfile();
             if (profRes.success) {
                 setProfile(profRes.data);
@@ -67,6 +67,7 @@ export default function MyAdsList() {
 
             {/* Tabs */}
             <div className="flex items-center gap-8 border-b border-zinc-100 mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                {[
                     { id: "published", label: "Published", icon: CheckCircle },
                     { id: "pending", label: "Pending", icon: Edit2 },
                     { id: "rejected", label: "Rejected", icon: Trash2 },
@@ -78,8 +79,8 @@ export default function MyAdsList() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`flex items-center gap-2 pb-4 font-bold text-[15px] transition-all relative ${activeTab === tab.id
-                                ? "text-[#f45c03]"
-                                : "text-zinc-500 hover:text-black"
+                            ? "text-[#f45c03]"
+                            : "text-zinc-500 hover:text-black"
                             }`}
                     >
                         <tab.icon size={18} className={activeTab === tab.id ? "text-[#f45c03]" : "text-zinc-400"} />
@@ -115,10 +116,10 @@ export default function MyAdsList() {
                         </div>
                     )}
                     {(!isChina && profile?.extra_slots_purchased && profile.extra_slots_purchased > 0) && (
-                         <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px] border-dashed">
-                             <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Starter Add-ons</span>
-                             <span className="text-lg font-black text-emerald-600">+{profile.extra_slots_purchased} Purchased</span>
-                         </div>
+                        <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px] border-dashed">
+                            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Starter Add-ons</span>
+                            <span className="text-lg font-black text-emerald-600">+{profile.extra_slots_purchased} Purchased</span>
+                        </div>
                     )}
                 </div>
             )}
@@ -156,7 +157,7 @@ export default function MyAdsList() {
                                 <div>
                                     <h3 className="text-black font-black text-lg mb-1">{ad.title}</h3>
                                     <div className="text-[#f45c03] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
-                                     <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
+                                    <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
                                         <span className="bg-zinc-100 px-2 py-0.5 rounded text-xs">{new Date(ad.createdAt || Date.now()).toLocaleDateString()}</span>
                                         {ad.active_until && (
                                             <span className={`flex items-center gap-1 text-xs font-black ${new Date(ad.active_until) < new Date() ? 'text-red-500' : 'text-emerald-600'}`}>
@@ -168,14 +169,13 @@ export default function MyAdsList() {
                                     </div>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${
-                                        ad.status === 'pending' ? 'bg-orange-500' : 
-                                        ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
-                                    }`}>
+                                    <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${ad.status === 'pending' ? 'bg-orange-500' :
+                                            ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
+                                        }`}>
                                         {ad.status || "active"}
                                     </span>
                                     {ad.active_until && new Date(ad.active_until) < new Date() && (
-                                        <button 
+                                        <button
                                             onClick={async () => {
                                                 try {
                                                     await updateAd(ad.id, { active_until: 'reset' } as any);
@@ -190,12 +190,11 @@ export default function MyAdsList() {
                                         </button>
                                     )}
                                 </div>
-                                <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${
-                                    ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' : 
-                                    ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' : 
-                                    ad.plan_type === 'premium' ? 'bg-purple-600 text-white shadow-purple-100 ring-2 ring-purple-100' :
-                                    'bg-zinc-200 text-zinc-600'
-                                }`}>
+                                <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' :
+                                        ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' :
+                                            ad.plan_type === 'premium' ? 'bg-purple-600 text-white shadow-purple-100 ring-2 ring-purple-100' :
+                                                'bg-zinc-200 text-zinc-600'
+                                    }`}>
                                     {ad.plan_type === 'star' ? (
                                         <>
                                             <Star size={12} className="fill-current" />
@@ -221,8 +220,8 @@ export default function MyAdsList() {
                             </div>
 
                             <div className="mt-2 flex gap-2">
-                                 {(ad.is_locked || ad.status === 'sold' || ad.is_contacted) && (
-                                    <span 
+                                {(ad.is_locked || ad.status === 'sold' || ad.is_contacted) && (
+                                    <span
                                         title="This ad is locked because it was recently contacted by a buyer or marked as sold. This prevents changing product details on a premium slot that has already generated leads."
                                         className="cursor-help bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded text-[10px] font-black uppercase flex items-center gap-1"
                                     >
@@ -231,7 +230,7 @@ export default function MyAdsList() {
                                     </span>
                                 )}
                                 {(ad.active_until && new Date(ad.active_until) < new Date()) && (
-                                    <span 
+                                    <span
                                         title="This listing has reached its 30-day lifecycle and is no longer visible to the public. You can renew it to reactivate it for another 30 days."
                                         className="cursor-help bg-zinc-100 text-zinc-500 border border-zinc-200 px-2 py-0.5 rounded text-[10px] font-black uppercase"
                                     >
@@ -282,9 +281,9 @@ export default function MyAdsList() {
                                 <button
                                     onClick={async () => {
                                         const isStrictLocked = ad.is_contacted || ad.status === 'sold' || ad.is_locked;
-                                        const promptMsg = isStrictLocked 
-                                          ? "This product has interacted with buyers and is permanently locked to prevent fraud. Deleting it will irrevocably close it and secure its slot. Proceed?" 
-                                          : "Are you sure you want to delete this ad? It will be permanently removed.";
+                                        const promptMsg = isStrictLocked
+                                            ? "This product has interacted with buyers and is permanently locked to prevent fraud. Deleting it will irrevocably close it and secure its slot. Proceed?"
+                                            : "Are you sure you want to delete this ad? It will be permanently removed.";
                                         if (!await showConfirm(promptMsg, "Confirm Deletion")) return;
                                         try {
                                             await deleteAd(ad.id);
@@ -359,7 +358,7 @@ export default function MyAdsList() {
                         >
                             <X size={24} />
                         </button>
-                        
+
                         <div className="mb-8">
                             <h3 className="text-3xl font-black text-black mb-2">Adjust Visibility</h3>
                             <p className="text-zinc-500 font-bold">Choose a visibility tier for your ad.</p>
@@ -371,7 +370,7 @@ export default function MyAdsList() {
                                         <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3">
                                             <Lock className="text-red-500" size={20} />
                                             <p className="text-xs font-bold text-red-700">
-                                                This product is <span className="font-black underline">locked</span> because it has generated leads or interest. 
+                                                This product is <span className="font-black underline">locked</span> because it has generated leads or interest.
                                                 Visibility cannot be changed to ensure consistency for interested buyers.
                                             </p>
                                         </div>
@@ -390,7 +389,7 @@ export default function MyAdsList() {
                                 return (
                                     <>
                                         {!isChina && (
-                                            <PromotionTierCard 
+                                            <PromotionTierCard
                                                 id="free"
                                                 title="Standard Tier"
                                                 perk="Standard Visibility"
@@ -410,7 +409,7 @@ export default function MyAdsList() {
                                                 }}
                                             />
                                         )}
-                                        <PromotionTierCard 
+                                        <PromotionTierCard
                                             id="basic"
                                             title={isChina ? "Featured Tier" : "Featured Boost"}
                                             perk={isChina ? "Priority Market Feed" : "Appears in Trending Ads"}
@@ -429,7 +428,7 @@ export default function MyAdsList() {
                                                 }
                                             }}
                                         />
-                                        <PromotionTierCard 
+                                        <PromotionTierCard
                                             id="star"
                                             title={isChina ? "Premium Tier" : "Star Premium"}
                                             perk={isChina ? "Maximum Export Visibility" : "Hot Deals & Featured Section"}
@@ -449,7 +448,7 @@ export default function MyAdsList() {
                                             }}
                                         />
                                         {!isChina && (
-                                            <PromotionTierCard 
+                                            <PromotionTierCard
                                                 id="premium"
                                                 title="Ultimate Tier"
                                                 perk="Top Rank + VIP Manager"
@@ -503,10 +502,9 @@ export default function MyAdsList() {
 
 function PromotionTierCard({ title, perk, disabled, slots, onSelect, id, isActive }: { title: string, perk: string, disabled: boolean, slots: string, onSelect: () => void, id: string, isActive?: boolean }) {
     return (
-        <div className={`p-6 rounded-[24px] border-2 flex flex-col items-start gap-4 transition-all ${
-            isActive ? 'border-orange-500 bg-orange-50/50 ring-4 ring-orange-100' :
-            disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-orange-500 hover:bg-orange-50/30'
-        }`}>
+        <div className={`p-6 rounded-[24px] border-2 flex flex-col items-start gap-4 transition-all ${isActive ? 'border-orange-500 bg-orange-50/50 ring-4 ring-orange-100' :
+                disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-orange-500 hover:bg-orange-50/30'
+            }`}>
             <div className={`p-3 rounded-2xl ${id === 'star' ? 'bg-yellow-100 text-yellow-600' : 'bg-orange-100 text-orange-600'}`}>
                 {id === 'star' ? <Star size={24} /> : <Zap size={24} />}
             </div>
@@ -527,7 +525,7 @@ function PromotionTierCard({ title, perk, disabled, slots, onSelect, id, isActiv
                             <span>{slots}</span>
                         </div>
                     </div>
-                    <button 
+                    <button
                         onClick={onSelect}
                         className="w-full mt-4 bg-black text-white py-3 rounded-xl font-black text-sm hover:bg-zinc-800 active:scale-95 transition-all"
                     >
