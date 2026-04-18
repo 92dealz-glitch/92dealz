@@ -51,18 +51,22 @@ const Deal = sequelize.define('Deal', {
   condition: {
     type: DataTypes.STRING,
     allowNull: true,
+    validate: { len: [0, 50] }
   },
   brand: {
     type: DataTypes.STRING,
     allowNull: true,
+    validate: { len: [0, 50] }
   },
   model: {
     type: DataTypes.STRING,
     allowNull: true,
+    validate: { len: [0, 100] }
   },
   color: {
     type: DataTypes.STRING,
     allowNull: true,
+    validate: { len: [0, 50] }
   },
   negotiable: {
     type: DataTypes.STRING,

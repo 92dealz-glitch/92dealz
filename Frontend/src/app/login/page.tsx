@@ -147,6 +147,7 @@ function LoginContent() {
                 onChange={handleChange}
                 placeholder="Enter your phone number or email"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition placeholder-gray-400"
+                maxLength={100}
               />
             </div>
 
@@ -164,6 +165,7 @@ function LoginContent() {
                   onChange={handleChange}
                   placeholder="Enter your password"
                   className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 pr-12 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition placeholder-gray-400"
+                  maxLength={100}
                 />
                 <button
                   type="button"
@@ -254,6 +256,7 @@ function LoginContent() {
                   onChange={handleChange}
                   placeholder="Enter your phone number or email"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-orange-300 transition"
+                  maxLength={100}
                 />
               </div>
 
@@ -270,6 +273,7 @@ function LoginContent() {
                     onChange={handleChange}
                     placeholder="Enter your password"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-orange-300 transition"
+                    maxLength={100}
                   />
                   <button
                     type="button"

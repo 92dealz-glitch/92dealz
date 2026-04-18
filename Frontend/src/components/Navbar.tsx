@@ -259,6 +259,7 @@ export default function Navbar() {
                         setTimeout(() => setShowSuggestions(false), 200);
                       }}
                       className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
+                      maxLength={100}
                     />
                     {showSuggestions && suggestions.length > 0 && (
                       <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-md bg-white border border-zinc-200 shadow-xl z-[100] mt-1 py-2 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
@@ -476,6 +477,7 @@ export default function Navbar() {
                     setTimeout(() => setShowMSuggestions(false), 200);
                   }}
                   className="w-full px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full min-w-0"
+                  maxLength={100}
                 />
                 {showMSuggestions && mSuggestions.length > 0 && (
                   <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-md z-[100] mt-1 py-1 overflow-hidden">

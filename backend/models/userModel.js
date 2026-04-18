@@ -70,14 +70,23 @@ const User = sequelize.define('User', {
   businessName: {
     type: DataTypes.STRING,
     allowNull: true,
+    validate: {
+      len: { args: [0, 100], msg: 'Business name must be at most 100 characters' }
+    },
   },
   businessCategory: {
     type: DataTypes.STRING,
     allowNull: true,
+    validate: {
+      len: { args: [0, 100], msg: 'Business category must be at most 100 characters' }
+    },
   },
   businessAddress: {
     type: DataTypes.TEXT,
     allowNull: true,
+    validate: {
+      len: { args: [0, 500], msg: 'Business address must be at most 500 characters' }
+    },
   },
   about: {
     type: DataTypes.TEXT,

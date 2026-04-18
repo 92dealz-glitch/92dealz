@@ -6,6 +6,7 @@ import Link from 'next/link'
 import SimilarItems from '@/components/SimilarItems'
 import Button from '@/components/ui/Button'
 import { API_BASE, apiFetch } from "@/services/apiClient"
+import { Metadata } from "next";
 import { logAdView, logContactView } from "@/services/analytics.service"
 import { Loader2, CheckCircle2, AlertCircle, Shield, Package, Share2, Copy, Check, Maximize2, X, Heart, Timer, Coins, Eye, ChevronLeft, ChevronDown, Phone, MessageCircle, User, Facebook, Twitter, Instagram, MoreVertical, ThumbsUp, ThumbsDown } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -22,6 +23,30 @@ import { useCurrency } from "@/context/CurrencyContext";
 
 type Props = {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || API_BASE}/ads/${id}`);
+    const data = await res.json();
+    if (data?.success) {
+      const ad = data.data;
+      return {
+        title: ad.title,
+        description: ad.description?.slice(0, 160) || `Buy ${ad.title} on 234 Deals. Best prices for ${ad.subcategory || "items"} in Nigeria.`,
+        openGraph: {
+          title: ad.title,
+          description: ad.description?.slice(0, 160),
+          images: [ad.image_url || "/234dealslogo.svg"],
+          type: "article",
+        },
+      };
+    }
+  } catch (e) {
+    console.error("Metadata generation failed", e);
+  }
+  return { title: "Product Details | 234 Deals" };
 }
 
 const SpecsGridContent = ({ product }: { product: any }) => (
@@ -412,6 +437,30 @@ export default function ProductPage({ params }: Props) {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": product.title,
+            "image": sampleImages,
+            "description": product.desc,
+            "sku": product.id,
+            "offers": {
+              "@type": "Offer",
+              "url": typeof window !== "undefined" ? window.location.href : "",
+              "priceCurrency": "NGN",
+              "price": product.priceValue,
+              "availability": product.status === 'active' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              "seller": {
+                "@type": "Organization",
+                "name": product.sellerName
+              }
+            }
+          })
+        }}
+      />
       <Navbar />
       <main className="max-w-[1200px] mx-auto mt-6 px-4 sm:px-6"> 
         {/* Banner for Moderators/Owners */}

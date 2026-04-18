@@ -43,21 +43,21 @@ const BaseFields = ({ role, method, formData, handleChange, showPassword, setSho
       <label className={labelCls}>{role === "vendor" ? "Owner / Contact Name" : "Full Name"}</label>
       <input name="name" required value={formData.name} onChange={handleChange}
         placeholder={role === "vendor" ? "Your full name" : "Enter your full name"}
-        className={inputCls} />
+        className={inputCls} maxLength={100} />
     </div>
     <div>
       <label className={labelCls}>{method === "phone" ? "Phone Number" : "Email Address"}</label>
       <input name="contact" required type={method === "email" ? "email" : "text"}
         value={formData.contact} onChange={handleChange}
         placeholder={method === "phone" ? "e.g. +2348012345678" : "you@example.com"}
-        className={inputCls} />
+        className={inputCls} maxLength={100} />
     </div>
     <div>
       <label className={labelCls}>Password</label>
       <div className="relative">
         <input name="password" required type={showPassword ? "text" : "password"}
           value={formData.password} onChange={handleChange}
-          placeholder="Create a password" className={`${inputCls} pr-11`} />
+          placeholder="Create a password" className={`${inputCls} pr-11`} maxLength={100} />
         <EyeIcon showPassword={showPassword} setShowPassword={setShowPassword} />
       </div>
     </div>
