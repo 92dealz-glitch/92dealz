@@ -18,6 +18,15 @@ export default function MyAdsList() {
     const [error, setError] = useState<string | null>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [promotingId, setPromotingId] = useState<number | null>(null);
+
+    const STATUS_TABS = [
+        { id: "published", label: "Published", icon: CheckCircle },
+        { id: "pending", label: "Pending", icon: Edit2 },
+        { id: "rejected", label: "Rejected", icon: Trash2 },
+        { id: "draft", label: "Draft", icon: Edit2 },
+        { id: "closed", label: "Closed", icon: CheckCircle },
+        { id: "expired", label: "Expired", icon: Timer },
+    ];
     const [isPromoteModalOpen, setIsPromoteModalOpen] = useState(false);
     const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
 
@@ -67,14 +76,7 @@ export default function MyAdsList() {
 
             {/* Tabs */}
             <div className="flex items-center gap-8 border-b border-zinc-100 mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                {[
-                    { id: "published", label: "Published", icon: CheckCircle },
-                    { id: "pending", label: "Pending", icon: Edit2 },
-                    { id: "rejected", label: "Rejected", icon: Trash2 },
-                    { id: "draft", label: "Draft", icon: Edit2 },
-                    { id: "closed", label: "Closed", icon: CheckCircle },
-                    { id: "expired", label: "Expired", icon: Timer },
-                ].map((tab) => (
+                {STATUS_TABS.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
@@ -170,7 +172,7 @@ export default function MyAdsList() {
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
                                     <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${ad.status === 'pending' ? 'bg-orange-500' :
-                                            ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
+                                        ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
                                         }`}>
                                         {ad.status || "active"}
                                     </span>
@@ -189,11 +191,11 @@ export default function MyAdsList() {
                                             Renew Ad
                                         </button>
                                     )}
-                                </div>
+                                    is                                </div>
                                 <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' :
-                                        ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' :
-                                            ad.plan_type === 'premium' ? 'bg-purple-600 text-white shadow-purple-100 ring-2 ring-purple-100' :
-                                                'bg-zinc-200 text-zinc-600'
+                                    ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' :
+                                        ad.plan_type === 'premium' ? 'bg-purple-600 text-white shadow-purple-100 ring-2 ring-purple-100' :
+                                            'bg-zinc-200 text-zinc-600'
                                     }`}>
                                     {ad.plan_type === 'star' ? (
                                         <>
@@ -503,7 +505,7 @@ export default function MyAdsList() {
 function PromotionTierCard({ title, perk, disabled, slots, onSelect, id, isActive }: { title: string, perk: string, disabled: boolean, slots: string, onSelect: () => void, id: string, isActive?: boolean }) {
     return (
         <div className={`p-6 rounded-[24px] border-2 flex flex-col items-start gap-4 transition-all ${isActive ? 'border-orange-500 bg-orange-50/50 ring-4 ring-orange-100' :
-                disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-orange-500 hover:bg-orange-50/30'
+            disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-orange-500 hover:bg-orange-50/30'
             }`}>
             <div className={`p-3 rounded-2xl ${id === 'star' ? 'bg-yellow-100 text-yellow-600' : 'bg-orange-100 text-orange-600'}`}>
                 {id === 'star' ? <Star size={24} /> : <Zap size={24} />}

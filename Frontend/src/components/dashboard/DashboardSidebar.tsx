@@ -63,6 +63,13 @@ export default function DashboardSidebar() {
         return it.id === "messages" ? { ...it, badge: unread || undefined } : it;
     });
 
+    const settingsSubmenu = [
+        { label: "Personal details", href: "/vendor-dashboard/settings/personal-details" },
+        { label: "Verification", href: "/vendor-dashboard/settings/verification" },
+        { label: "Change phone number", href: "/vendor-dashboard/settings/change-phone-number" },
+        { label: "Change password", href: "/vendor-dashboard/settings/change-password" },
+    ];
+
     return (
         <div className="w-full bg-white rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-zinc-200 p-2 py-4">
             <ul className="space-y-1">
@@ -99,12 +106,7 @@ export default function DashboardSidebar() {
                             {/* Submenu for Settings (Conditional rendering based on design 4, 10-13) */}
                             {item.id === "settings" && pathname.startsWith("/vendor-dashboard/settings") && (
                                 <ul className="mt-2 ml-4 space-y-1 border-l-2 border-zinc-100 pl-4">
-                                    {[
-                                        { label: "Personal details", href: "/vendor-dashboard/settings/personal-details" },
-                                        { label: "Verification", href: "/vendor-dashboard/settings/verification" },
-                                        { label: "Change phone number", href: "/vendor-dashboard/settings/change-phone-number" },
-                                        { label: "Change password", href: "/vendor-dashboard/settings/change-password" },
-                                    ].map((subItem) => (
+                                    {settingsSubmenu.map((subItem) => (
                                         <li key={subItem.href}>
                                             <Link
                                                 href={subItem.href}

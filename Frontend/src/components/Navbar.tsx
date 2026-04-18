@@ -625,14 +625,19 @@ export default function Navbar() {
               )}
 
               <div className="divide-y divide-zinc-100">
-                {[
-                  { icon: Bell, label: "Notifications", path: "/notifications", authRequired: true },
-                  { icon: Mail, label: "Messages", path: "/messages", authRequired: true },
-                  { icon: Settings, label: "Account Settings", path: "/account-settings", authRequired: true },
-                  { icon: Heart, label: "Favorites", path: "/favorites", authRequired: true },
-                  { icon: HelpCircle, label: "Help & Support", path: "/contact", authRequired: false },
-                  { icon: Shield, label: "Safety Tips", path: "/safety-tips", authRequired: true },
-                ].filter(item => !item.authRequired || isLoggedIn).concat(
+                {(isLoggedIn 
+                  ? [
+                      { icon: Bell, label: "Notifications", path: "/notifications", authRequired: true },
+                      { icon: Mail, label: "Messages", path: "/messages", authRequired: true },
+                      { icon: Settings, label: "Account Settings", path: "/account-settings", authRequired: true },
+                      { icon: Heart, label: "Favorites", path: "/favorites", authRequired: true },
+                      { icon: HelpCircle, label: "Help & Support", path: "/contact", authRequired: false },
+                      { icon: Shield, label: "Safety Tips", path: "/safety-tips", authRequired: true },
+                    ]
+                  : [
+                      { icon: HelpCircle, label: "Help & Support", path: "/contact", authRequired: false },
+                    ]
+                ).concat(
                   hasPendingTasks && isLoggedIn
                   ? [{ icon: ClipboardList as any, label: "Tasks", path: "#" } as any] 
                   : []

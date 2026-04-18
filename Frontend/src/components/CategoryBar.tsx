@@ -101,6 +101,11 @@ export default function CategoryBar() {
   const firstRow = [...firstRowRaw, ...firstRowRaw];
   const secondRow = [...secondRowRaw, ...secondRowRaw];
 
+  const rows = [
+    { items: firstRow, ref: scrollRef1, label: "fwd" },
+    { items: secondRow, ref: scrollRef2, label: "bwd" },
+  ];
+
   return (
     <div className="lg:hidden px-4 py-4 bg-white overflow-hidden">
       {/* Title */}
@@ -110,10 +115,7 @@ export default function CategoryBar() {
 
       {/* Rows Container */}
       <div className="flex flex-col gap-4">
-        {[
-          { items: firstRow, ref: scrollRef1, label: 'fwd' },
-          { items: secondRow, ref: scrollRef2, label: 'bwd' }
-        ].map((row, idx) => (
+        {rows.map((row, idx) => (
           <div 
             key={idx} 
             ref={row.ref}
