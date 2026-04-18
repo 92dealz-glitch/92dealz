@@ -28,7 +28,8 @@ export default function MyAdsList() {
         { id: "expired", label: "Expired", icon: Timer },
     ];
     const [isPromoteModalOpen, setIsPromoteModalOpen] = useState(false);
-    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
+    const phone = profile?.phone || "";
+    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN' || phone.startsWith('+86') || phone.startsWith('86');
 
     async function load() {
         setLoading(true);

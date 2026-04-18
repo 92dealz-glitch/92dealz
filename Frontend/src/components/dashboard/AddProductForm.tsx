@@ -77,15 +77,15 @@ export default function AddProductForm() {
             try {
                 const res = await getMyProfile();
                 if (res.success && res.data) {
-                    const phone = String(res.data.phone || "");
-                    const isPhoneNig = (res.data.is_phone_verified || false) && (phone.startsWith("+234") || phone.startsWith("234"));
-                    const isPhoneChina = (res.data.is_phone_verified || false) && (phone.startsWith("+86") || phone.startsWith("86"));
-
-                    let finalIsNig = isPhoneNig;
-                    let finalIsChina = isPhoneChina;
+                    const phoneStr = String(res.data.phone || "");
+                    const isNig = res.data.country_code === 'NG' || res.data.country_name === 'Nigeria' || phoneStr.startsWith('+234') || phoneStr.startsWith('234');
+                    const isCh = res.data.country_code === 'CN' || res.data.country_name === 'China' || phoneStr.startsWith('+86') || phoneStr.startsWith('86');
+                    setIsChina(isCh);
+                    let finalIsNig = isNig;
+                    let finalIsChina = isCh;
 
                     // Fallback to IP location if phone is not verified or not matching known regions
-                    if (!isPhoneNig && !isPhoneChina) {
+                    if (!isNig && !isCh) {
                         try {
                             const ipRes = await fetch("https://ipapi.co/json/").then(r => r.json());
                             if (ipRes && ipRes.country_code === "NG") {

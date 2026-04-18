@@ -30,7 +30,8 @@ export default function SubscriptionStatsPage() {
 
     const currentTier = profile.subscription_plan || 'free';
     const stats = profile.subscription_stats;
-    const isChina = profile.country_code === 'CN' || profile.country_name === 'China';
+    const phone = profile.phone || "";
+    const isChina = profile.country_code === 'CN' || profile.country_name === 'China' || phone.startsWith('+86') || phone.startsWith('86');
     
     const getPlanName = () => {
         if (isChina) {

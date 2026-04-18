@@ -49,7 +49,8 @@ export default function VendorDashboardPage() {
         })();
     }, []);
 
-    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN';
+    const phone = profile?.phone || "";
+    const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN' || phone.startsWith('+86') || phone.startsWith('86');
 
     if (loading) {
         return (
