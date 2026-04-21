@@ -841,16 +841,33 @@ export default function Navbar() {
 }
 
 export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isFullyVerified, verificationStatus, role } = useNavUserDetails();
+  const { isFullyVerified, verificationStatus, role, isPhoneVerified, isEmailVerified } = useNavUserDetails();
+  const { showPhoneVerification } = useAlert();
   const hasPendingTasks = !isFullyVerified || ((role === "vendor" || role === "Vendor") && verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
+  const handleTaskClick = () => {
+    if (role === "vendor" || role === "Vendor") {
+      showVendorTasks();
+    } else {
+      const missing = [];
+      if (!isPhoneVerified) missing.push("Phone Number");
+      if (!isEmailVerified) missing.push("Email Address");
+      
+      const message = missing.length > 1 
+        ? `To access all features and contact sellers, please verify your ${missing[0]} and ${missing[1]}. This helps maintain a trusted marketplace for everyone.`
+        : `To access all features and contact sellers, please verify your ${missing[0]}. This helps maintain a trusted marketplace for everyone.`;
+      
+      showPhoneVerification(message, "Verification Progress");
+    }
+  };
+
   return (
     <button
-      onClick={() => showVendorTasks()}
+      onClick={handleTaskClick}
       className="p-2 text-zinc-600 hover:text-orange-600 transition-colors relative group"
-      title="Vendor Tasks"
+      title="Verification Tasks"
     >
       <ClipboardList size={24} />
       <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-600 rounded-full border-2 border-white animate-pulse" />
@@ -864,13 +881,30 @@ export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
 }
 
 function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
-  const { isFullyVerified, verificationStatus, role } = useNavUserDetails();
+  const { isFullyVerified, verificationStatus, role, isPhoneVerified, isEmailVerified } = useNavUserDetails();
+  const { showPhoneVerification } = useAlert();
   const hasPendingTasks = !isFullyVerified || ((role === "vendor" || role === "Vendor") && verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
+  const handleTaskClick = () => {
+    if (role === "vendor" || role === "Vendor") {
+      showVendorTasks();
+    } else {
+      const missing = [];
+      if (!isPhoneVerified) missing.push("Phone Number");
+      if (!isEmailVerified) missing.push("Email Address");
+      
+      const message = missing.length > 1 
+        ? `To access all features and contact sellers, please verify your ${missing[0]} and ${missing[1]}.`
+        : `To access all features and contact sellers, please verify your ${missing[0]}.`;
+      
+      showPhoneVerification(message, "Verification Progress");
+    }
+  };
+
   return (
-    <button onClick={() => showVendorTasks()} className="flex flex-col items-center text-sm text-zinc-700 relative">
+    <button onClick={handleTaskClick} className="flex flex-col items-center text-sm text-zinc-700 relative">
       <ClipboardList size={22} className="text-orange-600" />
       <span className="text-[10px] mt-1 text-center font-bold text-orange-600">Tasks</span>
       <span className="absolute top-0 right-1/2 translate-x-3 w-1.5 h-1.5 bg-orange-600 rounded-full" />
