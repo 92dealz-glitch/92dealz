@@ -843,11 +843,12 @@ export default function Navbar() {
 export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
   const { isFullyVerified, verificationStatus, role, isPhoneVerified, isEmailVerified } = useNavUserDetails();
   const { showPhoneVerification } = useAlert();
+  const router = useRouter();
   const hasPendingTasks = !isFullyVerified || ((role === "vendor" || role === "Vendor") && verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
-  const handleTaskClick = () => {
+  const handleTaskClick = async () => {
     if (role === "vendor" || role === "Vendor") {
       showVendorTasks();
     } else {
@@ -859,7 +860,10 @@ export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
         ? `To access all features and contact sellers, please verify your ${missing[0]} and ${missing[1]}. This helps maintain a trusted marketplace for everyone.`
         : `To access all features and contact sellers, please verify your ${missing[0]}. This helps maintain a trusted marketplace for everyone.`;
       
-      showPhoneVerification(message, "Verification Progress");
+      const confirmed = await showPhoneVerification(message, "Verification Progress");
+      if (confirmed) {
+        router.push("/account-settings");
+      }
     }
   };
 
@@ -883,11 +887,12 @@ export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
 function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
   const { isFullyVerified, verificationStatus, role, isPhoneVerified, isEmailVerified } = useNavUserDetails();
   const { showPhoneVerification } = useAlert();
+  const router = useRouter();
   const hasPendingTasks = !isFullyVerified || ((role === "vendor" || role === "Vendor") && verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
-  const handleTaskClick = () => {
+  const handleTaskClick = async () => {
     if (role === "vendor" || role === "Vendor") {
       showVendorTasks();
     } else {
@@ -899,7 +904,10 @@ function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
         ? `To access all features and contact sellers, please verify your ${missing[0]} and ${missing[1]}.`
         : `To access all features and contact sellers, please verify your ${missing[0]}.`;
       
-      showPhoneVerification(message, "Verification Progress");
+      const confirmed = await showPhoneVerification(message, "Verification Progress");
+      if (confirmed) {
+        router.push("/account-settings");
+      }
     }
   };
 
