@@ -110,6 +110,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
   const fav = isFavorite(id);
   const router = useRouter();
   const [loading, setLoading] = useState(!initialProduct);
+  const [product, setProduct] = useState<any>(initialProduct || {
     id, title: '', desc: '', price: '', priceValue: 0, sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', category_id: null, isVerified: false, sellerAddress: ''
   });
 
@@ -182,6 +183,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
           country_code: seller.country_code,
           country_name: seller.country_name,
           sellerAddress: seller.businessAddress || seller.location || '',
+          status: d.status,
           rejection_reason: d.rejection_reason,
           category_id: d.category_id
         })
