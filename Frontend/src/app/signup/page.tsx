@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { registerUser, loginUser, registerInitiate, registerVerify } from "@/lib/api";
+import { registerUser, loginUser, registerInitiate, registerVerify, detectCountry } from "@/lib/api";
 import { getFallbackArray } from "@/data/categoriesData";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useAlert } from "@/context/AlertContext";
@@ -105,18 +105,25 @@ const VendorFields = ({ formData, handleChange, categories }: { formData: any, h
   </>
 );
 
-const RoleToggle = ({ role, setRole, setError }: { role: UserRole, setRole: (r: UserRole) => void, setError: (e: string) => void }) => (
+const RoleToggle = ({ role, setRole, setError, isRestricted }: { role: UserRole, setRole: (r: UserRole) => void, setError: (e: string) => void, isRestricted: boolean }) => (
   <div className="flex rounded-xl border border-gray-200 bg-gray-100 p-1 mb-6">
     {(["user", "vendor"] as UserRole[]).map((r) => (
       <button
         key={r}
         type="button"
-        onClick={() => { setRole(r); setError(""); }}
+        onClick={() => { 
+          if (r === "vendor" && isRestricted) {
+            setError("Vendor registration is not available in your country. You can still sign up as a user to purchase products.");
+            return;
+          }
+          setRole(r); 
+          setError(""); 
+        }}
         className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-all duration-200 ${
           role === r
             ? "bg-white text-orange-500 shadow-sm"
             : "text-gray-500 hover:text-gray-700"
-        }`}
+        } ${r === "vendor" && isRestricted ? "opacity-60 cursor-not-allowed" : ""}`}
       >
         {r === "user" ? (
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -180,6 +187,8 @@ function SignupContent() {
   const [otp, setOtp] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [detectedCountryCode, setDetectedCountryCode] = useState<string | null>(null);
+  const [isRestricted, setIsRestricted] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -193,6 +202,17 @@ function SignupContent() {
     getFallbackArray().then((res) => {
       if (mounted) setCategories(res as any);
     });
+
+    // Detect country for restriction
+    detectCountry().then((res) => {
+      if (mounted && res.success) {
+        setDetectedCountryCode(res.code);
+        if (res.code && !["NG", "CN"].includes(res.code)) {
+          setIsRestricted(true);
+        }
+      }
+    });
+
     return () => { mounted = false; };
   }, []);
 
@@ -317,8 +337,14 @@ function SignupContent() {
             </h1>
           </div>
           <p className="text-gray-600 text-sm mb-6">Join 234Deals — sign up as a customer or vendor.</p>
+          
+          {isRestricted && (
+            <div className="mb-4 p-3 bg-orange-50 border-l-4 border-orange-500 text-orange-700 text-xs font-medium">
+              You cannot be a vendor, not available in your country but you can purchase products you like.
+            </div>
+          )}
 
-          <RoleToggle role={role} setRole={setRole} setError={setError} />
+          <RoleToggle role={role} setRole={setRole} setError={setError} isRestricted={isRestricted} />
 
 
           <ContactMethodToggle method={method} setMethod={setMethod} />
@@ -431,7 +457,13 @@ function SignupContent() {
             </h1>
             <p className="text-gray-500 text-sm mb-6">Sign up as a customer or register your store as a vendor.</p>
 
-            <RoleToggle role={role} setRole={setRole} setError={setError} />
+            {isRestricted && (
+              <div className="mb-5 p-4 bg-orange-50 border-l-4 border-orange-500 text-orange-700 text-sm font-medium rounded-r-lg">
+                You cannot be a vendor, not available in your country but you can purchase products you like.
+              </div>
+            )}
+
+            <RoleToggle role={role} setRole={setRole} setError={setError} isRestricted={isRestricted} />
 
 
             <div className="mb-4">

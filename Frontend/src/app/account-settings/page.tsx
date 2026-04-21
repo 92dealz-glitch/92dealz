@@ -49,6 +49,10 @@ export default function AccountSettingsPage() {
   const [otpCode, setOtpCode] = useState("");
   const [emailOtpCode, setEmailOtpCode] = useState("");
   const [verifying, setVerifying] = useState(false);
+  
+  const isNigeria = profile?.country_code === 'NG' || profile?.country_name === 'Nigeria' || (profile?.phone && (profile.phone.startsWith('+234') || profile.phone.startsWith('234')));
+  const isChina = profile?.country_code === 'CN' || profile?.country_name === 'China' || (profile?.phone && (profile.phone.startsWith('+86') || profile.phone.startsWith('86')));
+  const isRestricted = profile && !isNigeria && !isChina;
 
   useEffect(() => {
     loadData();
@@ -535,13 +539,23 @@ export default function AccountSettingsPage() {
               <div className="mt-12 p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center">
                 <TrendingUp className="mx-auto text-orange-600 mb-4" size={40} />
                 <h2 className="text-xl font-bold text-gray-900">Want to sell your products?</h2>
-                <p className="text-gray-500 mt-2 mb-6">Upgrade to a vendor account and start reaching millions of buyers across Nigeria.</p>
-                <button 
-                  onClick={() => setUpgradeMode(true)}
-                  className="bg-zinc-900 text-white font-bold px-10 py-3 rounded-xl hover:bg-zinc-800 transition"
-                >
-                  Become a Vendor
-                </button>
+                <p className="text-gray-500 mt-2 mb-6">
+                  {isRestricted 
+                    ? "Vendor accounts are currently only available in Nigeria and China." 
+                    : "Upgrade to a vendor account and start reaching millions of buyers across Nigeria."}
+                </p>
+                {isRestricted ? (
+                  <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 text-orange-700 text-sm font-bold">
+                    You cannot be a vendor, not available in your country but you can purchase products you like.
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setUpgradeMode(true)}
+                    className="bg-zinc-900 text-white font-bold px-10 py-3 rounded-xl hover:bg-zinc-800 transition"
+                  >
+                    Become a Vendor
+                  </button>
+                )}
               </div>
             )}
 

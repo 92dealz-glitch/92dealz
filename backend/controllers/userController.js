@@ -284,6 +284,27 @@ exports.upgradeToVendor = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
+    // Self-healing: if country is missing, try to detect it
+    if (!user.country_code) {
+      let detected = { code: null, name: null };
+      if (user.phone) detected = getCountryFromPhone(user.phone);
+      if (!detected.code) detected = getCountryFromRequest(req);
+      
+      if (detected.code) {
+        user.country_code = detected.code;
+        user.country_name = detected.name;
+        await user.save();
+      }
+    }
+
+    // Restriction Check: Only NG and CN users can become vendors
+    if (!['NG', 'CN'].includes(user.country_code)) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Vendor accounts are currently only available for users in Nigeria and China. You can still purchase products as a regular customer.' 
+      });
+    }
+
     if (user.role === 'vendor' || user.role === 'admin') {
       return res.status(400).json({ success: false, message: 'Account is already a vendor or admin' });
     }
@@ -392,8 +413,21 @@ exports.buyPlan = async (req, res, next) => {
 
     // Regional Plan Restrictions
     const isChina = user.country_code === 'CN';
+    const isNigeria = user.country_code === 'NG';
+
+    if (!isChina && !isNigeria) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Vendor plans are not available in your country. You can still purchase products as a regular customer.' 
+      });
+    }
+
     if (isChina && !['basic', 'star'].includes(plan)) {
       return res.status(403).json({ success: false, message: 'Chinese vendors can only purchase Featured (Basic) or Premium (Star) plans.' });
+    }
+
+    if (isChina && (plan === 'starter' || plan === 'free')) {
+      return res.status(403).json({ success: false, message: 'This plan is not available for vendors in China.' });
     }
 
     // Upgrade-Only Enforcement
@@ -405,10 +439,6 @@ exports.buyPlan = async (req, res, next) => {
         success: false, 
         message: `You are currently on the ${currentPlan} plan. Downgrades are not permitted while an active higher-tier plan exists.` 
       });
-    }
-
-    if (user.country_code === 'CN' && (plan === 'starter' || plan === 'free')) {
-      return res.status(403).json({ success: false, message: 'This plan is not available for vendors in China.' });
     }
 
     if (plan === 'starter') {

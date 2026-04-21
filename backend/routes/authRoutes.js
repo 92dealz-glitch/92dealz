@@ -9,6 +9,7 @@ const auth = require('../middleware/authMiddleware');
 
 const { authRateLimiter } = require('../middleware/rateLimiter');
 
+router.get('/detect-country', authController.detectCountry);
 router.post('/register', authRateLimiter, authController.register);
 router.post('/signup', authRateLimiter, authController.register);
 router.post('/register-initiate', authRateLimiter, authController.registerInitiate);

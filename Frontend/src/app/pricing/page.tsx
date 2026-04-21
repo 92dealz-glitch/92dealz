@@ -135,6 +135,8 @@ export default function PricingPage() {
 
   const phone = profile?.phone || "";
   const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN' || phone.startsWith('+86') || phone.startsWith('86');
+  const isNigeria = profile?.country_name === 'Nigeria' || profile?.country_code === 'NG' || phone.startsWith('+234') || phone.startsWith('234');
+  const isRestricted = !isChina && !isNigeria;
 
   const plans: PricingPlan[] = isChina ? [
     {
@@ -280,9 +282,24 @@ export default function PricingPage() {
             </p>
           </div>
 
-
-
-          <div className="flex flex-wrap justify-center gap-6 mb-16">
+          {isRestricted ? (
+            <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-[40px] border border-orange-100 shadow-xl text-center">
+              <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Info className="w-10 h-10 text-orange-500" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-black text-black mb-4">Service Not Available</h2>
+              <p className="text-gray-600 font-bold mb-8">
+                You cannot be a vendor, not available in your country but you can purchase products you like.
+              </p>
+              <Link 
+                href="/"
+                className="inline-block px-8 py-4 bg-black text-white rounded-2xl font-black hover:bg-orange-600 transition-all active:scale-95"
+              >
+                Back to Home
+              </Link>
+            </div>
+          ) : (
+            <div className="flex flex-wrap justify-center gap-6 mb-16">
             {plans.map((plan) => {
               const status = getButtonStatus(plan.id);
               const isUltimate = plan.id === 'premium';
@@ -371,6 +388,7 @@ export default function PricingPage() {
               );
             })}
           </div>
+          )}
         </div>
       </main>
       <Footer />

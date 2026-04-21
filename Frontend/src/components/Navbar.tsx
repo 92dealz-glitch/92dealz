@@ -57,7 +57,7 @@ export default function Navbar() {
     setMounted(true);
   }, []);
 
-  const { role, isPhoneVerified, verificationStatus } = useNavUserDetails();
+  const { role, isPhoneVerified, verificationStatus, country_code, country_name } = useNavUserDetails();
   const isLoggedIn = mounted && authStatus === "authenticated";
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -202,7 +202,20 @@ export default function Navbar() {
       return;
     }
     const role = (typeof window !== "undefined" ? window.localStorage.getItem("role") || "user" : "user").toLowerCase();
+    
+    // Check for regional restriction
+    const isNigeria = country_code === 'NG' || country_name === 'Nigeria' || (typeof window !== "undefined" && (window.localStorage.getItem("country_code") === 'NG' || window.localStorage.getItem("country_name") === 'Nigeria'));
+    const isChina = country_code === 'CN' || country_name === 'China' || (typeof window !== "undefined" && (window.localStorage.getItem("country_code") === 'CN' || window.localStorage.getItem("country_name") === 'China'));
+    const isRestricted = isLoggedIn && !isNigeria && !isChina;
+
     if (role === "user") {
+      if (isRestricted) {
+        await showVendorUpgrade(
+          "You cannot be a vendor, not available in your country but you can purchase products you like.",
+          "info" // Assuming the alert system supports type
+        );
+        return;
+      }
       const confirmed = await showVendorUpgrade(
         "To Add a Product you need to Upgrade your account into Vendor, it will just take a minute"
       );

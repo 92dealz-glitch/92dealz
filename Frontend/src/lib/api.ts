@@ -180,6 +180,13 @@ export async function getProfile() {
   );
 }
 
+export async function detectCountry() {
+  return apiFetch<{ success: boolean; code: string | null; name: string | null }>(
+    "/auth/detect-country",
+    { method: "GET" }
+  );
+}
+
 export async function updateProfile(payload: { 
   name?: string; 
   phone?: string | null;

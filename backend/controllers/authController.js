@@ -22,6 +22,16 @@ const { getCountryFromRequest, getCountryFromPhone } = require('../utils/locatio
 
 // Location helpers moved to locationUtils.js
 
+// GET /api/auth/detect-country
+exports.detectCountry = async (req, res, next) => {
+  try {
+    const detectedCountry = getCountryFromRequest(req);
+    return res.json({ success: true, ...detectedCountry });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 // ... (Rest of the file remains same, formatPhone local definition should be removed)
 
 // POST /api/auth/register-initiate
@@ -107,6 +117,15 @@ exports.registerInitiate = async (req, res, next) => {
         signupData.country_code = detectedCountry.code;
         signupData.country_name = detectedCountry.name;
 
+        // Restriction Check for Vendors
+        if (role === 'vendor' && !['NG', 'CN'].includes(detectedCountry.code)) {
+          return res.status(403).json({ 
+            success: false, 
+            message: 'Vendor registration is currently only available for users in Nigeria and China. You can still register as a customer to purchase products.',
+            country: detectedCountry.code
+          });
+        }
+
         await PendingRegistration.create({
           contact,
           otp: otpValue,
@@ -128,6 +147,15 @@ exports.registerInitiate = async (req, res, next) => {
         const detectedCountry = getCountryFromRequest(req);
         signupData.country_code = detectedCountry.code;
         signupData.country_name = detectedCountry.name;
+
+        // Restriction Check for Vendors
+        if (role === 'vendor' && !['NG', 'CN'].includes(detectedCountry.code)) {
+          return res.status(403).json({ 
+            success: false, 
+            message: 'Vendor registration is currently only available for users in Nigeria and China. You can still register as a customer to purchase products.',
+            country: detectedCountry.code
+          });
+        }
 
         await PendingRegistration.create({
           contact,
