@@ -10,7 +10,8 @@ export type FavoriteItem = {
   img?: string;
   desc?: string;
   location?: string;
-  likes?: number;
+  likes?: number; // legacy, keeping for compatibility
+  views?: number;
 };
 
 type FavoritesContextType = {

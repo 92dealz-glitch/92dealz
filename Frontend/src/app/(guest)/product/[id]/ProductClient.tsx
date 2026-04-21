@@ -110,8 +110,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
   const fav = isFavorite(id);
   const router = useRouter();
   const [loading, setLoading] = useState(!initialProduct);
-  const [product, setProduct] = useState<any>(initialProduct || {
-    id, title: '', desc: '', price: '', priceValue: 0, sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', isVerified: false, sellerAddress: ''
+    id, title: '', desc: '', price: '', priceValue: 0, sellerId: '', images: ['/assets/images/bgphone.svg'], condition: '', specifications: {}, subcategory: '', category_id: null, isVerified: false, sellerAddress: ''
   });
 
   useEffect(() => {
@@ -183,8 +182,8 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
           country_code: seller.country_code,
           country_name: seller.country_name,
           sellerAddress: seller.businessAddress || seller.location || '',
-          status: d.status,
-          rejection_reason: d.rejection_reason
+          rejection_reason: d.rejection_reason,
+          category_id: d.category_id
         })
         // log a view
         try { await logAdView(Number(id)); } catch {}
@@ -433,7 +432,17 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
           </div>
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => toggle({ id: product.id, title: product.title, priceValue: product.priceValue, price: product.price, img: sampleImages[selected] || sampleImages[0], desc: product.desc, location: product.location, likes: product.likes })}
+              onClick={() => toggle({ 
+                id: product.id, 
+                title: product.title, 
+                priceValue: product.priceValue, 
+                price: product.price, 
+                img: sampleImages[selected] || sampleImages[0], 
+                desc: product.desc, 
+                location: product.location, 
+                likes: product.likes,
+                views: product.likes
+              })}
               className="p-1 hover:bg-orange-50 rounded-full transition-colors"
             >
               <Heart className={`w-6 h-6 ${fav ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
@@ -984,7 +993,11 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
         )}
       </main>
 
-      <SimilarItems />
+      <SimilarItems 
+        currentId={product.id}
+        categoryId={product.category_id}
+        subcategory={product.subcategory}
+      />
       <VerificationGateModal 
         isOpen={showGateModal} 
         onClose={() => setShowGateModal(false)} 

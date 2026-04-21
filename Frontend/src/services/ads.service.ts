@@ -31,7 +31,7 @@ export interface AdPayload {
   active_until?: string;
 }
 
-export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string; random?: string; state?: string; city?: string; location?: string; today_only?: boolean }) {
+export async function listActiveAds(params?: { limit?: number; page?: number; sort?: string; dir?: string; category_id?: number; category_name?: string; subcategory?: string; random?: string; state?: string; city?: string; location?: string; today_only?: boolean }) {
   let url = BASE;
   if (params) {
     const q = new URLSearchParams();
@@ -41,6 +41,7 @@ export async function listActiveAds(params?: { limit?: number; page?: number; so
     if (params.dir) q.set("dir", params.dir);
     if (params.category_id) q.set("category_id", params.category_id.toString());
     if (params.category_name) q.set("category_name", params.category_name);
+    if (params.subcategory) q.set("subcategory", params.subcategory);
     if (params.state) q.set("state", params.state);
     if (params.city) q.set("city", params.city);
     if (params.location) q.set("location", params.location);

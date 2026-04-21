@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart as HeartIcon } from "lucide-react";
+import { Heart as HeartIcon, Eye } from "lucide-react";
 import { useFavorites } from "../../context/FavoritesProvider";
 import { useCurrency } from "../../context/CurrencyContext";
 
@@ -32,9 +32,6 @@ export default function FavoritesPage() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <button className="px-3 sm:px-4 py-2 rounded-md border border-orange-300 text-[#ff7a2d] font-semibold text-sm sm:text-base whitespace-nowrap">
-              Bulk Select
-            </button>
             
             {/* SORT DROPDOWN */}
             <div className="flex items-center gap-2 relative">
@@ -156,10 +153,10 @@ export default function FavoritesPage() {
                         📍 <span>{it.location}</span>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        👍{" "}
-                        <span className="font-semibold">
-                          {it.likes ?? 0}
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold">
+                        <span className="flex items-center gap-1">
+                          <Eye size={14} className="text-gray-400" />
+                          {it.views ?? it.likes ?? 0} views
                         </span>
                       </div>
                     </div>
