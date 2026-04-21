@@ -69,7 +69,7 @@ export default function Navbar() {
 
   const isVendor = role === "vendor" || role === "Vendor";
   const { isFullyVerified } = useNavUserDetails();
-  const hasPendingTasks = isVendor && (!isFullyVerified || verificationStatus !== "approved");
+  const hasPendingTasks = isLoggedIn && (!isFullyVerified || (isVendor && verificationStatus !== "approved"));
 
   const { filter, setCountry, setState, setCity, setLocation, resetAll } = useLocationFilter();
   const [topCats, setTopCats] = useState<{ id: string; title: string }[]>([]);
@@ -842,7 +842,7 @@ export default function Navbar() {
 
 export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
   const { isFullyVerified, verificationStatus, role } = useNavUserDetails();
-  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isFullyVerified || verificationStatus !== "approved");
+  const hasPendingTasks = !isFullyVerified || ((role === "vendor" || role === "Vendor") && verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 
@@ -865,7 +865,7 @@ export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
 
 function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
   const { isFullyVerified, verificationStatus, role } = useNavUserDetails();
-  const hasPendingTasks = (role === "vendor" || role === "Vendor") && (!isFullyVerified || verificationStatus !== "approved");
+  const hasPendingTasks = !isFullyVerified || ((role === "vendor" || role === "Vendor") && verificationStatus !== "approved");
 
   if (!hasPendingTasks) return null;
 

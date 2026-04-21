@@ -114,8 +114,8 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
               <Zap size={20} className="sm:w-6 sm:h-6" fill="white" />
             </div>
             <div>
-              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">Info for the Vendor</h3>
-              <p className="text-orange-100 text-[10px] sm:text-sm mt-1 sm:mt-2 font-medium opacity-90">Essential steps to unlock your potential</p>
+              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">Account Progress</h3>
+              <p className="text-orange-100 text-[10px] sm:text-sm mt-1 sm:mt-2 font-medium opacity-90">Essential steps to finalize your account</p>
             </div>
           </div>
           <button 
