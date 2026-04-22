@@ -134,14 +134,14 @@ exports.registerInitiate = async (req, res, next) => {
         signupData.country_code = detectedCountry.code;
         signupData.country_name = detectedCountry.name;
 
-        // Restriction Check for Vendors
-        if (role === 'vendor' && !['NG', 'CN'].includes(detectedCountry.code)) {
-          return res.status(403).json({ 
-            success: false, 
-            message: 'Vendor registration is currently only available for users in Nigeria and China. You can still register as a customer to purchase products.',
-            country: detectedCountry.code
-          });
-        }
+        // Restriction Check for Vendors (Temporarily Disabled Globally)
+        // if (role === 'vendor' && !['NG', 'CN'].includes(detectedCountry.code)) {
+        //   return res.status(403).json({ 
+        //     success: false, 
+        //     message: 'Vendor registration is currently only available for users in Nigeria and China. You can still register as a customer to purchase products.',
+        //     country: detectedCountry.code
+        //   });
+        // }
 
         await PendingRegistration.create({
           contact,
