@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { buyPlan, getProfile } from "@/services/user.service";
+import { buyPlan, getProfile, initializePayment, verifyPayment } from "@/services/user.service";
 import { UserProfile } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { Check, Star, Zap, Info, Trophy, Rocket, ShieldCheck, X } from "lucide-react";
@@ -123,32 +123,31 @@ export default function PricingPage() {
         window.history.replaceState({}, '', newUrl);
 
         setLoading('verify');
-        import('@/services/user.service').then(({ verifyPayment }) => {
-          verifyPayment(reference).then(async (res) => {
-            if (res.success) {
-              const planIdMapping: Record<string, string> = {
-                'starter': 'Starter Add-on',
-                'basic': 'Featured Tier',
-                'star': 'Premium Tier',
-                'premium': 'Ultimate Tier'
-              };
-              setPurchasedPlanName(planIdMapping[res.data?.plan || 'basic'] || "Premium Plan");
-              setIsSuccessModalOpen(true);
-              
-              // Refresh profile
-              const profileRes = await getProfile();
-              if (profileRes.success) {
-                setProfile(profileRes.data as UserProfile);
-                if (res.data?.plan !== 'starter') setCurrentPlan(res.data?.plan as any);
-              }
-            } else {
-              showAlert(res.message || "Payment verification failed. Please contact support if you were charged.", "error");
+        setLoading('verify');
+        verifyPayment(reference).then(async (res) => {
+          if (res.success) {
+            const planIdMapping: Record<string, string> = {
+              'starter': 'Starter Add-on',
+              'basic': 'Featured Tier',
+              'star': 'Premium Tier',
+              'premium': 'Ultimate Tier'
+            };
+            setPurchasedPlanName(planIdMapping[res.data?.plan || 'basic'] || "Premium Plan");
+            setIsSuccessModalOpen(true);
+            
+            // Refresh profile
+            const profileRes = await getProfile();
+            if (profileRes.success) {
+              setProfile(profileRes.data as UserProfile);
+              if (res.data?.plan !== 'starter') setCurrentPlan(res.data?.plan as any);
             }
-            setLoading(null);
-          }).catch((err) => {
-            showAlert("Failed to confirm payment status.", "error");
-            setLoading(null);
-          });
+          } else {
+            showAlert(res.message || "Payment verification failed. Please contact support if you were charged.", "error");
+          }
+          setLoading(null);
+        }).catch((err) => {
+          showAlert("Failed to confirm payment status.", "error");
+          setLoading(null);
         });
       }
     }
@@ -160,7 +159,6 @@ export default function PricingPage() {
     
     setLoading(planId);
     try {
-      const { initializePayment } = await import('@/services/user.service');
       const res = await initializePayment(planId, profile?.email);
       
       if (res.success && res.authorization_url) {
@@ -398,7 +396,7 @@ export default function PricingPage() {
                           </span>
                           <span className="text-gray-400">/</span>
                           <span className="text-gray-500 font-bold">
-                            {plan.id === 'premium' ? '∞' : (profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'] || '-')}
+                            {plan.id === 'premium' ? '∞' : (profile.subscription_stats.limits?.[plan.id as 'free'|'basic'|'star'] || '-')}
                           </span>
                         </div>
                       </div>
@@ -406,7 +404,7 @@ export default function PricingPage() {
                         <div 
                           className={`h-full transition-all duration-1000 ${plan.id === 'premium' ? 'bg-purple-500 w-full' : 'bg-[#f45c03]'}`}
                           style={{ 
-                            width: plan.id === 'premium' ? '100%' : `${Math.min(100, (profile.subscription_stats[plan.id as 'free'|'basic'|'star'] / (profile.subscription_stats.limits[plan.id as 'free'|'basic'|'star'] || 1)) * 100)}%` 
+                            width: plan.id === 'premium' ? '100%' : `${Math.min(100, (profile.subscription_stats[plan.id as 'free'|'basic'|'star'] / (profile.subscription_stats.limits?.[plan.id as 'free'|'basic'|'star'] || 1)) * 100)}%` 
                           }}
                         />
                       </div>
