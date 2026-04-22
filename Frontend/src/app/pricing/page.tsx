@@ -98,18 +98,6 @@ export default function PricingPage() {
     fetchProfile();
   }, []);
 
-  if (profileLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-[#fafafa]">
-        <Navbar />
-        <div className="flex-grow flex items-center justify-center">
-           <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
   // Check for Paystack redirect on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -122,7 +110,6 @@ export default function PricingPage() {
         const newUrl = window.location.pathname;
         window.history.replaceState({}, '', newUrl);
 
-        setLoading('verify');
         setLoading('verify');
         verifyPayment(reference).then(async (res) => {
           if (res.success) {
@@ -152,6 +139,18 @@ export default function PricingPage() {
       }
     }
   }, [showAlert]);
+
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#fafafa]">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+           <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleBuy = async (planId: 'free' | 'basic' | 'star' | 'premium' | 'starter', planName: string) => {
     // If free plan, use original logic or ignore (there's no payment for free)
