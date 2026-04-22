@@ -199,10 +199,12 @@ function LoginContent() {
 
             <div className="py-2 mb-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
               {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
-                <ReCAPTCHA
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
-                  onChange={(token) => setCaptchaToken(token)}
-                />
+                  <ReCAPTCHA
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
+                    onChange={(token) => setCaptchaToken(token)}
+                    onExpired={() => setCaptchaToken(null)}
+                    onErrored={() => setCaptchaToken(null)}
+                  />
               ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
                 <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing. Please check ENV vars.</p>
               ) : null}
@@ -308,6 +310,8 @@ function LoginContent() {
                   <ReCAPTCHA
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
                     onChange={(token) => setCaptchaToken(token)}
+                    onExpired={() => setCaptchaToken(null)}
+                    onErrored={() => setCaptchaToken(null)}
                   />
                 ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
                   <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing.</p>

@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
           const data = await res.json();
 
           if (!res.ok || !data.user) {
-            return null;
+            throw new Error(data.message || "Invalid credentials");
           }
 
           // Return user object to be saved in JWT
