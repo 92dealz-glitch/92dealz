@@ -54,6 +54,26 @@ async function forceSchemaFix() {
     } catch (enumErr) {
       console.log('Enum addition skipped or failed:', enumErr.message);
     }
+    // 4. Ensure 'payments' table exists
+    try {
+      const [paymentsTable] = await sequelize.query(`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+          AND table_name = 'payments'
+      `);
+
+      if (paymentsTable.length === 0) {
+        console.log('Table "payments" not found. Attempting to force sync...');
+        const Payment = require('./models/Payment');
+        await Payment.sync({ alter: true });
+        console.log('Table "payments" created successfully.');
+      }
+    } catch (payErr) {
+      console.log('Payment table sync skipped or failed:', payErr.message);
+    }
+
+    console.log('--- ALL PRODUCTION SCHEMA FIXES COMPLETED ---');
   } catch (err) {
     console.error('--- SCHEMA FIX FAILED ---');
     console.error(err);
