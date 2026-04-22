@@ -110,24 +110,68 @@ export default function PricingPage() {
     );
   }
 
+  // Check for Paystack redirect on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URL(window.location.href).searchParams;
+      const reference = urlParams.get('reference');
+      const trxref = urlParams.get('trxref'); // Paystack also adds this
+      
+      if (reference) {
+        // Clear params from URL silently
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+
+        setLoading('verify');
+        import('@/services/user.service').then(({ verifyPayment }) => {
+          verifyPayment(reference).then(async (res) => {
+            if (res.success) {
+              const planIdMapping: Record<string, string> = {
+                'starter': 'Starter Add-on',
+                'basic': 'Featured Tier',
+                'star': 'Premium Tier',
+                'premium': 'Ultimate Tier'
+              };
+              setPurchasedPlanName(planIdMapping[res.data?.plan || 'basic'] || "Premium Plan");
+              setIsSuccessModalOpen(true);
+              
+              // Refresh profile
+              const profileRes = await getProfile();
+              if (profileRes.success) {
+                setProfile(profileRes.data as UserProfile);
+                if (res.data?.plan !== 'starter') setCurrentPlan(res.data?.plan as any);
+              }
+            } else {
+              showAlert(res.message || "Payment verification failed. Please contact support if you were charged.", "error");
+            }
+            setLoading(null);
+          }).catch((err) => {
+            showAlert("Failed to confirm payment status.", "error");
+            setLoading(null);
+          });
+        });
+      }
+    }
+  }, [showAlert]);
+
   const handleBuy = async (planId: 'free' | 'basic' | 'star' | 'premium' | 'starter', planName: string) => {
+    // If free plan, use original logic or ignore (there's no payment for free)
+    if (planId === 'free') return;
+    
     setLoading(planId);
     try {
-      const res = await buyPlan(planId);
-      if (res.success) {
-        setPurchasedPlanName(planName);
-        setIsSuccessModalOpen(true);
-        const profileRes = await getProfile();
-        if (profileRes.success) {
-          setProfile(profileRes.data as UserProfile);
-          if (planId !== 'starter') setCurrentPlan(profileRes.data.subscription_plan as any);
-        }
+      const { initializePayment } = await import('@/services/user.service');
+      const res = await initializePayment(planId, profile?.email);
+      
+      if (res.success && res.authorization_url) {
+        // Redirect completely to Paystack
+        window.location.href = res.authorization_url;
       } else {
-        showAlert(res.message || "Failed to process subscription.", "error");
+        showAlert(res.message || "Failed to initialize payment gateway.", "error");
+        setLoading(null);
       }
     } catch (err: any) {
-      showAlert(err.message || "An error occurred during subscription.", "error");
-    } finally {
+      showAlert(err.message || "An error occurred preparing payment.", "error");
       setLoading(null);
     }
   };

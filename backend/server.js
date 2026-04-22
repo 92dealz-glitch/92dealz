@@ -62,7 +62,12 @@ app.use('/api/', limiter);
 app.use(morgan('dev'));
 
 // Body parsing middleware
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({ 
+  limit: '50mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.get('/', (req, res) => res.send('234Deals API Server Running'));
@@ -87,6 +92,7 @@ require('./models/Notification');
 require('./models/Review');
 require('./models/Report');
 require('./models/Visitor');
+require('./models/Payment'); // ADDED PAYMENT MODEL
 
 // Routes
 const forceSchemaFix = require('./force_schema_fix');
@@ -111,6 +117,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const currencyRoutes = require('./routes/currencyRoutes');
+const paymentRoutes = require('./routes/paymentRoutes'); // ADDED PAYMENT ROUTES
 
 // Helper to register routes with and without /api prefix
 function registerRoutes(prefix, router) {
@@ -140,6 +147,7 @@ registerRoutes('/orders', orderRoutes);
 registerRoutes('/notifications', notificationRoutes);
 registerRoutes('/reviews', reviewRoutes);
 registerRoutes('/currency', currencyRoutes);
+registerRoutes('/payments', paymentRoutes); // ADDED PAYMENT ROUTER
 
 // Error handling middleware (registered after routes)
 const errorHandler = require('./middleware/errorHandler');
