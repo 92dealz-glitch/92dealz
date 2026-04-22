@@ -177,7 +177,9 @@ export default function PricingPage() {
   const phone = profile?.phone || "";
   const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN' || phone.startsWith('+86') || phone.startsWith('86');
   const isNigeria = profile?.country_name === 'Nigeria' || profile?.country_code === 'NG' || phone.startsWith('+234') || phone.startsWith('234');
-  const isRestricted = !isChina && !isNigeria;
+  
+  // Temporarily bypass restriction globally.
+  const isRestricted = false;
 
   const plans: PricingPlan[] = isChina ? [
     {

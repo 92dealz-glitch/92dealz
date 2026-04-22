@@ -47,10 +47,11 @@ exports.initializePayment = async (req, res, next) => {
     const isNigeria = countryCode === 'NG';
 
     if (!isChina && !isNigeria) {
-      return res.status(403).json({ 
-        success: false, 
-        message: 'Vendor plans are not available in your country.' 
-      });
+      // Temporarily allowing all countries to become vendors. Defaulting to NG for non-CN.
+      // return res.status(403).json({ 
+      //   success: false, 
+      //   message: 'Vendor plans are not available in your country.' 
+      // });
     }
 
     const pricingRegion = isChina ? 'CN' : 'NG';
