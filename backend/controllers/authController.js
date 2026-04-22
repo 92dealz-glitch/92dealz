@@ -15,6 +15,7 @@ const PasswordReset = require('../models/PasswordReset');
 const { Op } = require('sequelize');
 const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
 const { sendTwilioOtp, verifyTwilioOtp } = require('../services/twilioService');
+const { sendAlibabaOtp } = require('../services/alibabaSmsService');
 const verifyRecaptcha = require('../utils/verifyRecaptcha');
 const geoip = require('geoip-lite');
 const { parsePhoneNumber } = require('libphonenumber-js');
@@ -82,6 +83,8 @@ exports.registerInitiate = async (req, res, next) => {
         const isNigeria = contact.startsWith('+234');
         let otpValue;
 
+        const isChina = contact.startsWith('+86');
+
         if (isNigeria) {
           const termiiRes = await sendTermiiOtp(contact.replace('+', ''));
           if (!termiiRes || !termiiRes.pinId) {
@@ -91,16 +94,30 @@ exports.registerInitiate = async (req, res, next) => {
             });
           }
           otpValue = termiiRes.pinId;
-        } else {
-          // Twilio Verify Flow
-          const twilioRes = await sendTwilioOtp(contact);
-          if (!twilioRes || twilioRes.status !== 'pending') {
-            return res.status(400).json({ 
-              success: false, 
-              message: 'Failed to send verification SMS (Twilio). Please check your international phone number.' 
-            });
+        } else if (isChina) {
+          const generatedOtp = generateOtp();
+          const alibabaRes = await sendAlibabaOtp(contact, generatedOtp);
+          if (!alibabaRes.success) {
+             return res.status(400).json({ success: false, message: 'Failed to send verification SMS (Alibaba). Please check your number.' });
           }
-          otpValue = 'TWILIO_VERIFY';
+          otpValue = 'ALIBABA_' + generatedOtp;
+        } else {
+          // Twilio Verify Flow with Fallback
+          try {
+            const twilioRes = await sendTwilioOtp(contact);
+            if (!twilioRes || twilioRes.status !== 'pending') {
+              throw new Error('Twilio API returned non-pending status');
+            }
+            otpValue = 'TWILIO_VERIFY';
+          } catch (twilioErr) {
+            console.error('[SMS_FALLBACK] Twilio dispatch failed, failing over to Alibaba SMS:', twilioErr.message);
+            const generatedOtp = generateOtp();
+            const alibabaRes = await sendAlibabaOtp(contact, generatedOtp);
+            if (!alibabaRes.success) {
+               return res.status(400).json({ success: false, message: 'Failed to send verification SMS across all international gateways.' });
+            }
+            otpValue = 'ALIBABA_' + generatedOtp;
+          }
         }
 
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
@@ -203,6 +220,11 @@ exports.registerVerify = async (req, res, next) => {
           const verification = await verifyTwilioOtp(contact, otp);
           if (verification.status !== 'approved') {
             return res.status(400).json({ success: false, message: 'Invalid or expired Twilio code' });
+          }
+        } else if (otpValue.startsWith('ALIBABA_')) {
+          const actualOtp = otpValue.split('_')[1];
+          if (actualOtp !== otp) {
+            return res.status(400).json({ success: false, message: 'Invalid or target-expired OTP verification code.' });
           }
         } else {
           const verification = await verifyTermiiOtp(otpValue, otp);
@@ -430,6 +452,8 @@ exports.sendVerificationOtp = async (req, res, next) => {
         const isNigeria = formattedContact.startsWith('+234');
         let otpValue;
 
+        const isChina = formattedContact.startsWith('+86');
+
         if (isNigeria) {
           const termii = await sendTermiiOtp(formattedContact);
           if (!termii || !termii.pinId) {
@@ -439,16 +463,30 @@ exports.sendVerificationOtp = async (req, res, next) => {
             });
           }
           otpValue = termii.pinId;
-        } else {
-          // Twilio Flow
-          const twilioRes = await sendTwilioOtp(formattedContact);
-          if (!twilioRes || twilioRes.status !== 'pending') {
-            return res.status(400).json({ 
-              success: false, 
-              message: 'Could not send verification code via Twilio. Please check your international phone number.' 
-            });
+        } else if (isChina) {
+          const generatedOtp = generateOtp();
+          const alibabaRes = await sendAlibabaOtp(formattedContact, generatedOtp);
+          if (!alibabaRes.success) {
+            return res.status(400).json({ success: false, message: 'Failed to send verification SMS via Alibaba. Please check your number.' });
           }
-          otpValue = 'TWILIO_VERIFY';
+          otpValue = 'ALIBABA_' + generatedOtp;
+        } else {
+          // Twilio Flow with Fallback
+          try {
+            const twilioRes = await sendTwilioOtp(formattedContact);
+            if (!twilioRes || twilioRes.status !== 'pending') {
+              throw new Error('Twilio API rejected payload');
+            }
+            otpValue = 'TWILIO_VERIFY';
+          } catch(e) {
+            console.error('[SMS_FALLBACK_PROFILE] Twilio dispatch failed, failing over to Alibaba SMS:', e.message);
+            const generatedOtp = generateOtp();
+            const alibabaRes = await sendAlibabaOtp(formattedContact, generatedOtp);
+            if (!alibabaRes.success) {
+              return res.status(400).json({ success: false, message: 'Failed to send verification SMS across all international gateways.' });
+            }
+            otpValue = 'ALIBABA_' + generatedOtp;
+          }
         }
 
         await upsertOtp(userId, otpValue); 
@@ -492,6 +530,11 @@ exports.verifyContactOtp = async (req, res, next) => {
           const verification = await verifyTwilioOtp(formattedContact, otp);
           if (verification.status !== 'approved') {
             return res.status(400).json({ success: false, message: 'Invalid or expired Twilio code' });
+          }
+        } else if (otpValue.startsWith('ALIBABA_')) {
+          const actualOtp = otpValue.split('_')[1];
+          if (actualOtp !== otp) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired verification code.' });
           }
         } else {
           const verification = await verifyTermiiOtp(otpValue, otp);

@@ -12,6 +12,8 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
+    "@alicloud/dysmsapi20170525": "^4.5.1",
+    "@alicloud/openapi-client": "^0.4.15",
     "@sendgrid/mail": "^8.1.6",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
