@@ -61,13 +61,14 @@ app.use('/api/', limiter);
 // Logging middleware
 app.use(morgan('dev'));
 
-// Body parsing middleware
-app.use(bodyParser.json({ 
-  limit: '50mb',
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
+// Body parsing middleware - Exclude webhook to allow raw buffer parsing
+app.use((req, res, next) => {
+  if (req.originalUrl.includes('/payments/webhook')) {
+    next();
+  } else {
+    bodyParser.json({ limit: '50mb' })(req, res, next);
   }
-}));
+});
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.get('/', (req, res) => res.send('234Deals API Server Running'));

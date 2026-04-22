@@ -196,15 +196,18 @@ async function processSubscription(payment) {
 exports.paystackWebhook = async (req, res) => {
   try {
     const secret = process.env.PAYSTACK_SECRET_KEY;
-    if (!req.rawBody) {
-      return res.status(400).send('Webhook error: Missing raw body format.');
+    // When using express.raw(), req.body is a Buffer
+    if (!Buffer.isBuffer(req.body)) {
+      return res.status(400).send('Webhook error: Expected raw buffer body.');
     }
-    const hash = crypto.createHmac('sha512', secret).update(req.rawBody).digest('hex');
+    
+    const hash = crypto.createHmac('sha512', secret).update(req.body).digest('hex');
     if (hash !== req.headers['x-paystack-signature']) {
       return res.status(403).send('Invalid signature');
     }
 
-    const event = req.body;
+    // Parse the buffer safely to get the JSON event
+    const event = JSON.parse(req.body.toString());
 
     if (event.event === 'charge.success') {
       const data = event.data;
