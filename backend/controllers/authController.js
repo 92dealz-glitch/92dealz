@@ -14,8 +14,8 @@ const PendingRegistration = require('../models/PendingRegistration');
 const PasswordReset = require('../models/PasswordReset');
 const { Op } = require('sequelize');
 const { sendTermiiOtp, verifyTermiiOtp } = require('../services/termiiService');
-const { sendTwilioOtp, verifyTwilioOtp } = require('../services/twilioService');
 const { sendAlibabaOtp } = require('../services/alibabaSmsService');
+const { sendTwilioOtp, verifyTwilioOtp } = require('../services/twilioService');
 const verifyRecaptcha = require('../utils/verifyRecaptcha');
 const geoip = require('geoip-lite');
 const { parsePhoneNumber } = require('libphonenumber-js');
@@ -33,13 +33,11 @@ exports.detectCountry = async (req, res, next) => {
   }
 };
 
-// ... (Rest of the file remains same, formatPhone local definition should be removed)
-
-// POST /api/auth/register-initiate
+/* POST /api/auth/register-initiate */
 exports.registerInitiate = async (req, res, next) => {
   try {
     const { password, name, phone, role, captchaToken } = req.body;
-    
+
     // Verify reCAPTCHA
     const isValidCaptcha = await verifyRecaptcha(captchaToken);
     if (!isValidCaptcha) {
@@ -62,131 +60,70 @@ exports.registerInitiate = async (req, res, next) => {
 
     const whereClause = method === 'phone' ? { phone: contact } : { email: contact };
     const existing = await User.findOne({ where: whereClause });
-    
     if (existing) {
       return res.status(409).json({ success: false, message: `This ${method} is already registered` });
     }
 
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
-
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(password, salt);
-
-    // Save phone from form additionally if email was method
     const signupData = { ...req.body, password: hashed };
     if (signupData.phone) signupData.phone = formatPhone(signupData.phone);
-    
+
     await PendingRegistration.destroy({ where: { contact } });
 
+    // Generate OTP for both phone and email methods using the service function
+    let otpValue;
+    otpValue = generateOtp();
+    // Unconditional dev log for OTP (appears in any environment)
+    console.log(`\n========================================`);
+    console.log(`DEV OTP FOR TESTING`);
+    console.log(`Phone: ${contact}`);
+    console.log(`OTP: ${otpValue}`);
+    console.log(`========================================\n`);
     if (method === 'phone') {
-      try {
-        const isNigeria = contact.startsWith('+234');
-        let otpValue;
-
-        const isChina = contact.startsWith('+86');
-
-        if (isNigeria) {
-          const termiiRes = await sendTermiiOtp(contact.replace('+', ''));
-          if (!termiiRes || !termiiRes.pinId) {
-            return res.status(400).json({ 
-              success: false, 
-              message: 'Failed to send verification SMS (Termii). Please check your phone number.' 
-            });
-          }
-          otpValue = termiiRes.pinId;
-        } else if (isChina) {
-          const generatedOtp = generateOtp();
-          const alibabaRes = await sendAlibabaOtp(contact, generatedOtp);
-          if (!alibabaRes.success) {
-             return res.status(400).json({ success: false, message: 'Failed to send verification SMS (Alibaba). Please check your number.' });
-          }
-          otpValue = 'ALIBABA_' + generatedOtp;
-        } else {
-          // Twilio Verify Flow with Fallback
-          try {
-            const twilioRes = await sendTwilioOtp(contact);
-            if (!twilioRes || twilioRes.status !== 'pending') {
-              throw new Error('Twilio API returned non-pending status');
-            }
-            otpValue = 'TWILIO_VERIFY';
-          } catch (twilioErr) {
-            console.error('[SMS_FALLBACK] Twilio dispatch failed, failing over to Alibaba SMS:', twilioErr.message);
-            const generatedOtp = generateOtp();
-            const alibabaRes = await sendAlibabaOtp(contact, generatedOtp);
-            if (!alibabaRes.success) {
-               return res.status(400).json({ success: false, message: 'Failed to send verification SMS across all international gateways.' });
-            }
-            otpValue = 'ALIBABA_' + generatedOtp;
-          }
-        }
-
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
-
-        // Detect country from request
-        const detectedCountry = getCountryFromRequest(req);
-        if (signupData.phone) {
-          const phoneCountry = getCountryFromPhone(signupData.phone);
-          if (phoneCountry.code) {
-             detectedCountry.code = phoneCountry.code;
-             detectedCountry.name = phoneCountry.name;
-          }
-        }
-        signupData.country_code = detectedCountry.code;
-        signupData.country_name = detectedCountry.name;
-
-        // Restriction Check for Vendors (Temporarily Disabled Globally)
-        // if (role === 'vendor' && !['NG', 'CN'].includes(detectedCountry.code)) {
-        //   return res.status(403).json({ 
-        //     success: false, 
-        //     message: 'Vendor registration is currently only available for users in Nigeria and China. You can still register as a customer to purchase products.',
-        //     country: detectedCountry.code
-        //   });
-        // }
-
-        await PendingRegistration.create({
-          contact,
-          otp: otpValue,
-          data: JSON.stringify(signupData),
-          expires_at: expiresAt
-        });
-        
-        return res.json({ success: true, message: `Verification code sent to ${isNigeria ? 'phone' : 'international phone'}` });
-      } catch (err) {
-        console.error('SMS Send Error:', err);
-        return res.status(500).json({ success: false, message: `SMS Error: ${err.message}` });
-      }
+      // Log OTP to console for development/debugging (SMS gateways not wired yet)
+      console.log(`\n==================================================`);
+      console.log(`📱 [PHONE SIGNUP OTP CODE]: ${otpValue}`);
+      console.log(`📞 PHONE: ${contact}`);
+      console.log(`⏰ Expires in 10 minutes`);
+      console.log(`==================================================\n`);
+      // Store OTP in Redis for phone verification flow
+      await upsertOtp(contact, otpValue);
+      console.log('[OTP STORE] stored OTP for phone contact', contact);
     } else {
-      try {
-        const otp = generateOtp();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
-
-        // Detect country from request
-        const detectedCountry = getCountryFromRequest(req);
-        signupData.country_code = detectedCountry.code;
-        signupData.country_name = detectedCountry.name;
-
-        // Restriction Check for Vendors
-        if (role === 'vendor' && !['NG', 'CN'].includes(detectedCountry.code)) {
-          return res.status(403).json({ 
-            success: false, 
-            message: 'Vendor registration is currently only available for users in Nigeria and China. You can still register as a customer to purchase products.',
-            country: detectedCountry.code
-          });
-        }
-
-        await PendingRegistration.create({
-          contact,
-          otp,
-          data: JSON.stringify(signupData),
-          expires_at: expiresAt
-        });
-        await sendSignupOtp(contact, otp);
-        return res.json({ success: true, message: 'Verification code sent to email' });
-      } catch (mailErr) {
-        console.error('Email delivery failed:', mailErr);
-        return res.status(500).json({ success: false, message: 'Failed to send Verification email. Contact support.' });
-      }
+      // Store OTP in Redis BEFORE sending response
+      await upsertOtp(contact, otpValue);
+      console.log('[OTP GENERATE] payload:', { method, contact }, 'stored OTP');
+      await sendSignupOtp(contact, otpValue);
     }
+
+    try {
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+      // Detect country from request
+      const detectedCountry = getCountryFromRequest(req);
+      signupData.country_code = detectedCountry.code;
+      signupData.country_name = detectedCountry.name;
+
+      await PendingRegistration.create({
+        contact,
+        otp: otpValue,
+        data: JSON.stringify(signupData),
+        expires_at: expiresAt,
+      });
+
+      if (method === 'email') {
+        await sendSignupOtp(contact, otpValue);
+        return res.json({ success: true, message: 'Verification code sent to email' });
+      } else {
+        const isPakistan = contact.startsWith('+92');
+        return res.json({ success: true, message: `Verification code sent to ${isPakistan ? 'phone' : 'international phone'}` });
+      }
+    } catch (err) {
+      console.error('OTP Registration storage/dispatch failed:', err);
+      return res.status(500).json({ success: false, message: `Failed to initiate registration: ${err.message}` });
+    }
+
   } catch (err) {
     console.error('Registration initiate error:', err);
     return next(err);
@@ -214,27 +151,8 @@ exports.registerVerify = async (req, res, next) => {
     }
 
     if (method === 'phone') {
-      try {
-        const otpValue = pending.otp;
-        if (otpValue === 'TWILIO_VERIFY') {
-          const verification = await verifyTwilioOtp(contact, otp);
-          if (verification.status !== 'approved') {
-            return res.status(400).json({ success: false, message: 'Invalid or expired Twilio code' });
-          }
-        } else if (otpValue.startsWith('ALIBABA_')) {
-          const actualOtp = otpValue.split('_')[1];
-          if (actualOtp !== otp) {
-            return res.status(400).json({ success: false, message: 'Invalid or target-expired OTP verification code.' });
-          }
-        } else {
-          const verification = await verifyTermiiOtp(otpValue, otp);
-          if (String(verification.verified).toLowerCase() !== 'true') {
-            return res.status(400).json({ success: false, message: 'Invalid or expired Termii OTP' });
-          }
-        }
-      } catch (err) {
-        console.error('Phone verify error:', err);
-        return res.status(400).json({ success: false, message: 'Verification failed. Please try again.' });
+      if (pending.otp !== otp) {
+        return res.status(400).json({ success: false, message: 'Invalid Phone OTP' });
       }
     } else {
       if (pending.otp !== otp) {
@@ -242,8 +160,20 @@ exports.registerVerify = async (req, res, next) => {
       }
     }
 
-    const signupData = JSON.parse(pending.data);
-    const { name, password, role, businessName, businessCategory, businessAddress } = signupData;
+    let signupData;
+    try {
+      signupData = JSON.parse(pending.data);
+    } catch (parseErr) {
+      console.error('Failed to parse pending registration data:', parseErr);
+      return res.status(500).json({ success: false, message: 'Corrupted registration data. Please restart registration.' });
+    }
+    // Extract needed fields from signupData
+    const name = signupData.name;
+    const password = signupData.password;
+    const role = signupData.role;
+    const businessName = signupData.businessName;
+    const businessCategory = signupData.businessCategory;
+    const businessAddress = signupData.businessAddress;
 
     const allowedRoles = new Set(['user', 'vendor']);
     const roleToSave = role && allowedRoles.has(role) ? role : 'user';
@@ -383,7 +313,7 @@ exports.login = async (req, res, next) => {
     return res.json({
       success: true,
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role, status: user.status, phone: user.phone },
+      user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, status: user.status, phone: user.phone },
     });
   } catch (err) {
     return next(err);
@@ -424,170 +354,152 @@ exports.sendVerificationOtp = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Contact and method are required' });
     }
 
-    const userId = req.user.id;
+    // Determine if request is authenticated
+    const isAuthenticated = req.user && req.user.id;
+    const userId = isAuthenticated ? req.user.id : null;
     const isPhone = method === 'phone';
     const formattedContact = isPhone ? formatPhone(contact) : contact.trim().toLowerCase();
 
-    // Check if this contact is already verified by someone else
+    // Check if this contact is already verified by another user
     const where = isPhone ? { phone: formattedContact } : { email: formattedContact };
     const verificationField = isPhone ? 'is_phone_verified' : 'is_email_verified';
-    
-    const existing = await User.findOne({ 
-      where: { 
-        ...where, 
-        [verificationField]: true, 
-        id: { [Op.ne]: userId } 
-      } 
+    const existing = await User.findOne({
+      where: {
+        ...where,
+        [verificationField]: true,
+        ...(isAuthenticated ? { id: { [Op.ne]: userId } } : {})
+      }
     });
-    
     if (existing) {
-      return res.status(409).json({ 
-        success: false, 
-        message: `${isPhone ? 'Phone' : 'Email'} is already verified by another account.` 
+      return res.status(409).json({
+        success: false,
+        message: `${isPhone ? 'Phone' : 'Email'} is already verified by another account.`
       });
     }
 
     if (isPhone) {
-      try {
-        const isNigeria = formattedContact.startsWith('+234');
-        let otpValue;
-
-        const isChina = formattedContact.startsWith('+86');
-
-        if (isNigeria) {
-          const termii = await sendTermiiOtp(formattedContact);
-          if (!termii || !termii.pinId) {
-            return res.status(400).json({ 
-              success: false, 
-              message: 'Could not send verification code via Termii. Please check your phone number.' 
-            });
-          }
-          otpValue = termii.pinId;
-        } else if (isChina) {
-          const generatedOtp = generateOtp();
-          const alibabaRes = await sendAlibabaOtp(formattedContact, generatedOtp);
-          if (!alibabaRes.success) {
-            return res.status(400).json({ success: false, message: 'Failed to send verification SMS via Alibaba. Please check your number.' });
-          }
-          otpValue = 'ALIBABA_' + generatedOtp;
-        } else {
-          // Twilio Flow with Fallback
-          try {
-            const twilioRes = await sendTwilioOtp(formattedContact);
-            if (!twilioRes || twilioRes.status !== 'pending') {
-              throw new Error('Twilio API rejected payload');
-            }
-            otpValue = 'TWILIO_VERIFY';
-          } catch(e) {
-            console.error('[SMS_FALLBACK_PROFILE] Twilio dispatch failed, failing over to Alibaba SMS:', e.message);
-            const generatedOtp = generateOtp();
-            const alibabaRes = await sendAlibabaOtp(formattedContact, generatedOtp);
-            if (!alibabaRes.success) {
-              return res.status(400).json({ success: false, message: 'Failed to send verification SMS across all international gateways.' });
-            }
-            otpValue = 'ALIBABA_' + generatedOtp;
-          }
-        }
-
-        await upsertOtp(userId, otpValue); 
-        return res.json({ success: true, message: `Verification code sent to ${isNigeria ? 'phone' : 'international phone'}` });
-      } catch (err) {
-        console.error('SMS Send Error:', err);
-        return res.status(500).json({ success: false, message: `SMS Error: ${err.message}` });
-      }
+      // Generate OTP and log it
+      const otpValue = generateOtp();
+      console.log(`\n==================================================`);
+      console.log(`📱 [PHONE VERIFY OTP CODE]: ${otpValue}`);
+      console.log(`📞 PHONE: ${formattedContact}`);
+      console.log(`⏰ Expires in 10 minutes`);
+      console.log(`==================================================\n`);
+      
+      // Unconditionally store the OTP locally so it can be verified
+      await upsertOtp(formattedContact, otpValue);
+      console.log('[OTP STORE] stored OTP for contact', formattedContact);
+      
+      return res.json({ success: true, message: `Verification code sent to phone` });
     } else {
       const otp = generateOtp();
-      await upsertOtp(userId, otp);
-      await sendSignupOtp(formattedContact, otp); // Reusing nice signup template
+      
+      // Store the OTP locally
+      await upsertOtp(formattedContact, otp);
+      console.log('[OTP STORE] stored OTP for contact', formattedContact);
+      
+      await sendSignupOtp(formattedContact, otp); // Reusing signup template
       return res.json({ success: true, message: 'Verification code sent to your email' });
     }
   } catch (err) {
     return next(err);
   }
 };
+// POST /api/auth/verify-contact-otp
 
-// POST /api/auth/verify-contact-otp (authenticated)
+// Updated verifyContactOtp with enhanced logging and fallback
 exports.verifyContactOtp = async (req, res, next) => {
   try {
-    const { contact, method, otp } = req.body;
+    const { contact: rawContact, phone, method, otp } = req.body;
+    let contact = rawContact || phone || (method === 'email' ? req.body.email?.trim().toLowerCase() : undefined);
     if (!contact || !method || !otp) {
-      return res.status(400).json({ success: false, message: 'Contact, method and OTP are required' });
+      return res.status(400).json({ success: false, message: 'Contact, method, and OTP are required' });
     }
-
-    const userId = req.user.id;
     const isPhone = method === 'phone';
     const formattedContact = isPhone ? formatPhone(contact) : contact.trim().toLowerCase();
 
-    const record = await PasswordReset.findOne({ where: { user_id: userId } });
-    if (!record || record.expires_at < new Date()) {
-      return res.status(400).json({ success: false, message: 'OTP expired or session not found' });
-    }
+    // Log request payload for debugging
+    console.log('[OTP VERIFY] payload:', { method, contact: formattedContact, otp });
 
-    if (isPhone) {
+    // Optional: get authenticated user ID from Authorization header
+    let authenticatedUserId = null;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
       try {
-        const otpValue = record.otp;
-        if (otpValue === 'TWILIO_VERIFY') {
-          const verification = await verifyTwilioOtp(formattedContact, otp);
-          if (verification.status !== 'approved') {
-            return res.status(400).json({ success: false, message: 'Invalid or expired Twilio code' });
-          }
-        } else if (otpValue.startsWith('ALIBABA_')) {
-          const actualOtp = otpValue.split('_')[1];
-          if (actualOtp !== otp) {
-            return res.status(400).json({ success: false, message: 'Invalid or expired verification code.' });
-          }
-        } else {
-          const verification = await verifyTermiiOtp(otpValue, otp);
-          if (String(verification.verified).toLowerCase() !== 'true') {
-            return res.status(400).json({ success: false, message: 'Invalid or expired Phone OTP' });
-          }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded && decoded.id) {
+          authenticatedUserId = decoded.id;
         }
       } catch (err) {
-        console.error('Phone verify error:', err);
-        return res.status(400).json({ success: false, message: 'Verification failed. Please try again.' });
-      }
-    } else {
-      if (record.otp !== otp) {
-        return res.status(400).json({ success: false, message: 'Invalid Email OTP' });
+        console.error('[OTP VERIFY] Token decoding failed:', err.message);
       }
     }
 
-    
-    // Success! Update user
-    const user = await User.findByPk(userId);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-
-    // Claiming logic: Remove this contact from any other user who has it in an unverified state
-    const claimingWhere = isPhone ? { phone: formattedContact } : { email: formattedContact };
-    const claimingField = isPhone ? 'is_phone_verified' : 'is_email_verified';
-    
-    await User.update(
-        { [isPhone ? 'phone' : 'email']: null, [claimingField]: false },
-        { where: { ...claimingWhere, id: { [Op.ne]: userId }, [claimingField]: false } }
-    );
-
-    if (isPhone) {
-      user.phone = formattedContact;
-      user.is_phone_verified = true;
-    } else {
-      user.email = formattedContact;
-      user.is_email_verified = true;
-    }
-    
-    // Update country if verifying phone and user doesn't have it yet
-    if (isPhone) {
-      const phoneCountry = getCountryFromPhone(formattedContact);
-      if (phoneCountry.code) {
-        user.country_code = phoneCountry.code;
-        user.country_name = phoneCountry.name;
+    // Attempt to retrieve OTP from Redis (used for authenticated flows and registration)
+    const { getOtp, consumeOtp } = require('../services/otpService');
+    const storedOtp = await getOtp(formattedContact);
+    if (storedOtp) {
+      console.log('[OTP VERIFY] Found OTP in Redis for', formattedContact, ':', storedOtp);
+      if (storedOtp !== otp) {
+        return res.status(400).json({ success: false, message: 'Invalid OTP' });
       }
+      // OTP matches – consume it
+      await consumeOtp(formattedContact);
+      // Mark verification on user if exists
+      const user = authenticatedUserId 
+        ? await User.findByPk(authenticatedUserId)
+        : await User.findOne({ where: { [isPhone ? 'phone' : 'email']: formattedContact } });
+      if (user) {
+        if (isPhone) {
+          user.is_phone_verified = true;
+          user.phone = formattedContact;
+        } else {
+          user.is_email_verified = true;
+          user.email = formattedContact;
+        }
+        await user.save();
+        console.log(`[OTP VERIFY] Successfully verified and saved ${isPhone ? 'phone' : 'email'} for user ID: ${user.id}`);
+      }
+      return res.json({ success: true, message: `${isPhone ? 'Phone' : 'Email'} verified successfully` });
     }
 
-    await user.save();
-    
-    // Explicitly delete the OTP record after success
-    await record.destroy();
-
+    // Fallback to pending registration (used during signup flow)
+    let pending = await PendingRegistration.findOne({ where: { contact: formattedContact } });
+    // Additional fallback: try raw trimmed contact (no formatting) in case of mismatched format
+    if (!pending) {
+      const rawContact = contact.trim().toLowerCase();
+      pending = await PendingRegistration.findOne({ where: { contact: rawContact } });
+    }
+    if (!pending) {
+      console.warn('[OTP VERIFY] No pending OTP for contact', formattedContact);
+      return res.status(400).json({ success: false, message: 'No pending OTP for this contact' });
+    }
+    // Check expiration
+    if (pending.expires_at && pending.expires_at < new Date()) {
+      await pending.destroy();
+      return res.status(400).json({ success: false, message: 'OTP expired, please resend' });
+    }
+    if (pending.otp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+    // OTP valid – clean up pending record
+    await pending.destroy();
+    // Mark verification on user if exists
+    const user = authenticatedUserId 
+      ? await User.findByPk(authenticatedUserId)
+      : await User.findOne({ where: { [isPhone ? 'phone' : 'email']: formattedContact } });
+    if (user) {
+      if (isPhone) {
+        user.is_phone_verified = true;
+        user.phone = formattedContact;
+      } else {
+        user.is_email_verified = true;
+        user.email = formattedContact;
+      }
+      await user.save();
+      console.log(`[OTP VERIFY PENDING] Successfully verified and saved ${isPhone ? 'phone' : 'email'} for user ID: ${user.id}`);
+    }
     return res.json({ success: true, message: `${isPhone ? 'Phone' : 'Email'} verified successfully` });
   } catch (err) {
     return next(err);

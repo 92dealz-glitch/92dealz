@@ -8,8 +8,8 @@ async function sync() {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
 
-    // Sync all models
-    await sequelize.sync({ alter: true });
+    const isSqlite = sequelize.options.dialect === 'sqlite';
+    await sequelize.sync({ alter: !isSqlite });
     console.log('All models were synchronized successfully.');
 
     process.exit(0);

@@ -17,11 +17,11 @@ async function testPaystackRegion(region, currency, amount) {
   console.log(`\n--- TESTING REGION: ${region} (${currency}) ---`);
   
   const payload = {
-    email: 'test@234deals.com',
+    email: 'test@92dealz.com',
     amount: amount,
     currency: currency,
     reference: `test_ref_${Date.now()}_${region}`,
-    callback_url: 'https://234deals.vercel.app/pricing',
+    callback_url: 'https://92dealz.vercel.app/pricing',
     metadata: {
         userId: 999,
         planId: 'basic',

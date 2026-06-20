@@ -1,7 +1,20 @@
 import { getCookie, setCookie } from "./cookies";
 
-export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://234deals-backend.vercel.app/api";
+const getApiBase = () => {
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+    // When running the frontend locally (usually on port 3000 or 3001), target the backend on localhost:5001
+    if (hostname === 'localhost' && (port === '' || port === '3000' || port === '3001' || port === '3002')) {
+      return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+    }
+  }
+  // Fallback to production URL or env variable
+  return process.env.NEXT_PUBLIC_API_URL || 'https://92dealz-backend.vercel.app/api';
+};
+
+export const API_BASE = getApiBase();
+
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -83,31 +96,40 @@ export async function registerVerify(payload: { contact: string; method: string;
 }
 
 export async function sendPhoneOtp(payload: { phone: string }) {
+  // Public registration flow – use register-initiate endpoint
   return apiFetch<{ success: boolean; message: string }>(
-    "/auth/send-phone-otp",
-    { method: "POST", body: payload, auth: true }
+    "/auth/register-initiate",
+    { method: "POST", body: { contact: payload.phone, method: "phone" } }
   );
 }
 
 export async function verifyPhoneOtp(payload: { phone: string; otp: string }) {
+  // Public endpoint – use register-verify endpoint for registration flow
   return apiFetch<{ success: boolean; message: string }>(
-    "/auth/verify-phone-otp",
-    { method: "POST", body: payload, auth: true }
+    "/auth/register-verify",
+    { method: "POST", body: { contact: payload.phone, method: "phone", otp: payload.otp } }
   );
 }
 
 export async function sendVerificationOtp(payload: { contact: string; method: "email" | "phone" }) {
   return apiFetch<{ success: boolean; message: string }>(
     "/auth/send-verification-otp",
-    { method: "POST", body: payload, auth: true }
+    { method: "POST", body: payload }
   );
 }
 
 export async function verifyContactOtp(payload: { contact: string; method: "email" | "phone"; otp: string }) {
-  return apiFetch<{ success: boolean; message: string }>(
+  const data = await apiFetch<{ success: boolean; message: string; token?: string; user?: any }>(
     "/auth/verify-contact-otp",
     { method: "POST", body: payload, auth: true }
   );
+  if (typeof window !== "undefined" && data.token) {
+    setCookie("token", data.token);
+    window.localStorage.setItem("token", data.token);
+    if (data.user?.role) window.localStorage.setItem("role", String(data.user.role));
+    if (data.user?.id) window.localStorage.setItem("user_id", String(data.user.id));
+  }
+  return data;
 }
 
 export async function loginUser(payload: {
@@ -445,3 +467,5 @@ export async function submitPoll(payload: { category: string; choice: string }) 
     { method: "POST", body: payload, auth: true }
   );
 }
+
+

@@ -107,7 +107,7 @@ exports.getLocationCounts = async (req, res, next) => {
   try {
     // Get country/location counts
     const [locations] = await sequelize.query(`
-      SELECT COALESCE(location, 'Nigeria') as name, COUNT(*)::INT as count 
+      SELECT COALESCE(location, 'Pakistan') as name, COUNT(*)::INT as count 
       FROM deals 
       WHERE status = 'active' 
       GROUP BY location

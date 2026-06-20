@@ -92,7 +92,7 @@ export default function CSRDealManagement() {
         <div className="p-6 border-b border-zinc-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2">
-              <Package className="text-orange-500" />
+              <Package className="text-[#708238]" />
               Deal Moderation
             </h3>
             <p className="text-zinc-500 text-sm">Review activity and manage listing statuses</p>
@@ -101,7 +101,7 @@ export default function CSRDealManagement() {
               <select 
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-4 py-2 border border-zinc-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-orange-300"
+                  className="px-4 py-2 border border-zinc-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#E9E0D4]/30"
               >
                   <option value="all">All Statuses</option>
                   <option value="active">Active</option>
@@ -115,7 +115,7 @@ export default function CSRDealManagement() {
                       placeholder="Search by name or ID..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-zinc-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-300 outline-none transition-all"
+                      className="w-full pl-10 pr-4 py-2 border border-zinc-200 rounded-xl text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition-all"
                   />
               </div>
           </div>
@@ -137,7 +137,7 @@ export default function CSRDealManagement() {
                 <tr>
                   <td colSpan={4} className="py-20 text-center">
                     <div className="flex flex-col items-center gap-2">
-                      <Loader2 className="animate-spin text-orange-600" />
+                      <Loader2 className="animate-spin text-[#708238]" />
                       <span className="text-zinc-400 font-black uppercase tracking-widest text-[10px]">Fetching Listings...</span>
                     </div>
                   </td>
@@ -161,7 +161,7 @@ export default function CSRDealManagement() {
                                   <Link 
                                       href={`/product/${deal.id}`}
                                       target="_blank"
-                                      className="text-orange-600 hover:text-orange-700 text-[10px] font-black uppercase flex items-center gap-1"
+                                      className="text-[#708238] hover:text-[#5E6E2F] text-[10px] font-black uppercase flex items-center gap-1"
                                   >
                                       External <ExternalLink size={10} />
                                   </Link>
@@ -176,7 +176,7 @@ export default function CSRDealManagement() {
                     <td className="px-6 py-4 text-center">
                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${
                           deal.plan_type === 'star' ? 'bg-yellow-100 text-yellow-700' : 
-                          deal.plan_type === 'basic' ? 'bg-orange-100 text-orange-700' : 
+                          deal.plan_type === 'basic' ? 'bg-[#E9E0D4] text-[#5E6E2F]' : 
                           'bg-zinc-100 text-zinc-500'
                         }`}>
                           {deal.plan_type === 'star' ? 'Premium' : deal.plan_type === 'basic' ? 'Featured' : 'Standard'}
@@ -185,7 +185,7 @@ export default function CSRDealManagement() {
                     <td className="px-6 py-4 text-center">
                       <div className="flex flex-col items-center gap-1">
                         <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-full border ${
-                          deal.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                          deal.status === 'active' ? 'bg-[#FFFDF9]/30 text-emerald-600 border-emerald-100' :
                           deal.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : 
                           'bg-red-50 text-red-600 border-red-100'
                         }`}>
@@ -202,7 +202,7 @@ export default function CSRDealManagement() {
                       <div className="flex items-center justify-end gap-2">
                         <button 
                             onClick={() => setSelectedProduct(deal)}
-                            className="p-2 bg-zinc-100 text-zinc-600 hover:bg-orange-600 hover:text-white rounded-xl transition-all border border-zinc-200"
+                            className="p-2 bg-zinc-100 text-zinc-600 hover:bg-[#708238] hover:text-white rounded-xl transition-all border border-zinc-200"
                             title="Quick View"
                         >
                             <Eye size={16} />
@@ -212,7 +212,7 @@ export default function CSRDealManagement() {
                           <button
                             onClick={() => handleStatusAction(deal.id, 'approve')}
                             disabled={actionLoading === deal.id}
-                            className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm border border-emerald-100"
+                            className="p-2 bg-[#FFFDF9]/30 text-emerald-600 hover:bg-[#F8F4EE]merald-600 hover:text-white rounded-xl transition-all shadow-sm border border-emerald-100"
                             title="Approve"
                           >
                             <Check size={16} />
@@ -247,7 +247,7 @@ export default function CSRDealManagement() {
         {meta && meta.pages > 1 && (
           <div className="p-4 border-t border-zinc-100 flex items-center justify-between bg-zinc-50/50">
             <p className="text-xs text-zinc-400 font-black uppercase tracking-widest">
-              Page <span className="text-orange-600">{page}</span> of {meta.pages}
+              Page <span className="text-[#708238]">{page}</span> of {meta.pages}
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -283,7 +283,7 @@ export default function CSRDealManagement() {
                             className="w-full h-full object-contain"
                         />
                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full border border-zinc-200 flex items-center gap-1.5 shadow-sm">
-                            <Tag size={12} className="text-orange-600" />
+                            <Tag size={12} className="text-[#708238]" />
                             <span className="text-xs font-black uppercase tracking-tight">₦{Number(selectedProduct.price).toLocaleString()}</span>
                         </div>
                       </div>
@@ -306,10 +306,10 @@ export default function CSRDealManagement() {
                       </button>
 
                       <div className="mb-6">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-600 mb-2 block">Quick Inspection</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#708238] mb-2 block">Quick Inspection</span>
                         <h2 className="text-2xl font-black text-zinc-900 leading-tight mb-2">{selectedProduct.title}</h2>
                         <div className="flex items-center gap-4 text-xs font-bold text-zinc-400">
-                            <span className="flex items-center gap-1.5"><MapPin size={14} className="text-zinc-300" /> {selectedProduct.location || "Lagos, Nigeria"}</span>
+                            <span className="flex items-center gap-1.5"><MapPin size={14} className="text-zinc-300" /> {selectedProduct.location || "Lagos, Pakistan"}</span>
                             <span className="flex items-center gap-1.5"><ShoppingBag size={14} className="text-zinc-300" /> {selectedProduct.merchant}</span>
                         </div>
                       </div>
@@ -351,7 +351,7 @@ export default function CSRDealManagement() {
                         <Link 
                             href={`/product/${selectedProduct.id}`}
                             target="_blank"
-                            className="text-xs font-black uppercase text-zinc-400 hover:text-orange-600 flex items-center gap-2 transition-colors"
+                            className="text-xs font-black uppercase text-zinc-400 hover:text-[#708238] flex items-center gap-2 transition-colors"
                         >
                             View Full Page <ExternalLink size={14} />
                         </Link>
@@ -360,7 +360,7 @@ export default function CSRDealManagement() {
                                 <button
                                     onClick={() => handleStatusAction(selectedProduct.id, 'approve')}
                                     disabled={actionLoading === selectedProduct.id}
-                                    className="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 flex items-center gap-2"
+                                    className="px-6 py-2.5 bg-[#F8F4EE]merald-600 text-white rounded-xl text-xs font-bold hover:bg-[#F8F4EE]merald-700 transition-all shadow-lg shadow-[#E9E0D4]/30 flex items-center gap-2"
                                 >
                                     <Check size={16} /> Approve Ad
                                 </button>
@@ -383,3 +383,5 @@ export default function CSRDealManagement() {
     </div>
   );
 }
+
+

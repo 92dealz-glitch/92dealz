@@ -30,7 +30,7 @@ export function ActivityItem({ image, title, views, time, status }: ActivityItem
             </div>
             <div className="flex items-center">
                 <span className={`px-4 py-1.5 rounded-lg text-[13px] font-black tracking-tight ${status === "active"
-                    ? "bg-[#10B981] text-white"
+                    ? "bg-[#C7A27C] text-white"
                     : "bg-[#4B5563] text-white"
                     }`}>
                     {status}
@@ -67,3 +67,5 @@ export default function RecentActivity({ ads = [] }: { ads?: any[] }) {
         </div>
     );
 }
+
+

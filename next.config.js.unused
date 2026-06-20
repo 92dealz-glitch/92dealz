@@ -1,0 +1,15 @@
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
+  // Existing config can be extended here
+  experimental: {
+    // Explicitly tell Turbopack where the Next.js app lives
+    turbopack: {
+      // Path is relative to the directory containing package.json
+      root: "./Frontend",
+    },
+  },
+};
+
+module.exports = nextConfig;

@@ -73,7 +73,7 @@ export default function PollGame() {
               router.push("/");
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="bg-[#f45c03] text-white px-8 py-3 rounded-full font-bold hover:bg-[#f45c03] transition-all"
+            className="bg-[#708238] text-white px-8 py-3 rounded-full font-bold hover:bg-[#5E6E2F] transition-all"
           >
             Back to Home
           </button>
@@ -116,7 +116,7 @@ export default function PollGame() {
 
       <div className="max-w-[1200px] mx-auto relative z-10">
         <h2 className="text-center text-[28px] sm:text-[42px] md:text-[52px] font-bold mb-4">
-          Let&apos;s Play a Quick <span className="text-[#f45c03]">Poll Game</span> 🎮
+          Let&apos;s Play a Quick <span className="text-[#708238]">Poll Game</span> 🎮
         </h2>
         <p className="text-center text-gray-600 mb-8 sm:mb-12 max-w-[600px] mx-auto text-sm sm:text-base">
           Help us personalize your experience and win insights into what others are shopping for!
@@ -125,7 +125,7 @@ export default function PollGame() {
         <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-[1100px] mx-auto">
           {/* Question 1 */}
           <div className="relative">
-            <div className="relative bg-[#f45c03] rounded-xl p-5 sm:p-8 shadow-lg h-full z-10 text-white">
+            <div className="relative bg-[#708238] rounded-xl p-5 sm:p-8 shadow-lg h-full z-10 text-white">
               <h3 className="text-[18px] sm:text-[20px] font-semibold mb-6 uppercase tracking-wide">If you could shop only ONE category this week, which would it be?</h3>
               <div className="flex flex-col gap-5">
                 {["Electronics", "Fashion", "Phones & Accessories"].map((opt) => (
@@ -137,7 +137,7 @@ export default function PollGame() {
                     <div className={`w-5 h-5 rounded-full border-2 border-white flex items-center justify-center shrink-0 transition-all ${
                         category === opt ? "bg-white" : "bg-transparent"
                     }`}>
-                      {category === opt && <div className="w-2 h-2 rounded-full bg-[#f45c03]" />}
+                      {category === opt && <div className="w-2 h-2 rounded-full bg-[#708238]" />}
                     </div>
                     <span className={`text-[17px] sm:text-[19px] font-medium transition-colors ${category === opt ? "font-bold text-white" : "text-white/95"}`}>
                       {opt}
@@ -150,7 +150,7 @@ export default function PollGame() {
 
           {/* Question 2 */}
           <div className="relative">
-            <div className="relative bg-[#f45c03] rounded-xl p-5 sm:p-8 shadow-lg h-full z-10 text-white">
+            <div className="relative bg-[#708238] rounded-xl p-5 sm:p-8 shadow-lg h-full z-10 text-white">
               <h3 className="text-[18px] sm:text-[20px] font-semibold mb-6 uppercase tracking-wide">What makes you click a product the fastest?</h3>
               <div className="flex flex-col gap-5">
                 {["Fine picture", "Popular item", "Good description"].map((opt) => (
@@ -162,7 +162,7 @@ export default function PollGame() {
                     <div className={`w-5 h-5 rounded-full border-2 border-white flex items-center justify-center shrink-0 transition-all ${
                         choice === opt ? "bg-white" : "bg-transparent"
                     }`}>
-                      {choice === opt && <div className="w-2 h-2 rounded-full bg-[#f45c03]" />}
+                      {choice === opt && <div className="w-2 h-2 rounded-full bg-[#708238]" />}
                     </div>
                     <span className={`text-[17px] sm:text-[19px] font-medium transition-colors ${choice === opt ? "font-bold text-white" : "text-white/95"}`}>
                       {opt}
@@ -197,3 +197,5 @@ export default function PollGame() {
     </section>
   );
 }
+
+

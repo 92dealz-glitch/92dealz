@@ -19,7 +19,7 @@ interface PricingPlan {
   description: string;
   features: string[];
   buttonText: string;
-  color: 'orange' | 'purple' | 'gray' | 'black';
+  color: 'emerald' | 'purple' | 'gray' | 'black';
   icon: React.ReactNode;
   recommended?: boolean;
 }
@@ -40,20 +40,20 @@ function SuccessModal({ isOpen, onClose, planName }: { isOpen: boolean; onClose:
         </button>
 
         <div className="mb-8 flex justify-center">
-          <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center animate-bounce">
-            <Trophy className="w-12 h-12 text-[#f45c03]" />
+          <div className="w-24 h-24 bg-[#FFFDF9] rounded-full flex items-center justify-center animate-bounce">
+            <Trophy className="w-12 h-12 text-[#708238]" />
           </div>
         </div>
 
         <h2 className="text-4xl font-black text-black mb-4">Congratulations!</h2>
         <p className="text-xl text-gray-600 mb-8 font-bold">
-          You have successfully upgraded to the <span className="text-[#f45c03]">{planName}</span>. Your new features are now active!
+          You have successfully upgraded to the <span className="text-[#708238]">{planName}</span>. Your new features are now active!
         </p>
 
         <div className="space-y-4">
           <Link 
             href="/vendor-dashboard/add-product"
-            className="block w-full py-5 bg-[#f45c03] text-white rounded-2xl font-black text-lg shadow-xl shadow-orange-200 hover:bg-orange-600 transition-all active:scale-95"
+            className="block w-full py-5 bg-[#708238] text-white rounded-2xl font-black text-lg shadow-xl shadow-[#E9E0D4]/30 hover:bg-[#5E6E2F] transition-all active:scale-95"
           >
             Post Your First Ad
           </Link>
@@ -66,7 +66,7 @@ function SuccessModal({ isOpen, onClose, planName }: { isOpen: boolean; onClose:
         </div>
 
         <p className="mt-8 text-sm text-gray-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-          <ShieldCheck className="w-4 h-4" /> Secure Purchase • 234Deals Verified
+          <ShieldCheck className="w-4 h-4" /> Secure Purchase • 92Dealz Verified
         </p>
       </div>
     </div>
@@ -98,54 +98,12 @@ export default function PricingPage() {
     fetchProfile();
   }, []);
 
-  // Check for Paystack redirect on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URL(window.location.href).searchParams;
-      const reference = urlParams.get('reference');
-      const trxref = urlParams.get('trxref'); // Paystack also adds this
-      
-      if (reference) {
-        // Clear params from URL silently
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, '', newUrl);
-
-        setLoading('verify');
-        verifyPayment(reference).then(async (res) => {
-          if (res.success) {
-            const planIdMapping: Record<string, string> = {
-              'starter': 'Starter Add-on',
-              'basic': 'Featured Tier',
-              'star': 'Premium Tier',
-              'premium': 'Ultimate Tier'
-            };
-            setPurchasedPlanName(planIdMapping[res.data?.plan || 'basic'] || "Premium Plan");
-            setIsSuccessModalOpen(true);
-            
-            // Refresh profile
-            const profileRes = await getProfile();
-            if (profileRes.success) {
-              setProfile(profileRes.data as UserProfile);
-              if (res.data?.plan !== 'starter') setCurrentPlan(res.data?.plan as any);
-            }
-          } else {
-            showAlert(res.message || "Payment verification failed. Please contact support if you were charged.", "error");
-          }
-          setLoading(null);
-        }).catch((err) => {
-          showAlert("Failed to confirm payment status.", "error");
-          setLoading(null);
-        });
-      }
-    }
-  }, [showAlert]);
-
   if (profileLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-[#fafafa]">
         <Navbar />
         <div className="flex-grow flex items-center justify-center">
-           <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+           <div className="w-12 h-12 border-4 border-[#708238] border-t-transparent rounded-full animate-spin"></div>
         </div>
         <Footer />
       </div>
@@ -153,20 +111,26 @@ export default function PricingPage() {
   }
 
   const handleBuy = async (planId: 'free' | 'basic' | 'star' | 'premium' | 'starter', planName: string) => {
-    // If free plan, use original logic or ignore (there's no payment for free)
     if (planId === 'free') return;
     
     setLoading(planId);
     try {
-      const res = await initializePayment(planId, profile?.email);
+      const res = await buyPlan(planId);
       
-      if (res.success && res.authorization_url) {
-        // Redirect completely to Paystack
-        window.location.href = res.authorization_url;
+      if (res.success) {
+        setPurchasedPlanName(planName);
+        setIsSuccessModalOpen(true);
+        
+        // Refresh profile
+        const profileRes = await getProfile();
+        if (profileRes.success) {
+          setProfile(profileRes.data as UserProfile);
+          if (planId !== 'starter') setCurrentPlan(planId as any);
+        }
       } else {
-        showAlert(res.message || "Failed to initialize payment gateway.", "error");
-        setLoading(null);
+        showAlert(res.message || "Failed to initialize payment.", "error");
       }
+      setLoading(null);
     } catch (err: any) {
       showAlert(err.message || "An error occurred preparing payment.", "error");
       setLoading(null);
@@ -176,7 +140,7 @@ export default function PricingPage() {
 
   const phone = profile?.phone || "";
   const isChina = profile?.country_name === 'China' || profile?.country_code === 'CN' || phone.startsWith('+86') || phone.startsWith('86');
-  const isNigeria = profile?.country_name === 'Nigeria' || profile?.country_code === 'NG' || phone.startsWith('+234') || phone.startsWith('234');
+  const isPakistan = profile?.country_name === 'Pakistan' || profile?.country_code === 'PK' || phone.startsWith('+92') || phone.startsWith('92');
   
   // Temporarily bypass restriction globally.
   const isRestricted = false;
@@ -194,8 +158,8 @@ export default function PricingPage() {
         '8h Support SLA'
       ],
       buttonText: 'Subscribe',
-      color: 'orange',
-      icon: <Zap className="w-5 h-5 text-[#f45c03]" />,
+      color: 'emerald',
+      icon: <Zap className="w-5 h-5 text-[#708238]" />,
       recommended: true
     },
     {
@@ -232,7 +196,7 @@ export default function PricingPage() {
     {
       id: 'starter',
       name: 'Starter Add-on',
-      price: '₦250',
+      price: 'Rs 250',
       period: '/slot',
       description: 'Instant +1 Standard slot boost.',
       features: [
@@ -247,7 +211,7 @@ export default function PricingPage() {
     {
       id: 'basic',
       name: 'Featured',
-      price: '₦1,000',
+      price: 'Rs 1,000',
       period: '/month',
       description: 'Scaling visibility for growing businesses.',
       features: [
@@ -257,14 +221,14 @@ export default function PricingPage() {
         '8h priority support'
       ],
       buttonText: 'Upgrade Now',
-      color: 'orange',
-      icon: <Zap className="w-5 h-5 text-[#f45c03]" />,
+      color: 'emerald',
+      icon: <Zap className="w-5 h-5 text-[#708238]" />,
       recommended: true
     },
     {
       id: 'star',
       name: 'Star Premium',
-      price: '₦5,000',
+      price: 'Rs 5,000',
       period: '/month',
       description: 'Elite placement for top vendors.',
       features: [
@@ -280,7 +244,7 @@ export default function PricingPage() {
     {
       id: 'premium',
       name: 'Ultimate',
-      price: '₦50,000',
+      price: 'Rs 50,000',
       period: '/month',
       description: 'The absolute pinnacle of market dominance.',
       features: [
@@ -318,7 +282,7 @@ export default function PricingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-black text-black mb-4 tracking-tight">
-              Scale Your <span className="text-[#f45c03]">Sales</span> Reach
+              Scale Your <span className="text-[#708238]">Sales</span> Reach
             </h1>
             <p className="text-gray-500 text-lg md:text-xl font-bold max-w-xl mx-auto">
               Unlock premium visibility and reach thousands of buyers instantly.
@@ -326,9 +290,9 @@ export default function PricingPage() {
           </div>
 
           {isRestricted ? (
-            <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-[40px] border border-orange-100 shadow-xl text-center">
-              <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Info className="w-10 h-10 text-orange-500" />
+            <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-[40px] border border-emerald-100 shadow-xl text-center">
+              <div className="w-20 h-20 bg-[#FFFDF9]/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Info className="w-10 h-10 text-[#708238]" />
               </div>
               <h2 className="text-2xl md:text-3xl font-black text-black mb-4">Service Not Available</h2>
               <p className="text-gray-600 font-bold mb-8">
@@ -336,7 +300,7 @@ export default function PricingPage() {
               </p>
               <Link 
                 href="/"
-                className="inline-block px-8 py-4 bg-black text-white rounded-2xl font-black hover:bg-orange-600 transition-all active:scale-95"
+                className="inline-block px-8 py-4 bg-black text-white rounded-2xl font-black hover:bg-[#708238] transition-all active:scale-95"
               >
                 Back to Home
               </Link>
@@ -352,11 +316,11 @@ export default function PricingPage() {
                 <div 
                   key={plan.id}
                   className={`relative w-full sm:w-[320px] flex flex-col bg-white p-8 rounded-[32px] border transition-all duration-300 ${
-                    isRecommended ? 'border-[#f45c03] shadow-2xl shadow-orange-50 scale-[1.02] z-10' : 'border-gray-100 shadow-sm hover:shadow-md'
+                    isRecommended ? 'border-[#708238] shadow-2xl shadow-emerald-50 scale-[1.02] z-10' : 'border-gray-100 shadow-sm hover:shadow-md'
                   }`}
                 >
                   {isRecommended && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#f45c03] text-white px-5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#708238] text-white px-5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
                       Best Value
                     </div>
                   )}
@@ -366,7 +330,7 @@ export default function PricingPage() {
                       {plan.icon}
                     </div>
                     {plan.id !== 'starter' && currentPlan === plan.id && (
-                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 uppercase animate-pulse">Active</span>
+                      <span className="text-[10px] font-black text-emerald-600 bg-[#FFFDF9]/30 px-3 py-1 rounded-full border border-emerald-100 uppercase animate-pulse">Active</span>
                     )}
                   </div>
 
@@ -381,7 +345,7 @@ export default function PricingPage() {
                   <div className="flex-grow space-y-3 mb-8">
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-3">
-                        <Check className="w-4 h-4 text-[#f45c03] mt-0.5" />
+                        <Check className="w-4 h-4 text-[#708238] mt-0.5" />
                         <span className="text-gray-600 text-[13px] font-bold leading-tight">{feature}</span>
                       </div>
                     ))}
@@ -403,7 +367,7 @@ export default function PricingPage() {
                       </div>
                       <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full transition-all duration-1000 ${plan.id === 'premium' ? 'bg-purple-500 w-full' : 'bg-[#f45c03]'}`}
+                          className={`h-full transition-all duration-1000 ${plan.id === 'premium' ? 'bg-purple-500 w-full' : 'bg-[#708238]'}`}
                           style={{ 
                             width: plan.id === 'premium' ? '100%' : `${Math.min(100, (profile.subscription_stats[plan.id as 'free'|'basic'|'star'] / (profile.subscription_stats.limits?.[plan.id as 'free'|'basic'|'star'] || 1)) * 100)}%` 
                           }}
@@ -419,7 +383,7 @@ export default function PricingPage() {
                       status.disabled 
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                         : isRecommended || isUltimate
-                          ? 'bg-black text-white hover:bg-[#f45c03]' 
+                          ? 'bg-black text-white hover:bg-[#708238]' 
                           : 'bg-white border-2 border-black text-black hover:bg-black hover:text-white'
                     }`}
                   >
@@ -438,3 +402,5 @@ export default function PricingPage() {
     </div>
   );
 }
+
+

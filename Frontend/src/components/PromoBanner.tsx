@@ -16,7 +16,7 @@ const banners = [
     description: "Increase visibility and attract more buyers with a featured placement",
     buttonText: "Grab this spot",
     href: "/vendor-dashboard/add-product",
-    image: "/assets/images/advertladynew.png",
+    image: "/images/advertladynew.png",
     theme: "orange",
   },
   {
@@ -28,8 +28,8 @@ const banners = [
     description: "Put your product in front of thousands of shoppers",
     buttonText: "Get Featured",
     href: "/vendor-dashboard/add-product",
-    image: "/assets/images/advertlady2.png",
-    theme: "green",
+    image: "/images/heroimagenew copy.png",
+    theme: "orange",
   },
 ];
 
@@ -82,14 +82,14 @@ export default function PromoBanner() {
                 <>
                   <div className="absolute top-10 left-10 z-10 grid grid-cols-5 gap-2 hidden lg:grid opacity-20">
                     {[...Array(20)].map((_, i) => (
-                      <div key={i} className="w-2.5 h-2.5 rounded-full bg-[#f45c03]" />
+                      <div key={i} className="w-2.5 h-2.5 rounded-full bg-[#708238]" />
                     ))}
                   </div>
-                  <div className="absolute bottom-0 left-0 w-32 h-16 bg-[#f45c03]/10 z-10 hidden lg:block rounded-tr-3xl" />
+                  <div className="absolute bottom-0 left-0 w-32 h-16 bg-[#708238]/10 z-10 hidden lg:block rounded-tr-3xl" />
                   <div 
                     className="absolute inset-0 lg:left-[45%] left-[38%] sm:left-[42%]"
                     style={{
-                      background: "linear-gradient(135deg, #f45c03 0%, #f45c03 50%, #f45c03 100%)",
+                      background: "linear-gradient(135deg, #708238 0%, #5E6E2F 50%, #3730A3 100%)",
                       clipPath: "polygon(15% 0, 100% 0, 100% 100%, 0% 100%)",
                     }}
                   />
@@ -101,13 +101,13 @@ export default function PromoBanner() {
                   </div>
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden lg:grid grid-cols-3 gap-3 opacity-40">
                     {[...Array(6)].map((_, i) => (
-                      <div key={i} className="w-2 h-2 rounded-full bg-emerald-600" />
+                      <div key={i} className="w-2 h-2 rounded-full bg-[#F8F4EE]merald-600" />
                     ))}
                   </div>
                   <div 
                     className="absolute inset-0 lg:right-[45%] right-[38%] sm:right-[42%]"
                     style={{
-                      background: "linear-gradient(135deg, #22C55E 0%, #16A34A 50%, #15803D 100%)",
+                      background: "linear-gradient(135deg, #22C55E 0%, #16A34A 50%, #708238 100%)",
                       clipPath: "polygon(0 0, 85% 0, 100% 100%, 0 100%)",
                     }}
                   />
@@ -118,18 +118,18 @@ export default function PromoBanner() {
               <div className={`relative grid h-full items-center ${banner.theme === 'orange' ? 'grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.1fr_0.9fr]' : 'grid-cols-[0.85fr_1.15fr] lg:grid-cols-[0.9fr_1.1fr]'}`}>
                 
                 {/* Image Section (Calculated order/position) */}
-                <div className={`relative w-full h-full z-20 overflow-visible ${banner.theme === 'green' ? 'order-1' : 'order-2'}`}>
-                   <div className={`absolute inset-0 flex items-end justify-center ${banner.theme === 'orange' ? 'lg:justify-end translate-x-2 lg:translate-x-0' : 'lg:justify-start -translate-x-4 lg:translate-x-0'}`}>
-                      <div className="relative w-[140%] h-[115%] lg:w-[110%] lg:h-[105%]">
-                        <Image
-                          src={banner.image}
-                          alt="Banner Promotional"
-                          fill
-                          className="object-contain object-bottom pointer-events-none select-none"
-                          priority
-                          quality={98}
-                        />
-                      </div>
+                <div className={`relative w-full h-full z-20 overflow-hidden ${banner.theme === 'green' ? 'order-1' : 'order-2'}`}>
+                   <div className={`absolute inset-0 flex items-center justify-center ${banner.theme === 'orange' ? 'lg:justify-end translate-x-2 lg:translate-x-0' : 'lg:justify-start -translate-x-4 lg:translate-x-0'}`}>
+                      <div className={`relative ${
+                           banner.id === 2
+                             ? 'w-[210%] h-[210%] lg:w-[190%] lg:h-[190%]'
+                             : banner.theme === 'orange'
+                               ? 'w-[120%] h-[120%] lg:w-[110%] lg:h-[110%]'
+                               : 'w-[125%] h-[100%] lg:w-[100%] lg:h-[95%]'
+                        }`}>
+                          
+                      <img src={banner.image} alt="Banner Promotional" className={banner.id === 2 ? "object-contain object-center pointer-events-none select-none translate-y-64 -translate-x-6" : "object-contain object-center pointer-events-none select-none translate-y-8 -translate-x-2"} />
+</div>
                    </div>
                 </div>
 
@@ -145,7 +145,7 @@ export default function PromoBanner() {
                       </span>
                       <span className="inline-flex items-center gap-2 font-black text-[1.2rem] sm:text-[2.2rem] lg:text-[4.2rem] leading-[1.05] tracking-tight">
                         <span className="text-[1.1rem] sm:text-[2.2rem]">{banner.emoji}</span>
-                        <span className="text-[#f45c03]">{banner.accent}</span>
+                        <span className="text-[#708238]">{banner.accent}</span>
                       </span>
                     </h1>
                   ) : (
@@ -156,7 +156,7 @@ export default function PromoBanner() {
                       <h1 className="font-black text-[1.8rem] sm:text-[3rem] lg:text-[5.5rem] leading-[0.9] tracking-tighter text-gray-900">
                         {banner.title1}
                       </h1>
-                      <h2 className="font-black text-[1.1rem] sm:text-[1.8rem] lg:text-[3.2rem] leading-[1.1] tracking-tight text-[#f45c03] mt-1">
+                      <h2 className="font-black text-[1.1rem] sm:text-[1.8rem] lg:text-[3.2rem] leading-[1.1] tracking-tight text-[#708238] mt-1">
                         {banner.accent}
                       </h2>
                       <h2 className="font-black text-[1.1rem] sm:text-[1.8rem] lg:text-[3.2rem] leading-[1.1] tracking-tight text-gray-900">
@@ -175,9 +175,10 @@ export default function PromoBanner() {
                                px-6 py-2.5 sm:px-10 sm:py-3.5 lg:px-14 lg:py-4.5
                                rounded-full transition-all duration-300 ease-out hover:scale-[1.03] active:scale-[0.97]
                                ${banner.theme === 'orange' 
-                                 ? 'bg-[#f45c03] text-white shadow-[0_6px_20px_rgba(255,107,53,0.3)] hover:shadow-[0_12px_30px_rgba(255,107,53,0.4)] hover:bg-[#f45c03]' 
-                                 : 'bg-white text-emerald-700 border-2 border-emerald-600 shadow-[0_6px_20px_rgba(0,0,0,0.05)] hover:bg-emerald-50 hover:border-emerald-700'
-                               }`}
+                                 ? 'bg-[#708238] text-white shadow-[0_6px_20px_rgba(15,157,88,0.3)] hover:shadow-[0_12px_30px_rgba(15,157,88,0.4)] hover:bg-[#5E6E2F]' 
+                                 : 'bg-white text-emerald-700 border-2 border-emerald-600 shadow-[0_6px_20px_rgba(0,0,0,0.05)] hover:bg-[#FFFDF9]/30 hover:border-emerald-700'
+                               }
+                           <img src={banner.image} alt="Banner Promotional" className={banner.id === 2 ? "object-contain object-center pointer-events-none select-none translate-y-28 -translate-x-6" : "object-contain object-center pointer-events-none select-none translate-y-8 -translate-x-2"} />`}
                   >
                     {banner.buttonText}
                   </button>
@@ -206,3 +207,5 @@ export default function PromoBanner() {
     </section>
   );
 }
+
+

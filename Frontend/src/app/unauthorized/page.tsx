@@ -19,7 +19,7 @@ export default function UnauthorizedPage() {
         <div className="flex flex-col gap-3">
           <Link
             href="/"
-            className="flex items-center justify-center gap-2 w-full bg-[#f45c03] text-white font-black py-4 rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-100"
+            className="flex items-center justify-center gap-2 w-full bg-[#708238] text-white font-black py-4 rounded-xl hover:bg-[#708238] transition-all shadow-lg shadow-[#E9E0D4]"
           >
             <Home size={18} />
             Back to Home
@@ -36,11 +36,13 @@ export default function UnauthorizedPage() {
 
         <div className="mt-8 pt-6 border-t border-zinc-50">
           <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-widest">
-            234Deals Security Protocol
+            92Dealz Security Protocol
           </p>
         </div>
       </div>
     </div>
   );
 }
+
+
 

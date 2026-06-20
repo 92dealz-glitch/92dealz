@@ -30,7 +30,7 @@ const sendAlibabaOtp = async (phone, otpValue) => {
 
     const request = new Dysmsapi.SendSmsRequest({
       phoneNumbers: safePhone,
-      signName: process.env.ALIBABA_SMS_SIGN_NAME || "234Deals",
+      signName: process.env.ALIBABA_SMS_SIGN_NAME || "92Dealz",
       templateCode: process.env.ALIBABA_SMS_TEMPLATE_CODE || "SMS_0000000",
       templateParam: JSON.stringify({ code: otpValue.toString() }), // Safely ensuring it acts as a variable map
     });

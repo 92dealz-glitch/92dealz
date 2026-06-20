@@ -1,0 +1,103 @@
+﻿
+> 234deals@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.1.0
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+node.exe :  Γ¿» ESLint: 
+nextVitals is not iterable
+At C:\Users\LENOVO\AppData
+\Roaming\npm\npm.ps1:24 
+char:5
++     & "node$exe"  "$base
+dir/node_modules/npm/bin/n
+pm-cli.js" $args
++     ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (   
+  Γ¿» ESLint: nextVital   
+ s is not iterable:Str    
+ing) [], RemoteExcept    
+ion
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+   Collecting page data ...
+   Generating static pages (0/49) ...
+   Generating static pages (12/49) 
+   Generating static pages (24/49) 
+   Generating static pages (36/49) 
+ Γ£ô Generating static pages (49/49)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                         Size     First Load JS
+Γöî Γùï /                                               12.8 kB         136 kB
+Γö£ Γùï /_not-found                                     990 B           107 kB
+Γö£ Γùï /843901globallink-admin843901                   2.26 kB         116 kB
+Γö£ Γùï /about                                          225 B           124 kB
+Γö£ Γùï /account-settings                               5.98 kB         112 kB
+Γö£ Γùï /admin                                          16.5 kB         225 kB
+Γö£ Γùï /admin-dashboard                                371 B           106 kB
+Γö£ Γùï /admin/analytics                                12.5 kB         218 kB
+Γö£ Γùï /admin/audit-logs                               4.46 kB         110 kB
+Γö£ Γùï /admin/deals                                    4.98 kB         114 kB
+Γö£ ╞Æ /admin/deals/edit/[id]                          896 B           122 kB
+Γö£ Γùï /admin/deals/new                                609 B           121 kB
+Γö£ Γùï /admin/deleted-deals                            3.47 kB         109 kB
+Γö£ Γùï /admin/settings                                 7.22 kB         113 kB
+Γö£ Γùï /admin/submissions                              5.45 kB         111 kB
+Γö£ Γùï /admin/taxonomy                                 5.11 kB         117 kB
+Γö£ Γùï /admin/vendors                                  4.8 kB          111 kB
+Γö£ Γùï /affiliates                                     225 B           124 kB
+Γö£ ╞Æ /api/auth/[...nextauth]                         144 B           106 kB
+Γö£ Γùï /billing-policy                                 225 B           124 kB
+Γö£ ╞Æ /category/[slug]                                4.3 kB          128 kB
+Γö£ Γùï /contact                                        1.93 kB         128 kB
+Γö£ Γùï /cookie-policy                                  225 B           124 kB
+Γö£ Γùï /copyright-policy                               225 B           124 kB
+Γö£ Γùï /deals                                          4.25 kB         110 kB
+Γö£ Γùï /faq                                            1.25 kB         127 kB
+Γö£ Γùï /favorites                                      1.7 kB          127 kB
+Γö£ Γùï /forgot-password                                3.81 kB         113 kB
+Γö£ Γùï /login                                          2.82 kB         116 kB
+Γö£ Γùï /messages                                       489 B           131 kB
+Γö£ Γùï /notifications                                  3.94 kB         110 kB
+Γö£ Γùï /pricing                                        201 B           124 kB
+Γö£ Γùï /privacy-policy                                 225 B           124 kB
+Γö£ ╞Æ /product/[id]                                   9.27 kB         139 kB
+Γö£ Γùï /safety-tips                                    225 B           124 kB
+Γö£ ╞Æ /search                                         3.07 kB         112 kB
+Γö£ ╞Æ /seller/[id]                                    5.65 kB         135 kB
+Γö£ ╞Æ /seller/[id]/listings                           3.3 kB          129 kB
+Γö£ Γùï /signup                                         6.64 kB         120 kB
+Γö£ Γùï /terms                                          225 B           124 kB
+Γö£ Γùï /unauthorized                                   1.85 kB         111 kB
+Γö£ Γùï /vendor-dashboard                               3.98 kB         113 kB
+Γö£ Γùï /vendor-dashboard/add-product                   6.59 kB         112 kB
+Γö£ Γùï /vendor-dashboard/analytics                     2.25 kB         108 kB
+Γö£ Γùï /vendor-dashboard/messages                      1.69 kB         115 kB
+Γö£ Γùï /vendor-dashboard/my-ads                        4.67 kB         114 kB
+Γö£ Γùï /vendor-dashboard/orders                        4.47 kB         114 kB
+Γö£ Γùï /vendor-dashboard/settings/change-email         786 B           107 kB
+Γö£ Γùï /vendor-dashboard/settings/change-password      1.79 kB         108 kB
+Γö£ Γùï /vendor-dashboard/settings/change-phone-number  768 B           107 kB
+Γö£ Γùï /vendor-dashboard/settings/delete-account       2.24 kB         108 kB
+Γö£ Γùï /vendor-dashboard/settings/personal-details     4.26 kB         110 kB
+Γöö Γùï /vendor-dashboard/settings/verification         4.21 kB         110 kB
++ First Load JS shared by all                       106 kB
+  Γö£ chunks/1517-a2066d1d4be88c4d.js                 50.7 kB
+  Γö£ chunks/4bd1b696-a8f41b4b93f7386a.js             53 kB
+  Γöö other shared chunks (total)                     2.06 kB
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+

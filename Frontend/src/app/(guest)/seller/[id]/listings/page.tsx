@@ -74,7 +74,7 @@ export default function VendorListingsPage({ params }: Props) {
       <div className="min-h-screen flex flex-col">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
+          <Loader2 className="w-12 h-12 text-[#708238] animate-spin" />
         </div>
         <Footer />
       </div>
@@ -87,7 +87,7 @@ export default function VendorListingsPage({ params }: Props) {
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Vendor Not Found</h2>
-          <Link href="/" className="text-orange-600 font-semibold hover:underline">Go to Homepage</Link>
+          <Link href="/" className="text-[#708238] font-semibold hover:underline">Go to Homepage</Link>
         </div>
         <Footer />
       </div>
@@ -103,18 +103,18 @@ export default function VendorListingsPage({ params }: Props) {
         <div className="flex items-center gap-4 mb-6">
           <Link 
             href={`/seller/${seller.id}`}
-            className="flex items-center gap-1 text-gray-600 hover:text-orange-600 transition-colors text-sm font-semibold"
+            className="flex items-center gap-1 text-gray-600 hover:text-[#708238] transition-colors text-sm font-semibold"
           >
             <ArrowLeft size={16} /> Back to Profile
           </Link>
           <span className="text-gray-300">|</span>
           <nav className="text-gray-500 text-sm">
-            Home &gt; Seller &gt; <span className="text-orange-600">{seller.name}</span> &gt; All Listings
+            Home &gt; Seller &gt; <span className="text-[#708238]">{seller.name}</span> &gt; All Listings
           </nav>
         </div>
 
         {/* Vendor Header (Optimized for both Desktop & Mobile) */}
-        <div className="bg-white rounded-2xl border-2 border-orange-200 p-6 mb-8 shadow-sm">
+        <div className="bg-white rounded-2xl border-2 border-[#E9E0D4] p-6 mb-8 shadow-sm">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {/* Avatar */}
             <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden flex-shrink-0 border-4 border-orange-50 bg-orange-100 flex items-center justify-center shadow-md">
@@ -128,7 +128,7 @@ export default function VendorListingsPage({ params }: Props) {
             {/* Info */}
             <div className="flex-1 text-center md:text-left">
               <div className="flex flex-col items-center md:items-start gap-2">
-                <h1 className="text-3xl font-black text-orange-600 flex items-center gap-2">
+                <h1 className="text-3xl font-black text-[#708238] flex items-center gap-2">
                   {seller.name}
                   {seller.isVerified && <VerifiedBadge size={22} showText />}
                 </h1>
@@ -153,7 +153,7 @@ export default function VendorListingsPage({ params }: Props) {
 
             <div className="hidden lg:flex flex-col items-end justify-center">
                 <div className="text-gray-400 text-sm italic font-medium">Verified Vendor</div>
-                <div className="text-orange-600 text-2xl font-black mt-1 tracking-tight">234DEALS EXCLUSIVE</div>
+                <div className="text-[#708238] text-2xl font-black mt-1 tracking-tight">234DEALS EXCLUSIVE</div>
             </div>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function VendorListingsPage({ params }: Props) {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black text-gray-800">
-              All Ads from <span className="text-orange-600">{seller.name}</span>
+              All Ads from <span className="text-[#708238]">{seller.name}</span>
               <span className="ml-3 text-sm font-bold text-gray-500 bg-gray-200 px-3 py-1 rounded-full">{listings.length} items</span>
             </h2>
           </div>

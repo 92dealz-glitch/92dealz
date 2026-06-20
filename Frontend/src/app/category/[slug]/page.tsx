@@ -96,7 +96,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         {/* Breadcrumb & Header */}
         <div className="mb-8">
           <nav className="flex items-center text-sm text-gray-500 mb-4 bg-white/50 w-fit px-3 py-1.5 rounded-full border border-gray-100 shadow-sm">
-            <Link href="/" className="hover:text-orange-600 transition-colors">Home</Link>
+            <Link href="/" className="hover:text-[#708238] transition-colors">Home</Link>
             <span className="mx-2 text-gray-300">/</span>
             <span className="font-semibold text-gray-900">{categoryLabel || slug || "Category"}</span>
           </nav>
@@ -104,7 +104,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h1 className="text-4xl font-black text-gray-900 tracking-tight">
-                Explore <span className="text-orange-600">{categoryLabel || slug}</span>
+                Explore <span className="text-[#708238]">{categoryLabel || slug}</span>
               </h1>
               <p className="text-gray-500 mt-2 font-medium">
                 Browse our curated collection of {displayItems.length} items in {categoryLabel || slug}
@@ -122,7 +122,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
             <p className="text-gray-500 max-w-sm mx-auto mb-8 font-medium">
               Try adjusting your filters or browsing other categories to find the best deals.
             </p>
-            <Link href="/" className="bg-orange-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-orange-700 transition-all shadow-lg shadow-orange-100">
+            <Link href="/" className="bg-[#708238] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#5E6E2F] transition-all shadow-lg shadow-orange-100">
               Return Home
             </Link>
             <div className="mt-12 pt-8 border-t border-gray-50 opacity-20 text-[10px] font-mono">

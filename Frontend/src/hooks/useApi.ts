@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 export function useApi() {
   return useCallback(async <T,>(path: string, options: RequestInit = {}, auth = false): Promise<T> => {
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://234deals-backend.vercel.app";
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://92dealz-backend.vercel.app";
     const headers: Record<string, string> = { "Content-Type": "application/json", ...(options.headers as Record<string, string> | undefined) };
     if (auth && typeof window !== "undefined") {
       const token = window.localStorage.getItem("token");
@@ -17,3 +17,5 @@ export function useApi() {
     return data as T;
   }, []);
 }
+
+

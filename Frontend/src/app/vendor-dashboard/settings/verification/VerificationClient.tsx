@@ -45,7 +45,7 @@ export default function VerificationPage() {
         }
     };
 
-    if (loading) return <div className="flex items-center justify-center p-20"><Loader2 className="animate-spin text-orange-600" size={40} /></div>;
+    if (loading) return <div className="flex items-center justify-center p-20"><Loader2 className="animate-spin text-[#708238]" size={40} /></div>;
 
     const vStatus = status?.verification_status || 'none';
     const isVerified = status?.is_verified;
@@ -57,7 +57,7 @@ export default function VerificationPage() {
                 <div className="flex justify-between items-start mb-2">
                     <h2 className="text-black font-black text-2xl">Account verification</h2>
                     <span className={`px-3 py-1 rounded text-[10px] font-black uppercase text-white ${
-                        isVerified ? 'bg-emerald-500' : 
+                        isVerified ? 'bg-[#FFFDF9]/300' : 
                         vStatus === 'pending' ? 'bg-amber-500' : 
                         vStatus === 'rejected' ? 'bg-red-500' : 'bg-zinc-500'
                     }`}>
@@ -67,7 +67,7 @@ export default function VerificationPage() {
                 <p className="text-zinc-500 font-bold text-sm mb-8">Help other users trust you by verifying your account.</p>
 
                 {message.text && (
-                    <div className={`mb-6 p-4 rounded-lg font-bold text-sm ${message.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                    <div className={`mb-6 p-4 rounded-lg font-bold text-sm ${message.type === 'success' ? 'bg-[#FFFDF9]/30 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
                         {message.text}
                     </div>
                 )}
@@ -78,7 +78,7 @@ export default function VerificationPage() {
                             <div className="flex flex-col gap-4">
                                 <label className="text-black font-black text-lg">Upload a valid government ID (NIN, Passport, Driver&apos;s License)</label>
                                 <div className="relative">
-                                    <select className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white">
+                                    <select className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors bg-white">
                                         <option>NIN</option>
                                         <option>Passport</option>
                                         <option>Driver&apos;s License</option>
@@ -89,7 +89,7 @@ export default function VerificationPage() {
                                 </div>
                             </div>
 
-                            <label className="aspect-[2/1] max-w-sm rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-400 hover:text-[#f45c03] group">
+                            <label className="aspect-[2/1] max-w-sm rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#708238] hover:bg-[#E9E0D4] transition-all text-zinc-400 hover:text-[#708238] group">
                                 {uploading ? (
                                     <Loader2 className="animate-spin" size={32} />
                                 ) : (
@@ -104,7 +104,7 @@ export default function VerificationPage() {
                     ) : (
                         <div className="bg-zinc-50 p-6 rounded-xl border border-zinc-100 flex items-start gap-4">
                             {isVerified ? (
-                                <CheckCircle2 className="text-emerald-500 mt-1" size={24} />
+                                <CheckCircle2 className="text-[#708238] mt-1" size={24} />
                             ) : (
                                 <Clock className="text-amber-500 mt-1" size={24} />
                             )}
@@ -139,7 +139,7 @@ export default function VerificationPage() {
                         className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-400 font-bold bg-zinc-50"
                     />
 
-                    <button className="bg-orange-200 text-white font-black py-4 px-12 rounded-xl cursor-not-allowed min-w-[200px]">
+                    <button className="bg-[#C7A27C] text-white font-black py-4 px-12 rounded-xl cursor-not-allowed min-w-[200px]">
                         Under review
                     </button>
                 </div>
@@ -149,7 +149,7 @@ export default function VerificationPage() {
             <div className="bg-white rounded-lg border border-zinc-200 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] overflow-hidden p-8 lg:p-12">
                 <div className="flex justify-between items-start mb-2">
                     <h2 className="text-black font-black text-2xl">Email Address</h2>
-                    <span className="bg-[#10B981] text-white px-3 py-1 rounded text-[10px] font-black uppercase">Verified</span>
+                    <span className="bg-[#C7A27C] text-white px-3 py-1 rounded text-[10px] font-black uppercase">Verified</span>
                 </div>
                 <p className="text-zinc-500 font-bold text-sm mb-12">Secure your account and receive important updates.</p>
 
@@ -161,7 +161,7 @@ export default function VerificationPage() {
                         className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-400 font-bold bg-zinc-50"
                     />
 
-                    <button className="bg-orange-300 text-white font-black py-4 px-12 rounded-xl cursor-not-allowed min-w-[200px]">
+                    <button className="bg-[#C7A27C] text-white font-black py-4 px-12 rounded-xl cursor-not-allowed min-w-[200px]">
                         Verified
                     </button>
                 </div>
@@ -173,4 +173,6 @@ export default function VerificationPage() {
 function ChevronDownIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
+
+
 

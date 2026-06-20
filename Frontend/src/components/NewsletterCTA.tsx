@@ -18,16 +18,27 @@ export default function NewsletterCTA() {
       <section className="w-full py-10 px-4 sm:px-6">
         <div className="max-w-[1200px] mx-auto">
           <div
-            className="w-full rounded-md overflow-hidden shadow-lg relative bg-orange-600 text-center py-20 px-8 text-white"
+            className="w-full rounded-3xl overflow-hidden shadow-2xl relative text-center py-20 px-8 text-white"
+            style={{
+              background: 'linear-gradient(135deg, #708238 0%, #312E81 50%, #1E1B4B 100%)',
+            }}
           >
-            <h2 className="text-3xl font-bold mb-4">Check your inbox! 📧</h2>
-            <p className="text-lg">Thank you for subscribing to our newsletter. We&apos;ll keep you posted!</p>
-            <button 
-              onClick={() => setSubscribed(false)}
-              className="mt-6 text-sm underline opacity-80 hover:opacity-100"
-            >
-              Back
-            </button>
+            {/* Decorative Glowing Orbs */}
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-10 -left-10 w-[250px] h-[250px] bg-[#F8F4EE]merald-400/20 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 max-w-[600px] mx-auto flex flex-col items-center">
+              <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">Check your inbox! 📧</h2>
+              <p className="text-sm sm:text-base text-zinc-100 max-w-[500px]">
+                Thank you for subscribing to our newsletter! We&apos;ll keep you posted with the latest updates and exclusive deals.
+              </p>
+              <button 
+                onClick={() => setSubscribed(false)}
+                className="mt-8 bg-white text-[#708238] px-6 py-2.5 rounded-md font-bold hover:bg-zinc-100 hover:scale-105 active:scale-[0.97] transition-all duration-300 shadow-md cursor-pointer"
+              >
+                Back
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -38,14 +49,16 @@ export default function NewsletterCTA() {
     <section className="w-full py-10 px-4 sm:px-6">
       <div className="max-w-[1200px] mx-auto">
         <div
-          className="w-full rounded-md overflow-hidden shadow-lg relative"
+          className="w-full rounded-3xl overflow-hidden shadow-2xl relative"
           style={{
-            backgroundImage: `url('/assets/images/newsletterbg.svg')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            background: 'linear-gradient(135deg, #708238 0%, #312E81 50%, #1E1B4B 100%)',
           }}
         >
-          <div className="bg-[rgba(0,0,0,0.0)] px-4 sm:px-8 md:px-12 py-8 sm:py-10 md:py-16">
+          {/* Decorative Glowing Orbs */}
+          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-10 -left-10 w-[250px] h-[250px] bg-[#F8F4EE]merald-400/20 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="relative z-10 bg-[rgba(0,0,0,0.0)] px-4 sm:px-8 md:px-12 py-8 sm:py-10 md:py-16">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               {/* Left text */}
               <div className="md:w-2/3 text-white">
@@ -72,7 +85,7 @@ export default function NewsletterCTA() {
 
                   <button
                     type="submit"
-                    className="w-full md:w-auto bg-[#16A34A] text-white px-5 py-3 rounded-md font-semibold cursor-pointer hover:bg-[#15803d] transition-colors duration-300"
+                    className="w-full md:w-auto bg-white text-[#708238] px-6 py-3 rounded-md font-bold cursor-pointer hover:bg-zinc-100 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 shadow-md"
                   >
                     SUBSCRIBE
                   </button>
@@ -93,3 +106,5 @@ export default function NewsletterCTA() {
     </section>
   );
 }
+
+

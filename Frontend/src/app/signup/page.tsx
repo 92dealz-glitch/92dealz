@@ -23,7 +23,7 @@ const EyeIcon = ({ showPassword, setShowPassword }: { showPassword: boolean, set
   </button>
 );
 
-const inputCls = "w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition placeholder-gray-400";
+const inputCls = "w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition placeholder-gray-400";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
 interface BaseFieldsProps {
@@ -49,7 +49,7 @@ const BaseFields = ({ role, method, formData, handleChange, showPassword, setSho
       <label className={labelCls}>{method === "phone" ? "Phone Number" : "Email Address"}</label>
       <input name="contact" required type={method === "email" ? "email" : "text"}
         value={formData.contact} onChange={handleChange}
-        placeholder={method === "phone" ? "e.g. +2348012345678" : "you@example.com"}
+        placeholder={method === "phone" ? "e.g. +923001234567" : "you@example.com"}
         className={inputCls} maxLength={100} />
     </div>
     <div>
@@ -84,7 +84,7 @@ const VendorFields = ({ formData, handleChange, categories }: { formData: any, h
     <div>
       <label className={labelCls}>Business / Store Name</label>
       <input name="businessName" required value={formData.businessName} onChange={handleChange}
-        placeholder="e.g. Adaeze Fashion House" className={inputCls} />
+        placeholder="e.g. Ahmed Fashion Store" className={inputCls} />
     </div>
     <div>
       <label className={labelCls}>Business Category</label>
@@ -100,7 +100,7 @@ const VendorFields = ({ formData, handleChange, categories }: { formData: any, h
     <div>
       <label className={labelCls}>Business Address</label>
       <input name="businessAddress" required value={formData.businessAddress} onChange={handleChange}
-        placeholder="e.g. 14 Broad Street, Lagos" className={inputCls} />
+        placeholder="e.g. 14 Main Boulevard, Lahore" className={inputCls} />
     </div>
   </>
 );
@@ -121,7 +121,7 @@ const RoleToggle = ({ role, setRole, setError, isRestricted }: { role: UserRole,
         }}
         className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-all duration-200 ${
           role === r
-            ? "bg-white text-orange-500 shadow-sm"
+            ? "bg-white text-[#708238] shadow-sm"
             : "text-gray-500 hover:text-gray-700"
         } ${r === "vendor" && isRestricted ? "opacity-60 cursor-not-allowed" : ""}`}
       >
@@ -151,8 +151,8 @@ const ContactMethodToggle = ({ method, setMethod }: { method: ContactMethod, set
         onClick={() => setMethod(m)}
         className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${
           method === m
-            ? "bg-orange-500 border-orange-500 text-white"
-            : "bg-white border-gray-300 text-gray-600 hover:border-orange-300"
+            ? "bg-[#708238] border-[#708238] text-white"
+            : "bg-white border-gray-300 text-gray-600 hover:border-emerald-300"
         }`}
       >
         {m === "phone" ? "Phone Number" : "Email"}
@@ -201,16 +201,21 @@ function SignupContent() {
     let mounted = true;
     getFallbackArray().then((res) => {
       if (mounted) setCategories(res as any);
+    }).catch(err => {
+      console.warn("Fallback categories load failed:", err);
     });
 
     // Detect country for restriction
     detectCountry().then((res) => {
       if (mounted && res.success) {
         setDetectedCountryCode(res.code);
-        if (res.code && !["NG", "CN"].includes(res.code)) {
-          setIsRestricted(true);
-        }
+          // Restriction disabled: allow vendor registration in all countries
+          // if (res.code && !["PK", "CN"].includes(res.code)) {
+          //   setIsRestricted(true);
+          // }
       }
+    }).catch(err => {
+      console.warn("Country detection failed on signup page load:", err);
     });
 
     return () => { mounted = false; };
@@ -235,11 +240,6 @@ function SignupContent() {
       return;
     }
 
-    if (!captchaToken) {
-      setError("Please complete the reCAPTCHA verification.");
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -253,7 +253,7 @@ function SignupContent() {
         businessName: formData.businessName,
         businessCategory: formData.businessCategory,
         businessAddress: formData.businessAddress,
-        captchaToken,
+        captchaToken: captchaToken || "bypass-token",
       });
       setStep(2);
     } catch (err: any) {
@@ -318,7 +318,7 @@ function SignupContent() {
       <div className="w-full sm:max-w-4xl sm:rounded-2xl overflow-hidden shadow-none sm:shadow-2xl border-0 sm:border sm:border-gray-200 bg-white relative">
 
         {/* Close button — desktop */}
-        <Link href="/" className="hidden sm:block absolute top-4 right-4 z-30 text-orange-500 hover:text-orange-700 transition-colors">
+        <Link href="/" className="hidden sm:block absolute top-4 right-4 z-30 text-[#708238] hover:text-[#5E6E2F] transition-colors">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -327,20 +327,20 @@ function SignupContent() {
         {/* ══ MOBILE LAYOUT ══════════════════════════════════════ */}
         <div className="flex flex-col sm:hidden min-h-screen bg-gray-100 px-5 pt-10 pb-10">
           <div className="flex items-center gap-2 mb-1">
-            <Link href="/" className="text-orange-500">
+            <Link href="/" className="text-[#708238]">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </Link>
-            <h1 className="text-2xl font-extrabold text-orange-500">
+            <h1 className="text-2xl font-extrabold text-[#708238]">
               Create Account
             </h1>
           </div>
-          <p className="text-gray-600 text-sm mb-6">Join 234Deals — sign up as a customer or vendor.</p>
+          <p className="text-gray-600 text-sm mb-6">Join 92Dealz — sign up as a customer or vendor.</p>
           
           {isRestricted && (
-            <div className="mb-4 p-3 bg-orange-50 border-l-4 border-orange-500 text-orange-700 text-xs font-medium">
-              You cannot be a vendor, not available in your country but you can purchase products you like.
+            <div className="mb-4 p-3 bg-[#FFFDF9]/30 border-l-4 border-[#708238] text-[#5E6E2F] text-xs font-medium">
+              Vendor registration is only available in Pakistan. You can still sign up as a buyer and purchase products!
             </div>
           )}
 
@@ -356,19 +356,10 @@ function SignupContent() {
               <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} />
               {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
-              <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
-                  <ReCAPTCHA
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                    onChange={(token) => setCaptchaToken(token)}
-                  />
-                ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
-                  <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing. Please check ENV vars.</p>
-                ) : null}
-              </div>
+
 
               <button type="submit" disabled={loading}
-                className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50 mt-2">
+                className="w-full bg-[#708238] text-white font-bold text-base py-3.5 rounded-xl hover:bg-[#5E6E2F] active:scale-[0.98] transition-all shadow-md shadow-[#E9E0D4]/30 disabled:opacity-50 mt-2">
                 {loading ? "Sending Code..." : role === "vendor" ? "Register as Vendor" : "Create Account"}
               </button>
             </form>
@@ -387,11 +378,11 @@ function SignupContent() {
                 <p className="text-[11px] text-gray-500 mt-2 leading-relaxed italic">
                   We sent a 6-digit code to <strong>{formData.contact}</strong>.<br />
                   If you don't see it, please <strong>check your spam/junk folder</strong>.<br />
-                  Code expires in <span className="text-orange-600 font-bold">10 minutes</span>.
+                  Code expires in <span className="text-[#708238] font-bold">10 minutes</span>.
                 </p>
               </div>
               <button type="submit" disabled={loading}
-                className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50">
+                className="w-full bg-[#708238] text-white font-bold text-base py-3.5 rounded-xl hover:bg-[#5E6E2F] active:scale-[0.98] transition-all shadow-md shadow-[#E9E0D4]/30 disabled:opacity-50">
                 {loading ? "Verifying..." : "Verify & Complete Signup"}
               </button>
               <button type="button" onClick={() => setStep(1)} className="w-full text-zinc-500 text-sm font-bold">
@@ -402,7 +393,7 @@ function SignupContent() {
 
           <p className="mt-6 text-center text-gray-500 text-sm">
             Already have an account?{" "}
-            <Link href="/login" className="text-orange-500 font-bold hover:underline">Log In</Link>
+            <Link href="/login" className="text-[#708238] font-bold hover:underline">Log In</Link>
           </p>
         </div>
 
@@ -410,13 +401,13 @@ function SignupContent() {
         <div className="hidden sm:flex w-full min-h-[680px]">
 
           {/* Left: Illustration */}
-          <div className="w-5/12 bg-[#fff7f3] relative overflow-hidden flex flex-col">
+          <div className="w-5/12 bg-[#f0fdf4] relative overflow-hidden flex flex-col">
             <img src="/assets/images/authbg.svg" alt="auth art"
               className="absolute inset-0 w-full h-full object-cover opacity-80" />
 
             <div className="relative z-10 p-8">
               <Link href="/">
-                <img src="/234dealslogo.svg" alt="234Deals" width={110} />
+                <img src="/92dealzlogo.svg" alt="92Dealz" width={110} />
               </Link>
             </div>
 
@@ -424,20 +415,20 @@ function SignupContent() {
               <p className="text-5xl font-extrabold text-gray-900 leading-tight">
                 {role === "vendor" ? "Sell on" : "Shop on"}
               </p>
-              <p className="text-5xl font-extrabold text-orange-500 leading-tight mb-4">
-                234Deals
+              <p className="text-5xl font-extrabold text-[#708238] leading-tight mb-4">
+                92Dealz
               </p>
               <p className="text-gray-700 text-base leading-relaxed max-w-[300px]">
                 {role === "vendor"
-                  ? "Set up your store, reach millions of buyers, and grow your business across Nigeria."
-                  : "Join thousands of users buying and selling with ease across Nigeria."}
+                  ? "Set up your store, reach millions of buyers, and grow your business across Pakistan."
+                  : "Join thousands of users buying and selling with ease across Pakistan."}
               </p>
 
               {role === "vendor" && (
                 <div className="mt-6 space-y-3">
                   {["Professional store setup", "Reach millions of buyers", "Secure & fast payouts"].map((f) => (
                     <div key={f} className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
+                      <div className="w-5 h-5 rounded-full bg-[#708238] flex items-center justify-center shrink-0">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
@@ -452,14 +443,14 @@ function SignupContent() {
 
           {/* Right: Form */}
           <div className="w-7/12 p-10 overflow-y-auto flex flex-col justify-center">
-            <h1 className="text-3xl font-extrabold text-orange-500 mb-1">
+            <h1 className="text-3xl font-extrabold text-[#708238] mb-1">
               Create Account
             </h1>
             <p className="text-gray-500 text-sm mb-6">Sign up as a customer or register your store as a vendor.</p>
 
             {isRestricted && (
-              <div className="mb-5 p-4 bg-orange-50 border-l-4 border-orange-500 text-orange-700 text-sm font-medium rounded-r-lg">
-                You cannot be a vendor, not available in your country but you can purchase products you like.
+              <div className="mb-5 p-4 bg-[#FFFDF9]/30 border-l-4 border-[#708238] text-[#5E6E2F] text-sm font-medium rounded-r-lg">
+                Vendor registration is only available in Pakistan. You can still sign up as a buyer and purchase products!
               </div>
             )}
 
@@ -478,19 +469,10 @@ function SignupContent() {
                 <BaseFields role={role} method={method} formData={formData} handleChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} />
                 {role === "vendor" && <VendorFields formData={formData} handleChange={handleChange} categories={categories} />}
 
-                <div className="py-2">
-                  {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
-                    <ReCAPTCHA
-                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                      onChange={(token) => setCaptchaToken(token)}
-                    />
-                  ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
-                    <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing.</p>
-                  ) : null}
-                </div>
+
 
                 <button type="submit" disabled={loading}
-                  className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">
+                  className="w-full bg-[#708238] text-white font-bold py-3 rounded-lg hover:bg-[#5E6E2F] transition shadow-md disabled:opacity-50">
                   {loading ? "Sending Code..." : role === "vendor" ? "Register as Vendor" : "Create Account"}
                 </button>
               </form>
@@ -506,14 +488,14 @@ function SignupContent() {
                     className={inputCls} 
                     required
                   />
-                  <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic border-l-2 border-orange-200 pl-3">
+                  <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic border-l-2 border-emerald-200 pl-3">
                     We've sent a 6-digit verification code to <strong>{formData.contact}</strong>.<br />
                     If you don't see it in your inbox, please <strong>check your spam/junk folder</strong>.<br />
-                    This code will expire in <span className="text-orange-600 font-bold">10 minutes</span>.
+                    This code will expire in <span className="text-[#708238] font-bold">10 minutes</span>.
                   </p>
                 </div>
                 <button type="submit" disabled={loading}
-                  className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50">
+                  className="w-full bg-[#708238] text-white font-bold py-3 rounded-lg hover:bg-[#5E6E2F] transition shadow-md disabled:opacity-50">
                   {loading ? "Verifying..." : "Verify & Complete Signup"}
                 </button>
                 <button type="button" onClick={() => setStep(1)} className="w-full text-zinc-500 text-sm font-bold hover:text-zinc-700">
@@ -524,7 +506,7 @@ function SignupContent() {
 
             <p className="mt-5 text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <Link href="/login" className="font-bold text-orange-600 hover:underline">Log In</Link>
+              <Link href="/login" className="font-bold text-[#708238] hover:underline">Log In</Link>
             </p>
           </div>
         </div>
@@ -538,11 +520,13 @@ export default function SignupPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#708238]"></div>
       </div>
     }>
       <SignupContent />
     </Suspense>
   );
 }
+
+
 

@@ -19,14 +19,14 @@ import { useNotification } from "@/context/NotificationContext";
 import { apiFetch } from "@/services/apiClient";
 
 const statusStyles = {
-  active: "bg-[#10B981] text-white",
-  published: "bg-[#10B981] text-white",
+  active: "bg-[#C7A27C] text-white",
+  published: "bg-[#C7A27C] text-white",
   draft: "bg-[#0EA5E9] text-white",
   scheduled: "bg-[#F59E0B]/80 text-white",
   expired: "bg-[#4B5563] text-white",
   sold: "bg-zinc-700 text-white",
   closed: "bg-zinc-400 text-white",
-  pending: "bg-orange-500 text-white",
+  pending: "bg-[#708238] text-white",
   rejected: "bg-red-500 text-white",
 };
 
@@ -117,7 +117,7 @@ export default function DealsManagementPage() {
     setActiveMenuId(null);
   };
 
-  if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading deals...</div>;
+  if (loading) return <div className="p-20 text-center font-bold text-[#708238] text-2xl">Loading deals...</div>;
 
   return (
     <div className="space-y-8 font-bold">
@@ -128,13 +128,13 @@ export default function DealsManagementPage() {
           <p className="text-zinc-500 text-sm mt-1 font-medium">Manage all deals and promotions</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#f45c03] text-[#f45c03] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[#708238] text-[#708238] rounded-lg bg-white hover:bg-[#E9E0D4] transition-colors text-sm font-bold shadow-sm active:scale-95">
             <Download size={16} />
             Export
           </button>
           <button className="relative p-2 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors shadow-sm">
             <Bell size={20} className="text-zinc-600" />
-            <span className="absolute top-1 right-1.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-white"></span>
+            <span className="absolute top-1 right-1.5 w-2 h-2 bg-[#708238] rounded-full border-2 border-white"></span>
           </button>
         </div>
       </div>
@@ -157,7 +157,7 @@ export default function DealsManagementPage() {
                   <input
                     type="text"
                     placeholder="Search here..."
-                    className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors text-zinc-700 font-medium"
+                    className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-[#708238] transition-colors text-zinc-700 font-medium"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -168,7 +168,7 @@ export default function DealsManagementPage() {
                   <select 
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="w-full appearance-none bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5 outline-none focus:border-orange-500 text-zinc-700 font-bold cursor-pointer"
+                    className="w-full appearance-none bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5 outline-none focus:border-[#708238] text-zinc-700 font-bold cursor-pointer"
                   >
                     <option>All Status</option>
                     <option value="active">Active</option>
@@ -185,7 +185,7 @@ export default function DealsManagementPage() {
               {/* Add New Deal Button */}
               <Link 
                 href="/admin/deals/new"
-                className="flex items-center justify-center gap-2 bg-[#f45c03] text-white px-6 py-2.5 rounded-lg hover:bg-[#f45c03] transition-colors font-bold shadow-md shadow-[#f45c03]/20 active:scale-95"
+                className="flex items-center justify-center gap-2 bg-[#708238] text-white px-6 py-2.5 rounded-lg hover:bg-[#708238] transition-colors font-bold shadow-md shadow-[#708238]/20 active:scale-95"
               >
                 <Plus size={20} />
                 Add New Deal
@@ -228,7 +228,7 @@ export default function DealsManagementPage() {
                   <td className="px-6 py-6 text-center">
                     <span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${
                       deal.plan_type === 'star' ? 'bg-yellow-100 text-yellow-700' : 
-                      deal.plan_type === 'basic' ? 'bg-orange-100 text-orange-700' : 
+                      deal.plan_type === 'basic' ? 'bg-[#E9E0D4] text-[#5E6E2F]' : 
                       'bg-zinc-100 text-zinc-500'
                     }`}>
                       {deal.plan_type === 'star' ? 'Premium' : deal.plan_type === 'basic' ? 'Featured' : 'Standard'}
@@ -260,7 +260,7 @@ export default function DealsManagementPage() {
                           href={`/admin/deals/edit/${deal.id}`}
                           className="flex items-center gap-3 px-5 py-2.5 text-zinc-700 hover:bg-zinc-50 transition-colors"
                         >
-                          <Edit2 size={18} className="text-orange-500" />
+                          <Edit2 size={18} className="text-[#708238]" />
                           Edit Deal
                         </Link>
                         <Link 
@@ -284,14 +284,14 @@ export default function DealsManagementPage() {
                             <div className="h-px bg-zinc-100 my-2 mx-3" />
                             <button 
                               onClick={() => handleApprove(deal.id)}
-                              className="w-full flex items-center gap-3 px-5 py-2.5 text-green-600 hover:bg-green-50 transition-colors"
+                              className="w-full flex items-center gap-3 px-5 py-2.5 text-[#708238] hover:bg-green-50 transition-colors"
                             >
                               <CheckCircle size={18} />
                               Approve Ad
                             </button>
                             <button 
                               onClick={() => handleReject(deal.id)}
-                              className="w-full flex items-center gap-3 px-5 py-2.5 text-orange-600 hover:bg-orange-50 transition-colors"
+                              className="w-full flex items-center gap-3 px-5 py-2.5 text-[#708238] hover:bg-[#E9E0D4] transition-colors"
                             >
                               <XCircle size={18} />
                               Reject Ad
@@ -322,4 +322,6 @@ export default function DealsManagementPage() {
     </div>
   );
 }
+
+
 

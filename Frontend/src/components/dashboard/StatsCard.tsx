@@ -17,17 +17,17 @@ export default function StatsCard({
     label,
     value,
     subtext,
-    subtextColor = "text-[#10B981]",
+    subtextColor = "text-[#C7A27C]",
     iconText,
     icon: Icon,
     growthIndicator
 }: StatsCardProps) {
     return (
-        <div className="bg-white rounded-lg p-6 border border-[#f45c03]/20 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] flex flex-col min-h-[140px]">
+        <div className="bg-white rounded-lg p-6 border border-[#708238]/20 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] flex flex-col min-h-[140px]">
             <div className="flex justify-between items-start">
                 <h3 className="text-black text-[16px] font-black">{label}</h3>
                 {Icon && (
-                    <Icon size={20} className="text-[#f45c03]" />
+                    <Icon size={20} className="text-[#708238]" />
                 )}
             </div>
             <div className="mt-4 flex-1 flex flex-col justify-end">
@@ -40,4 +40,6 @@ export default function StatsCard({
         </div>
     );
 }
+
+
 

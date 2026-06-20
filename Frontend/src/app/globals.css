@@ -1,27 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F8F4EE;
+  --foreground: #1E1E1E;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-nunito);
+  --font-sans: var(--font-outfit);
+  --font-body: var(--font-inter);
   --font-mono: var(--font-geist-mono);
-  
-  --color-orange-50: #fff7ed;
-  --color-orange-100: #ffedd5;
-  --color-orange-200: #fed7aa;
-  --color-orange-300: #ff7a2d;
-  --color-orange-400: #ff7a2d;
-  --color-orange-500: #ff7a2d;
-  --color-orange-600: #ff7a2d;
-  --color-orange-700: #ff7a2d;
-  --color-orange-800: #ff7a2d;
-  --color-orange-900: #ff7a2d;
-  --color-orange-950: #431407;
+
+  --color-orange-50: #F8F4EE;
+  --color-orange-100: #FFFDF9;
+  --color-orange-200: #E9E0D4;
+  --color-orange-300: #C7A27C;
+  --color-orange-400: #829741;
+  --color-orange-500: #708238;
+  --color-orange-600: #5E6E2F;
+  --color-orange-700: #6F4E37;
+  --color-orange-800: #5A3E2B;
+  --color-orange-900: #3E2719;
+  --color-orange-950: #21130B;
 }
 
 body {
@@ -34,6 +35,7 @@ input::placeholder {
   color: rgba(0, 0, 0, 0.5) !important;
   opacity: 1;
 }
+
 input:focus::placeholder {
   color: transparent !important;
 }
@@ -46,11 +48,25 @@ button,
 }
 
 @keyframes float {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(10px, -15px) rotate(5deg); }
-  50% { transform: translate(-15px, 10px) rotate(-10deg); }
-  75% { transform: translate(15px, 5px) rotate(8deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(10px, -15px) rotate(5deg);
+  }
+
+  50% {
+    transform: translate(-15px, 10px) rotate(-10deg);
+  }
+
+  75% {
+    transform: translate(15px, 5px) rotate(8deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
 .animate-float-slow {
@@ -63,14 +79,33 @@ button,
 }
 
 /* Messaging Styles */
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #f4f4f5; border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #e4e4e7; }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #f4f4f5;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #e4e4e7;
+}
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in-up {
@@ -78,8 +113,13 @@ button,
 }
 
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-marquee {
@@ -97,6 +137,7 @@ button,
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

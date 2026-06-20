@@ -166,14 +166,14 @@ export default function VendorManagement() {
       {/* VERIFIED VENDORS SECTION */}
       <div className="bg-white p-8 rounded-[2rem] border border-zinc-200 shadow-sm relative overflow-hidden">
         {/* Background purely aesthetic pattern */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 blur-[100px] -mr-32 -mt-32 rounded-full" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] -ml-32 -mb-32 rounded-full" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#708238]/5 blur-[100px] -mr-32 -mt-32 rounded-full" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#FFFDF9]/300/5 blur-[100px] -ml-32 -mb-32 rounded-full" />
         
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-8">
              <div>
                 <h3 className="text-2xl font-black text-zinc-900 uppercase tracking-tight flex items-center gap-3">
-                  <CheckCircle className="text-emerald-500" size={28} />
+                  <CheckCircle className="text-[#708238]" size={28} />
                   Verified Vendors
                 </h3>
                 <p className="text-zinc-500 text-sm font-medium mt-1">Identity-verified partners with official platform trust badges</p>
@@ -248,7 +248,7 @@ export default function VendorManagement() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2 font-black uppercase tracking-tight">
-              <User className="text-orange-500" />
+              <User className="text-[#708238]" />
               Vendor Management
             </h3>
             <p className="text-zinc-500 text-sm font-medium italic">Manage existing vendors and their account status</p>
@@ -256,7 +256,7 @@ export default function VendorManagement() {
           {role !== 'csr' && (
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 bg-[#f45c03] text-white px-4 py-2 rounded-lg font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all shadow-md active:scale-95"
+              className="flex items-center gap-2 bg-[#708238] text-white px-4 py-2 rounded-lg font-black uppercase text-[10px] tracking-widest hover:bg-[#708238] transition-all shadow-md active:scale-95"
             >
               <UserPlus size={18} />
               Add New Vendor
@@ -272,7 +272,7 @@ export default function VendorManagement() {
                 placeholder="Search by name or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-orange-300 outline-none transition-all"
+                className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition-all"
               />
            </div>
            <div className="w-full sm:w-48">
@@ -280,7 +280,7 @@ export default function VendorManagement() {
               <select 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-orange-300 outline-none transition-all appearance-none cursor-pointer"
+                className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition-all appearance-none cursor-pointer"
               >
                 <option value="all">All Vendors</option>
                 <option value="active">Active Only</option>
@@ -293,7 +293,7 @@ export default function VendorManagement() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-            <Loader2 className="animate-spin text-orange-600" />
+            <Loader2 className="animate-spin text-[#708238]" />
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -326,7 +326,7 @@ export default function VendorManagement() {
                   </td>
                   <td className="px-4 py-4 text-center">
                     <span className={`px-2 py-1 rounded text-[10px] font-black uppercase ${
-                        v.status === 'active' ? 'bg-emerald-100 text-emerald-600' :
+                        v.status === 'active' ? 'bg-[#FFFDF9] text-emerald-600' :
                         v.status === 'suspended' ? 'bg-red-100 text-red-600 shadow-sm shadow-red-50' :
                         'bg-amber-100 text-amber-600'
                     }`}>
@@ -346,7 +346,7 @@ export default function VendorManagement() {
                       </a>
                       <button
                         onClick={() => setSelectedVendor(v)}
-                        className="p-2 rounded-lg transition-all bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white"
+                        className="p-2 rounded-lg transition-all bg-[#E9E0D4] text-[#708238] hover:bg-[#708238] hover:text-white"
                         title="View Details"
                       >
                         <Eye size={18} />
@@ -360,7 +360,7 @@ export default function VendorManagement() {
                             }
                           }}
                           disabled={actionLoading === v.id}
-                          className="p-2 rounded-lg transition-all bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white"
+                          className="p-2 rounded-lg transition-all bg-[#FFFDF9]/30 text-emerald-600 hover:bg-[#F8F4EE]merald-600 hover:text-white"
                           title="Activate Account"
                         >
                           <CheckCircle size={18} />
@@ -416,7 +416,7 @@ export default function VendorManagement() {
                 </div>
               )}
               {success && (
-                <div className="p-3 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black uppercase">
+                <div className="p-3 bg-[#FFFDF9] text-emerald-700 rounded-lg text-[10px] font-black uppercase">
                   {success}
                 </div>
               )}
@@ -430,7 +430,7 @@ export default function VendorManagement() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Vendor's full name"
-                  className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition font-bold"
+                  className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition font-bold"
                 />
               </div>
 
@@ -443,7 +443,7 @@ export default function VendorManagement() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="vendor@example.com"
-                  className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition font-bold"
+                  className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition font-bold"
                 />
               </div>
 
@@ -457,12 +457,12 @@ export default function VendorManagement() {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Set account password"
-                    className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition pr-11 font-bold"
+                    className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition pr-11 font-bold"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#708238] transition-colors"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -477,14 +477,14 @@ export default function VendorManagement() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+234..."
-                  className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition font-bold"
+                  className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition font-bold"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#f45c03] text-white font-black py-4 rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 disabled:opacity-50 flex items-center justify-center gap-2 mt-2 uppercase text-xs tracking-widest"
+                className="w-full bg-[#708238] text-white font-black py-4 rounded-xl hover:bg-[#708238] transition-all shadow-lg shadow-[#E9E0D4] disabled:opacity-50 flex items-center justify-center gap-2 mt-2 uppercase text-xs tracking-widest"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Create Vendor Account"}
               </button>
@@ -603,14 +603,14 @@ export default function VendorManagement() {
             <div className="p-8 space-y-8">
               {/* Profile Overview */}
               <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl rotate-3">
+                <div className="w-20 h-20 bg-[#E9E0D4] text-[#708238] rounded-3xl flex items-center justify-center border-4 border-white shadow-xl rotate-3">
                   <User size={32} />
                 </div>
                 <div>
                   <h4 className="text-xl font-black text-zinc-900">{selectedVendor.name}</h4>
                   <p className="text-zinc-500 font-medium text-sm">{selectedVendor.email}</p>
                   <div className={`mt-2 inline-flex px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${
-                    selectedVendor.status === 'active' ? "bg-emerald-100 text-emerald-600" : "bg-red-100 text-red-600"
+                    selectedVendor.status === 'active' ? "bg-[#FFFDF9] text-emerald-600" : "bg-red-100 text-red-600"
                   }`}>
                     {selectedVendor.status}
                   </div>
@@ -642,7 +642,7 @@ export default function VendorManagement() {
               </div>
 
               <div className="border-t border-zinc-100 pt-8">
-                <h4 className="text-xs font-black text-zinc-900 mb-4 uppercase tracking-widest border-l-4 border-orange-500 pl-3">Business Information</h4>
+                <h4 className="text-xs font-black text-zinc-900 mb-4 uppercase tracking-widest border-l-4 border-[#708238] pl-3">Business Information</h4>
                 <div className="space-y-5">
                   <div className="grid grid-cols-2 gap-4">
                      <div className="space-y-1">
@@ -670,7 +670,7 @@ export default function VendorManagement() {
                 <div className="bg-zinc-50 p-6 rounded-2xl border border-zinc-100 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {selectedVendor.is_verified ? (
-                      <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shadow-inner">
+                      <div className="w-10 h-10 bg-[#FFFDF9] text-emerald-600 rounded-xl flex items-center justify-center shadow-inner">
                         <CheckCircle size={20} />
                       </div>
                     ) : (
@@ -699,7 +699,7 @@ export default function VendorManagement() {
                       href={selectedVendor.government_id_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[10px] font-black uppercase underline hover:text-orange-400"
+                      className="text-[10px] font-black uppercase underline hover:text-[#6366F1]"
                     >
                       View
                     </a>
@@ -714,3 +714,5 @@ export default function VendorManagement() {
   </div>
   );
 }
+
+

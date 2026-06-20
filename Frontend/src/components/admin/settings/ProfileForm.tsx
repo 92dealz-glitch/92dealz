@@ -114,7 +114,7 @@ export default function ProfileForm() {
             </button>
             <button 
               onClick={handleSave}
-              className="px-4 py-2 bg-[#f45c03] text-white rounded-lg text-sm font-bold hover:bg-[#f45c03] transition-colors shadow-sm"
+              className="px-4 py-2 bg-[#708238] text-white rounded-lg text-sm font-bold hover:bg-[#708238] transition-colors shadow-sm"
             >
               Save Changes
             </button>
@@ -137,7 +137,7 @@ export default function ProfileForm() {
             )}
           </div>
           {isEditing && (
-            <label className="absolute bottom-0 right-0 p-1.5 bg-[#f45c03] rounded-full border-2 border-white text-white shadow-sm cursor-pointer hover:scale-110 transition-transform">
+            <label className="absolute bottom-0 right-0 p-1.5 bg-[#708238] rounded-full border-2 border-white text-white shadow-sm cursor-pointer hover:scale-110 transition-transform">
               <Plus size={14} />
               <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
             </label>
@@ -156,7 +156,7 @@ export default function ProfileForm() {
               value={isEditing ? tempProfile.fullName : profile.fullName}
               disabled={!isEditing}
               onChange={(e) => setTempProfile({ ...tempProfile, fullName: e.target.value })}
-              className={`w-full px-4 py-2.5 bg-zinc-50 border ${isEditing ? 'border-orange-500/20 focus:border-orange-500' : 'border-zinc-200'} rounded-lg outline-none text-zinc-700 font-medium transition-colors`}
+              className={`w-full px-4 py-2.5 bg-zinc-50 border ${isEditing ? 'border-[#708238]/20 focus:border-[#708238]' : 'border-zinc-200'} rounded-lg outline-none text-zinc-700 font-medium transition-colors`}
             />
           </div>
           <div className="space-y-2">
@@ -175,7 +175,7 @@ export default function ProfileForm() {
               value={isEditing ? tempProfile.phone : profile.phone}
               disabled={!isEditing}
               onChange={(e) => setTempProfile({ ...tempProfile, phone: e.target.value })}
-              className={`w-full px-4 py-2.5 bg-zinc-50 border ${isEditing ? 'border-orange-500/20 focus:border-orange-500' : 'border-zinc-200'} rounded-lg outline-none text-zinc-700 font-medium transition-colors`}
+              className={`w-full px-4 py-2.5 bg-zinc-50 border ${isEditing ? 'border-[#708238]/20 focus:border-[#708238]' : 'border-zinc-200'} rounded-lg outline-none text-zinc-700 font-medium transition-colors`}
             />
           </div>
         </div>
@@ -183,4 +183,6 @@ export default function ProfileForm() {
     </div>
   );
 }
+
+
 

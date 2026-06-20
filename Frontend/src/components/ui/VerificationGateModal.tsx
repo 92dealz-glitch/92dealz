@@ -40,9 +40,9 @@ export default function VerificationGateModal({
         className="bg-white rounded-md w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300"
       >
         <div className="p-8 text-center">
-          <div className="mx-auto w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+          <div className="mx-auto w-20 h-20 bg-[#E9E0D4] rounded-full flex items-center justify-center mb-6">
             <svg 
-              className="w-10 h-10 text-orange-600" 
+              className="w-10 h-10 text-[#708238]" 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
@@ -65,14 +65,14 @@ export default function VerificationGateModal({
               <>
                 <Link 
                   href={`/login${callbackQuery}`} 
-                  className="w-full bg-[#f97316] text-white py-4 rounded-md font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
+                  className="w-full bg-[#708238] text-white py-4 rounded-md font-bold text-lg hover:bg-[#5E6E2F] transition-colors shadow-lg shadow-[#708238]/20"
                   onClick={onClose}
                 >
                   Login
                 </Link>
                 <Link 
                   href={`/signup${callbackQuery}`} 
-                  className="w-full bg-white text-[#f97316] border-2 border-[#f97316] py-3.5 rounded-md font-bold text-lg hover:bg-orange-50 transition-colors"
+                  className="w-full bg-white text-[#708238] border-2 border-[#708238] py-3.5 rounded-md font-bold text-lg hover:bg-[#FFFDF9]/30 transition-colors"
                   onClick={onClose}
                 >
                   Sign Up Now
@@ -81,7 +81,7 @@ export default function VerificationGateModal({
             ) : (
               <Link 
                 href={role === "vendor" || role === "Vendor" ? "/vendor-dashboard/settings/verification" : "/account-settings"} 
-                className="w-full bg-[#f97316] text-white py-4 rounded-md font-bold text-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
+                className="w-full bg-[#708238] text-white py-4 rounded-md font-bold text-lg hover:bg-[#5E6E2F] transition-colors shadow-lg shadow-[#708238]/20"
                 onClick={onClose}
               >
                 Complete Verification
@@ -97,8 +97,8 @@ export default function VerificationGateModal({
           </div>
         </div>
         
-        <div className="bg-orange-50 p-4 text-center">
-          <p className="text-xs text-orange-700 font-medium italic leading-snug">
+        <div className="bg-[#E9E0D4]/40 p-4 text-center">
+          <p className="text-xs text-[#5E6E2F] font-bold italic leading-snug">
             "Your security is our priority. We verify all users to ensure a safe marketplace for everyone."
           </p>
         </div>
@@ -106,3 +106,5 @@ export default function VerificationGateModal({
     </div>
   );
 }
+
+

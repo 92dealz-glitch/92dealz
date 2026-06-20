@@ -64,7 +64,7 @@ export default function CategoryMegaMenu({ category, className, onSelect }: Prop
                     <button
                       type="button"
                       onClick={() => onSelect?.(it)}
-                      className="text-left w-full hover:text-orange-600 leading-7"
+                      className="text-left w-full hover:text-[#708238] leading-7"
                     >
                       {it}
                     </button>
@@ -78,3 +78,5 @@ export default function CategoryMegaMenu({ category, className, onSelect }: Prop
     </div>
   );
 }
+
+

@@ -25,7 +25,7 @@ export interface AdPayload {
   location?: string;
   subcategory?: string;
   specifications?: Record<string, any>;
-  originalCurrency?: "NGN" | "USD" | "CNY";
+  originalCurrency?: "PKR" | "USD" | "CNY";
   originalPrice?: number;
   plan_type?: "free" | "basic" | "star" | "premium";
   active_until?: string;
@@ -148,3 +148,5 @@ export async function updateAdVisibility(id: number, plan_type: "free" | "basic"
     body: JSON.stringify({ plan_type }) 
   }, true);
 }
+
+

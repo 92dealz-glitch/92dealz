@@ -29,7 +29,7 @@ const Payment = sequelize.define('Payment', {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isIn: [['NGN', 'USD']]
+      isIn: [['PKR', 'USD']]
     }
   },
   reference: {

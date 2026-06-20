@@ -49,9 +49,9 @@ export default function VendorDashboardLayout({
                 <Navbar />
                 <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
                     <div className="bg-white p-6 sm:p-12 rounded-2xl shadow-sm border border-zinc-200 max-w-lg w-full text-center">
-                        <div className={`w-16 h-16 ${isUpgrade ? 'bg-orange-50' : 'bg-amber-50'} rounded-full flex items-center justify-center mx-auto mb-6`}>
+                        <div className={`w-16 h-16 ${isUpgrade ? 'bg-[#E9E0D4]' : 'bg-amber-50'} rounded-full flex items-center justify-center mx-auto mb-6`}>
                             {isUpgrade ? (
-                                <TrendingUp size={32} className="text-orange-500" />
+                                <TrendingUp size={32} className="text-[#708238]" />
                             ) : (
                                 <Clock size={32} className="text-amber-500" />
                             )}
@@ -67,7 +67,7 @@ export default function VendorDashboardLayout({
                         <div className="flex flex-col gap-3">
                             <button 
                                 onClick={() => router.push(isUpgrade ? "/account-settings" : "/")}
-                                className="px-6 py-3 bg-[#f45c03] text-white font-bold rounded-xl hover:bg-[#f45c03] transition-colors"
+                                className="px-6 py-3 bg-[#708238] text-white font-bold rounded-xl hover:bg-[#708238] transition-colors"
                             >
                                 {isUpgrade ? "Go to Account Settings" : "Return to Homepage"}
                             </button>
@@ -109,5 +109,7 @@ export default function VendorDashboardLayout({
         </div>
     );
 }
+
+
 
 

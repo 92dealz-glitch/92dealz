@@ -53,7 +53,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
             key={n.id}
             className={`flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl animate-in slide-in-from-right-10 duration-300 ${
               n.type === "success" 
-                ? "bg-[#10B981] text-white" 
+                ? "bg-[#C7A27C] text-white" 
                 : n.type === "warning" 
                 ? "bg-[#F59E0B] text-white" 
                 : "bg-[#EF4444] text-white"
@@ -77,3 +77,5 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     </NotificationContext.Provider>
   );
 };
+
+

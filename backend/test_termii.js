@@ -11,7 +11,7 @@ async function testTermii() {
     pin_time_to_live: 5,
     pin_length: 6,
     pin_placeholder: '< 123456 >',
-    message_text: 'Your 234Deals verification pin is < 123456 >. It expires in 5 minutes. Do not share this code with anyone.'
+    message_text: 'Your 92Dealz verification pin is < 123456 >. It expires in 5 minutes. Do not share this code with anyone.'
   };
 
   try {

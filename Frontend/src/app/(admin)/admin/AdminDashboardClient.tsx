@@ -77,7 +77,7 @@ export default function AdminDashboardPage() {
     loadStats();
   }, []);
 
-  if (loading || !isMounted) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading overview...</div>;
+  if (loading || !isMounted) return <div className="p-20 text-center font-bold text-[#708238] text-2xl">Loading overview...</div>;
 
   return (
     <div className="space-y-8">
@@ -94,7 +94,7 @@ export default function AdminDashboardPage() {
           </button>
           <button className="relative p-2 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors">
             <Bell size={20} className="text-zinc-600" />
-            <span className="absolute top-1 right-1.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-white"></span>
+            <span className="absolute top-1 right-1.5 w-2 h-2 bg-[#708238] rounded-full border-2 border-white"></span>
           </button>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
           icon={Package}
           trend={{ value: "+12%", isUp: true }}
           color="orange"
-          bgColor="bg-[#f45c03]"
+          bgColor="bg-[#708238]"
           iconColor="text-white"
         />
         <StatCard
@@ -151,7 +151,7 @@ export default function AdminDashboardPage() {
         <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-bold text-zinc-900">Clicks Trend</h3>
-            <button className="bg-[#f45c03] text-white text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform">
+            <button className="bg-[#708238] text-white text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform">
               Last 7 days
             </button>
           </div>
@@ -160,8 +160,8 @@ export default function AdminDashboardPage() {
               <AreaChart data={clicksTrend && clicksTrend.length > 0 ? clicksTrend : [{ name: 'Loading', clicks: 0, views: 0 }]}>
                 <defs>
                   <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f45c03" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#f45c03" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#708238" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#708238" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
@@ -187,12 +187,12 @@ export default function AdminDashboardPage() {
                 <Area
                   type="monotone"
                   dataKey="clicks"
-                  stroke="#f45c03"
+                  stroke="#708238"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorClicks)"
-                  dot={{ r: 4, fill: '#f45c03', strokeWidth: 2, stroke: '#fff' }}
-                  activeDot={{ r: 6, fill: '#f45c03', strokeWidth: 2, stroke: '#fff' }}
+                  dot={{ r: 4, fill: '#708238', strokeWidth: 2, stroke: '#fff' }}
+                  activeDot={{ r: 6, fill: '#708238', strokeWidth: 2, stroke: '#fff' }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -266,7 +266,7 @@ export default function AdminDashboardPage() {
                 />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={40}>
                   {(data?.pollQ1 || []).map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#f45c03" : "#f45c03"} />
+                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#708238" : "#708238"} />
                   ))}
                 </Bar>
               </BarChart>
@@ -301,7 +301,7 @@ export default function AdminDashboardPage() {
                 />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={40}>
                   {(data?.pollQ2 || []).map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#f45c03" : "#f45c03"} />
+                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#708238" : "#708238"} />
                   ))}
                 </Bar>
               </BarChart>
@@ -318,4 +318,6 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+
 

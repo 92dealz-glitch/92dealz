@@ -51,7 +51,7 @@ export default function AdminSidebar() {
 
   const handleSignOut = async () => {
     const { signOut } = await import("next-auth/react");
-    await signOut({ callbackUrl: "/login" });
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -60,7 +60,7 @@ export default function AdminSidebar() {
       <div className="p-6 mb-4">
         <Link href="/">
           <Image
-            src="/234dealslogo.svg"
+            src="/92dealzlogo.svg"
             alt="234 Deals"
             width={120}
             height={40}
@@ -81,7 +81,7 @@ export default function AdminSidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                 isActive
-                  ? "bg-[#f45c03] text-white shadow-md shadow-[#f45c03]/20"
+                  ? "bg-[#708238] text-white shadow-md shadow-[#708238]/20"
                   : "text-zinc-600 hover:bg-zinc-50 hover:text-black"
               }`}
             >
@@ -117,5 +117,7 @@ export default function AdminSidebar() {
     </div>
   );
 }
+
+
 
 

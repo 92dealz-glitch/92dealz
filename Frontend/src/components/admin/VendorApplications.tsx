@@ -74,7 +74,7 @@ export default function VendorApplications() {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-12">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#708238]" />
       </div>
     );
   }
@@ -134,7 +134,7 @@ export default function VendorApplications() {
                         <button
                           onClick={() => handleUpdateStatus(sub.id, "APPROVED")}
                           disabled={processingId === sub.id}
-                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors disabled:opacity-50"
+                          className="p-2 text-[#708238] hover:bg-green-50 rounded-lg transition-colors disabled:opacity-50"
                           title="Approve"
                         >
                           <CheckCircle size={20} />
@@ -161,3 +161,5 @@ export default function VendorApplications() {
     </div>
   );
 }
+
+

@@ -21,12 +21,12 @@ export default function RecentAds() {
         });
         const allMapped: AdItem[] = (res.data || []).map((d: any) => ({
           id: d.id,
-          price: `₦ ${Number(d.price).toLocaleString()}`,
+          price: `Rs ${Number(d.price).toLocaleString()}`,
           priceValue: Number(d.price),
           title: d.title,
           desc: d.description || "",
           badge: d.image_url || "/assets/images/bgphone.svg",
-          location: d.location || "Nigeria",
+          location: d.location || "Pakistan",
           state: d.state,
           city: d.city,
           condition: d.condition || "New",
@@ -46,7 +46,7 @@ export default function RecentAds() {
   if (!list.length) return null;
   return (
     <section className="max-w-[1400px] mx-auto px-4 lg:px-12 pb-8">
-      <h3 className="text-3xl font-extrabold text-[#f45c03] mb-6">Recent Ads</h3>
+      <h3 className="text-3xl font-extrabold text-[#708238] mb-6">Recent Ads</h3>
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {list.map((it) => (
           <AdCard key={it.id} item={it} />
@@ -55,5 +55,7 @@ export default function RecentAds() {
     </section>
   );
 }
+
+
 
 

@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { API_BASE } from '@/services/apiClient'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://234deals.vercel.app'
+  const baseUrl = 'https://92dealz.vercel.app'
 
   // Static routes
   const routes = [
@@ -43,3 +43,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [...routes, ...productEntries]
 }
+
+

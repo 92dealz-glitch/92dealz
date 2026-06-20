@@ -24,7 +24,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200 border border-zinc-100">
         <div className="p-8">
           <div className="flex items-center gap-4 mb-6">
-            <div className="bg-orange-50 p-3 rounded-2xl text-orange-600">
+            <div className="bg-[#E9E0D4] p-3 rounded-2xl text-[#708238]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
                 <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
@@ -42,7 +42,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="w-full bg-zinc-50 border-2 border-zinc-100 rounded-xl px-4 py-3 mb-6 outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-bold"
+              className="w-full bg-zinc-50 border-2 border-zinc-100 rounded-xl px-4 py-3 mb-6 outline-none focus:border-[#708238] focus:ring-4 focus:ring-[#E9E0D4]/30 transition-all font-bold"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === 'Enter') onClose(inputValue);
@@ -55,7 +55,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
             {type === 'alert' && (
               <button
                 onClick={() => onClose()}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
+                className="w-full bg-[#708238] hover:bg-[#5E6E2F] text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-[#E9E0D4] active:scale-[0.98]"
               >
                 Continue
               </button>
@@ -70,7 +70,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
                 </button>
                 <button
                   onClick={() => onClose(true)}
-                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
+                  className="flex-1 bg-[#708238] hover:bg-[#5E6E2F] text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-[#E9E0D4] active:scale-[0.98]"
                 >
                   Confirm
                 </button>
@@ -86,7 +86,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
                 </button>
                 <button
                   onClick={() => onClose(inputValue)}
-                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98]"
+                  className="flex-1 bg-[#708238] hover:bg-[#5E6E2F] text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-[#E9E0D4] active:scale-[0.98]"
                 >
                   Save Changes
                 </button>
@@ -102,7 +102,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
                 </button>
                 <button
                   onClick={() => onClose(true)}
-                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-orange-100 active:scale-[0.98] text-sm"
+                  className="flex-1 bg-[#708238] hover:bg-[#5E6E2F] text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-[#E9E0D4] active:scale-[0.98] text-sm"
                 >
                   Go to Account Settings
                 </button>
@@ -116,3 +116,5 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
 };
 
 export default CustomAlert;
+
+

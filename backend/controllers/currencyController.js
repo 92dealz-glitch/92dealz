@@ -18,13 +18,16 @@ exports.detectLocation = async (req, res, next) => {
     // geoip-lite check
     const geo = geoip.lookup(ip);
     
-    let currency = 'USD';
-    let country = 'US';
+    let currency = 'PKR';
+    let country = 'PK';
     
     if (geo) {
       country = geo.country;
-      if (country === 'NG') currency = 'NGN';
+      if (country === 'PK') currency = 'PKR';
       else if (country === 'CN') currency = 'CNY';
+      else {
+        currency = 'USD';
+      }
     }
 
     return res.json({

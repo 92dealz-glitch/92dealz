@@ -99,7 +99,7 @@ export default function ProductManagement() {
       <div className="p-6 border-b border-zinc-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2">
-            <Package className="text-orange-500" />
+            <Package className="text-[#708238]" />
             Product Management
           </h3>
           <p className="text-zinc-500 text-sm">Review, search, and manage all platform products</p>
@@ -111,7 +111,7 @@ export default function ProductManagement() {
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-zinc-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-300 outline-none transition-all"
+            className="w-full pl-10 pr-4 py-2 border border-zinc-200 rounded-xl text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition-all"
           />
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function ProductManagement() {
               <tr>
                 <td colSpan={5} className="py-20 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <Loader2 className="animate-spin text-orange-600" />
+                    <Loader2 className="animate-spin text-[#708238]" />
                     <span className="text-zinc-400 font-medium">Loading products...</span>
                   </div>
                 </td>
@@ -150,7 +150,7 @@ export default function ProductManagement() {
                   <td className="px-6 py-4 text-sm text-zinc-600 font-medium">{deal.merchant || "Unknown"}</td>
                   <td className="px-6 py-4 text-center">
                     <span className={`px-2 py-1 text-[10px] font-black uppercase rounded ${
-                      deal.status === 'active' ? 'bg-emerald-100 text-emerald-600' :
+                      deal.status === 'active' ? 'bg-[#FFFDF9] text-emerald-600' :
                       deal.status === 'draft' ? 'bg-amber-100 text-amber-600' : 'bg-purple-100 text-purple-600'
                     }`}>
                       {deal.status}
@@ -161,7 +161,7 @@ export default function ProductManagement() {
                       {deal.status !== 'active' && (
                         <button
                           onClick={() => handleStatusAction(deal.id, 'approve')}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-lg text-[10px] font-black uppercase transition-all active:scale-95 border border-emerald-100"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FFFDF9]/30 text-emerald-600 hover:bg-[#F8F4EE]merald-600 hover:text-white rounded-lg text-[10px] font-black uppercase transition-all active:scale-95 border border-emerald-100"
                           title="Approve Listing"
                         >
                           <Check size={14} />
@@ -181,7 +181,7 @@ export default function ProductManagement() {
                       {deal.status !== 'rejected' && (
                         <button
                           onClick={() => setActionModal({ show: true, id: deal.id, type: 'reject' })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white rounded-lg text-[10px] font-black uppercase transition-all active:scale-95 border border-orange-100"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#E9E0D4] text-[#708238] hover:bg-[#708238] hover:text-white rounded-lg text-[10px] font-black uppercase transition-all active:scale-95 border border-[#E9E0D4]/30"
                           title="Reject Listing"
                         >
                           <X size={14} />
@@ -303,13 +303,13 @@ export default function ProductManagement() {
       {actionModal.show && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl relative overflow-hidden">
-            <div className="p-6 bg-orange-50 border-b border-orange-100 flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
+            <div className="p-6 bg-[#E9E0D4] border-b border-[#E9E0D4]/30 flex items-center gap-3">
+              <div className="w-10 h-10 bg-[#E9E0D4] rounded-full flex items-center justify-center text-[#708238]">
                 <AlertCircle size={22} />
               </div>
               <div>
                 <h3 className="font-bold text-orange-900">Reject Ad</h3>
-                <p className="text-orange-600 text-[10px] font-bold uppercase tracking-wider">Please provide a reason</p>
+                <p className="text-[#708238] text-[10px] font-bold uppercase tracking-wider">Please provide a reason</p>
               </div>
             </div>
 
@@ -318,7 +318,7 @@ export default function ProductManagement() {
                 placeholder="Reason for rejection..."
                 value={actionReason}
                 onChange={(e) => setActionReason(e.target.value)}
-                className="w-full h-24 rounded-xl border border-zinc-200 p-4 text-sm outline-none focus:ring-2 focus:ring-orange-300 transition-all resize-none"
+                className="w-full h-24 rounded-xl border border-zinc-200 p-4 text-sm outline-none focus:ring-2 focus:ring-[#E9E0D4]/30 transition-all resize-none"
               />
               <div className="flex gap-3">
                 <button
@@ -330,7 +330,7 @@ export default function ProductManagement() {
                 <button
                   disabled={!actionReason.trim() || actionLoading}
                   onClick={() => actionModal.id && handleStatusAction(actionModal.id, 'reject', actionReason)}
-                  className="flex-[1.5] px-4 py-3 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-[1.5] px-4 py-3 bg-[#708238] text-white rounded-xl font-bold hover:bg-[#5E6E2F] disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {actionLoading ? <Loader2 size={18} className="animate-spin" /> : <X size={18} />}
                   Reject Ad
@@ -343,3 +343,5 @@ export default function ProductManagement() {
     </div>
   );
 }
+
+

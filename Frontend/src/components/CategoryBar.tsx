@@ -77,7 +77,7 @@ export default function CategoryBar() {
 
   const renderIcon = (c: CategoryItem | { id: string; title: string; icon: string }) => {
     if (brokenImages[c.id] || !c.icon) {
-      return <Package size={48} className="text-orange-600" />;
+      return <Package size={48} className="text-[#708238]" />;
     }
     return (
       <Image
@@ -109,7 +109,7 @@ export default function CategoryBar() {
   return (
     <div className="lg:hidden px-4 py-4 bg-white overflow-hidden">
       {/* Title */}
-      <h2 className="text-orange-600 font-bold text-lg mb-3">
+      <h2 className="text-[#708238] font-bold text-lg mb-3">
         Browse by category
       </h2>
 
@@ -134,10 +134,10 @@ export default function CategoryBar() {
                   className="flex-none w-[100px]"
                 >
                   <div
-                    className="relative w-[90px] h-[90px] mx-auto rounded-md flex items-center justify-center border-2 border-orange-100 bg-orange-50/30 shadow-sm transition-transform hover:scale-95 active:scale-90 overflow-hidden"
+                    className="relative w-[90px] h-[90px] mx-auto rounded-md flex items-center justify-center border-2 border-[#E9E0D4]/30 bg-[#E9E0D4]/30 shadow-sm transition-transform hover:scale-95 active:scale-90 overflow-hidden"
                   >
                     {c.id === "post-ad" ? (
-                      <PlusCircle size={48} className="text-orange-600" />
+                      <PlusCircle size={48} className="text-[#708238]" />
                     ) : (
                       renderIcon(c)
                     )}
@@ -154,3 +154,5 @@ export default function CategoryBar() {
     </div>
   );
 }
+
+

@@ -36,7 +36,7 @@ export default function VendorDashboardPage() {
     return (
         <>
             <div className="mb-8 lg:mb-12">
-                <h1 className="text-[#f45c03] text-3xl sm:text-4xl lg:text-5xl font-black mb-2">
+                <h1 className="text-[#708238] text-3xl sm:text-4xl lg:text-5xl font-black mb-2">
                     Vendor Dashboard
                 </h1>
                 <p className="text-zinc-600 font-semibold text-sm lg:text-base">
@@ -85,4 +85,6 @@ export default function VendorDashboardPage() {
         </>
     );
 }
+
+
 

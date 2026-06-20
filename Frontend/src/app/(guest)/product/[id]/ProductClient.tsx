@@ -100,7 +100,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
   const { showAlert } = useAlert();
   const { isFavorite, toggle } = useFavorites();
   const { currency, setCurrency, formatPrice } = useCurrency();
-  const sequence: ("NGN" | "USD" | "CNY")[] = ["NGN", "USD", "CNY"];
+  const sequence: ("PKR" | "USD" | "CNY")[] = ["PKR", "USD", "CNY"];
   
   const cycleCurrency = () => {
     const currentIndex = sequence.indexOf(currency);
@@ -153,7 +153,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
           desc: d.description || '',
           sellerId: String(d.userId),
           sellerName,
-          price: `₦${Number(d.price).toLocaleString()}`,
+          price: `Rs ${Number(d.price).toLocaleString()}`,
           priceValue: Number(d.price),
           sellerRating: seller.rating || 2.9,
           sellerMemberSince: memberSince,
@@ -161,7 +161,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
           sellerResponseTime: seller.responseTime || "Within 1 hour",
           images,
           condition: d.condition || 'New',
-          location: d.location || d.city || 'Nigeria',
+          location: d.location || d.city || 'Pakistan',
           brand: d.brand,
           model: d.model,
           color: d.color,
@@ -344,7 +344,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h2>
           <p className="text-gray-600 mb-6">The product you are looking for does not exist or has been removed.</p>
-          <Link href="/" className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition">
+          <Link href="/" className="bg-[#708238] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#5E6E2F] transition">
             Go to Homepage
           </Link>
         </div>
@@ -382,7 +382,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                     </div>
                 )}
 
-                <Link href="/" className="inline-flex w-full items-center justify-center bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95">
+                <Link href="/" className="inline-flex w-full items-center justify-center bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-[#708238] transition-all shadow-lg active:scale-95">
                     Return to Marketplace
                 </Link>
             </div>
@@ -425,7 +425,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
             </div>
         )}
         {/* Mobile Header Sub-nav */}
-        <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-orange-200 py-3 px-4 flex items-center justify-between shadow-sm">
+        <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#E9E0D4] py-3 px-4 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
             <button onClick={() => router.back()} className="p-1 hover:bg-orange-50 rounded-full transition-colors text-[#ff7a2d]">
               <ChevronLeft size={24} />
@@ -458,10 +458,10 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
         <nav className="text-gray-600 text-sm mb-4 hidden sm:block">Home &gt; Products &gt; {product.title}</nav>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
           {/* 1. Gallery Section */}
-          <section className="lg:col-start-1 rounded-md border-2 border-orange-200 bg-white p-4 sm:p-6">
+          <section className="lg:col-start-1 rounded-md border-2 border-[#E9E0D4] bg-white p-4 sm:p-6">
             <h1 className="hidden lg:block text-3xl font-extrabold text-zinc-900 mb-4">{product.title}</h1>
             <div className="relative">
-              <div className="w-full h-[320px] sm:h-[420px] md:h-[480px] lg:h-[520px] rounded-md overflow-hidden border border-orange-200">
+              <div className="w-full h-[320px] sm:h-[420px] md:h-[480px] lg:h-[520px] rounded-md overflow-hidden border border-[#E9E0D4]">
                 <img src={sampleImages[selected]} alt={product.title || 'image'} className="w-full h-full object-cover block" />
               </div>
 
@@ -500,7 +500,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                   key={`${src}-${i}`}
                   onClick={() => setSelected(i)}
                   type="button"
-                  className={`flex-shrink-0 w-14 h-10 sm:w-20 sm:h-14 rounded overflow-hidden border ${i === selected ? 'border-orange-200' : 'border-gray-200'} p-0`}
+                  className={`flex-shrink-0 w-14 h-10 sm:w-20 sm:h-14 rounded overflow-hidden border ${i === selected ? 'border-[#E9E0D4]' : 'border-gray-200'} p-0`}
                   aria-label={`thumbnail-${i}`}
                 >
                   <img src={src} className="w-full h-full object-cover" alt={`${product.title} thumbnail ${i + 1}`} />
@@ -567,7 +567,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
           {/* 2. Description & Specs Section (Accordions for Mobile, Tabs for Desktop) */}
           <section className="lg:col-start-1 space-y-4">
             {/* Desktop Tabs View */}
-            <div className="hidden lg:block rounded-lg border-2 border-orange-200 bg-white p-6">
+            <div className="hidden lg:block rounded-lg border-2 border-[#E9E0D4] bg-white p-6">
               <div className="border-b pb-3 mb-6">
                 <div className="flex gap-8">
                   <button
@@ -598,7 +598,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
 
             {/* Mobile Accordion View */}
             <div className="lg:hidden space-y-3">
-              <details className="group lg:rounded-md lg:border-2 lg:border-orange-200 border-0 bg-white lg:overflow-hidden lg:shadow-sm" open>
+              <details className="group lg:rounded-md lg:border-2 lg:border-[#E9E0D4] border-0 bg-white lg:overflow-hidden lg:shadow-sm" open>
                 <summary className="flex items-center justify-between p-4 lg:p-4 p-3 cursor-pointer list-none font-black text-sm text-gray-800 uppercase bg-zinc-50/50">
                   PRODUCT DESCRIPTION
                   <ChevronDown size={18} className="text-[#ff7a2d] transition-transform group-open:rotate-180" />
@@ -608,7 +608,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                 </div>
               </details>
 
-              <details className="group lg:rounded-md lg:border-2 lg:border-orange-200 border-0 bg-white lg:overflow-hidden lg:shadow-sm">
+              <details className="group lg:rounded-md lg:border-2 lg:border-[#E9E0D4] border-0 bg-white lg:overflow-hidden lg:shadow-sm">
                 <summary className="flex items-center justify-between p-4 lg:p-4 p-3 cursor-pointer list-none font-black text-sm text-gray-800 uppercase bg-zinc-50/50">
                   SPECIFICATION
                   <ChevronDown size={18} className="text-[#ff7a2d] transition-transform group-open:rotate-180" />
@@ -624,7 +624,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
 
           {/* 3. Sidebar (Price Section + Seller Info) - Spans all rows on desktop to avoid gaps */}
           <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-4 space-y-4 hidden lg:block">
-            <div className="rounded-md bg-white border-2 border-orange-200 p-6 shadow-sm relative">
+            <div className="rounded-md bg-white border-2 border-[#E9E0D4] p-6 shadow-sm relative">
               <div className="flex items-center justify-between gap-2 mb-4">
                 <div className="text-3xl font-extrabold text-[#ff7a2d]">
                   {product.priceValue ? formatPrice(product.priceValue) : product.price}
@@ -650,7 +650,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
               </div>
 
               {orderMessage && (
-                <div className={`mt-4 p-3 rounded-md flex items-center gap-2 text-sm font-bold ${orderMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                <div className={`mt-4 p-3 rounded-md flex items-center gap-2 text-sm font-bold ${orderMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-[#E9E0D4]' : 'bg-red-50 text-red-700 border border-red-100'}`}>
                    {orderMessage.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                    {orderMessage.text}
                 </div>
@@ -666,7 +666,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                     setMessageText("I am interested in your product.");
                     setMessageModal(true);
                   }} 
-                  className="w-full bg-orange-600 text-white py-3 rounded-md font-bold hover:bg-orange-700 shadow-lg shadow-orange-100"
+                  className="w-full bg-[#708238] text-white py-3 rounded-md font-bold hover:bg-[#5E6E2F] shadow-lg shadow-orange-100"
                 >
                   Send Message to seller
                 </button>
@@ -678,7 +678,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                     }
                     router.push(`/messages?userId=${product.sellerId}&dealId=${product.id}`);
                   }}
-                  className="w-full bg-orange-600 text-white py-3 rounded-md font-bold hover:bg-orange-700 shadow-lg shadow-orange-100"
+                  className="w-full bg-[#708238] text-white py-3 rounded-md font-bold hover:bg-[#5E6E2F] shadow-lg shadow-orange-100"
                 >
                   💬 Chat Seller
                 </button>
@@ -686,7 +686,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
             </div>
 
             {/* 4. Seller Information */}
-            <div className="rounded-md bg-white border-2 border-orange-200 p-4">
+            <div className="rounded-md bg-white border-2 border-[#E9E0D4] p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold">Seller Information</h3>
                 <div className="text-xs text-gray-500">● Last seen 12:01 PM</div>
@@ -694,7 +694,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
 
               <div className="border-t border-b border-gray-100 py-3">
                 <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-md bg-orange-500 text-white flex items-center justify-center font-bold overflow-hidden">
+                    <div className="w-10 h-10 rounded-md bg-[#708238] text-white flex items-center justify-center font-bold overflow-hidden">
                       {product.sellerImage ? (
                         <img src={product.sellerImage} alt="" className="w-full h-full object-cover" />
                       ) : (product.sellerName || 'S').slice(0,1)}
@@ -725,14 +725,14 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
               <div className="mt-4 space-y-2">
                 <Link 
                   href={`/seller/${product.sellerId}`} 
-                  className="w-full flex items-center justify-center bg-[#ff7a2d] text-white py-2.5 rounded-md font-bold transition-all hover:bg-orange-600 shadow-sm mb-2"
+                  className="w-full flex items-center justify-center bg-[#ff7a2d] text-white py-2.5 rounded-md font-bold transition-all hover:bg-[#708238] shadow-sm mb-2"
                 >
                   <User size={18} className="mr-2" />
                   View Seller Profile
                 </Link>
                 <Link 
                   href={`/seller/${product.sellerId}/listings`} 
-                  className="w-full flex items-center justify-center bg-[#ff7a2d] text-white py-2.5 rounded-md font-bold transition-all hover:bg-orange-600 shadow-sm"
+                  className="w-full flex items-center justify-center bg-[#ff7a2d] text-white py-2.5 rounded-md font-bold transition-all hover:bg-[#708238] shadow-sm"
                 >
                   <Package size={18} className="mr-2" />
                   See All Ads from Seller
@@ -750,7 +750,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
               </div>
             </div>
 
-            <div className="rounded-md border-2 border-orange-200 bg-white p-4">
+            <div className="rounded-md border-2 border-[#E9E0D4] bg-white p-4">
               <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <Share2 size={18} className="text-[#ff7a2d]" />
                 Share Ad
@@ -764,7 +764,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                 />
                 <button 
                   onClick={handleCopyLink}
-                  className="bg-orange-600 text-white p-2 rounded-md hover:bg-orange-700 transition-all flex items-center justify-center"
+                  className="bg-[#708238] text-white p-2 rounded-md hover:bg-[#5E6E2F] transition-all flex items-center justify-center"
                 >
                   {copied ? <Check size={18} /> : <Copy size={18} />}
                 </button>
@@ -776,7 +776,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
           <div className="lg:col-start-1 space-y-6">
             {/* Reviews Section Implementation remains here ... */}
             {/* 6. Reviews Section */}
-            <section className="lg:rounded-md lg:border-2 lg:border-orange-200 border-0 bg-white overflow-hidden">
+            <section className="lg:rounded-md lg:border-2 lg:border-[#E9E0D4] border-0 bg-white overflow-hidden">
                 <div className="p-4 border-b border-zinc-100 flex items-center justify-between">
                   <h4 className="font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wide text-sm">Customer Reviews</h4>
                   <div className="flex items-center gap-2">
@@ -795,7 +795,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                       </p>
                       <button 
                         onClick={() => setShowGateModal(true)}
-                        className="inline-flex items-center gap-2 bg-[#ff7a2d] text-white px-8 py-3 rounded-md font-black text-sm shadow-lg shadow-orange-100 hover:bg-orange-600 transition-all active:scale-95"
+                        className="inline-flex items-center gap-2 bg-[#ff7a2d] text-white px-8 py-3 rounded-md font-black text-sm shadow-lg shadow-orange-100 hover:bg-[#708238] transition-all active:scale-95"
                       >
                         Verify Now
                       </button>
@@ -817,7 +817,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                         <button 
                           disabled={submittingReview || !reviewText.trim()} 
                           onClick={submitReview} 
-                          className="bg-zinc-900 text-white px-6 py-2.5 rounded-md font-bold text-xs shadow-md hover:bg-orange-600 transition-all disabled:opacity-50"
+                          className="bg-zinc-900 text-white px-6 py-2.5 rounded-md font-bold text-xs shadow-md hover:bg-[#708238] transition-all disabled:opacity-50"
                         >
                            {submittingReview ? "Submitting..." : "Post Review"}
                         </button>
@@ -878,7 +878,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
             </section>
 
             {/* Safety Section remains here ... */}
-            <section className="lg:col-start-1 lg:rounded-md lg:border-2 lg:border-orange-200 border-0 bg-white lg:p-4 p-4 pb-8">
+            <section className="lg:col-start-1 lg:rounded-md lg:border-2 lg:border-[#E9E0D4] border-0 bg-white lg:p-4 p-4 pb-8">
               <h4 className="font-semibold mb-3">Before you buy</h4>
               <ul className="list-disc pl-5 text-sm text-gray-700 space-y-2">
                 <li>Check feedbacks to make sure the person is reliable.</li>
@@ -941,8 +941,8 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
         {messageModal && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMessageModal(false)}></div>
-             <div className="relative bg-white rounded-md w-full max-w-md shadow-2xl overflow-hidden border border-orange-100">
-               <div className="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center justify-between">
+             <div className="relative bg-white rounded-md w-full max-w-md shadow-2xl overflow-hidden border border-[#E9E0D4]/30">
+               <div className="bg-orange-50 px-6 py-4 border-b border-[#E9E0D4]/30 flex items-center justify-between">
                  <h3 className="font-bold text-gray-900">Message Seller</h3>
                  <button onClick={() => setMessageModal(false)} className="text-gray-400 hover:text-[#ff7a2d] transition-colors">
                    <X size={20} />
@@ -950,7 +950,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                </div>
                <div className="p-6">
                  <div className="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-md">
-                   <div className="w-12 h-12 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold overflow-hidden shadow-inner">
+                   <div className="w-12 h-12 rounded-full bg-[#708238] text-white flex items-center justify-center font-bold overflow-hidden shadow-inner">
                      {product.sellerImage ? <img src={product.sellerImage} className="w-full h-full object-cover" alt="" /> : (product.sellerName || 'S').slice(0,1)}
                    </div>
                    <div>
@@ -964,7 +964,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                    value={messageText} 
                    onChange={(e) => setMessageText(e.target.value)}
                    placeholder="Hi, is this still available?"
-                   className="w-full border-2 border-gray-100 rounded-md p-4 text-sm focus:border-orange-200 outline-none transition-all resize-none min-h-[120px]"
+                   className="w-full border-2 border-gray-100 rounded-md p-4 text-sm focus:border-[#E9E0D4] outline-none transition-all resize-none min-h-[120px]"
                  />
                  
                  <div className="mt-6 flex gap-3">
@@ -977,7 +977,7 @@ export default function ProductClient({ id, initialProduct }: ProductClientProps
                    <button 
                      onClick={() => handleSendMessage()}
                      disabled={sendingMessage || !messageText.trim()}
-                     className="flex-1 bg-orange-600 text-white py-3 rounded-md font-bold hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 disabled:opacity-50 flex items-center justify-center gap-2"
+                     className="flex-1 bg-[#708238] text-white py-3 rounded-md font-bold hover:bg-[#5E6E2F] transition-all shadow-lg shadow-orange-100 disabled:opacity-50 flex items-center justify-center gap-2"
                    >
                      {sendingMessage ? (
                        <>

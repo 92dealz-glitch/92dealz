@@ -1,0 +1,37 @@
+<svg width="160" height="75" viewBox="0 0 160 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Vibrant primary gradient for brand identity (Avocado Green) -->
+    <linearGradient id="squircleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#708238" />
+      <stop offset="100%" stop-color="#5E6E2F" />
+    </linearGradient>
+    
+    <!-- Smooth drop shadow for a premium 3D feel -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#708238" flood-opacity="0.22" />
+    </filter>
+  </defs>
+
+  <!-- Modern squircle background icon badge -->
+  <rect x="8" y="17.5" width="40" height="40" rx="11" fill="url(#squircleGrad)" filter="url(#shadow)" />
+
+  <!-- Tilted deal tag icon within the squircle using Soft Gold outline -->
+  <!-- Tag string/loop -->
+  <path d="M33.5 27.5 C34.5 24.5, 31.5 22.5, 28 22.5" stroke="#C7A27C" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.9" />
+  
+  <!-- Tag body -->
+  <path d="M23 32 L31 24 C31.5 23.5, 32.5 23.5, 33 24 L37 28 C37.5 28.5, 37.5 29.5, 37 30 L29 38 C28.5 38.5, 27.5 38.5, 27 38 L23 34 C22.5 33.5, 22.5 32.5, 23 32 Z" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  
+  <!-- Tag eyelet/hole -->
+  <circle cx="33.5" cy="27.5" r="1" fill="#C7A27C" />
+
+  <!-- Brand Typography -->
+  <!-- "92 Dealz" heading -->
+  <text x="56" y="40" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="21.5" letter-spacing="-0.5px">
+    <tspan fill="#1E1E1E">92</tspan>
+    <tspan fill="#708238">Dealz</tspan>
+  </text>
+
+  <!-- Premium descriptive tag line -->
+  <text x="56" y="52" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="5" fill="#6B7280" letter-spacing="0.8px">PAKISTAN'S SMART MARKETPLACE</text>
+</svg>

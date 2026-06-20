@@ -18,7 +18,7 @@ export default function VerificationTaskBar() {
     : "/account-settings";
 
   return (
-    <div className="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-2.5 px-4 shadow-md overflow-hidden relative group">
+    <div className="bg-gradient-to-r from-[#708238] to-[#5E6E2F] text-white py-2.5 px-4 shadow-md overflow-hidden relative group">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 text-sm font-medium">
         <div className="flex items-center gap-2">
           <span className="flex h-2 w-2 relative">
@@ -30,7 +30,7 @@ export default function VerificationTaskBar() {
         
         <Link 
           href={verificationLink} 
-          className="bg-white text-orange-600 px-4 py-1 rounded-md text-xs font-bold hover:bg-orange-50 transition-all transform hover:scale-105 active:scale-95 shadow-sm whitespace-nowrap"
+          className="bg-white text-[#708238] px-4 py-1 rounded-md text-xs font-bold hover:bg-[#E9E0D4] transition-all transform hover:scale-105 active:scale-95 shadow-sm whitespace-nowrap"
         >
           Verify Profile Now
         </Link>
@@ -41,3 +41,5 @@ export default function VerificationTaskBar() {
     </div>
   );
 }
+
+

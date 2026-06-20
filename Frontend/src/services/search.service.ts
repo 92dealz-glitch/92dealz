@@ -32,3 +32,5 @@ export async function searchDeals(params: SearchParams) {
   const path = `${ENDPOINTS.search}${query ? `?${query}` : ""}`;
   return apiFetch<{ success: boolean; data: any[]; meta: { page: number; limit: number; total: number; pages: number } }>(path);
 }
+
+

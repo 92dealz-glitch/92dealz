@@ -19,7 +19,7 @@ async function getRates() {
     if (data && data.rates) {
       cachedRates = {
         USD: 1,
-        NGN: data.rates.NGN || 1600, // Fallback if API fails for specific rate
+        PKR: data.rates.PKR || 280, // Fallback if API fails for specific rate
         CNY: data.rates.CNY || 7.2
       };
       lastFetch = now;
@@ -31,34 +31,34 @@ async function getRates() {
     console.error('[CurrencyService] Rate fetch failed:', err.message);
     if (cachedRates) return cachedRates; // Return stale if available
     // Solid fallbacks for first run failure
-    return { USD: 1, NGN: 1600, CNY: 7.2 };
+    return { USD: 1, PKR: 280, CNY: 7.2 };
   }
 }
 
 /**
- * Converts an amount from a source currency to the platform's base currency (NGN)
+ * Converts an amount from a source currency to the platform's base currency (PKR)
  */
 async function convertToBase(amount, fromCurrency) {
   const rates = await getRates();
   const src = fromCurrency.toUpperCase();
-  if (src === 'NGN') return amount;
+  if (src === 'PKR') return amount;
   
-  // Logic: Amount / Rate_Source * Rate_NGN
-  // e.g. 10 USD -> 10 / 1 * 1600 = 16000 NGN
-  // e.g. 100 CNY -> 100 / 7.2 * 1600 = 22222 NGN
+  // Logic: Amount / Rate_Source * Rate_PKR
+  // e.g. 10 USD -> 10 / 1 * 280 = 2800 PKR
+  // e.g. 100 CNY -> 100 / 7.2 * 280 = 3888 PKR
   const usdValue = amount / (rates[src] || 1);
-  return usdValue * rates.NGN;
+  return usdValue * rates.PKR;
 }
 
 /**
- * Converts an amount from base (NGN) to any target currency
+ * Converts an amount from base (PKR) to any target currency
  */
-async function convertFromBase(amountNgn, toCurrency) {
+async function convertFromBase(amountPkr, toCurrency) {
   const rates = await getRates();
   const target = toCurrency.toUpperCase();
-  if (target === 'NGN') return amountNgn;
+  if (target === 'PKR') return amountPkr;
 
-  const usdValue = amountNgn / rates.NGN;
+  const usdValue = amountPkr / rates.PKR;
   return usdValue * (rates[target] || 1);
 }
 

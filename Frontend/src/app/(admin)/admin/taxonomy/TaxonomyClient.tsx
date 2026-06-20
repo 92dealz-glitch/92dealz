@@ -77,17 +77,17 @@ export default function TaxonomyManagementPage() {
     }
   };
 
-  if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading taxonomy...</div>;
+  if (loading) return <div className="p-20 text-center font-bold text-[#708238] text-2xl">Loading taxonomy...</div>;
 
   const categoryIcons: Record<string, string> = {
-    "Electronics": "=ƒô¦",
-    "Fashion": "=ƒæù",
-    "Home & Kitchen": "=ƒì¦",
-    "Phones": "=ƒô¦",
-    "Gaming": "=ƒÄ«",
-    "Vehicle": "=ƒÜù",
-    "Babies & Kids": "=ƒº+",
-    "Health & Beauty": "=ƒÆä",
+    "Electronics": "=ï¿½ï¿½ï¿½",
+    "Fashion": "=ï¿½ï¿½ï¿½",
+    "Home & Kitchen": "=ï¿½ï¿½",
+    "Phones": "=ï¿½ï¿½ï¿½",
+    "Gaming": "=ï¿½Ä«",
+    "Vehicle": "=ï¿½ï¿½ï¿½",
+    "Babies & Kids": "=ï¿½ï¿½+",
+    "Health & Beauty": "=ï¿½ï¿½ï¿½",
   };
 
   return (
@@ -99,13 +99,13 @@ export default function TaxonomyManagementPage() {
           <p className="text-zinc-500 text-sm mt-1 font-medium italic">Manage categories, tags and merchant profiles</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#f45c03] text-[#f45c03] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[#708238] text-[#708238] rounded-lg bg-white hover:bg-[#E9E0D4] transition-colors text-sm font-bold shadow-sm active:scale-95">
             <Download size={16} />
             Export
           </button>
           <button className="relative p-2 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors shadow-sm">
             <Bell size={20} className="text-zinc-600" />
-            <span className="absolute top-1 right-1.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-white"></span>
+            <span className="absolute top-1 right-1.5 w-2 h-2 bg-[#708238] rounded-full border-2 border-white"></span>
           </button>
         </div>
       </div>
@@ -120,7 +120,7 @@ export default function TaxonomyManagementPage() {
               onClick={() => setActiveTab(tab as any)}
               className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${
                 activeTab === tab 
-                  ? "bg-white text-[#f45c03] shadow-sm shadow-orange-500/10" 
+                  ? "bg-white text-[#708238] shadow-sm shadow-[#708238]/10" 
                   : "text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100/50"
               }`}
             >
@@ -136,12 +136,12 @@ export default function TaxonomyManagementPage() {
               <input
                 type="text"
                 placeholder={`Search ${activeTab}...`}
-                className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors text-sm font-medium"
+                className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-[#708238] transition-colors text-sm font-medium"
               />
             </div>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center justify-center gap-2 bg-[#f45c03] text-white px-6 py-2.5 rounded-lg hover:bg-[#f45c03] transition-colors font-bold shadow-md shadow-[#f45c03]/20 active:scale-95"
+              className="flex items-center justify-center gap-2 bg-[#708238] text-white px-6 py-2.5 rounded-lg hover:bg-[#708238] transition-colors font-bold shadow-md shadow-[#708238]/20 active:scale-95"
             >
               <Plus size={20} />
               Add {activeTab.slice(0, -1)}
@@ -165,18 +165,18 @@ export default function TaxonomyManagementPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <span className="w-10 h-10 flex items-center justify-center bg-zinc-100 rounded-lg text-lg grayscale group-hover:grayscale-0 transition-all">
-                          {categoryIcons[cat.name] || "=ƒôª"}
+                          {categoryIcons[cat.name] || "=ï¿½ï¿½ï¿½"}
                         </span>
                         <span className="text-sm font-black text-zinc-900">{cat.name}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-zinc-900 font-black">{cat.items || 0} items</td>
                     <td className="px-6 py-4 text-center">
-                      <span className="px-3 py-1 bg-[#10B981] text-white text-[10px] font-black uppercase rounded leading-none">Active</span>
+                      <span className="px-3 py-1 bg-[#C7A27C] text-white text-[10px] font-black uppercase rounded leading-none">Active</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-3">
-                        <button className="p-2 text-zinc-400 hover:text-orange-500 transition-colors active:scale-95"><Edit size={18} /></button>
+                        <button className="p-2 text-zinc-400 hover:text-[#708238] transition-colors active:scale-95"><Edit size={18} /></button>
                         <button onClick={() => handleDelete("Categories", cat.id, cat.name)} className="p-2 text-zinc-400 hover:text-red-500 transition-colors active:scale-95"><Trash2 size={18} /></button>
                       </div>
                     </td>
@@ -205,13 +205,13 @@ export default function TaxonomyManagementPage() {
                     </td>
                     <td className="px-6 py-4 text-sm text-zinc-900 font-black">N/A</td>
                     <td className="px-6 py-4 text-center">
-                      <span className="px-2.5 py-1 text-white text-[10px] font-black uppercase rounded leading-none bg-[#10B981]">
+                      <span className="px-2.5 py-1 text-white text-[10px] font-black uppercase rounded leading-none bg-[#C7A27C]">
                         Active
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
-                        <button className="p-2 text-zinc-400 hover:text-orange-500 transition-colors active:scale-95"><Edit size={18} /></button>
+                        <button className="p-2 text-zinc-400 hover:text-[#708238] transition-colors active:scale-95"><Edit size={18} /></button>
                         <button onClick={() => handleDelete("Merchants", mer.id, mer.name)} className="p-2 text-zinc-400 hover:text-red-500 transition-colors active:scale-95"><Trash2 size={18} /></button>
                       </div>
                     </td>
@@ -231,4 +231,6 @@ export default function TaxonomyManagementPage() {
     </div>
   );
 }
+
+
 

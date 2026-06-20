@@ -6,8 +6,8 @@ import Footer from "@/components/Footer";
 const faqs = [
   { question: "How do I create an account?", answer: "Click on the 'Sign Up' button at the top right of the page and follow the prompts to register as either a user or a vendor." },
   { question: "How long does vendor approval take?", answer: "Vendor applications are typically reviewed within 24 hours. You will receive an email notification once your store is approved." },
-  { question: "Is it free to list items?", answer: "Yes! 234Deals offers a free tier for vendors to start listing their products immediately. We also offer premium plans for advanced features." },
-  { question: "How do I contact customer support?", answer: "You can reach us anytime at 234deals@gmail.com, or through the Contact Us form." },
+  { question: "Is it free to list items?", answer: "Yes! 92Dealz offers a free tier for vendors to start listing their products immediately. We also offer premium plans for advanced features." },
+  { question: "How do I contact customer support?", answer: "You can reach us anytime at 92dealz@gmail.com, or through the Contact Us form." },
   { question: "How do I reset my password?", answer: "Go to the login page and click 'Forgot Password'. Enter your email address to receive a verification code." }
 ];
 
@@ -52,3 +52,5 @@ export default function FAQPage() {
     </div>
   );
 }
+
+

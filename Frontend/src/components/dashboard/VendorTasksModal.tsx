@@ -69,8 +69,8 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
     href?: string;
     infoOnly?: boolean;
   }) => (
-    <div className="flex items-start gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 mb-3 transition-all hover:border-orange-200">
-      <div className={`p-2.5 rounded-xl ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
+    <div className="flex items-start gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 mb-3 transition-all hover:border-[#E9E0D4]">
+      <div className={`p-2.5 rounded-xl ${isCompleted ? 'bg-green-100 text-[#708238]' : 'bg-[#E9E0D4] text-[#708238]'}`}>
         <Icon size={20} />
       </div>
       <div className="flex-1">
@@ -81,13 +81,13 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
           <Link 
             href={href || "#"} 
             onClick={onClose}
-            className="inline-flex items-center gap-1.5 mt-3 text-xs font-black text-white bg-orange-600 px-4 py-2 rounded-lg hover:bg-orange-700 transition-all shadow-sm shadow-orange-100"
+            className="inline-flex items-center gap-1.5 mt-3 text-xs font-black text-white bg-[#708238] px-4 py-2 rounded-lg hover:bg-[#5E6E2F] transition-all shadow-sm shadow-[#E9E0D4]"
           >
             {buttonText}
             <ChevronRight size={14} />
           </Link>
         ) : (
-          <div className="inline-flex items-center gap-1.5 mt-3 text-xs font-black text-green-600 bg-green-50 px-4 py-2 rounded-lg border border-green-100">
+          <div className="inline-flex items-center gap-1.5 mt-3 text-xs font-black text-[#708238] bg-green-50 px-4 py-2 rounded-lg border border-[#E9E0D4]">
             <CheckCircle2 size={14} />
             Completed
           </div>
@@ -108,7 +108,7 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
       
       <div className="relative w-full max-w-lg bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 border border-zinc-100">
         {/* Header */}
-        <div className="bg-[#f45c03] p-5 sm:p-8 shrink-0 relative">
+        <div className="bg-[#708238] p-5 sm:p-8 shrink-0 relative">
           <div className="flex items-center gap-3 sm:gap-4 mb-1 sm:mb-2 pr-8">
             <div className="bg-white/20 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl text-white">
               <Zap size={20} className="sm:w-6 sm:h-6" fill="white" />
@@ -130,7 +130,7 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
         <div className="flex-1 overflow-y-auto px-5 py-6 sm:p-8 custom-scrollbar">
           {loading ? (
             <div className="py-12 flex flex-col items-center justify-center">
-              <div className="w-8 h-8 border-3 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-3 border-[#E9E0D4] border-t-orange-600 rounded-full animate-spin"></div>
               <p className="text-zinc-400 text-[10px] font-bold mt-4 tracking-widest uppercase">Syncing your progress...</p>
             </div>
           ) : (
@@ -156,8 +156,8 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
               )}
 
               {(!isPhoneVerified || !isEmailVerified) && (
-                <div className="mt-6 p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50 flex gap-3">
-                  <ShieldCheck className="text-[#f45c03] shrink-0" size={18} />
+                <div className="mt-6 p-4 bg-[#E9E0D4]/50 rounded-2xl border border-[#E9E0D4]/30/50 flex gap-3">
+                  <ShieldCheck className="text-[#708238] shrink-0" size={18} />
                   <div>
                     <p className="text-xs font-black text-orange-900 mb-1">Boost Sales 300%</p>
                     <p className="text-[10px] text-orange-800 font-bold leading-relaxed opacity-80">
@@ -209,3 +209,5 @@ const VendorTasksModal: React.FC<VendorTasksModalProps> = ({ isOpen, onClose }) 
 };
 
 export default VendorTasksModal;
+
+

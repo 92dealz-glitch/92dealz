@@ -1,0 +1,287 @@
+[
+  {
+    "id": "3",
+    "name": "Computer & accessories",
+    "slug": "computer",
+    "icon": "/assets/images/laptop.svg",
+    "columns": [
+      {
+        "heading": "LAPTOPS",
+        "items": ["Windows Laptops", "MacBooks", "Chromebooks"]
+      },
+      {
+        "heading": "DESKTOPS",
+        "items": ["All-in-one", "Towers", "Gaming PCs"]
+      },
+      {
+        "heading": "ACCESSORIES",
+        "items": ["Monitors", "Keyboards", "Mice", "Routers", "Storage"]
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "name": "Properties",
+    "slug": "properties",
+    "icon": "/assets/images/house.svg",
+    "columns": [
+      {
+        "heading": "Residential",
+        "items": ["Apartments", "Houses", "Lands", "Rooms"]
+      },
+      {
+        "heading": "Commercial",
+        "items": ["Offices", "Shops", "Warehouses", "Event Centers"]
+      },
+      {
+        "heading": "Short Let",
+        "items": ["Apartments", "Hotels", "Guest Houses"]
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "name": "Furniture & appliances",
+    "slug": "furniture",
+    "icon": "/assets/images/furniture.svg",
+    "columns": [
+      {
+        "heading": "Living Room",
+        "items": ["Sofas", "TV Units", "Chairs"]
+      },
+      {
+        "heading": "Kitchen",
+        "items": ["Fridges", "Microwaves", "Gas Cookers"]
+      },
+      {
+        "heading": "Bedroom",
+        "items": ["Beds", "Wardrobes", "Mattresses"]
+      }
+    ]
+  },
+  {
+    "id": "9",
+    "name": "Agriculture & food",
+    "slug": "agriculture",
+    "icon": "/assets/images/foodbaasket.svg",
+    "columns": [
+      {
+        "heading": "Farm Produce",
+        "items": ["Fruit", "Vegetables", "Grains", "Livestock"]
+      },
+      {
+        "heading": "Equipment",
+        "items": ["Tractors", "Irrigation", "Trailers"]
+      },
+      {
+        "heading": "Feeds",
+        "items": ["Poultry Feed", "Fish Feed", "Cattle Feed"]
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "name": "Services",
+    "slug": "services",
+    "icon": "/assets/images/engineer.svg",
+    "columns": [
+      {
+        "heading": "Home Services",
+        "items": ["Cleaning", "Plumbing", "Electrical", "Painting"]
+      },
+      {
+        "heading": "Business",
+        "items": ["Consultivity", "Legal", "Design", "Marketing"]
+      },
+      {
+        "heading": "Personal",
+        "items": ["Tutors", "Personal Trainers", "Event Planning"]
+      }
+    ]
+  },
+  {
+    "id": "12",
+    "name": "Commercial equipment",
+    "slug": "commercial",
+    "icon": "/assets/images/equipment.svg",
+    "columns": [
+      {
+        "heading": "Industrial",
+        "items": ["Heavy Machinery", "Manufacturing", "Power Tools"]
+      },
+      {
+        "heading": "Office",
+        "items": ["Office Furniture", "Printers", "Stationery"]
+      },
+      {
+        "heading": "Trade",
+        "items": ["Construction", "Woodworking", "Metalworking"]
+      }
+    ]
+  },
+  {
+    "id": "13",
+    "name": "Repair and construction",
+    "slug": "repair",
+    "icon": "/assets/images/equipmentbaket.svg",
+    "columns": [
+      {
+        "heading": "Materials",
+        "items": ["Cement", "Bricks", "Tiles", "Roofing"]
+      },
+      {
+        "heading": "Tools",
+        "items": ["Power Tools", "Hand Tools", "Safety Gear"]
+      },
+      {
+        "heading": "Services",
+        "items": ["Plumbing", "Electrical", "Carpentry"]
+      }
+    ]
+  },
+  {
+    "id": "14",
+    "name": "Pets and animals",
+    "slug": "pets",
+    "icon": "/assets/images/pet.svg",
+    "columns": [
+      {
+        "heading": "Pets",
+        "items": ["Dogs", "Cats", "Birds", "Fish"]
+      },
+      {
+        "heading": "Supplies",
+        "items": ["Pet Food", "Cages", "Grooming Kits"]
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "name": "Babies & kids",
+    "slug": "babies",
+    "icon": "/assets/images/girl.svg",
+    "columns": [
+      {
+        "heading": "Clothing",
+        "items": ["Baby Wear", "Boys Clothing", "Girls Clothing"]
+      },
+      {
+        "heading": "Essentials",
+        "items": ["Diapers", "Baby Food", "Feeding Bottles"]
+      },
+      {
+        "heading": "Toys",
+        "items": ["Educational", "Dolls", "Action Figures"]
+      }
+    ]
+  },
+  {
+    "id": "1",
+    "name": "Fashion",
+    "slug": "fashion",
+    "icon": "/assets/images/bgdress.svg",
+    "columns": [
+      {
+        "heading": "WOMAN'S FASHION",
+        "items": ["Clothing", "Shoes", "Accessories", "Maternity", "Dresses", "Traditional", "Jewelry", "Handbags & Wallets", "Beach & Swimwear"]
+      },
+      {
+        "heading": "MEN'S FASHION",
+        "items": ["Clothing", "Shoes", "Accessories", "Underwear & Sleepwear", "Traditional & Cultural Wear", "T-Shirts", "Polo Shirts", "Trousers & Chinos", "Sneakers"]
+      },
+      {
+        "heading": "KID'S FASHION",
+        "items": ["Boy's Fashion", "Girl's Fashion"]
+      },
+      {
+        "heading": "WATCHES",
+        "items": ["Men's Watches", "Women's Watches"]
+      },
+      {
+        "heading": "SUNGLASSES",
+        "items": ["Men's Sunglasses", "Women's Sunglasses"]
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Phones & tablets",
+    "slug": "phones",
+    "icon": "/assets/images/phone.svg",
+    "columns": [
+      {
+        "heading": "MOBILE PHONES",
+        "items": ["Smartphones", "Android Phones", "iPhones", "Cordless Telephones", "Dual Sim Phones", "Basic Phones", "Refurbished Phones", "Rugged Phones"]
+      },
+      {
+        "heading": "TABLETS",
+        "items": ["iPads", "Android Tablets", "Educational Tablets", "Tablet Accessories", "Microsoft Tablets"]
+      },
+      {
+        "heading": "MOBILE ACCESSORIES",
+        "items": ["Adapters", "Batteries", "Bluetooth Headsets", "Chargers", "Selfie Sticks & Tripods", "Power Banks", "Screen Protectors", "Phone Camera Lenses", "Earphones & Headset"]
+      },
+      {
+        "heading": "TOP SMARTPHONES",
+        "items": ["iPhone 15 & 15 Pro Max", "Samsung Galaxy S24 & S24 Ultra", "Xiaomi Redmi 13c", "Itel A70", "Tecno Pop 8", "Infinix Smart 8", "Tecno Spark 20 & 20 Pro", "Itel S23 & S23 Plus"]
+      },
+      {
+        "heading": "TOP PHONE BRANDS",
+        "items": ["Samsung", "Apple", "Xiaomi", "Tecno"]
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Vehicle",
+    "slug": "vehicle",
+    "columns": [
+      {
+        "heading": "Cars",
+        "items": ["Toyota", "Honda", "Mercedes-Benz", "Lexus"]
+      },
+      {
+        "heading": "Other",
+        "items": ["Buses", "Motorcycles", "Trucks", "Car Parts"]
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "name": "Health & beauty",
+    "slug": "health",
+    "columns": [
+      {
+        "heading": "Skin Care",
+        "items": ["Body Creams", "Face Serums", "Sunscreen", "Cleansers"]
+      },
+      {
+        "heading": "Hair Care",
+        "items": ["Shampoos", "Conditioners", "Hair Oils", "Wigs & Weaves"]
+      },
+      {
+        "heading": "Makeup",
+        "items": ["Foundations", "Lipsticks", "Eye Palettes", "Makeup Tools"]
+      },
+      {
+        "heading": "Fragrances",
+        "items": ["Men's Perfumes", "Women's Perfumes", "Unisex Scents"]
+      }
+    ]
+  },
+  {
+    "id": "11",
+    "name": "Electronics",
+    "slug": "electronics",
+    "columns": [
+      {
+        "heading": "TV & HOME THEATER",
+        "items": ["LED TVs", "Smart TVs", "Projectors"]
+      },
+      {
+        "heading": "AUDIO",
+        "items": ["Speakers", "Headphones", "Home Audio"]
+      }
+    ]
+  }
+]

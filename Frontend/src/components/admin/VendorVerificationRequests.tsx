@@ -69,7 +69,7 @@ export default function VendorVerificationRequests() {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-12">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#708238]" />
       </div>
     );
   }
@@ -79,12 +79,12 @@ export default function VendorVerificationRequests() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2">
-            <ShieldCheck className="text-orange-500" />
+            <ShieldCheck className="text-[#708238]" />
             Vendor Verification Requests
           </h3>
           <p className="text-zinc-500 text-sm">Review government IDs to grant Verified badges</p>
         </div>
-        <span className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-black uppercase">
+        <span className="bg-[#E9E0D4] text-[#708238] px-3 py-1 rounded-full text-xs font-black uppercase">
           {requests.length} Pending
         </span>
       </div>
@@ -182,3 +182,5 @@ export default function VendorVerificationRequests() {
     </div>
   );
 }
+
+

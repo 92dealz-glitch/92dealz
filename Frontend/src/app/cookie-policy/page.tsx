@@ -9,7 +9,7 @@ export default function CookiePolicyPage() {
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-8">Cookie Policy</h1>
         <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
           <p>Last updated: {new Date().toLocaleDateString()}</p>
-          <p>This Cookie Policy explains how 234Deals uses cookies and similar technologies to recognize you when you visit our website.</p>
+          <p>This Cookie Policy explains how 92Dealz uses cookies and similar technologies to recognize you when you visit our website.</p>
           
           <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">1. What are cookies?</h2>
           <p>Cookies are small data files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work or work more efficiently.</p>
@@ -25,3 +25,5 @@ export default function CookiePolicyPage() {
     </div>
   );
 }
+
+

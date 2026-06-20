@@ -75,14 +75,14 @@ export function useNavUserDetails() {
         cache: "no-store",
       })
         .then((r) => r.json())
-        .then((d) => {
+        .then(async (d) => {
           if (d?.success === false && (d?.message === "User not found" || d?.message === "Invalid or expired token" || d?.message === "Unauthorized")) {
             // GLOBAL CLEANUP on 401
             if (typeof window !== "undefined") {
               window.localStorage.clear();
               deleteCookie("token");
             }
-            signOut({ callbackUrl: "/login" });
+            await signOut({ callbackUrl: "/" });
           } else {
             const u = d?.data?.profile_image_url;
             const v = !!d?.data?.is_verified;
@@ -127,3 +127,5 @@ export function useNavUserDetails() {
 
   return { ...data, isFullyVerified } as NavUserDetails;
 }
+
+

@@ -47,11 +47,11 @@ export default function StatCard({
       {trend && (
         <div className="flex items-center gap-1">
           {trend.isUp ? (
-            <TrendingUp size={16} className="text-green-600" />
+            <TrendingUp size={16} className="text-[#708238]" />
           ) : (
             <TrendingDown size={16} className="text-red-600" />
           )}
-          <span className={`text-[12px] font-bold ${trend.isUp ? "text-green-600" : "text-red-600"}`}>
+          <span className={`text-[12px] font-bold ${trend.isUp ? "text-[#708238]" : "text-red-600"}`}>
             {trend.value} <span className="text-zinc-500 font-normal">this month</span>
           </span>
         </div>
@@ -59,3 +59,5 @@ export default function StatCard({
     </div>
   );
 }
+
+

@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import AdCard from "./ui/AdCard";
 import LocationDropdown from "./LocationDropdown";
 import SelectDropdown from "./ui/SelectDropdown";
-import { NIGERIAN_LOCATIONS } from "@/data/locationData";
+import { PAKISTAN_LOCATIONS } from "@/data/locationData";
 import { ChevronRight } from "lucide-react";
 
 import type { AdItem } from "./ui/AdCard";
@@ -28,7 +28,7 @@ function FilterSection({
         className="w-full flex items-center justify-between px-4 py-3.5"
         style={{ minHeight: 52 }}
       >
-        <span className="font-semibold text-base" style={{ color: "#f45c03" }}>
+        <span className="font-semibold text-base" style={{ color: "#708238" }}>
           {label}
         </span>
         <span className="text-xl font-light leading-none" style={{ color: "#9ca3af" }}>
@@ -169,7 +169,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
         <div className="md:hidden flex items-center justify-between mb-2">
             <button
                 onClick={() => setIsMobileFilterOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-orange-200 rounded-md font-bold text-orange-600 shadow-sm active:scale-95 transition-all w-full justify-center"
+                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-[#E9E0D4] rounded-md font-bold text-[#708238] shadow-sm active:scale-95 transition-all w-full justify-center"
             >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M22 3H2l8 9v7l4 3v-10L22 3z" />
@@ -196,22 +196,22 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
           
           <div
             className={`bg-white rounded-md overflow-hidden shadow-sm ${!isMobileFilterOpen ? 'sticky top-24' : ''}`}
-            style={{ border: isMobileFilterOpen ? 'none' : "1.5px solid #fed7aa" }}
+            style={{ border: isMobileFilterOpen ? 'none' : "1.5px solid #E9E0D4" }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 bg-orange-50/50">
+            <div className="flex items-center justify-between px-5 py-4 bg-[#E9E0D4]/50">
               <span className="font-bold text-lg text-gray-900">Filters</span>
               <button
                 onClick={clearAll}
                 className="font-bold text-sm hover:underline transition-all"
-                style={{ color: "#f45c03" }}
+                style={{ color: "#708238" }}
               >
                 Clear All
               </button>
             </div>
 
             {/* Location */}
-            <div className="border-t border-orange-100">
+            <div className="border-t border-[#E9E0D4]/30">
               <button
                 type="button"
                 onClick={() => setOpenLocation((v) => !v)}
@@ -229,13 +229,13 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                     onChange={(l) => { setLocation(l); setCity(undefined); setPage(1); }}
                   />
                   
-                  {location && location !== "All" && location !== "🇨🇳 CHINA" && NIGERIAN_LOCATIONS[location] && (
+                  {location && location !== "All" && location !== "🇨🇳 CHINA" && PAKISTAN_LOCATIONS[location] && (
                     <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-                      <p className="text-[10px] font-black text-orange-600 uppercase mb-2 ml-1">Select City</p>
+                      <p className="text-[10px] font-black text-[#708238] uppercase mb-2 ml-1">Select City</p>
                       <SelectDropdown
                           value={city || "All Cities"}
                           onChange={(v) => { setCity(v); setPage(1); }}
-                          options={["All Cities", ...NIGERIAN_LOCATIONS[location]]}
+                          options={["All Cities", ...PAKISTAN_LOCATIONS[location]]}
                       />
                     </div>
                   )}
@@ -253,16 +253,16 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                       name="price"
                       checked={pricePreset === id}
                       onChange={() => { setPricePreset(id); setPage(1); }}
-                      className="h-4.5 w-4.5 cursor-pointer accent-orange-600"
+                      className="h-4.5 w-4.5 cursor-pointer accent-[#708238]"
                     />
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors uppercase">{label}</span>
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-[#708238] transition-colors uppercase">{label}</span>
                   </label>
                 ))}
               </div>
 
               {/* Custom Price Range */}
-              <div className="mt-6 pt-6 border-t border-orange-100">
-                <p className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-3">
+              <div className="mt-6 pt-6 border-t border-[#E9E0D4]/30">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#708238] mb-3">
                   Custom Budget
                 </p>
                 <div className="flex items-center gap-2">
@@ -271,8 +271,8 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                      <input
                       value={customMin}
                       onChange={(e) => setCustomMin(e.target.value.replace(/\D/g, ""))}
-                      className="w-full border-2 rounded-lg text-sm pl-5 pr-2 py-2 outline-none focus:border-orange-500 transition-colors"
-                      style={{ borderColor: "#fed7aa" }}
+                      className="w-full border-2 rounded-lg text-sm pl-5 pr-2 py-2 outline-none focus:border-[#708238] transition-colors"
+                      style={{ borderColor: "#E9E0D4" }}
                       placeholder="Min"
                     />
                   </div>
@@ -281,15 +281,15 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                      <input
                       value={customMax}
                       onChange={(e) => setCustomMax(e.target.value.replace(/\D/g, ""))}
-                      className="w-full border-2 rounded-lg text-sm pl-5 pr-2 py-2 outline-none focus:border-orange-500 transition-colors"
-                      style={{ borderColor: "#fed7aa" }}
+                      className="w-full border-2 rounded-lg text-sm pl-5 pr-2 py-2 outline-none focus:border-[#708238] transition-colors"
+                      style={{ borderColor: "#E9E0D4" }}
                       placeholder="Max"
                     />
                   </div>
                   <button
                     onClick={() => setPage(1)}
-                    className="flex-shrink-0 p-2.5 rounded-lg text-white shadow-md hover:shadow-orange-200 transition-all active:scale-95"
-                    style={{ background: "#f45c03" }}
+                    className="flex-shrink-0 p-2.5 rounded-lg text-white shadow-md hover:shadow-[#C7A27C] transition-all active:scale-95"
+                    style={{ background: "#708238" }}
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
@@ -307,9 +307,9 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                       name="condition"
                       checked={(condition || "All") === opt}
                       onChange={() => { setCondition(opt === "All" ? undefined : opt); setPage(1); }}
-                      className="h-4.5 w-4.5 cursor-pointer accent-orange-600"
+                      className="h-4.5 w-4.5 cursor-pointer accent-[#708238]"
                     />
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors uppercase">{opt}</span>
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-[#708238] transition-colors uppercase">{opt}</span>
                   </label>
                 ))}
               </div>
@@ -319,7 +319,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                 <div className="p-5 mt-4">
                     <button
                         onClick={() => setIsMobileFilterOpen(false)}
-                        className="w-full py-4 bg-[#f45c03] text-white font-bold rounded-md shadow-lg shadow-orange-200 active:scale-95 transition-all text-lg"
+                        className="w-full py-4 bg-[#708238] text-white font-bold rounded-md shadow-lg shadow-[#C7A27C] active:scale-95 transition-all text-lg"
                     >
                         Apply Filters
                     </button>
@@ -332,7 +332,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
         <section className="md:col-span-9">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 px-1">
             <div className="text-base text-gray-900 font-medium">
-              Showing <span className="font-bold text-orange-600">{filtered.length}</span> results {effectiveQuery && <>for <span className="italic">"{effectiveQuery}"</span></>}
+              Showing <span className="font-bold text-[#708238]">{filtered.length}</span> results {effectiveQuery && <>for <span className="italic">"{effectiveQuery}"</span></>}
             </div>
             <div className="flex items-center gap-4 w-full sm:w-auto">
               <span className="text-sm font-bold text-gray-500 whitespace-nowrap">SORT BY:</span>
@@ -348,9 +348,9 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {paged.length === 0 ? (
-              <div className="p-12 bg-white border-2 border-dashed border-orange-100 rounded-md col-span-full text-center">
-                <div className="mx-auto w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f45c03" strokeWidth="2">
+              <div className="p-12 bg-white border-2 border-dashed border-[#E9E0D4]/40 rounded-md col-span-full text-center">
+                <div className="mx-auto w-16 h-16 bg-[#E9E0D4] rounded-full flex items-center justify-center mb-4">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#708238" strokeWidth="2">
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                   </svg>
@@ -359,7 +359,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                 <p className="text-gray-500 text-sm max-w-[280px] mx-auto">Try adjusting your filters or search criteria to find what you're looking for.</p>
                 <button 
                   onClick={clearAll}
-                  className="mt-6 text-sm font-bold text-orange-600 hover:text-orange-700"
+                  className="mt-6 text-sm font-bold text-[#708238] hover:text-[#5E6E2F]"
                 >
                   Reset All Filters
                 </button>
@@ -379,7 +379,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
               <button
                 disabled={page === 1}
                 onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm bg-white disabled:opacity-30 border-orange-100 hover:border-orange-500 transition-colors"
+                className="w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm bg-white disabled:opacity-30 border-[#E9E0D4] hover:border-[#708238] transition-colors"
               >
                 <ChevronRight className="w-5 h-5 rotate-180" />
               </button>
@@ -391,8 +391,8 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
                     onClick={() => { setPage(i + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     className={`w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm font-bold transition-all shadow-sm ${
                       page === i + 1
-                        ? "bg-orange-600 border-orange-600 text-white shadow-orange-200"
-                        : "bg-white border-orange-100 text-gray-600 hover:border-orange-400"
+                        ? "bg-[#708238] border-[#708238] text-white shadow-[#C7A27C]"
+                        : "bg-white border-[#E9E0D4]/50 text-gray-600 hover:border-[#708238]"
                     }`}
                   >
                     {i + 1}
@@ -403,7 +403,7 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
               <button
                 disabled={page === totalPages}
                 onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm bg-white disabled:opacity-30 border-orange-100 hover:border-orange-500 transition-colors"
+                className="w-10 h-10 flex items-center justify-center border-2 rounded-md text-sm bg-white disabled:opacity-30 border-[#E9E0D4] hover:border-[#708238] transition-colors"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -414,3 +414,5 @@ export default function SearchResultsClient({ items, query }: { items: AdItem[];
     </div>
   );
 }
+
+

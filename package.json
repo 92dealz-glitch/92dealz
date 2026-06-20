@@ -1,1 +1,22 @@
-{}
+{
+  "name": "92dealz-root",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "cd Frontend && set PORT=3002 && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev": "start cmd /k \"npm run dev:backend\" & npm run dev:frontend",
+    "build": "cd Frontend && npm run build",
+    "start": "cd Frontend && npm run start",
+    "lint": "cd Frontend && npm run lint"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0"
+  },
+  "dependencies": {
+    "redis": "^6.0.0"
+  }
+}

@@ -6,13 +6,13 @@ const sequelize = require('../config/database');
 
 // Internal pricing map (Source of Truth)
 const PRICING = {
-  NG: {
-    currency: 'NGN',
+  PK: {
+    currency: 'PKR',
     plans: {
-      starter: 25000,    // ₦250 in kobo
-      basic: 100000,     // ₦1,000 in kobo
-      star: 500000,      // ₦5,000 in kobo
-      premium: 5000000   // ₦50,000 in kobo
+      starter: 100000,   // PKR 1,000 (if using lowest denomination, say cents/paisa. Let's just use exact amount here as Paystack is disabled)
+      basic: 500000,     // PKR 5,000
+      star: 1500000,     // PKR 15,000
+      premium: 50000000  // PKR 500,000
     }
   },
   CN: {
@@ -44,17 +44,17 @@ exports.initializePayment = async (req, res, next) => {
 
     const countryCode = user.country_code;
     const isChina = countryCode === 'CN';
-    const isNigeria = countryCode === 'NG';
+    const isPakistan = countryCode === 'PK';
 
-    if (!isChina && !isNigeria) {
-      // Temporarily allowing all countries to become vendors. Defaulting to NG for non-CN.
+    if (!isChina && !isPakistan) {
+      // Temporarily allowing all countries to become vendors. Defaulting to PK for non-CN.
       // return res.status(403).json({ 
       //   success: false, 
       //   message: 'Vendor plans are not available in your country.' 
       // });
     }
 
-    const pricingRegion = isChina ? 'CN' : 'NG';
+    const pricingRegion = isChina ? 'CN' : 'PK';
     const regionConfig = PRICING[pricingRegion];
 
     if (!regionConfig.plans[planId]) {
@@ -87,42 +87,21 @@ exports.initializePayment = async (req, res, next) => {
       amount,
       currency,
       reference,
-      status: 'pending'
+      status: 'pending' // Note: Currently skipping payment gateway
     });
 
-    // Call Paystack
-    const paystackPayload = {
-      email: email || user.email,
-      amount: amount,
-      currency: currency,
-      reference: reference,
-      callback_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/pricing`,
-      metadata: {
-        userId: user.id,
-        planId: planId,
-        country: countryCode
-      }
-    };
-
-    const response = await fetch('https://api.paystack.co/transaction/initialize', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(paystackPayload)
-    });
-
-    const data = await response.json();
-
-    if (!data.status) {
-      console.error('Paystack Initialization Error:', data);
-      return res.status(500).json({ success: false, message: 'Could not initialize payment gateway.' });
+    // Mock bypass for payment integration as requested
+    // Auto-complete subscription for now
+    const pendingPayment = await Payment.findOne({ where: { reference } });
+    if (pendingPayment) {
+      pendingPayment.status = 'success';
+      await pendingPayment.save();
+      await processSubscription(pendingPayment);
     }
 
     return res.json({
       success: true,
-      authorization_url: data.data.authorization_url,
+      authorization_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/pricing?mock_success=true`,
       reference: reference
     });
 

@@ -137,7 +137,7 @@ export default function MessagingClient() {
     return (
       <div className="flex-1 flex items-center justify-center p-20 min-h-[400px]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="animate-spin text-orange-600" size={48} />
+          <Loader2 className="animate-spin text-[#708238]" size={48} />
           <p className="text-zinc-500 font-bold animate-pulse">Syncing your messages...</p>
         </div>
       </div>
@@ -178,7 +178,7 @@ export default function MessagingClient() {
                   onClick={() => handleSelectThread(t)}
                   className={`
                     w-full px-4 py-4 flex gap-4 rounded-2xl transition-all duration-200 group relative
-                    ${isActive ? 'bg-orange-50/70 border-zinc-100 shadow-[0_4px_12px_rgba(249,115,22,0.05)]' : 'hover:bg-zinc-50/80'}
+                    ${isActive ? 'bg-[#E9E0D4]/70 border-zinc-100 shadow-[0_4px_12px_rgba(15,157,88,0.05)]' : 'hover:bg-zinc-50/80'}
                   `}
                 >
                   <div className="relative shrink-0">
@@ -189,7 +189,7 @@ export default function MessagingClient() {
                       ) : t.other_name ? t.other_name.slice(0, 1) : <User size={28} />}
                     </div>
                     {t.unread_count > 0 && (
-                       <div className="absolute -top-1 -right-1 min-w-[22px] h-[22px] rounded-full bg-orange-600 text-white text-[10px] flex items-center justify-center border-4 border-white font-black">
+                       <div className="absolute -top-1 -right-1 min-w-[22px] h-[22px] rounded-full bg-[#708238] text-white text-[10px] flex items-center justify-center border-4 border-white font-black">
                          {t.unread_count}
                        </div>
                     )}
@@ -207,7 +207,7 @@ export default function MessagingClient() {
                           {t.last_created_at ? new Date(t.last_created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                       </span>
                     </div>
-                    {t.deal_title && <p className="text-[10px] text-orange-600 font-black truncate uppercase tracking-tight mb-1">{t.deal_title}</p>}
+                    {t.deal_title && <p className="text-[10px] text-[#708238] font-black truncate uppercase tracking-tight mb-1">{t.deal_title}</p>}
                     <p className={`text-xs truncate font-bold leading-normal ${isActive ? 'text-zinc-600' : 'text-zinc-400'}`}>
                       {t.last_content || "No messages yet"}
                     </p>
@@ -235,7 +235,7 @@ export default function MessagingClient() {
                 >
                   <ChevronLeft size={24} />
                 </button>
-                <div className="w-12 h-12 rounded-2xl bg-orange-600 text-white flex items-center justify-center font-black shadow-lg shadow-orange-600/20 shrink-0 overflow-hidden">
+                <div className="w-12 h-12 rounded-2xl bg-[#708238] text-white flex items-center justify-center font-black shadow-lg shadow-[#708238]/20 shrink-0 overflow-hidden">
                   {activeThread.other_image ? (
                      // eslint-disable-next-line @next/next/no-img-element
                      <img src={activeThread.other_image} alt="" className="w-full h-full object-cover" />
@@ -245,7 +245,7 @@ export default function MessagingClient() {
                   <h3 className="font-black text-black leading-tight flex items-center gap-2 text-lg">
                     {activeThread.other_name || `User #${activeThread.other_id}`}
                     {activeThread.other_country_code && <span className="text-xl" title={activeThread.other_country_name || ""}>{getFlagEmoji(activeThread.other_country_code)}</span>}
-                    <Link href={`/seller/${activeThread.other_id}`} className="p-1.5 hover:bg-zinc-100 rounded-lg text-zinc-300 hover:text-orange-600 transition-all shadow-sm">
+                    <Link href={`/seller/${activeThread.other_id}`} className="p-1.5 hover:bg-zinc-100 rounded-lg text-zinc-300 hover:text-[#708238] transition-all shadow-sm">
                       <ExternalLink size={14} />
                     </Link>
                   </h3>
@@ -261,7 +261,7 @@ export default function MessagingClient() {
               {activeThread.deal_title && (
                  <div className="hidden lg:flex flex-col items-end shrink-0">
                     <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Current Deal</span>
-                    <Link href={`/product/${activeThread.deal_id}`} className="bg-orange-50 text-orange-600 rounded-xl px-4 py-2 text-xs font-black border border-orange-100 hover:bg-orange-100 transition-all shadow-sm">
+                    <Link href={`/product/${activeThread.deal_id}`} className="bg-[#E9E0D4] text-[#708238] rounded-xl px-4 py-2 text-xs font-black border border-[#E9E0D4] hover:bg-[#E9E0D4] transition-all shadow-sm">
                       {activeThread.deal_title}
                     </Link>
                  </div>
@@ -270,11 +270,11 @@ export default function MessagingClient() {
 
             {/* Product Sticky Header (Mobile Only & Secondary for Desktop) */}
             {activeThread.deal_title && (
-              <div className="lg:hidden p-3 bg-orange-50/50 border-b border-orange-100/50 flex items-center justify-between">
-                <p className="text-[10px] font-black text-orange-600 uppercase tracking-tight flex items-center gap-2">
+              <div className="lg:hidden p-3 bg-[#E9E0D4]/50 border-b border-[#E9E0D4]/50 flex items-center justify-between">
+                <p className="text-[10px] font-black text-[#708238] uppercase tracking-tight flex items-center gap-2">
                    <Clock size={12} /> Trading Item: {activeThread.deal_title}
                 </p>
-                <Link href={`/product/${activeThread.deal_id}`} className="text-[9px] font-extrabold text-orange-600 underline">View Full Ad</Link>
+                <Link href={`/product/${activeThread.deal_id}`} className="text-[9px] font-extrabold text-[#708238] underline">View Full Ad</Link>
               </div>
             )}
 
@@ -286,7 +286,7 @@ export default function MessagingClient() {
               {loadingMessages ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="flex flex-col items-center gap-2">
-                    <Loader2 className="animate-spin text-orange-600" />
+                    <Loader2 className="animate-spin text-[#708238]" />
                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Encrypting...</span>
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function MessagingClient() {
                         <div className={`
                           relative max-w-[85%] md:max-w-[70%] p-4 rounded-[2rem] text-[15px] font-bold shadow-md transition-all duration-300
                           ${isMe 
-                            ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white rounded-tr-none shadow-orange-600/20 ring-4 ring-orange-500/10' 
+                            ? 'bg-gradient-to-br from-[#708238] to-[#312E81] text-white rounded-tr-none shadow-[#708238]/20 ring-4 ring-[#E9E0D4]/20' 
                             : 'bg-white text-zinc-900 border border-zinc-100 rounded-tl-none shadow-zinc-200/20'
                           }
                         `}>
@@ -320,7 +320,7 @@ export default function MessagingClient() {
                         </div>
                         <div className={`mt-2 flex items-center gap-2 px-1 text-[10px] font-black uppercase tracking-widest ${isMe ? 'text-zinc-500' : 'text-zinc-400'}`}>
                           <span>{time}</span>
-                          {isMe && <CheckCircle2 size={12} className="text-orange-500" />}
+                          {isMe && <CheckCircle2 size={12} className="text-[#708238]" />}
                         </div>
                       </div>
                     </React.Fragment>
@@ -338,7 +338,7 @@ export default function MessagingClient() {
 
             {/* Input Bar */}
             <form onSubmit={handleSendMessage} className="p-3 sm:p-6 border-t border-zinc-50 bg-white">
-              <div className="flex gap-2 sm:gap-3 bg-zinc-50 rounded-[2rem] p-1 sm:p-2 pr-1 sm:pr-2 border border-border-zinc-100 shadow-inner focus-within:ring-2 focus-within:ring-orange-500/20 focus-within:border-orange-500/30 transition-all duration-300">
+              <div className="flex gap-2 sm:gap-3 bg-zinc-50 rounded-[2rem] p-1 sm:p-2 pr-1 sm:pr-2 border border-border-zinc-100 shadow-inner focus-within:ring-2 focus-within:ring-[#E9E0D4]/50 focus-within:border-[#708238]/30 transition-all duration-300">
                 <input
                   type="text"
                   value={newMsg}
@@ -349,7 +349,7 @@ export default function MessagingClient() {
                 <button 
                   type="submit" 
                   disabled={!newMsg.trim()}
-                  className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-600 text-white rounded-full flex items-center justify-center hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/30 active:scale-90 disabled:opacity-20 disabled:grayscale shrink-0"
+                  className="w-10 h-10 sm:w-12 sm:h-12 bg-[#708238] text-white rounded-full flex items-center justify-center hover:bg-[#5E6E2F] transition-all shadow-xl shadow-[#708238]/30 active:scale-90 disabled:opacity-20 disabled:grayscale shrink-0"
                 >
                   <Send size={18} className={`sm:w-[22px] sm:h-[22px] ${newMsg.trim() ? "translate-x-0.5" : ""}`} />
                 </button>
@@ -359,8 +359,8 @@ export default function MessagingClient() {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-zinc-400 p-8 text-center">
             <div className="relative mb-10">
-               <div className="absolute -inset-4 bg-orange-100 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-               <Mail className="relative opacity-20 text-orange-600" size={160} />
+               <div className="absolute -inset-4 bg-[#E9E0D4] rounded-full blur-3xl opacity-30 animate-pulse"></div>
+               <Mail className="relative opacity-20 text-[#708238]" size={160} />
             </div>
             <h3 className="font-black text-3xl text-zinc-900 mb-2 tracking-tight">Your Inbox</h3>
             <p className="font-bold text-zinc-400 max-w-xs text-lg">Select a conversation from the sidebar to start negotiation.</p>
@@ -371,3 +371,5 @@ export default function MessagingClient() {
     </div>
   );
 }
+
+

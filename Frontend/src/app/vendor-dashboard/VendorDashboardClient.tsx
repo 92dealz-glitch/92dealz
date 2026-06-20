@@ -55,7 +55,7 @@ export default function VendorDashboardPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
-                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-[#708238] border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -63,7 +63,7 @@ export default function VendorDashboardPage() {
     return (
         <>
             <div className="mb-8 lg:mb-12">
-                <h1 className="text-[#f45c03] text-3xl sm:text-4xl lg:text-5xl font-black mb-2">
+                <h1 className="text-[#708238] text-3xl sm:text-4xl lg:text-5xl font-black mb-2">
                     Vendor Dashboard
                 </h1>
                 <p className="text-zinc-600 font-semibold text-sm lg:text-base">
@@ -73,11 +73,11 @@ export default function VendorDashboardPage() {
 
             {/* Subscription Overview */}
             {profile && (
-                <div className="mb-10 p-1 bg-gradient-to-r from-orange-500 via-[#f45c03] to-orange-600 rounded-[32px] shadow-lg shadow-orange-100">
+                <div className="mb-10 p-1 bg-gradient-to-r from-orange-500 via-[#708238] to-[#312E81] rounded-[32px] shadow-lg shadow-[#E9E0D4]">
                     <div className="bg-white rounded-[31px] p-6 lg:p-8">
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                             <div className="flex items-start gap-5">
-                                <div className={`p-4 rounded-[24px] ${profile.subscription_plan === 'star' ? 'bg-yellow-100 text-yellow-600' : profile.subscription_plan === 'basic' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+                                <div className={`p-4 rounded-[24px] ${profile.subscription_plan === 'star' ? 'bg-yellow-100 text-yellow-600' : profile.subscription_plan === 'basic' ? 'bg-[#E9E0D4] text-[#708238]' : 'bg-gray-100 text-gray-500'}`}>
                                     {profile.subscription_plan === 'star' ? <Star size={32} /> : <Zap size={32} />}
                                 </div>
                                 <div>
@@ -89,7 +89,7 @@ export default function VendorDashboardPage() {
                                             }
                                         </h2>
                                         {(profile.subscription_plan && profile.subscription_plan !== 'free') && (
-                                            <span className="bg-emerald-100 text-emerald-600 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Active</span>
+                                            <span className="bg-[#FFFDF9] text-emerald-600 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Active</span>
                                         )}
                                     </div>
                                     <p className="text-zinc-500 font-bold text-sm">
@@ -121,7 +121,7 @@ export default function VendorDashboardPage() {
                                     label={isChina ? "Featured Tier" : "Featured (Basic)"} 
                                     current={profile.subscription_stats?.basic || 0} 
                                     limit={profile.subscription_stats?.limits?.basic || 10} 
-                                    color="bg-orange-500"
+                                    color="bg-[#708238]"
                                 />
                                 <UsageMeter 
                                     label={isChina ? "Premium Tier" : "Top Ads (Star)"} 
@@ -205,4 +205,6 @@ function UsageMeter({ label, current, limit, color }: { label: string, current: 
         </div>
     );
 }
+
+
 

@@ -27,7 +27,7 @@ export default function ChangePhoneForm() {
       <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-bold">
         <div className="flex items-center gap-4">
           <div className="p-2.5 bg-white rounded-xl border border-zinc-100 shadow-sm">
-            <Phone size={20} className="text-[#f45c03]" />
+            <Phone size={20} className="text-[#708238]" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-zinc-900">Phone Number</span>
@@ -35,7 +35,7 @@ export default function ChangePhoneForm() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 px-3 py-1 bg-[#10B981] text-white text-[10px] uppercase rounded leading-none">
+          <span className="flex items-center gap-1.5 px-3 py-1 bg-[#C7A27C] text-white text-[10px] uppercase rounded leading-none">
             <CheckCircle2 size={12} />
             Verified
           </span>
@@ -51,7 +51,7 @@ export default function ChangePhoneForm() {
   }
 
   return (
-    <div className="p-6 bg-zinc-50 border border-orange-500/20 rounded-2xl animate-in fade-in duration-300 font-bold">
+    <div className="p-6 bg-zinc-50 border border-[#708238]/20 rounded-2xl animate-in fade-in duration-300 font-bold">
       <h4 className="text-sm text-zinc-900 mb-4">Change Phone Number</h4>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2 text-sm">
@@ -61,7 +61,7 @@ export default function ChangePhoneForm() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="enter new phone number"
-            className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-orange-500 text-zinc-700 transition-colors"
+            className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg outline-none focus:border-[#708238] text-zinc-700 transition-colors"
           />
         </div>
         <div className="flex items-center justify-end gap-3 text-sm">
@@ -74,7 +74,7 @@ export default function ChangePhoneForm() {
           </button>
           <button 
             type="submit"
-            className="px-6 py-2 bg-[#f45c03] text-white rounded-lg hover:bg-[#f45c03] transition-colors shadow-sm"
+            className="px-6 py-2 bg-[#708238] text-white rounded-lg hover:bg-[#708238] transition-colors shadow-sm"
           >
             Change Phone
           </button>
@@ -83,4 +83,6 @@ export default function ChangePhoneForm() {
     </div>
   );
 }
+
+
 

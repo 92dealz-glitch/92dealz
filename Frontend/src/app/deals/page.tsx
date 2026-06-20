@@ -157,7 +157,7 @@ export default function DealsPage() {
         <button
           onClick={onCreate}
           disabled={loading}
-          className="mt-3 bg-orange-600 text-white px-4 py-2 rounded disabled:opacity-60"
+          className="mt-3 bg-[#708238] text-white px-4 py-2 rounded disabled:opacity-60"
         >
           {loading ? "Creating..." : "Create"}
         </button>
@@ -225,3 +225,5 @@ export default function DealsPage() {
     </div>
   );
 }
+
+

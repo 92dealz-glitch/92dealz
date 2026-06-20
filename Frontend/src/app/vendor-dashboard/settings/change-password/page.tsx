@@ -107,7 +107,7 @@ export default function ChangePasswordPage() {
                     <button 
                         type="submit"
                         disabled={loading || !formData.currentPassword || !formData.newPassword}
-                        className="w-full sm:w-auto bg-[#f45c03] hover:bg-orange-600 text-white font-black py-4 px-16 rounded-2xl transition-all shadow-xl shadow-orange-100 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 uppercase text-xs tracking-widest"
+                        className="w-full sm:w-auto bg-[#708238] hover:bg-[#708238] text-white font-black py-4 px-16 rounded-2xl transition-all shadow-xl shadow-[#E9E0D4] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 uppercase text-xs tracking-widest"
                     >
                         {loading ? <Loader2 className="animate-spin" size={18} /> : "Update Credentials"}
                     </button>
@@ -150,12 +150,12 @@ function PasswordField({
                     onChange={onChange}
                     required
                     placeholder={placeholder}
-                    className="w-full border-2 border-zinc-100 rounded-2xl p-4 text-zinc-900 font-black text-sm focus:outline-none focus:border-[#f45c03] transition-all bg-zinc-50 group-hover:bg-white placeholder:text-zinc-300"
+                    className="w-full border-2 border-zinc-100 rounded-2xl p-4 text-zinc-900 font-black text-sm focus:outline-none focus:border-[#708238] transition-all bg-zinc-50 group-hover:bg-white placeholder:text-zinc-300"
                 />
                 <button 
                     type="button" 
                     onClick={onToggle}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-orange-500 transition-colors p-2"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#708238] transition-colors p-2"
                 >
                     {show ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -163,3 +163,5 @@ function PasswordField({
         </div>
     )
 }
+
+

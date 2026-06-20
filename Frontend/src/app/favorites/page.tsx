@@ -23,7 +23,7 @@ export default function FavoritesPage() {
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#ff7a2d]">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#708238]">
               My Favourites
             </h1>
             <p className="text-sm text-gray-600 mt-1">
@@ -39,7 +39,7 @@ export default function FavoritesPage() {
               
               <button
                 onClick={() => setSortOpen(!sortOpen)}
-                className="bg-[#ff7a2d] text-white px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base whitespace-nowrap"
+                className="bg-[#708238] text-white px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base whitespace-nowrap"
               >
                 {sortOption}
               </button>
@@ -82,7 +82,7 @@ export default function FavoritesPage() {
                 />
               </div>
 
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#ff7a2d] mb-3">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#708238] mb-3">
                 No favourites yet
               </h2>
               <p className="text-base text-gray-600">
@@ -140,7 +140,7 @@ export default function FavoritesPage() {
                       </p>
                     </div>
 
-                    <h3 className="mt-2 font-semibold text-sm sm:text-lg text-gray-900 group-hover:text-[#ff7a2d] transition-colors line-clamp-2">
+                    <h3 className="mt-2 font-semibold text-sm sm:text-lg text-gray-900 group-hover:text-[#708238] transition-colors line-clamp-2">
                       {it.title}
                     </h3>
 
@@ -174,3 +174,5 @@ export default function FavoritesPage() {
     </>
   );
 }
+
+

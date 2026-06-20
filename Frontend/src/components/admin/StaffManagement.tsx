@@ -155,7 +155,7 @@ export default function StaffManagement() {
   const formatOnlineStatus = (lastSeen: string | null) => {
     if (!lastSeen) return <span className="text-zinc-400">Offline</span>;
     const diff = Date.now() - new Date(lastSeen).getTime();
-    if (diff < 3 * 60 * 1000) return <span className="text-emerald-500 font-bold flex items-center gap-1"><Activity className="w-3 h-3" /> Online</span>;
+    if (diff < 3 * 60 * 1000) return <span className="text-[#708238] font-bold flex items-center gap-1"><Activity className="w-3 h-3" /> Online</span>;
     return <span className="text-zinc-500">Offline</span>;
   };
 
@@ -172,14 +172,14 @@ export default function StaffManagement() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2 font-black uppercase tracking-tight">
-            <Headphones className="text-orange-500" />
+            <Headphones className="text-[#708238]" />
             Customer Service Staff
           </h3>
           <p className="text-zinc-500 text-sm font-medium italic">Manage CSR logins, track time, and monitor status</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg font-black uppercase text-[10px] tracking-widest hover:bg-orange-700 transition-all shadow-md active:scale-95"
+          className="flex items-center gap-2 bg-[#708238] text-white px-4 py-2 rounded-lg font-black uppercase text-[10px] tracking-widest hover:bg-[#5E6E2F] transition-all shadow-md active:scale-95"
         >
           <UserPlus size={18} />
           Add CSR Staff
@@ -187,7 +187,7 @@ export default function StaffManagement() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center p-12"><Loader2 className="animate-spin text-orange-600" /></div>
+        <div className="flex justify-center p-12"><Loader2 className="animate-spin text-[#708238]" /></div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left">
@@ -201,7 +201,7 @@ export default function StaffManagement() {
             </thead>
             <tbody className="divide-y divide-zinc-50">
               {staffList.map((s) => (
-                <tr key={s.id} className="group hover:bg-orange-50/20 transition-colors">
+                <tr key={s.id} className="group hover:bg-[#E9E0D4]/20 transition-colors">
                   <td className="px-4 py-4">
                     <div className="font-bold text-zinc-900 text-sm">{s.name}</div>
                     <div className="text-zinc-500 text-xs">{s.email}</div>
@@ -209,7 +209,7 @@ export default function StaffManagement() {
                   <td className="px-4 py-4 w-1/3">
                     <div className="text-zinc-600 text-xs italic bg-zinc-50 p-2 rounded-lg border border-zinc-100 group-hover:bg-white transition-colors relative pr-8">
                        {s.note || "No administrative notes."}
-                       <button onClick={() => setNoteModal({ show: true, id: s.id, note: s.note || "" })} className="absolute right-2 top-2 text-zinc-400 hover:text-orange-500">
+                       <button onClick={() => setNoteModal({ show: true, id: s.id, note: s.note || "" })} className="absolute right-2 top-2 text-zinc-400 hover:text-[#708238]">
                           <Edit3 size={14} />
                        </button>
                     </div>
@@ -231,7 +231,7 @@ export default function StaffManagement() {
                         <button
                           onClick={async () => { if (await showConfirm("Restore this CSR account?", "Activate Staff")) handleStatusUpdate(s.id, 'active'); }}
                           disabled={actionLoading === s.id}
-                          className="p-2 rounded-lg transition-all bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white"
+                          className="p-2 rounded-lg transition-all bg-[#FFFDF9]/30 text-emerald-600 hover:bg-[#F8F4EE]merald-600 hover:text-white"
                           title="Activate Account"
                         >
                           <CheckCircle size={18} />
@@ -279,10 +279,10 @@ export default function StaffManagement() {
              </div>
              <form onSubmit={handleSubmit} className="p-6 space-y-4">
                {formError && <div className="p-3 bg-red-100 text-red-700 rounded-lg text-[10px] font-black uppercase">{formError}</div>}
-               {formSuccess && <div className="p-3 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black uppercase">{formSuccess}</div>}
+               {formSuccess && <div className="p-3 bg-[#FFFDF9] text-emerald-700 rounded-lg text-[10px] font-black uppercase">{formSuccess}</div>}
                <div className="space-y-1">
                  <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Full Name</label>
-                 <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition font-bold" />
+                 <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition font-bold" />
                </div>
                <div className="space-y-1">
                  <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">System Email ID</label>
@@ -291,13 +291,13 @@ export default function StaffManagement() {
                <div className="space-y-1">
                  <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Portal Password</label>
                  <div className="relative">
-                   <input type={showPassword ? "text" : "password"} name="password" required value={formData.password} onChange={handleChange} className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-orange-300 outline-none transition pr-11 font-bold" />
-                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 transition-colors">
+                   <input type={showPassword ? "text" : "password"} name="password" required value={formData.password} onChange={handleChange} className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#E9E0D4]/30 outline-none transition pr-11 font-bold" />
+                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#708238] transition-colors">
                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                    </button>
                  </div>
                </div>
-               <button type="submit" disabled={loading} className="w-full bg-orange-600 text-white font-black py-4 rounded-xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 disabled:opacity-50 flex items-center justify-center gap-2 mt-2 uppercase text-xs tracking-widest">
+               <button type="submit" disabled={loading} className="w-full bg-[#708238] text-white font-black py-4 rounded-xl hover:bg-[#5E6E2F] transition-all shadow-lg shadow-[#E9E0D4] disabled:opacity-50 flex items-center justify-center gap-2 mt-2 uppercase text-xs tracking-widest">
                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Create Staff Account"}
                </button>
              </form>
@@ -309,8 +309,8 @@ export default function StaffManagement() {
       {noteModal.show && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 bg-orange-50 border-b border-orange-100 flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center"><Edit3 size={18} /></div>
+            <div className="p-6 bg-[#E9E0D4] border-b border-[#E9E0D4]/30 flex items-center gap-3">
+              <div className="w-8 h-8 bg-[#E9E0D4] text-[#708238] rounded-lg flex items-center justify-center"><Edit3 size={18} /></div>
               <h3 className="font-black uppercase tracking-tight text-orange-900">Admin Note</h3>
             </div>
             <div className="p-6 space-y-4">
@@ -324,7 +324,7 @@ export default function StaffManagement() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setNoteModal({ show: false, id: null, note: "" })} className="flex-1 py-3.5 border border-zinc-200 rounded-xl font-black text-[10px] uppercase tracking-widest text-zinc-500 hover:bg-zinc-50 transition-colors">Cancel</button>
-                <button disabled={actionLoading !== null} onClick={handleNoteUpdate} className="flex-[1.5] py-3.5 bg-orange-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-orange-700 shadow-lg shadow-orange-100 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+                <button disabled={actionLoading !== null} onClick={handleNoteUpdate} className="flex-[1.5] py-3.5 bg-[#708238] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#5E6E2F] shadow-lg shadow-[#E9E0D4] disabled:opacity-50 transition-all flex items-center justify-center gap-2">
                   {actionLoading !== null ? <Loader2 className="animate-spin" size={16} /> : "Save Note"}
                 </button>
               </div>
@@ -335,3 +335,5 @@ export default function StaffManagement() {
     </div>
   );
 }
+
+

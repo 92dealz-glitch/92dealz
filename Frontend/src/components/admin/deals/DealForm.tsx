@@ -130,7 +130,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                   name="title"
                   defaultValue={initialData?.title}
                   placeholder="e.g., Samsung Galaxy S24"
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all font-medium"
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-[#708238] focus:ring-2 focus:ring-orange-100 transition-all font-medium"
                 />
               </div>
  
@@ -144,7 +144,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                   defaultValue={initialData?.description}
                   placeholder="Describe the product in detail..."
                   rows={8}
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all resize-none font-medium text-sm leading-relaxed"
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-[#708238] focus:ring-2 focus:ring-orange-100 transition-all resize-none font-medium text-sm leading-relaxed"
                 ></textarea>
               </div>
  
@@ -158,7 +158,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                       name="category_id"
                       value={initialData?.category_id}
                       onChange={() => {}} // Controlled if we want, or just defaultValue
-                      className="w-full appearance-none px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-orange-500 transition-all font-medium cursor-pointer"
+                      className="w-full appearance-none px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-[#708238] transition-all font-medium cursor-pointer"
                     >
                       <option value="">Select category</option>
                       {categories.map(cat => (
@@ -187,7 +187,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                     name="price"
                     defaultValue={initialData?.price}
                     placeholder="450,000"
-                    className="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all font-bold text-xl"
+                    className="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-[#708238] focus:ring-2 focus:ring-orange-100 transition-all font-bold text-xl"
                   />
                 </div>
             </div>
@@ -213,7 +213,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
               ) : (
                 <label className="flex flex-col items-center cursor-pointer w-full h-full py-10">
                   <div className="w-16 h-16 bg-white border-2 border-zinc-100 rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 group-hover:rotate-6 transition-all">
-                    <Upload size={24} className="text-[#f45c03]" />
+                    <Upload size={24} className="text-[#708238]" />
                   </div>
                   <span className="text-sm text-zinc-900 font-black mb-1 uppercase tracking-wider">Click to upload image</span>
                   <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">JPG, PNG, GIF (Max size 5MB)</span>
@@ -228,7 +228,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
         <div className="space-y-8">
           {/* Moderation Controls */}
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-8">
-            <h3 className="text-lg text-zinc-900 mb-8 font-black uppercase tracking-tight border-b-2 border-orange-500 inline-block">Moderation</h3>
+            <h3 className="text-lg text-zinc-900 mb-8 font-black uppercase tracking-tight border-b-2 border-[#708238] inline-block">Moderation</h3>
 
             <div className="space-y-8">
               <div className="flex items-center justify-between">
@@ -239,7 +239,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                 <button 
                   type="button"
                   onClick={() => setIsFeatured(!isFeatured)}
-                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${isFeatured ? "bg-[#10B981] shadow-lg shadow-emerald-200" : "bg-zinc-200"}`}
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${isFeatured ? "bg-[#C7A27C] shadow-lg shadow-emerald-200" : "bg-zinc-200"}`}
                 >
                   <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ${isFeatured ? "translate-x-6" : ""}`} />
                 </button>
@@ -252,7 +252,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                     required 
                     name="status"
                     defaultValue={initialData?.status}
-                    className="w-full appearance-none px-4 py-3 bg-zinc-50 border-2 border-zinc-100 rounded-xl outline-none focus:border-orange-500 transition-all font-black text-xs uppercase"
+                    className="w-full appearance-none px-4 py-3 bg-zinc-50 border-2 border-zinc-100 rounded-xl outline-none focus:border-[#708238] transition-all font-black text-xs uppercase"
                   >
                     <option value="active">Active (LIVE)</option>
                     <option value="pending">Pending (REVIEW)</option>
@@ -268,7 +268,7 @@ export default function DealForm({ initialData, type }: DealFormProps) {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 bg-[#f45c03] text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#f45c03] transition-all shadow-xl shadow-orange-100 active:scale-95 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-[#708238] text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#708238] transition-all shadow-xl shadow-[#E9E0D4] active:scale-95 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                   Save Changes
@@ -307,3 +307,5 @@ export default function DealForm({ initialData, type }: DealFormProps) {
     </form>
   );
 }
+
+

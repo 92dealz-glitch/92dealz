@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import DealForm from "@/components/admin/deals/DealForm";
@@ -36,7 +36,7 @@ export default function EditDealPage() {
 
       <Link 
         href="/admin/deals" 
-        className="inline-flex items-center gap-2 px-3 py-1.5 border border-orange-500 text-orange-600 rounded-lg text-sm font-bold hover:bg-orange-50 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 border border-[#708238] text-[#708238] rounded-lg text-sm font-bold hover:bg-[#E9E0D4] transition-colors"
       >
         <ChevronLeft size={18} />
         Back to deals
@@ -46,3 +46,5 @@ export default function EditDealPage() {
     </div>
   );
 }
+
+

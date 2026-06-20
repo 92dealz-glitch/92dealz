@@ -4,3 +4,5 @@ export const getDeals = coreGetDeals;
 export const createDeal = coreCreateDeal;
 export const updateDeal = coreUpdateDeal;
 export const deleteDeal = coreDeleteDeal;
+
+

@@ -57,7 +57,7 @@ export default function CSRLayout({
   }, [isChecking]);
 
   if (isChecking) {
-    return <div className="min-h-screen flex items-center justify-center bg-zinc-50 font-bold text-orange-600">Loading Dashboard...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-zinc-50 font-bold text-[#708238]">Loading Dashboard...</div>;
   }
 
   return (
@@ -78,3 +78,5 @@ export default function CSRLayout({
     </div>
   );
 }
+
+

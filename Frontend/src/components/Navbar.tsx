@@ -80,8 +80,8 @@ export default function Navbar() {
     } else if (loc === "🇨🇳 CHINA") {
       setLocation("China");
     } else {
-      // Must be a Nigerian state
-      setLocation("Nigeria", loc);
+      // Pakistani province/city
+      setLocation("Pakistan", loc);
     }
   };
 
@@ -191,7 +191,16 @@ export default function Navbar() {
 
   async function signOut() {
     const { signOut: nextAuthSignOut } = await import("next-auth/react");
-    await nextAuthSignOut({ callbackUrl: "/login" });
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("role");
+      window.localStorage.removeItem("user_id");
+      window.localStorage.removeItem("profile_image_url");
+    }
+    await nextAuthSignOut({ redirect: false });
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
   }
 
   const handleSellClick = async (e?: React.MouseEvent) => {
@@ -204,9 +213,9 @@ export default function Navbar() {
     const role = (typeof window !== "undefined" ? window.localStorage.getItem("role") || "user" : "user").toLowerCase();
     
     // Check for regional restriction
-    const isNigeria = country_code === 'NG' || country_name === 'Nigeria' || (typeof window !== "undefined" && (window.localStorage.getItem("country_code") === 'NG' || window.localStorage.getItem("country_name") === 'Nigeria'));
+    const isPakistan = country_code === 'PK' || country_name === 'Pakistan' || (typeof window !== "undefined" && (window.localStorage.getItem("country_code") === 'PK' || window.localStorage.getItem("country_name") === 'Pakistan'));
     const isChina = country_code === 'CN' || country_name === 'China' || (typeof window !== "undefined" && (window.localStorage.getItem("country_code") === 'CN' || window.localStorage.getItem("country_name") === 'China'));
-    const isRestricted = isLoggedIn && !isNigeria && !isChina;
+    const isRestricted = isLoggedIn && !isPakistan && !isChina;
 
     if (role === "user") {
       if (isRestricted) {
@@ -230,7 +239,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="w-full bg-white shadow-sm">
+    <header className="sticky top-0 z-[100] w-full bg-[#FFFDF9]/75 backdrop-blur-[18px] border-b border-[#E9E0D4]/80 shadow-[0_2px_15px_-3px_rgba(30,30,30,0.02)] transition-all duration-300">
       {/* ================= DESKTOP HEADER ================= */}
       <div className="hidden md:block">
         <div className="mx-auto max-w-7xl px-4">
@@ -239,9 +248,9 @@ export default function Navbar() {
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/234dealslogo.svg"
+                  src="/92dealzlogo.svg"
                   alt="234 Deals"
-                  width={120}
+                  width={140}
                   height={65}
                   priority
                   className="object-contain"
@@ -258,7 +267,7 @@ export default function Navbar() {
                       router.push(`/search?search=${encodeURIComponent(query.trim())}`);
                     }
                   }}
-                  className="flex items-center overflow-hidden rounded-md border border-orange-500 shadow-sm"
+                  className="flex items-center overflow-hidden rounded-md border border-[#708238] shadow-sm"
                 >
                   <div className="relative">
                     <input
@@ -271,13 +280,13 @@ export default function Navbar() {
                         // Small delay to allow clicking suggestions
                         setTimeout(() => setShowSuggestions(false), 200);
                       }}
-                      className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 outline-none"
+                      className="w-72 px-4 py-2 text-sm text-black placeholder:text-black/50 bg-[#FFFDF9] outline-none"
                       maxLength={100}
                     />
                     {showSuggestions && suggestions.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-md bg-white border border-zinc-200 shadow-xl z-[100] mt-1 py-2 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                      <div className="absolute top-full left-0 right-0 bg-[#FFFDF9] border border-[#E9E0D4] shadow-xl rounded-xl z-[100] mt-1 py-2 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
                         {!query.trim() && (
-                          <div className="px-4 py-2 text-[10px] font-black text-orange-600 uppercase tracking-wider bg-orange-50/50 mb-1">
+                          <div className="px-4 py-2 text-[10px] font-black text-[#708238] uppercase tracking-wider bg-[#FFFDF9]/50 mb-1">
                             Recommended Searches
                           </div>
                         )}
@@ -290,9 +299,9 @@ export default function Navbar() {
                               setShowSuggestions(false);
                               router.push(`/search?search=${encodeURIComponent(s)}`);
                             }}
-                            className="w-full text-left px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-orange-50 hover:text-orange-600 transition-all truncate flex items-center gap-3"
+                      className="w-full text-left px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-green-50 hover:text-[#708238] transition-all truncate flex items-center gap-3"
                           >
-                            <Search size={14} className="text-zinc-400 group-hover:text-orange-500" />
+                            <Search size={14} className="text-zinc-400 group-hover:text-[#708238]" />
                             {s}
                           </button>
                         ))}
@@ -301,7 +310,7 @@ export default function Navbar() {
                   </div>
                   <button
                     type="submit"
-                    className="flex items-center justify-center bg-orange-500 px-4 py-2.5 text-white hover:bg-orange-600 transition-colors"
+                    className="flex items-center justify-center bg-[#708238] px-4 py-2.5 text-white hover:bg-[#0b7c45] transition-colors"
                   >
                     <Search size={16} />
                   </button>
@@ -313,14 +322,14 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               {!isLoggedIn ? (
                 <>
-                  <Link href="/signup" className="text-sm font-bold text-zinc-700 hover:text-orange-600">
+                  <Link href="/signup" className="text-sm font-bold text-zinc-700 hover:text-[#708238]">
                     Sign up
                   </Link>
-                  <Link href="/login" className="text-sm font-bold text-zinc-700 hover:text-orange-600">
+                  <Link href="/login" className="text-sm font-bold text-zinc-700 hover:text-[#708238]">
                     Log in
                   </Link>
                   <Link href="/signup" className="text-sm">
-                    <button className="hidden lg:inline-flex items-center rounded-full bg-orange-500 px-6 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-100 hover:bg-orange-600 transition-all active:scale-95">
+                    <button className="hidden lg:inline-flex items-center rounded-full bg-[#708238] px-6 py-2.5 text-sm font-black text-white shadow-lg shadow-green-100 hover:bg-[#0b7c45] transition-all active:scale-95">
                       Start Selling Today!
                     </button>
                   </Link>
@@ -331,7 +340,7 @@ export default function Navbar() {
                   {isVendor && (
                     <Link
                       href="/pricing"
-                      className="hidden lg:flex items-center gap-1.5 px-4 py-2.5 bg-[#f45c03] text-white rounded-md text-[13px] font-black border border-[#f45c03] hover:bg-orange-600 transition-all shadow-md shadow-orange-100 group"
+                      className="hidden lg:flex items-center gap-1.5 px-4 py-2.5 bg-[#708238] text-white rounded-md text-[13px] font-black border border-[#708238] hover:bg-[#0b7c45] transition-all shadow-md shadow-green-100 group"
                     >
                       <Star size={14} className="fill-current group-hover:scale-110 transition-transform" />
                       Promote Ads
@@ -340,11 +349,11 @@ export default function Navbar() {
                   <div className="relative">
                     <button
                       onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
-                      className="p-2 text-zinc-600 hover:text-[#f45c03] transition-colors relative"
+                      className="p-2 text-zinc-600 hover:text-[#708238] transition-colors relative"
                     >
                       <Bell size={24} />
                       {unreadCount > 0 && (
-                        <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#f45c03] text-white text-[10px] font-bold rounded-full border-2 border-white flex items-center justify-center">
+                        <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#708238] text-white text-[10px] font-bold rounded-full border-2 border-white flex items-center justify-center">
                           {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
                       )}
@@ -355,7 +364,7 @@ export default function Navbar() {
                         <div className="absolute right-0 mt-3 w-80 bg-white border border-zinc-100 rounded-md shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                           <div className="px-4 py-3 border-b border-zinc-100 bg-zinc-50 flex items-center justify-between">
                             <span className="text-sm font-bold text-zinc-900">Notifications</span>
-                            {unreadCount > 0 && <span className="text-[10px] bg-orange-100 text-[#f45c03] px-2 py-0.5 rounded-full font-bold">{unreadCount} New</span>}
+                            {unreadCount > 0 && <span className="text-[10px] bg-green-100 text-[#708238] px-2 py-0.5 rounded-full font-bold">{unreadCount} New</span>}
                           </div>
                           <div className="max-h-[350px] overflow-y-auto">
                             {notifications.filter(n => !n.read_at).length > 0 ? (
@@ -367,9 +376,9 @@ export default function Navbar() {
                                     if (n.link) router.push(n.link);
                                     setShowNotificationDropdown(false);
                                   }}
-                                  className="px-4 py-3 border-b border-zinc-50 hover:bg-orange-50/30 transition-colors cursor-pointer relative bg-orange-50/30"
+                                  className="px-4 py-3 border-b border-zinc-50 hover:bg-green-50/30 transition-colors cursor-pointer relative bg-green-50/30"
                                 >
-                                  <div className="absolute left-1 top-4 w-1.5 h-1.5 bg-[#f45c03] rounded-full" />
+                                  <div className="absolute left-1 top-4 w-1.5 h-1.5 bg-[#708238] rounded-full" />
                                   <p className="text-xs font-bold text-zinc-900 mb-0.5">{n.title}</p>
                                   <p className="text-[11px] text-zinc-500 line-clamp-2 leading-relaxed">{n.message}</p>
                                   <p className="text-[10px] text-zinc-400 mt-1.5">{new Date(n.createdAt).toLocaleDateString()} at {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
@@ -401,9 +410,9 @@ export default function Navbar() {
           <div className="flex items-center mb-4">
             <Link href="/" className="flex items-center">
               <Image
-                src="/234dealslogo.svg"
+                src="/92dealzlogo.svg"
                 alt="234 Deals"
-                width={105}
+                width={120}
                 height={55}
                 priority
                 className="object-contain"
@@ -414,11 +423,11 @@ export default function Navbar() {
               <div className="hidden sm:flex items-center gap-3">
                 {!isLoggedIn ? (
                   <>
-                    <Link href="/login" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-orange-600">
+                    <Link href="/login" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-[#708238]">
                       Log In
                     </Link>
                     <span className="text-[15px] text-gray-400">/</span>
-                    <Link href="/signup" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-orange-600">
+                    <Link href="/signup" className="text-[15px] font-medium text-black whitespace-nowrap hover:text-[#708238]">
                       Sign Up
                     </Link>
                   </>
@@ -427,9 +436,9 @@ export default function Navbar() {
                     {!isFullyVerified && (
                       <Link 
                         href={role === "vendor" || role === "Vendor" ? "/vendor-dashboard/settings/verification" : "/account-settings"}
-                        className="flex items-center gap-1.5 px-2 py-1 bg-orange-50 text-orange-600 rounded-full text-[9px] font-bold border border-orange-100 whitespace-nowrap"
+                        className="flex items-center gap-1.5 px-2 py-1 bg-green-50 text-[#708238] rounded-full text-[9px] font-bold border border-[#E9E0D4] whitespace-nowrap"
                       >
-                         <div className="w-1 h-1 bg-orange-600 rounded-full animate-ping" />
+                         <div className="w-1 h-1 bg-[#708238] rounded-full animate-ping" />
                          Verify
                       </Link>
                     )}
@@ -442,10 +451,10 @@ export default function Navbar() {
                 <>
                   <div className="flex items-center gap-3">
                     <TaskIcon showVendorTasks={showVendorTasks} />
-                    <Link href="/notifications" className="text-zinc-600 relative hover:text-orange-600 transition-colors">
+                    <Link href="/notifications" className="text-zinc-600 relative hover:text-[#708238] transition-colors">
                       <Bell size={24} />
                       {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#708238] text-white text-[9px] font-bold rounded-full border-2 border-[#f3f3f3] flex items-center justify-center">
                           {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
                       )}
@@ -455,7 +464,7 @@ export default function Navbar() {
               )}
 
               <button
-                className="text-orange-600 ml-1"
+                className="text-[#708238] ml-1"
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <Menu size={26} strokeWidth={2.5} />
@@ -477,7 +486,7 @@ export default function Navbar() {
                   router.push(`/search?search=${encodeURIComponent(mQuery.trim())}`);
                 }
               }}
-              className="flex flex-1 items-center overflow-hidden rounded-md border border-orange-500 bg-white h-[42px]"
+              className="flex flex-1 items-center overflow-hidden rounded-md border border-[#708238] bg-[#FFFDF9] h-[42px]"
             >
               <div className="flex-1 relative h-full">
                 <input
@@ -489,11 +498,11 @@ export default function Navbar() {
                   onBlur={() => {
                     setTimeout(() => setShowMSuggestions(false), 200);
                   }}
-                  className="w-full px-3 text-sm text-black placeholder:text-gray-400 outline-none h-full min-w-0"
+                  className="w-full px-3 text-sm text-black placeholder:text-gray-400 bg-transparent outline-none h-full min-w-0"
                   maxLength={100}
                 />
                 {showMSuggestions && mSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-zinc-200 shadow-xl rounded-md z-[100] mt-1 py-1 overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 bg-[#FFFDF9] border border-[#E9E0D4] shadow-xl rounded-xl z-[100] mt-1 py-1 overflow-hidden">
                     {mSuggestions.map((s, i) => (
                       <button
                         key={i}
@@ -503,7 +512,7 @@ export default function Navbar() {
                           setShowMSuggestions(false);
                           router.push(`/search?search=${encodeURIComponent(s)}`);
                         }}
-                        className="w-full text-left px-4 py-3 text-sm text-zinc-700 hover:bg-orange-50 border-b last:border-0 border-zinc-100"
+                        className="w-full text-left px-4 py-3 text-sm text-zinc-700 hover:bg-green-50 border-b last:border-0 border-zinc-100"
                       >
                         {s}
                       </button>
@@ -513,7 +522,7 @@ export default function Navbar() {
               </div>
               <button
                 type="submit"
-                className="flex items-center justify-center bg-orange-500 px-3 h-full shrink-0"
+                className="flex items-center justify-center bg-[#708238] px-3 h-full shrink-0"
               >
                 <Search size={18} className="text-white" />
               </button>
@@ -532,7 +541,7 @@ export default function Navbar() {
           />
 
           {/* Menu Content */}
-          <div className="relative z-50 h-full w-full bg-white overflow-auto">
+          <div className="relative z-50 h-full w-full bg-[#FFFDF9] overflow-auto">
             <div className="px-4 pt-4 pb-3">
               {/* Top Row: User & Close */}
               <div className="flex items-center justify-between mb-4">
@@ -543,7 +552,7 @@ export default function Navbar() {
 
                 <button
                   type="button"
-                  className="text-orange-600"
+                  className="text-[#708238]"
                   onClick={() => setMobileMenuOpen(false)}
                   aria-label="Close menu"
                 >
@@ -564,16 +573,16 @@ export default function Navbar() {
                       router.push(`/search?search=${encodeURIComponent(mQuery.trim())}`);
                     }
                   }}
-                  className="flex flex-1 items-stretch overflow-hidden rounded-md border border-orange-500 bg-white"
+                  className="flex flex-1 items-stretch overflow-hidden rounded-md border border-[#708238] bg-[#FFFDF9]"
                 >
                   <input
                     type="text"
                     placeholder="Search..."
                     value={mQuery}
                     onChange={(e) => setMQuery(e.target.value)}
-                    className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 outline-none min-w-0"
+                    className="flex-1 px-3 text-sm text-black placeholder:text-gray-400 bg-transparent outline-none min-w-0"
                   />
-                  <button type="submit" className="flex items-center justify-center bg-orange-500 px-3 shrink-0">
+                  <button type="submit" className="flex items-center justify-center bg-[#708238] px-3 shrink-0">
                     <Search size={18} className="text-white" />
                   </button>
                 </form>
@@ -582,10 +591,10 @@ export default function Navbar() {
               {/* Login/Signup Buttons */}
               {!isLoggedIn && (
                 <div className="flex gap-3 mb-4">
-                  <Link href="/login" className="flex-1 bg-orange-500 text-white py-3 rounded-md shadow inline-flex items-center justify-center">
+                  <Link href="/login" className="flex-1 bg-[#708238] text-white py-3 rounded-md shadow inline-flex items-center justify-center">
                     Login
                   </Link>
-                  <Link href="/signup" className="flex-1 bg-orange-500 text-white py-3 rounded-md shadow inline-flex items-center justify-center">
+                  <Link href="/signup" className="flex-1 bg-[#708238] text-white py-3 rounded-md shadow inline-flex items-center justify-center">
                     Signup
                   </Link>
                 </div>
@@ -603,7 +612,7 @@ export default function Navbar() {
                       }}
                       className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                     >
-                      <span className="bg-orange-100 p-1.5 rounded-md text-orange-600"><Settings size={16} /></span>
+                      <span className="bg-green-100 p-1.5 rounded-md text-[#708238]"><Settings size={16} /></span>
                       Dashboard
                     </button>
                   )}
@@ -619,7 +628,7 @@ export default function Navbar() {
                     }}
                     className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                   >
-                    <span className="bg-orange-100 p-1.5 rounded-md text-orange-600"><Plus size={16} /></span>
+                    <span className="bg-green-100 p-1.5 rounded-md text-[#708238]"><Plus size={16} /></span>
                     {(typeof window !== "undefined" && window.localStorage.getItem("role") === "vendor") ? "Add New Deal" : "Browse Deals"}
                   </button>
                   {isVendor && (
@@ -628,9 +637,9 @@ export default function Navbar() {
                           setMobileMenuOpen(false);
                           router.push("/pricing");
                       }}
-                      className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors font-bold text-orange-600"
+                      className="w-full text-left px-5 py-2.5 text-sm hover:bg-zinc-50 flex items-center gap-3 transition-colors font-bold text-[#708238]"
                     >
-                      <span className="bg-orange-600 p-1.5 rounded-md text-white"><Star size={16} /></span>
+                      <span className="bg-[#708238] p-1.5 rounded-md text-white"><Star size={16} /></span>
                       Promote Your Ads
                     </button>
                   )}
@@ -667,10 +676,10 @@ export default function Navbar() {
                     }}
                     className="w-full px-4 py-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors cursor-pointer text-zinc-700"
                   >
-                    <item.icon className="text-orange-600" size={20} />
+                    <item.icon className="text-[#708238]" size={20} />
                     <div className="text-sm font-medium">{item.label}</div>
                     {item.label === "Tasks" && (
-                       <span className="ml-auto w-2 h-2 bg-orange-600 rounded-full animate-pulse" />
+                       <span className="ml-auto w-2 h-2 bg-[#708238] rounded-full animate-pulse" />
                     )}
                   </button>
                 ))}
@@ -689,7 +698,7 @@ export default function Navbar() {
               </div>
 
               {/* Bottom Fixed Navigation in Modal */}
-              <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t z-50">
+              <div className="fixed bottom-0 left-0 right-0 md:hidden bg-[#FFFDF9] border-t border-[#E9E0D4] z-50">
                 <div className="max-w-7xl mx-auto px-4">
                   <div className="flex items-center justify-between h-16">
                     <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center text-sm text-zinc-700">
@@ -724,7 +733,7 @@ export default function Navbar() {
 
       {/* Persistent bottom navigation shown on mobile when modal is closed */}
       {!mobileMenuOpen && (
-        <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+        <div className="fixed bottom-0 left-0 right-0 md:hidden bg-[#FFFDF9] border-t border-[#E9E0D4]/80 z-40 shadow-[0_-2px_10px_rgba(111,78,55,0.03)]">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between h-16">
               <Link href="/" className="flex flex-col items-center text-sm text-zinc-700">
@@ -735,8 +744,8 @@ export default function Navbar() {
                 <Heart size={22} />
                 <span className="text-[10px] mt-1 text-center">Favorite</span>
               </Link>
-              <button onClick={() => handleSellClick()} className="flex flex-col items-center text-sm text-[#f45c03]">
-                <div className="bg-[#f45c03] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white relative z-50">
+              <button onClick={() => handleSellClick()} className="flex flex-col items-center text-sm text-[#708238]">
+                <div className="bg-[#708238] rounded-full p-2.5 -mt-8 shadow-lg border-4 border-white relative z-50">
                   <Plus size={24} className="text-white" />
                 </div>
                 <span className="text-[10px] mt-1 text-center">Sell</span>
@@ -763,7 +772,7 @@ export default function Navbar() {
 
       {/* ================= DESKTOP CATEGORY NAV ================= */}
       <div ref={navRef} className="relative hidden md:block">
-        <nav className="border-t bg-[#f6efef]">
+        <nav className="border-t bg-[#f0f9f4]">
           <div className="mx-auto max-w-7xl px-4">
             <div className="flex h-14 items-center gap-8">
               {/* Browse Categories */}
@@ -774,7 +783,7 @@ export default function Navbar() {
                     setOpen((v) => !v);
                   }}
                   disabled={!!openCategory}
-                  className="flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-medium"
+                  className="flex items-center gap-2 text-sm text-[#708238] hover:text-[#0b7c45] font-medium"
                 >
                   <Menu size={18} />
                   Browse Categories
@@ -802,7 +811,7 @@ export default function Navbar() {
                           prev === c.id ? null : c.id,
                         )
                       }
-                      className="text-zinc-700 hover:text-orange-600 transition-all font-medium py-2"
+                      className="text-zinc-700 hover:text-[#708238] transition-all font-medium py-2"
                     >
                       {c.title}
                     </button>
@@ -815,7 +824,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => router.push("/favorites")}
-                  className="flex items-center gap-2 hover:text-orange-600 transition-colors"
+                  className="flex items-center gap-2 hover:text-[#708238] transition-colors"
                 >
                   <Heart size={20} />
                   <span className="text-xs font-bold">{favorites.items.length}</span>
@@ -870,11 +879,11 @@ export function TaskIcon({ showVendorTasks }: { showVendorTasks: () => void }) {
   return (
     <button
       onClick={handleTaskClick}
-      className="p-2 text-zinc-600 hover:text-orange-600 transition-colors relative group"
+      className="p-2 text-zinc-600 hover:text-[#708238] transition-colors relative group"
       title="Verification Tasks"
     >
       <ClipboardList size={24} />
-      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-600 rounded-full border-2 border-white animate-pulse" />
+      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#708238] rounded-full border-2 border-white animate-pulse" />
       
       {/* Tooltip */}
       <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-zinc-900 text-white text-[10px] font-bold py-1 px-2 rounded whitespace-nowrap z-50">
@@ -913,9 +922,9 @@ function MobileTaskTab({ showVendorTasks }: { showVendorTasks: () => void }) {
 
   return (
     <button onClick={handleTaskClick} className="flex flex-col items-center text-sm text-zinc-700 relative">
-      <ClipboardList size={22} className="text-orange-600" />
-      <span className="text-[10px] mt-1 text-center font-bold text-orange-600">Tasks</span>
-      <span className="absolute top-0 right-1/2 translate-x-3 w-1.5 h-1.5 bg-orange-600 rounded-full" />
+      <ClipboardList size={22} className="text-[#708238]" />
+      <span className="text-[10px] mt-1 text-center font-bold text-[#708238]">Tasks</span>
+      <span className="absolute top-0 right-1/2 translate-x-3 w-1.5 h-1.5 bg-[#708238] rounded-full" />
     </button>
   );
 }
@@ -937,7 +946,7 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
     <div className="relative" id="nav-user-menu">
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-600 transition-colors w-10 h-10 overflow-hidden border-2 border-white shadow-sm"
+        className="flex items-center justify-center rounded-full bg-[#708238] hover:bg-[#0b7c45] transition-colors w-10 h-10 overflow-hidden border-2 border-white shadow-sm"
       >
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -959,33 +968,33 @@ function NavUserMenu({ signOut }: { signOut: () => void }) {
               )}
               <div className="flex items-center gap-2">
                 <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">Account Role:</p>
-                <p className="text-[10px] font-black text-orange-600 capitalize">{role}</p>
+        <p className="text-[10px] font-black text-[#708238] capitalize">{role}</p>
                 {isVerified && <VerifiedBadge size={12} />}
               </div>
             </div>
             <div className="p-1.5 space-y-0.5">
               {role !== "user" && (
-                <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <button onClick={() => go(vendor ? "/vendor-dashboard" : role === "admin" ? "/admin" : "/user/dashboard/settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 hover:text-[#708238] rounded-md hover:bg-green-50 hover:text-[#708238] rounded-lg transition-colors flex items-center gap-3">
                   <Grid size={16} />
                   Dashboard
                 </button>
               )}
               {vendor && (
-                <button onClick={() => go("/vendor-dashboard/add-product")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+                <button onClick={() => go("/vendor-dashboard/add-product")} className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 hover:text-[#708238] rounded-md hover:bg-green-50 hover:text-[#708238] rounded-lg transition-colors flex items-center gap-3">
                   <Plus size={16} />
                   Add New Deal
                 </button>
               )}
               <div className="h-px bg-zinc-100 my-1 mx-2" />
-              <button onClick={() => go("/messages")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go("/messages")} className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 hover:text-[#708238] rounded-md hover:bg-green-50 hover:text-[#708238] rounded-lg transition-colors flex items-center gap-3">
                 <Mail size={16} />
                 Messages
               </button>
-              <button onClick={() => go("/favorites")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go("/favorites")} className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 hover:text-[#708238] rounded-md hover:bg-green-50 hover:text-[#708238] rounded-lg transition-colors flex items-center gap-3">
                 <Heart size={16} />
                 Favorites
               </button>
-              <button onClick={() => go("/account-settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 rounded-md hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors flex items-center gap-3">
+              <button onClick={() => go("/account-settings")} className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 hover:text-[#708238] rounded-md hover:bg-green-50 hover:text-[#708238] rounded-lg transition-colors flex items-center gap-3">
                 <Settings size={16} />
                 Account Settings
               </button>
@@ -1008,7 +1017,7 @@ function UserAvatarCircle({ small = false }: { small?: boolean }) {
   const { url } = useNavUserDetails();
   const size = small ? "w-6 h-6" : "w-10 h-10";
   return (
-    <div className={`${size} rounded-full bg-orange-500 flex items-center justify-center text-white overflow-hidden border border-white shadow-sm`}>
+    <div className={`${size} rounded-full bg-[#708238] flex items-center justify-center text-white overflow-hidden border border-white shadow-sm`}>
       {url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt="Me" className="w-full h-full object-cover" />
@@ -1022,4 +1031,6 @@ function UserAvatarCircle({ small = false }: { small?: boolean }) {
 function LogoutButton(props: any) {
   return <LogOut {...props} />;
 }
+
+
 

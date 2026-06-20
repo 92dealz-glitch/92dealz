@@ -25,3 +25,5 @@ export async function markAllRead() {
 export async function deleteNotification(id: string) {
   return apiFetch<{ success: boolean }>(`notifications/${id}`, { method: "DELETE" }, true);
 }
+
+

@@ -2,45 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
+import { PAKISTAN_STATES } from "@/data/locationData";
+
 const LOCATIONS = [
   "Location",
-  "Abia",
-  "Adamawa",
-  "Akwa Ibom",
-  "Anambra",
-  "Bauchi",
-  "Bayelsa",
-  "Benue",
-  "Borno",
-  "Cross River",
-  "Delta",
-  "Ebonyi",
-  "Edo",
-  "Ekiti",
-  "Enugu",
-  "FCT (Abuja)",
-  "Gombe",
-  "Imo",
-  "Jigawa",
-  "Kaduna",
-  "Kano",
-  "Katsina",
-  "Kebbi",
-  "Kogi",
-  "Kwara",
-  "Lagos",
-  "Nasarawa",
-  "Niger",
-  "Ogun",
-  "Ondo",
-  "Osun",
-  "Oyo",
-  "Plateau",
-  "Rivers",
-  "Sokoto",
-  "Taraba",
-  "Yobe",
-  "Zamfara",
+  ...PAKISTAN_STATES,
   "🇨🇳 CHINA"
 ];
 
@@ -91,7 +57,7 @@ export default function LocationDropdown({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full h-full flex items-center gap-2 rounded-md border border-orange-500 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 cursor-pointer"
+        className="w-full h-full flex items-center gap-2 rounded-md border border-[#708238] px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 cursor-pointer"
       >
         <span className="truncate pr-2">{selected}</span>
         <ChevronDown size={16} className="flex-shrink-0" />
@@ -117,3 +83,5 @@ export default function LocationDropdown({
     </div>
   );
 }
+
+

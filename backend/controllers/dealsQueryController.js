@@ -289,7 +289,7 @@ exports.create = async (req, res, next) => {
     }
 
     // Currency Handling
-    const originalCurrency = req.body.originalCurrency || 'NGN';
+    const originalCurrency = req.body.originalCurrency || 'PKR';
     const finalPrice = await currencyService.convertToBase(Number(price), originalCurrency);
 
     const cols = ['title', 'description', 'price', '"userId"', '"createdAt"', '"updatedAt"', 'status', 'plan_type', 'active_until'];
@@ -425,7 +425,7 @@ exports.update = async (req, res, next) => {
         // Handle Price update with currency conversion
         if (k === 'price') {
            const originalPrice = Number(value);
-           const originalCurrency = req.body.originalCurrency || 'NGN';
+           const originalCurrency = req.body.originalCurrency || 'PKR';
            value = await currencyService.convertToBase(originalPrice, originalCurrency);
            
            // Also update original fields if they exist

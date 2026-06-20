@@ -25,7 +25,7 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(
   undefined,
 );
 
-const STORAGE_KEY = "234deals_favorites_v1";
+const STORAGE_KEY = "92dealz_favorites_v1";
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<FavoriteItem[]>([]);
@@ -77,3 +77,5 @@ export function useFavorites() {
 }
 
 export default FavoritesProvider;
+
+

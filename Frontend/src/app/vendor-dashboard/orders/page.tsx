@@ -63,7 +63,7 @@ export default function VendorOrdersPage() {
             case 'completed': return 'bg-green-100 text-green-700 border-green-200';
             case 'vendor_confirmed':
             case 'buyer_confirmed': return 'bg-blue-100 text-blue-700 border-blue-200';
-            case 'pending': return 'bg-orange-100 text-orange-700 border-orange-200';
+            case 'pending': return 'bg-[#E9E0D4] text-[#5E6E2F] border-[#E9E0D4]';
             case 'cancelled': return 'bg-red-100 text-red-700 border-red-200';
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
@@ -71,7 +71,7 @@ export default function VendorOrdersPage() {
 
     if (loading) return (
         <div className="flex h-96 items-center justify-center">
-            <Loader2 className="animate-spin text-orange-600" size={40} />
+            <Loader2 className="animate-spin text-[#708238]" size={40} />
         </div>
     );
 
@@ -83,7 +83,7 @@ export default function VendorOrdersPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                          <h1 className="text-4xl font-black text-zinc-900">Manage Orders</h1>
-                         <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-black ring-1 ring-orange-200">
+                         <span className="bg-[#E9E0D4] text-[#708238] px-3 py-1 rounded-full text-xs font-black ring-1 ring-orange-200">
                              {vendorOrders.length} {vendorOrders.length === 1 ? 'Order' : 'Orders'}
                          </span>
                     </div>
@@ -120,7 +120,7 @@ export default function VendorOrdersPage() {
                                                 {order.status.replace('_', ' ')}
                                             </span>
                                             <h3 className="text-xl font-black text-zinc-900 mt-2">{order.deal_title}</h3>
-                                            <p className="text-orange-600 font-black text-lg">₦{order.price.toLocaleString()}</p>
+                                            <p className="text-[#708238] font-black text-lg">₦{order.price.toLocaleString()}</p>
                                         </div>
                                         
                                         <div className="text-right text-xs text-zinc-400 font-bold">
@@ -171,3 +171,5 @@ export default function VendorOrdersPage() {
         </div>
     );
 }
+
+

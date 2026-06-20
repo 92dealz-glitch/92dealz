@@ -1,6 +1,6 @@
 // Build timestamp: 2026-03-11T21:30:00+05:00
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Nunito } from "next/font/google";
+import { Geist, Geist_Mono, Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { FavoritesProvider } from "../context/FavoritesProvider";
@@ -16,10 +16,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const nunito = Nunito({
-  variable: "--font-nunito",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 import { AlertProvider } from "../context/AlertContext";
@@ -28,48 +34,48 @@ import { CurrencyProvider } from "../context/CurrencyContext";
 
 export const metadata: Metadata = {
   title: {
-    default: "234 Deals | Nigeria's Smartest Marketplace",
-    template: "%s | 234 Deals"
+    default: "92Dealz | Pakistan's Smartest Marketplace",
+    template: "%s | 92Dealz"
   },
-  description: "Buy and sell everything from cars and phones to houses and fashion. 234 Deals connects buyers and sellers across Nigeria for the best localized deals.",
-  keywords: ["Nigeria marketplace", "buy and sell Nigeria", "online shopping Nigeria", "234 deals", "classifieds Nigeria", "Lagos deals", "Abuja marketplace"],
-  authors: [{ name: "234 Deals Team" }],
-  creator: "234 Deals",
-  publisher: "234 Deals",
+  description: "Buy and sell everything from cars and phones to houses and fashion. 92Dealz connects buyers and sellers across Pakistan for the best localized deals.",
+  keywords: ["Pakistan marketplace", "buy and sell Pakistan", "online shopping Pakistan", "92dealz", "classifieds Pakistan", "Karachi deals", "Lahore marketplace", "Islamabad deals", "OLX Pakistan alternative"],
+  authors: [{ name: "92Dealz Team" }],
+  creator: "92Dealz",
+  publisher: "92Dealz",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://234deals.vercel.app"),
+  metadataBase: new URL("https://92dealz.pk"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "234 Deals | Nigeria's Smartest Marketplace",
-    description: "Connect with verified sellers and find the best deals across Nigeria. Safe, fast, and easy marketplace.",
-    url: "https://234deals.vercel.app",
-    siteName: "234 Deals",
+    title: "92Dealz | Pakistan's Smartest Marketplace",
+    description: "Connect with verified sellers and find the best deals across Pakistan. Safe, fast, and easy marketplace.",
+    url: "https://92dealz.pk",
+    siteName: "92Dealz",
     images: [
       {
-        url: "/234dealslogo.svg",
+        url: "/92dealzlogo.svg",
         width: 1200,
         height: 630,
-        alt: "234 Deals Marketplace",
+        alt: "92Dealz Pakistan Marketplace",
       },
     ],
-    locale: "en_NG",
+    locale: "en_PK",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "234 Deals | Nigeria's Smartest Marketplace",
-    description: "Buy and sell anything in Nigeria. Verified sellers, best prices.",
-    images: ["/234dealslogo.svg"],
+    title: "92Dealz | Pakistan's Smartest Marketplace",
+    description: "Buy and sell anything in Pakistan. Verified sellers, best prices.",
+    images: ["/92dealzlogo.svg"],
   },
   icons: {
-    icon: "/234dealslogo.svg",
-    apple: "/234dealslogo.svg",
+    icon: "/92dealzlogo.svg",
+    apple: "/92dealzlogo.svg",
   },
   robots: {
     index: true,
@@ -91,7 +97,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased pb-20 md:pb-0`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} ${inter.variable} antialiased pb-20 md:pb-0`}>
         <LocationFilterProvider>
           <Providers>
             <AlertProvider>
@@ -107,3 +113,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

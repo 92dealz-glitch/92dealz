@@ -16,13 +16,13 @@ import {
 import StatCard from "@/components/admin/StatCard";
 
 const initialAuditLogs = [
-  { id: 1, timestamp: "2026-03-02 14:32:15", admin: "Admin User", email: "admin@234deals.com", action: "published", type: "deal", target: "Samsung Galaxy DEL001", details: "Changed status from draft to published", ip: "197.210.52.45" },
-  { id: 2, timestamp: "2026-03-02 12:15:42", admin: "System", email: "system@234deals.com", action: "created", type: "merchant", target: "TechHub Nigeria MER005", details: "Deal expired automatically", ip: "System" },
-  { id: 3, timestamp: "2026-03-01 23:59:59", admin: "Admin User", email: "admin@234deals.com", action: "unpublished", type: "deal", target: "Summer Fashion DEL045", details: "Deal expired automatically", ip: "197.210.52.45" },
-  { id: 4, timestamp: "2026-03-01 22:15:10", admin: "Admin User", email: "admin@234deals.com", action: "updated", type: "settings", target: "Platform Settings SET001", details: "Updated pricing and description", ip: "197.210.52.45" },
-  { id: 5, timestamp: "2026-03-01 20:45:00", admin: "Admin User", email: "admin@234deals.com", action: "deleted", type: "deal", target: "Old Product Deal DEL089", details: "-", ip: "197.210.52.45" },
-  { id: 6, timestamp: "2026-03-01 18:30:25", admin: "Admin User", email: "admin@234deals.com", action: "restored", type: "deal", target: "Apple MacBook Pro DEL034", details: "Restored from trash", ip: "197.210.52.45" },
-  { id: 7, timestamp: "2026-03-01 15:12:00", admin: "Admin User", email: "admin@234deals.com", action: "created", type: "category", target: "Electronics CAT012", details: "-", ip: "197.210.52.45" },
+  { id: 1, timestamp: "2026-03-02 14:32:15", admin: "Admin User", email: "admin@92dealz.com", action: "published", type: "deal", target: "Samsung Galaxy DEL001", details: "Changed status from draft to published", ip: "197.210.52.45" },
+  { id: 2, timestamp: "2026-03-02 12:15:42", admin: "System", email: "system@92dealz.com", action: "created", type: "merchant", target: "TechHub Pakistan MER005", details: "Deal expired automatically", ip: "System" },
+  { id: 3, timestamp: "2026-03-01 23:59:59", admin: "Admin User", email: "admin@92dealz.com", action: "unpublished", type: "deal", target: "Summer Fashion DEL045", details: "Deal expired automatically", ip: "197.210.52.45" },
+  { id: 4, timestamp: "2026-03-01 22:15:10", admin: "Admin User", email: "admin@92dealz.com", action: "updated", type: "settings", target: "Platform Settings SET001", details: "Updated pricing and description", ip: "197.210.52.45" },
+  { id: 5, timestamp: "2026-03-01 20:45:00", admin: "Admin User", email: "admin@92dealz.com", action: "deleted", type: "deal", target: "Old Product Deal DEL089", details: "-", ip: "197.210.52.45" },
+  { id: 6, timestamp: "2026-03-01 18:30:25", admin: "Admin User", email: "admin@92dealz.com", action: "restored", type: "deal", target: "Apple MacBook Pro DEL034", details: "Restored from trash", ip: "197.210.52.45" },
+  { id: 7, timestamp: "2026-03-01 15:12:00", admin: "Admin User", email: "admin@92dealz.com", action: "created", type: "category", target: "Electronics CAT012", details: "-", ip: "197.210.52.45" },
 ];
 
 const actionStyles = {
@@ -74,14 +74,14 @@ export default function AuditLogsPage() {
         <div className="flex items-center gap-3">
           <button 
             onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 border border-[#f45c03] text-[#f45c03] rounded-lg bg-white hover:bg-orange-50 transition-colors text-sm font-bold shadow-sm active:scale-95"
+            className="flex items-center gap-2 px-4 py-2 border border-[#708238] text-[#708238] rounded-lg bg-white hover:bg-[#E9E0D4] transition-colors text-sm font-bold shadow-sm active:scale-95"
           >
             <Download size={16} />
             Export
           </button>
           <button className="relative p-2 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors shadow-sm">
             <Bell size={20} className="text-zinc-600" />
-            <span className="absolute top-1 right-1.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-white"></span>
+            <span className="absolute top-1 right-1.5 w-2 h-2 bg-[#708238] rounded-full border-2 border-white"></span>
           </button>
         </div>
       </div>
@@ -104,7 +104,7 @@ export default function AuditLogsPage() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Total Actions" value={filteredLogs.length} icon={Shield} color="orange" bgColor="bg-[#f45c03]" iconColor="text-white" />
+          <StatCard label="Total Actions" value={filteredLogs.length} icon={Shield} color="orange" bgColor="bg-[#708238]" iconColor="text-white" />
           <StatCard label="Today" value="2" icon={Eye} color="green" bgColor="bg-[#22C55E]" iconColor="text-white" />
           <StatCard label="Active Admins" value="1" icon={FileCheck} color="yellow" bgColor="bg-[#FACC15]" iconColor="text-white" />
           <StatCard label="System Actions" value="1" icon={Cpu} color="purple" bgColor="bg-[#A855F7]" iconColor="text-white" />
@@ -119,14 +119,14 @@ export default function AuditLogsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search admin, deal or ID..."
-              className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-orange-500 transition-colors text-sm font-medium"
+              className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-[#708238] transition-colors text-sm font-medium"
             />
           </div>
           <div className="relative w-full lg:w-48">
             <select 
               value={selectedAction}
               onChange={(e) => setSelectedAction(e.target.value)}
-              className="w-full appearance-none bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5 outline-none text-sm font-bold text-zinc-700 focus:border-orange-500 cursor-pointer"
+              className="w-full appearance-none bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5 outline-none text-sm font-bold text-zinc-700 focus:border-[#708238] cursor-pointer"
             >
               {ACTION_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
             </select>
@@ -136,7 +136,7 @@ export default function AuditLogsPage() {
             <select 
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="w-full appearance-none bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5 outline-none text-sm font-bold text-zinc-700 focus:border-orange-500 cursor-pointer"
+              className="w-full appearance-none bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5 outline-none text-sm font-bold text-zinc-700 focus:border-[#708238] cursor-pointer"
             >
               {TYPE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
             </select>
@@ -193,4 +193,6 @@ export default function AuditLogsPage() {
     </div>
   );
 }
+
+
 

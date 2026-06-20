@@ -15,14 +15,16 @@ export default function ChangePhonePage() {
 
                 <div className="flex flex-col gap-2">
                     <label className="text-black font-black text-[15px]">New phone number</label>
-                    <input type="text" placeholder="Enter new phone number" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors" />
+                    <input type="text" placeholder="Enter new phone number" className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors" />
                 </div>
 
-                <button className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 min-w-[200px]">
+                <button className="bg-[#708238] hover:bg-[#708238] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-[#E9E0D4] min-w-[200px]">
                     Verify & update
                 </button>
             </form>
         </div>
     );
 }
+
+
 

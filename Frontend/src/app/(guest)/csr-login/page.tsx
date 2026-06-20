@@ -65,16 +65,16 @@ export default function CSRLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center py-12 px-4 selection:bg-orange-500/30">
+    <div className="min-h-screen bg-zinc-950 flex items-center justify-center py-12 px-4 selection:bg-[#708238]/30">
       <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl p-8 sm:p-10 relative">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500"></div>
         
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center p-3 bg-zinc-800 rounded-2xl mb-6 border border-zinc-700 shadow-inner">
-            <img src="/234dealslogo.svg" alt="234Deals" width={60} />
+            <img src="/92dealzlogo.svg" alt="92Dealz" width={60} />
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight mb-2 uppercase">
-            CSR <span className="text-orange-500">Portal</span>
+            CSR <span className="text-[#708238]">Portal</span>
           </h1>
           <p className="text-zinc-500 text-sm font-medium">Secure access to customer service</p>
         </div>
@@ -97,7 +97,7 @@ export default function CSRLoginPage() {
               required
               value={formData.email}
               onChange={handleChange}
-              placeholder="csr@234deals.com"
+              placeholder="csr@92dealz.com"
               className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-2xl px-5 py-4 text-sm text-white outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all font-medium placeholder-zinc-600 shadow-inner"
             />
           </div>
@@ -144,7 +144,7 @@ export default function CSRLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-600 text-white font-black text-sm py-4 rounded-2xl hover:bg-orange-500 active:scale-[0.98] transition-all shadow-xl shadow-orange-950/20 disabled:opacity-50 uppercase tracking-widest mt-2"
+            className="w-full bg-[#708238] text-white font-black text-sm py-4 rounded-2xl hover:bg-[#708238] active:scale-[0.98] transition-all shadow-xl shadow-orange-950/20 disabled:opacity-50 uppercase tracking-widest mt-2"
           >
             {loading ? (
                <span className="flex items-center justify-center gap-2">
@@ -156,7 +156,7 @@ export default function CSRLoginPage() {
         </form>
 
         <div className="mt-8 pt-8 border-t border-zinc-800 text-center">
-            <Link href="/" className="text-zinc-600 hover:text-orange-500 text-[10px] font-bold uppercase tracking-widest transition-colors">
+            <Link href="/" className="text-zinc-600 hover:text-[#708238] text-[10px] font-bold uppercase tracking-widest transition-colors">
               Return to Website
             </Link>
         </div>
@@ -164,3 +164,5 @@ export default function CSRLoginPage() {
     </div>
   );
 }
+
+

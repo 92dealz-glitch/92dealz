@@ -54,7 +54,7 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
                 type="text"
                 required
                 placeholder={`e.g., Electronics`}
-                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-orange-500 transition-colors font-medium"
+                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-[#708238] transition-colors font-medium"
               />
             </div>
 
@@ -65,13 +65,13 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
                   <input
                     type="url"
                     placeholder="https://merchant.com"
-                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-orange-500 transition-colors font-medium"
+                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-[#708238] transition-colors font-medium"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm text-zinc-900 font-bold">Status</label>
                   <div className="relative">
-                    <select className="w-full appearance-none px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-orange-500 transition-colors font-medium cursor-pointer">
+                    <select className="w-full appearance-none px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-[#708238] transition-colors font-medium cursor-pointer">
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
                     </select>
@@ -99,7 +99,7 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
                   ) : (
                     <label className="flex flex-col items-center cursor-pointer w-full text-center">
                       <div className="w-12 h-12 bg-white border border-zinc-200 rounded-xl flex items-center justify-center mb-3 shadow-sm">
-                        <Upload size={20} className="text-[#f45c03]" />
+                        <Upload size={20} className="text-[#708238]" />
                       </div>
                       <span className="text-xs text-zinc-900 font-bold">Upload image</span>
                       <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
@@ -119,7 +119,7 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
               </button>
               <button 
                 type="submit"
-                className="flex-[2] py-3 bg-[#f45c03] text-white rounded-xl font-bold hover:bg-[#f45c03] transition-colors shadow-lg shadow-[#f45c03]/20 active:scale-95"
+                className="flex-[2] py-3 bg-[#708238] text-white rounded-xl font-bold hover:bg-[#708238] transition-colors shadow-lg shadow-[#708238]/20 active:scale-95"
               >
                 Add {type.charAt(0).toUpperCase() + type.slice(1)}
               </button>
@@ -130,4 +130,6 @@ export default function AddTaxonomyModal({ type, isOpen, onClose }: AddTaxonomyM
     </div>
   );
 }
+
+
 

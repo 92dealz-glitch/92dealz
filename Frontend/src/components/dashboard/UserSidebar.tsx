@@ -51,7 +51,7 @@ export default function UserSidebar() {
       window.localStorage.removeItem("user_id");
       window.localStorage.removeItem("profile_image_url");
     }
-    router.push("/login");
+    router.push("/");
   };
 
   const getInitials = (name: string) => {
@@ -106,4 +106,6 @@ export default function UserSidebar() {
     </aside>
   );
 }
+
+
 

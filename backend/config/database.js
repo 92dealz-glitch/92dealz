@@ -77,19 +77,8 @@ else if (POSTGRES_HOST && POSTGRES_USER && POSTGRES_DATABASE) {
     },
   });
 } 
-// Fallback: Local SQLite (only for development if no PG vars present)
 else {
-  const storage = path.join(__dirname, '..', 'dev.sqlite');
-  console.log('No PostgreSQL configuration found, falling back to SQLite:', storage);
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage,
-    logging: !isProduction ? console.log : false,
-    define: {
-      underscored: false,
-      freezeTableName: true,
-    },
-  });
+  throw new Error('DATABASE_URL is required for Neon PostgreSQL connection');
 }
 
 module.exports = sequelize;

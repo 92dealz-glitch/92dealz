@@ -41,7 +41,7 @@ export default async function SearchPage({
     priceValue: Number(l.price),
     desc: l.description || undefined,
     badge: l.image_url || "/assets/images/bgphone.svg",
-    location: l.location || "Nigeria",
+    location: l.location || "Pakistan",
     state: l.state,
     city: l.city,
     condition: l.condition || "New",
@@ -59,3 +59,5 @@ export default async function SearchPage({
     </div>
   );
 }
+
+

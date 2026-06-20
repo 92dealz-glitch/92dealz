@@ -1,5 +1,6 @@
 /**
  * Entry point for the Express server
+ * - Reloaded with Gmail SMTP configurations
  * - Loads environment variables
  * - Configures middleware (CORS, body-parser, morgan)
  * - Connects to PostgreSQL via Sequelize
@@ -28,11 +29,16 @@ app.use(helmet({
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'http://localhost:3002',
   'http://localhost:5173',
-  'https://234deals.vercel.app',
-  'https://www.234deals.vercel.app',
-  'https://234deals.com',
-  'https://www.234deals.com'
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  'http://127.0.0.1:3002',
+  'http://127.0.0.1:5173',
+  'https://92dealz.vercel.app',
+  'https://www.92dealz.vercel.app',
+  'https://92dealz.com',
+  'https://www.92dealz.com'
 ];
 
 app.use(cors({
@@ -48,6 +54,7 @@ app.use(cors({
   allowedHeaders: ['X-Requested-With', 'Content-Type', 'Authorization', 'Accept'],
   credentials: true
 }));
+app.options('*', cors());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
@@ -71,7 +78,7 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-app.get('/', (req, res) => res.send('234Deals API Server Running'));
+app.get('/', (req, res) => res.send('92Dealz API Server Running'));
 
 // Database
 const sequelize = require('./config/database');
@@ -157,16 +164,34 @@ app.use(errorHandler);
 const START_PORT = Number(process.env.PORT || 5001);
 
 // Sync all environments for now to ensure new tables exist
-sequelize.sync({ alter: true })
-  .then(async () => {
-    console.log('Database synchronized');
-    // Force production-level schema fixes to ensure VARCHAR(N) resizing
-    await forceSchemaFix();
-  })
-  .catch(err => console.error('Database sync failed:', err));
+const listenWithFallback = async (port, maxAttempts = 5) => {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      await new Promise((resolve, reject) => {
+        const srv = app.listen(port, () => resolve(srv));
+        srv.on('error', reject);
+      });
+      console.log(`✅ Server listening on http://localhost:${port}`);
+      return;
+    } catch (err) {
+      if (err.code === 'EADDRINUSE') {
+        console.warn(`⚠️ Port ${port} in use – trying ${port + 1}…`);
+        port++;
+      } else {
+        throw err;
+      }
+    }
+  }
+  throw new Error('❌ All attempted ports are busy');
+};
 
-app.listen(START_PORT, () => {
-  console.log(`Server listening on http://localhost:${START_PORT}`);
-});
+const isSqlite = sequelize.options.dialect === 'sqlite';
+sequelize.sync()
+  .then(async () => {
+    console.log('✅ Database synchronized');
+    await forceSchemaFix();
+    await listenWithFallback(START_PORT);
+  })
+  .catch(err => console.error('❌ Database sync failed:', err));
 
 module.exports = app; // For Vercel

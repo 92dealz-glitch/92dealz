@@ -61,11 +61,11 @@ export default function SubscriptionStatsPage() {
             {/* Header Banner */}
             <div className="bg-black rounded-[32px] p-8 md:p-12 text-white relative overflow-hidden">
                 <div className="relative z-10 max-w-2xl">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-400 text-xs font-black uppercase tracking-widest mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFFDF9]/300/20 border border-emerald-500/30 text-emerald-400 text-xs font-black uppercase tracking-widest mb-6">
                         <ShieldCheck size={14} /> {isChina ? 'Market Presence' : 'Active Subscription'}
                     </div>
                     <h1 className="text-3xl md:text-5xl font-black mb-4 capitalize">
-                        {planName} <span className="text-[#f45c03]">{isChina && currentTier === 'free' ? 'Vendor' : 'Member'}</span>
+                        {planName} <span className="text-[#708238]">{isChina && currentTier === 'free' ? 'Vendor' : 'Member'}</span>
                     </h1>
                     <p className="text-zinc-400 font-bold text-lg mb-8">
                         {isChina && currentTier === 'free' 
@@ -75,7 +75,7 @@ export default function SubscriptionStatsPage() {
                     
                     {expiryDate && (
                         <div className="flex items-center gap-3 text-sm font-bold bg-white/5 border border-white/10 w-fit px-6 py-3 rounded-2xl">
-                            <Clock size={16} className="text-orange-500" />
+                            <Clock size={16} className="text-[#708238]" />
                             <span>Plan Expires: <span className="text-white">
                                 {new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(expiryDate))}
                             </span></span>
@@ -83,7 +83,7 @@ export default function SubscriptionStatsPage() {
                     )}
                 </div>
                 {/* Abstract shape */}
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-orange-500/10 to-transparent skew-x-12 translate-x-1/4 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-500/10 to-transparent skew-x-12 translate-x-1/4 pointer-events-none" />
             </div>
 
             {/* Inventory Summary Cards */}
@@ -93,7 +93,7 @@ export default function SubscriptionStatsPage() {
                         <p className="text-zinc-400 font-black text-xs uppercase tracking-widest mb-1">Active Listings</p>
                         <p className="text-4xl font-black text-black">{stats?.active_count || 0}</p>
                     </div>
-                    <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-[#FFFDF9]/30 rounded-2xl flex items-center justify-center text-[#708238] group-hover:scale-110 transition-transform">
                         <CheckCircle size={32} />
                     </div>
                 </div>
@@ -112,7 +112,7 @@ export default function SubscriptionStatsPage() {
             <div className="bg-white p-8 md:p-10 rounded-[32px] border border-zinc-100 shadow-sm">
                 <div className="flex items-center justify-between mb-10">
                     <h2 className="text-2xl font-black text-black">Plan Capacity</h2>
-                    <Link href="/pricing" className="text-[#f45c03] font-black text-sm flex items-center gap-1 hover:underline">
+                    <Link href="/pricing" className="text-[#708238] font-black text-sm flex items-center gap-1 hover:underline">
                         Upgrade Tiers <ChevronRight size={16} />
                     </Link>
                 </div>
@@ -147,12 +147,12 @@ export default function SubscriptionStatsPage() {
                             label={isChina ? "Featured Tier" : "Featured Boost"} 
                             used={stats?.basic || 0} 
                             limit={stats?.limits.basic || 10} 
-                            color="bg-[#f45c03]" 
-                            icon={<Zap size={20} className="text-[#f45c03]" />} 
+                            color="bg-[#708238]" 
+                            icon={<Zap size={20} className="text-[#708238]" />} 
                         />
                     )}
 
-                    {/* Standard (Nigeria Only) */}
+                    {/* Standard (Pakistan Only) */}
                     {!isChina && (currentTier === 'free' || (profile.extra_slots_purchased || 0) > 0 || (stats?.free || 0) > 0) && (
                         <div className="space-y-4">
                             <CapacityBar 
@@ -171,7 +171,7 @@ export default function SubscriptionStatsPage() {
                                     <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
                                     <div>
                                         <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Add-on Used</p>
-                                        <p className="text-lg font-black text-[#f45c03]">{Math.max(0, (stats?.free || 0) - 1)}</p>
+                                        <p className="text-lg font-black text-[#708238]">{Math.max(0, (stats?.free || 0) - 1)}</p>
                                     </div>
                                     <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
                                     <div>
@@ -188,13 +188,13 @@ export default function SubscriptionStatsPage() {
             {/* Quick Tips */}
             <div className="bg-zinc-50 p-8 rounded-[32px] border border-zinc-100 flex flex-col md:flex-row items-center gap-6">
                 <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-zinc-200 flex items-center justify-center shrink-0">
-                    <ArrowUpCircle className="text-[#f45c03]" size={24} />
+                    <ArrowUpCircle className="text-[#708238]" size={24} />
                 </div>
                 <div className="flex-1">
                     <p className="text-zinc-900 font-black mb-1">Boost Your Visibility</p>
                     <p className="text-zinc-500 text-sm font-bold">Upgrading to a higher plan automatically promotes your existing products to the new visibility tier for immediate impact. Renewals reset your 30-day visibility window starting from now.</p>
                 </div>
-                <Link href="/pricing" className="bg-[#f45c03] text-white px-8 py-3 rounded-2xl font-black text-sm whitespace-nowrap shadow-lg shadow-orange-100 active:scale-95 transition-all">
+                <Link href="/pricing" className="bg-[#708238] text-white px-8 py-3 rounded-2xl font-black text-sm whitespace-nowrap shadow-lg shadow-[#E9E0D4]/30 active:scale-95 transition-all">
                     View Pricing
                 </Link>
             </div>
@@ -226,3 +226,5 @@ function CapacityBar({ label, used, limit, color, icon, isUnlimited = false }: a
         </div>
     );
 }
+
+

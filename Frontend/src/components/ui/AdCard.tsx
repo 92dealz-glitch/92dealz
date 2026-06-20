@@ -9,7 +9,7 @@ import { useCurrency } from "@/context/CurrencyContext";
 export type AdItem = {
   id: number | string;
   price: string;
-  priceValue?: number; // Base NGN price
+  priceValue?: number; // Base PKR price
   title: string;
   brand?: string;
   desc?: string;
@@ -43,7 +43,7 @@ export default function AdCard({ item, className = "" }: Props) {
     if (item.state && item.state !== item.location) parts.push(item.state);
     if (item.location) parts.push(item.location);
     
-    if (parts.length === 0) return "Nigeria";
+    if (parts.length === 0) return "Pakistan";
     return parts.join(", ");
   };
 
@@ -51,11 +51,11 @@ export default function AdCard({ item, className = "" }: Props) {
     <Link href={`/product/${item.id}`}>
       <article
         className={
-          `relative rounded-md border-[2.5px] border-emerald-600 p-1.5 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full group overflow-hidden ${className}`
+          `relative rounded-2xl border border-[#E9E0D4] p-3.5 bg-[#FFFDF9] shadow-sm hover:shadow-xl hover:shadow-[#C7A27C]/5 hover:border-[#C7A27C]/30 hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full group overflow-hidden ${className}`
         }
         aria-label={`Ad ${item.title}`}
       >
-        <div className="flex-none relative w-full overflow-hidden bg-zinc-50 rounded-sm">
+        <div className="flex-none relative w-full overflow-hidden bg-zinc-50 rounded-xl">
           <div className="w-full pb-[72%] shrink-0"></div>
           {(item.badge || item.img) ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -83,7 +83,7 @@ export default function AdCard({ item, className = "" }: Props) {
               });
             }}
             aria-label={fav ? "Remove from favorites" : "Add to favorites"}
-            className={`absolute right-1 top-1 z-20 bg-white/90 backdrop-blur-sm rounded-full p-1 shadow ${fav ? "text-red-500" : "text-gray-400"}`}
+            className={`absolute right-1 top-1 z-20 bg-[#FFFDF9]/90 backdrop-blur-sm rounded-full p-1 shadow ${fav ? "text-red-500" : "text-gray-400"}`}
           >
             <Heart className="w-4 h-4" />
           </button>
@@ -91,7 +91,7 @@ export default function AdCard({ item, className = "" }: Props) {
 
         <div className="mt-2.5 px-0.5 text-left flex items-start justify-between gap-1">
           <div className="min-w-0 flex-1">
-            <p className={`text-orange-600 font-extrabold leading-tight break-all ${
+            <p className={`text-[#708238] font-extrabold leading-tight break-all ${
               (item.price || "").length > 12 ? "text-[12px] sm:text-[14px]" : "text-[15px] sm:text-lg"
             }`}>
               {item.priceValue ? formatPrice(item.priceValue) : item.price}
@@ -102,7 +102,7 @@ export default function AdCard({ item, className = "" }: Props) {
           {item.isVerified && (
             <div className="shrink-0 mt-0.5" title="Verified Vendor">
               <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 sm:w-8 sm:h-8" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" fill="#10b981" />
+                <circle cx="12" cy="12" r="10" fill="#C7A27C" />
                 <path 
                   d="M8 12L11 15L16 9" 
                   stroke="white" 
@@ -143,10 +143,12 @@ export default function AdCard({ item, className = "" }: Props) {
             <div className="truncate font-semibold flex-1" title={displayLocation()}>
                📍 {displayLocation()}
             </div>
-            <span className="text-[#ff7a2d] font-bold whitespace-nowrap shrink-0">{item.views ?? item.likes ?? 0} views</span>
+            <span className="text-[#708238] font-bold whitespace-nowrap shrink-0">{item.views ?? item.likes ?? 0} views</span>
           </div>
         </div>
       </article>
     </Link>
   );
 }
+
+

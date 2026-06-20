@@ -42,7 +42,7 @@ function CSRDashboardContent() {
     } catch (e) {}
     
     // Redirect to the custom CSR login path
-    window.location.href = process.env.NEXT_PUBLIC_CSR_LOGIN_PATH || "/843901globallink-234deals-cr-485n9485n02";
+    window.location.href = process.env.NEXT_PUBLIC_CSR_LOGIN_PATH || "/843901globallink-92dealz-cr-485n9485n02";
   };
 
   return (
@@ -70,7 +70,7 @@ function CSRDashboardContent() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${
               activeTab === tab.id
-                ? 'border-orange-600 text-orange-600 bg-orange-50/50'
+                ? 'border-[#708238] text-[#708238] bg-[#E9E0D4]/50'
                 : 'border-transparent text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50'
             }`}
           >
@@ -122,10 +122,10 @@ function CSRDashboardContent() {
         )}
       </div>
 
-      <div className="bg-orange-50/50 p-6 rounded-2xl border border-orange-100/50 flex flex-col sm:flex-row items-center gap-6 justify-between mt-10">
+      <div className="bg-[#E9E0D4]/50 p-6 rounded-2xl border border-[#E9E0D4]/30/50 flex flex-col sm:flex-row items-center gap-6 justify-between mt-10">
          <div className="flex-1">
              <h3 className="font-black text-orange-900 uppercase tracking-widest text-sm mb-1">Moderator Accountability</h3>
-             <p className="text-sm font-medium text-orange-700/70">All actions are logged. Ensure you review all reports and IDs thoroughly before deciding.</p>
+             <p className="text-sm font-medium text-[#5E6E2F]/70">All actions are logged. Ensure you review all reports and IDs thoroughly before deciding.</p>
          </div>
       </div>
     </div>
@@ -135,7 +135,7 @@ function CSRDashboardContent() {
 export default function CSRDashboardPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-[400px] flex flex-col items-center justify-center gap-4 text-orange-600">
+      <div className="min-h-[400px] flex flex-col items-center justify-center gap-4 text-[#708238]">
         <Loader2 className="animate-spin" size={40} />
         <span className="font-black uppercase tracking-widest text-xs">Loading Workspace...</span>
       </div>
@@ -144,3 +144,5 @@ export default function CSRDashboardPage() {
     </Suspense>
   );
 }
+
+

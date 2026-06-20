@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import { 
@@ -15,7 +15,7 @@ const deletedDealsData = [
   { 
     id: 1, 
     title: "Samsung Galaxy", 
-    price: "Γéª450,000", 
+    price: "G�450,000", 
     merchant: "TechHub", 
     category: "Electronics", 
     clicks: "5,897", 
@@ -25,7 +25,7 @@ const deletedDealsData = [
   { 
     id: 2, 
     title: "Nike Air Max 270", 
-    price: "Γéª450,000", 
+    price: "G�450,000", 
     merchant: "TechHub", 
     category: "Phones", 
     clicks: "5,897", 
@@ -35,7 +35,7 @@ const deletedDealsData = [
   { 
     id: 3, 
     title: "Nike Air Max 270", 
-    price: "Γéª85,000", 
+    price: "G�85,000", 
     merchant: "SportsWorld", 
     category: "Fashion", 
     clicks: "1,000", 
@@ -78,7 +78,7 @@ export default function DeletedDealsPage() {
           </button>
           <button className="relative p-2 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors">
             <Bell size={20} className="text-zinc-600" />
-            <span className="absolute top-1 right-1.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-white"></span>
+            <span className="absolute top-1 right-1.5 w-2 h-2 bg-[#708238] rounded-full border-2 border-white"></span>
           </button>
         </div>
       </div>
@@ -182,4 +182,6 @@ export default function DeletedDealsPage() {
     </div>
   );
 }
+
+
 

@@ -15,3 +15,5 @@ export async function listFavorites() {
 export async function removeFavorite(dealId: number) {
   return apiFetch<{ success: boolean; message: string }>(`${ENDPOINTS.favorites}/${dealId}`, { method: "DELETE" }, true);
 }
+
+

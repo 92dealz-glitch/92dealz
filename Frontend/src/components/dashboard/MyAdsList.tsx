@@ -68,7 +68,7 @@ export default function MyAdsList() {
                 <h2 className="text-black font-black text-2xl">My Ads</h2>
                 <Link
                     href="/vendor-dashboard/add-product"
-                    className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-bold py-2.5 px-6 rounded-md flex items-center gap-2 transition-all duration-200"
+                    className="bg-[#708238] hover:bg-[#708238] text-white font-bold py-2.5 px-6 rounded-md flex items-center gap-2 transition-all duration-200"
                 >
                     <Plus size={20} />
                     Add New
@@ -82,14 +82,14 @@ export default function MyAdsList() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`flex items-center gap-2 pb-4 font-bold text-[15px] transition-all relative ${activeTab === tab.id
-                            ? "text-[#f45c03]"
+                            ? "text-[#708238]"
                             : "text-zinc-500 hover:text-black"
                             }`}
                     >
-                        <tab.icon size={18} className={activeTab === tab.id ? "text-[#f45c03]" : "text-zinc-400"} />
+                        <tab.icon size={18} className={activeTab === tab.id ? "text-[#708238]" : "text-zinc-400"} />
                         {tab.label}
                         {activeTab === tab.id && (
-                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#f45c03]" />
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#708238]" />
                         )}
                     </button>
                 ))}
@@ -104,9 +104,9 @@ export default function MyAdsList() {
                             <span className="text-lg font-black text-black">{profile.subscription_stats.free} / {profile.subscription_stats.limits.free}</span>
                         </div>
                     )}
-                    <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
-                        <span className="text-[10px] font-black text-orange-400 uppercase tracking-wider">{isChina ? "Featured Tier" : "Featured"}</span>
-                        <span className="text-lg font-black text-[#f45c03]">{profile.subscription_stats.basic} / {profile.subscription_stats.limits.basic}</span>
+                    <div className="bg-[#E9E0D4] border border-[#E9E0D4]/30 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
+                        <span className="text-[10px] font-black text-[#6366F1] uppercase tracking-wider">{isChina ? "Featured Tier" : "Featured"}</span>
+                        <span className="text-lg font-black text-[#708238]">{profile.subscription_stats.basic} / {profile.subscription_stats.limits.basic}</span>
                     </div>
                     <div className="bg-yellow-50 border border-yellow-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px]">
                         <span className="text-[10px] font-black text-yellow-600 uppercase tracking-wider">{isChina ? "Premium Tier" : "Star"}</span>
@@ -119,7 +119,7 @@ export default function MyAdsList() {
                         </div>
                     )}
                     {(!isChina && profile?.extra_slots_purchased && profile.extra_slots_purchased > 0) && (
-                        <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px] border-dashed">
+                        <div className="bg-[#FFFDF9]/30 border border-emerald-100 rounded-xl px-4 py-3 flex flex-col min-w-[120px] border-dashed">
                             <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Starter Add-ons</span>
                             <span className="text-lg font-black text-emerald-600">+{profile.extra_slots_purchased} Purchased</span>
                         </div>
@@ -128,10 +128,10 @@ export default function MyAdsList() {
             )}
 
             {(profile?.subscription_plan === 'free' || (!profile?.subscription_plan && isChina)) && (
-                <div className="mb-8 p-6 bg-black rounded-[24px] border-l-8 border-[#f45c03] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                <div className="mb-8 p-6 bg-black rounded-[24px] border-l-8 border-[#708238] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[#f45c03]/10 rounded-full flex items-center justify-center shrink-0">
-                            <Info size={24} className="text-[#f45c03]" />
+                        <div className="w-12 h-12 bg-[#708238]/10 rounded-full flex items-center justify-center shrink-0">
+                            <Info size={24} className="text-[#708238]" />
                         </div>
                         <div>
                             <p className="text-white font-black text-lg">
@@ -144,7 +144,7 @@ export default function MyAdsList() {
                             </p>
                         </div>
                     </div>
-                    <Link href="/pricing" className="bg-[#f45c03] text-white px-8 py-3 rounded-xl font-black text-sm hover:scale-105 transition-transform shadow-lg shadow-orange-500/20 whitespace-nowrap">
+                    <Link href="/pricing" className="bg-[#708238] text-white px-8 py-3 rounded-xl font-black text-sm hover:scale-105 transition-transform shadow-lg shadow-[#708238]/20 whitespace-nowrap">
                         {isChina ? "View Pricing" : "Choose A Plan"}
                     </Link>
                 </div>
@@ -155,17 +155,17 @@ export default function MyAdsList() {
                 {loading && <div className="text-sm text-zinc-500">Loading...</div>}
                 {error && <div className="text-sm text-red-600">{error}</div>}
                 {items.map((ad) => (
-                    <div key={ad.id} className="flex flex-col md:flex-row gap-6 p-4 rounded-xl border border-zinc-100 hover:border-[#f45c03]/30 transition-all duration-300">
+                    <div key={ad.id} className="flex flex-col md:flex-row gap-6 p-4 rounded-xl border border-zinc-100 hover:border-[#708238]/30 transition-all duration-300">
                         <div className="relative w-full md:w-48 h-40 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-50 border border-zinc-100">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={ad.image_url || "/images/heroimage.svg"} alt={ad.title} className="absolute inset-0 w-full h-full object-cover" />
+                            <img src={ad.image_url || "/assets/advertlady.svg"} alt={ad.title} className="absolute inset-0 w-full h-full object-cover" />
                         </div>
 
                         <div className="flex-1 flex flex-col justify-between py-1">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="text-black font-black text-lg mb-1">{ad.title}</h3>
-                                    <div className="text-[#f45c03] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
+                                    <div className="text-[#708238] font-black text-xl mb-3">₦{Number(ad.price).toLocaleString()}</div>
                                     <div className="flex flex-wrap items-center gap-4 text-zinc-500 text-sm font-bold">
                                         <span className="bg-zinc-100 px-2 py-0.5 rounded text-xs">{new Date(ad.createdAt || Date.now()).toLocaleDateString()}</span>
                                         {ad.active_until && (
@@ -174,12 +174,12 @@ export default function MyAdsList() {
                                                 {new Date(ad.active_until) < new Date() ? 'Expired' : `Visible until: ${new Date(ad.active_until).toLocaleDateString()}`}
                                             </span>
                                         )}
-                                        {ad.subcategory && <span className="text-[#f45c03] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
+                                        {ad.subcategory && <span className="text-[#708238] text-xs uppercase tracking-wider">{ad.subcategory}</span>}
                                     </div>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${ad.status === 'pending' ? 'bg-orange-500' :
-                                        ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#10B981]'
+                                    <span className={`text-white px-3 py-1 rounded-md text-[11px] font-black uppercase ${ad.status === 'pending' ? 'bg-[#708238]' :
+                                        ad.status === 'rejected' ? 'bg-red-500' : 'bg-[#C7A27C]'
                                         }`}>
                                         {ad.status || "active"}
                                     </span>
@@ -200,7 +200,7 @@ export default function MyAdsList() {
                                     )}
                                     is                                </div>
                                 <span className={`ml-2 px-3 py-1 rounded-md text-[11px] font-black uppercase flex items-center gap-1.5 shadow-sm ${ad.plan_type === 'star' ? 'bg-yellow-400 text-black ring-2 ring-yellow-100' :
-                                    ad.plan_type === 'basic' ? 'bg-orange-500 text-white shadow-orange-100' :
+                                    ad.plan_type === 'basic' ? 'bg-[#708238] text-white shadow-[#E9E0D4]' :
                                         ad.plan_type === 'premium' ? 'bg-purple-600 text-white shadow-purple-100 ring-2 ring-purple-100' :
                                             'bg-zinc-200 text-zinc-600'
                                     }`}>
@@ -271,7 +271,7 @@ export default function MyAdsList() {
                                             showAlert(e.message || "Action failed");
                                         }
                                     }}
-                                    className="flex items-center gap-2 border border-zinc-300 hover:border-[#f45c03] hover:text-[#f45c03] text-zinc-700 font-bold py-1.5 px-4 rounded-md text-sm transition-all">
+                                    className="flex items-center gap-2 border border-zinc-300 hover:border-[#708238] hover:text-[#708238] text-zinc-700 font-bold py-1.5 px-4 rounded-md text-sm transition-all">
                                     <Edit2 size={14} />
                                     Edit
                                 </button>
@@ -284,7 +284,7 @@ export default function MyAdsList() {
                                             showAlert(e.message || "Failed to mark as sold");
                                         }
                                     }}
-                                    className="flex items-center gap-2 border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white font-bold py-1.5 px-4 rounded-md text-sm transition-all">
+                                    className="flex items-center gap-2 border border-[#C7A27C] text-[#C7A27C] hover:bg-[#C7A27C] hover:text-white font-bold py-1.5 px-4 rounded-md text-sm transition-all">
                                     Mark as sold
                                 </button>
                                 <button
@@ -311,7 +311,7 @@ export default function MyAdsList() {
                                             setPromotingId(ad.id);
                                             setIsPromoteModalOpen(true);
                                         }}
-                                        className="flex items-center gap-2 bg-gradient-to-r from-[#f45c03] to-orange-600 text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg hover:shadow-orange-100 active:scale-95">
+                                        className="flex items-center gap-2 bg-gradient-to-r from-[#708238] to-[#312E81] text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg hover:shadow-[#E9E0D4] active:scale-95">
                                         <Plus size={16} />
                                         Boost Ad
                                     </button>
@@ -329,7 +329,7 @@ export default function MyAdsList() {
                                                 showAlert(e.message || "Failed to activate ad");
                                             }
                                         }}
-                                        className="flex items-center gap-2 bg-[#10B981] text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg active:scale-95">
+                                        className="flex items-center gap-2 bg-[#C7A27C] text-white font-black py-1.5 px-6 rounded-lg text-sm transition-all hover:shadow-lg active:scale-95">
                                         <CheckCircle size={16} />
                                         Activate Again
                                     </button>
@@ -484,13 +484,13 @@ export default function MyAdsList() {
 
                         {/* Plan Status Help */}
                         {(!profile?.basic_plan_expires_at || new Date(profile.basic_plan_expires_at) < new Date()) && (!profile?.star_plan_expires_at || new Date(profile.star_plan_expires_at) < new Date()) && (
-                            <div className="mb-8 p-4 bg-orange-50 border border-orange-100 rounded-2xl flex items-center gap-4">
+                            <div className="mb-8 p-4 bg-[#E9E0D4] border border-[#E9E0D4]/30 rounded-2xl flex items-center gap-4">
                                 <div className="p-2 bg-white rounded-xl shadow-sm">
-                                    <Star className="text-orange-600" size={20} />
+                                    <Star className="text-[#708238]" size={20} />
                                 </div>
                                 <div>
                                     <p className="text-sm font-black text-orange-900">Subscription Required</p>
-                                    <p className="text-xs font-bold text-orange-700">You need a valid {isChina ? "Featured or Premium Tier" : "Featured or Premium"} subscription to unlock these slots.</p>
+                                    <p className="text-xs font-bold text-[#5E6E2F]">You need a valid {isChina ? "Featured or Premium Tier" : "Featured or Premium"} subscription to unlock these slots.</p>
                                 </div>
                                 <Link href="/pricing" className="ml-auto bg-black text-white px-5 py-2 rounded-xl text-xs font-black">Get Plan</Link>
                             </div>
@@ -511,17 +511,17 @@ export default function MyAdsList() {
 
 function PromotionTierCard({ title, perk, disabled, slots, onSelect, id, isActive }: { title: string, perk: string, disabled: boolean, slots: string, onSelect: () => void, id: string, isActive?: boolean }) {
     return (
-        <div className={`p-6 rounded-[24px] border-2 flex flex-col items-start gap-4 transition-all ${isActive ? 'border-orange-500 bg-orange-50/50 ring-4 ring-orange-100' :
-            disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-orange-500 hover:bg-orange-50/30'
+        <div className={`p-6 rounded-[24px] border-2 flex flex-col items-start gap-4 transition-all ${isActive ? 'border-[#708238] bg-[#E9E0D4]/50 ring-4 ring-orange-100' :
+            disabled ? 'border-zinc-100 opacity-50 bg-zinc-50' : 'border-zinc-200 hover:border-[#708238] hover:bg-[#E9E0D4]/30'
             }`}>
-            <div className={`p-3 rounded-2xl ${id === 'star' ? 'bg-yellow-100 text-yellow-600' : 'bg-orange-100 text-orange-600'}`}>
+            <div className={`p-3 rounded-2xl ${id === 'star' ? 'bg-yellow-100 text-yellow-600' : 'bg-[#E9E0D4] text-[#708238]'}`}>
                 {id === 'star' ? <Star size={24} /> : <Zap size={24} />}
             </div>
             <div>
                 <div className="flex items-center gap-2 mb-1">
                     <h4 className="text-xl font-black text-black">{title}</h4>
                     {isActive && (
-                        <span className="bg-orange-500 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Current</span>
+                        <span className="bg-[#708238] text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Current</span>
                     )}
                 </div>
                 <p className="text-zinc-500 font-bold text-xs">{perk}</p>
@@ -542,7 +542,7 @@ function PromotionTierCard({ title, perk, disabled, slots, onSelect, id, isActiv
                     </button>
                 </>
             ) : isActive ? (
-                <div className="mt-4 flex items-center gap-2 text-[11px] font-black text-orange-600 uppercase tracking-wider">
+                <div className="mt-4 flex items-center gap-2 text-[11px] font-black text-[#708238] uppercase tracking-wider">
                     <CheckCircle size={12} />
                     Already Active
                 </div>
@@ -555,6 +555,8 @@ function PromotionTierCard({ title, perk, disabled, slots, onSelect, id, isActiv
         </div>
     );
 }
+
+
 
 
 

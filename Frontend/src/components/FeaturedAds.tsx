@@ -33,11 +33,11 @@ export default function FeaturedAds() {
         const rawData = res.data || [];
         const mappedData = rawData.map((d: any) => ({
           id: d.id,
-          price: `₦ ${Number(d.price).toLocaleString()}`,
+          price: `Rs ${Number(d.price).toLocaleString()}`,
           title: d.title,
           desc: d.description || "",
           img: d.image_url || "/assets/images/bgphone.svg",
-          location: d.location || "Nigeria",
+          location: d.location || "Pakistan",
           state: d.state,
           city: d.city,
           views: d.clicks || 0,
@@ -67,17 +67,17 @@ export default function FeaturedAds() {
   return (
     <section className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 pb-20 mt-10 text-center sm:text-left">
       <div className="flex items-center gap-5 mb-6">
-        <h3 className="text-2xl sm:text-3xl font-extrabold text-[#f45c03] uppercase tracking-tight">Featured Ads</h3>
-        <div className="h-0.5 flex-1 bg-[#f45c03] opacity-20 shadow-sm" />
+        <h3 className="text-2xl sm:text-3xl font-extrabold text-[#708238] uppercase tracking-tight">Featured Ads</h3>
+        <div className="h-0.5 flex-1 bg-[#708238] opacity-20 shadow-sm" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 text-left">
         {featured.map((it) => {
           const fav = isFavorite(it.id);
           return (
-            <div key={it.id} className="bg-white rounded-[2rem] border-2 border-[#f45c03]/60 shadow-sm flex flex-col transition-all hover:shadow-md relative overflow-hidden h-full group">
+            <div key={it.id} className="bg-white rounded-2xl border border-[#E9E0D4] p-3.5 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-[#C7A27C]/5 hover:border-[#C7A27C]/30 hover:-translate-y-1.5 relative overflow-hidden h-full group">
               {/* IMAGE SECTION */}
-              <div className="w-full aspect-[1.4/1] relative overflow-hidden shrink-0">
+              <div className="w-full aspect-[1.4/1] relative overflow-hidden rounded-xl shrink-0">
                 <Image
                   src={it.img}
                   alt={it.title}
@@ -87,9 +87,9 @@ export default function FeaturedAds() {
                 
                 {/* VERIFIED BADGE */}
                 {it.isVerified && (
-                  <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-[#10b981] text-white px-3 py-1.5 rounded-full shadow-sm">
+                  <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-[#C7A27C] text-white px-3 py-1.5 rounded-full shadow-sm">
                     <div className="bg-white rounded-full p-0.5">
-                       <svg viewBox="0 0 24 24" fill="none" className="w-2.5 h-2.5 text-[#10b981]" xmlns="http://www.w3.org/2000/svg">
+                       <svg viewBox="0 0 24 24" fill="none" className="w-2.5 h-2.5 text-[#C7A27C]" xmlns="http://www.w3.org/2000/svg">
                          <path d="M5 13L9 17L19 7" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                        </svg>
                     </div>
@@ -120,7 +120,7 @@ export default function FeaturedAds() {
               {/* CONTENT SECTION */}
               <div className="p-3 sm:p-4 flex flex-col flex-1">
                 <div className="flex justify-between items-start">
-                  <span className="text-lg sm:text-xl font-black text-[#f45c03] leading-none">{it.price}</span>
+                  <span className="text-lg sm:text-xl font-black text-[#708238] leading-none">{it.price}</span>
                   <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">{it.condition || "New"}</span>
                 </div>
 
@@ -155,7 +155,7 @@ export default function FeaturedAds() {
       <div className="mt-12 flex justify-center">
         <Link 
           href="/search"
-          className="bg-white border-2 border-[#f45c03] px-10 py-3.5 rounded-full font-black shadow-sm text-[#f45c03] hover:bg-[#f45c03] hover:text-white transition-all text-base tracking-wider uppercase"
+          className="bg-white border-2 border-[#708238] px-10 py-3.5 rounded-full font-black shadow-sm text-[#708238] hover:bg-[#708238] hover:text-white transition-all text-base tracking-wider uppercase"
         >
           View More Promoted Ads
         </Link>
@@ -163,3 +163,5 @@ export default function FeaturedAds() {
     </section>
   );
 }
+
+

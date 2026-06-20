@@ -65,7 +65,7 @@ export default function NotificationsPage() {
         <h1 className="text-lg font-bold text-zinc-900">Notifications</h1>
         <button 
           onClick={handleMarkAllRead}
-          className="text-xs font-bold text-orange-600 hover:text-orange-700"
+          className="text-xs font-bold text-[#708238] hover:text-[#5E6E2F]"
         >
           Mark all read
         </button>
@@ -74,7 +74,7 @@ export default function NotificationsPage() {
       <div className="max-w-2xl mx-auto p-4 sm:p-6">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-             <div className="w-10 h-10 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
+             <div className="w-10 h-10 border-4 border-[#E9E0D4] border-t-orange-600 rounded-full animate-spin"></div>
              <p className="text-zinc-500 mt-4 font-medium">Loading notifications...</p>
           </div>
         ) : notifications.length > 0 ? (
@@ -82,14 +82,14 @@ export default function NotificationsPage() {
             {notifications.map((n) => (
               <div 
                 key={n.id}
-                className={`bg-white rounded-xl border p-4 shadow-sm relative transition-all ${!n.read_at ? "border-orange-200 ring-1 ring-orange-100/50" : "border-zinc-200"}`}
+                className={`bg-white rounded-xl border p-4 shadow-sm relative transition-all ${!n.read_at ? "border-[#E9E0D4] ring-1 ring-orange-100/50" : "border-zinc-200"}`}
               >
-                {!n.read_at && <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 rounded-l-xl" />}
+                {!n.read_at && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#708238] rounded-l-xl" />}
                 <div className="flex justify-between items-start mb-1">
                   <h3 className="font-bold text-zinc-900 text-sm pr-6">{n.title}</h3>
                   <div className="flex gap-2">
                     {!n.read_at && (
-                        <button onClick={() => handleMarkRead(n.id)} className="text-zinc-400 hover:text-orange-600 transition-colors">
+                        <button onClick={() => handleMarkRead(n.id)} className="text-zinc-400 hover:text-[#708238] transition-colors">
                             <CheckCircle size={18} />
                         </button>
                     )}
@@ -106,7 +106,7 @@ export default function NotificationsPage() {
                     {n.link && (
                         <button 
                             onClick={() => router.push(n.link!)}
-                            className="bg-orange-50 text-orange-600 text-[11px] font-bold px-3 py-1.5 rounded-lg hover:bg-orange-100 transition-colors"
+                            className="bg-[#E9E0D4] text-[#708238] text-[11px] font-bold px-3 py-1.5 rounded-lg hover:bg-[#E9E0D4] transition-colors"
                         >
                             View Details
                         </button>
@@ -128,3 +128,5 @@ export default function NotificationsPage() {
     </div>
   );
 }
+
+

@@ -38,7 +38,7 @@ async function getProductAndSeller(id: string) {
       desc: d.description || '',
       sellerId: String(d.userId),
       sellerName: seller.name || "Seller",
-      price: `₦${Number(d.price).toLocaleString()}`,
+      price: `Rs ${Number(d.price).toLocaleString()}`,
       priceValue: Number(d.price),
       sellerRating: seller.rating || 2.9,
       sellerMemberSince: memberSince,
@@ -46,7 +46,7 @@ async function getProductAndSeller(id: string) {
       sellerResponseTime: seller.responseTime || "Within 1 hour",
       images,
       condition: d.condition || 'New',
-      location: d.location || d.city || 'Nigeria',
+      location: d.location || d.city || 'Pakistan',
       brand: d.brand,
       model: d.model,
       color: d.color,
@@ -83,18 +83,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   if (product) {
     return {
-      title: `${product.title} | 234 Deals`,
-      description: product.desc?.slice(0, 160) || `Buy ${product.title} on 234 Deals. Best prices for ${product.subcategory || "items"} in Nigeria.`,
+      title: `${product.title} | 92Dealz`,
+      description: product.desc?.slice(0, 160) || `Buy ${product.title} on 92Dealz. Best prices for ${product.subcategory || "items"} in Pakistan.`,
       openGraph: {
         title: product.title,
         description: product.desc?.slice(0, 160),
-        images: [product.images[0] || "/234dealslogo.svg"],
+        images: [product.images[0] || "/92dealzlogo.svg"],
         type: "article",
       },
     };
   }
   
-  return { title: "Product Details | 234 Deals" };
+  return { title: "Product Details | 92Dealz" };
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -110,8 +110,8 @@ export default async function ProductPage({ params }: Props) {
     "sku": product.id,
     "offers": {
       "@type": "Offer",
-      "url": `https://234deals.com/product/${id}`,
-      "priceCurrency": "NGN",
+      "url": `https://92dealz.com/product/${id}`,
+      "priceCurrency": "PKR",
       "price": product.priceValue,
       "availability": product.status === 'active' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       "seller": {

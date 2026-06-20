@@ -85,7 +85,7 @@ export default function SellerPage({ params }: Props) {
     return () => { active = false; };
   }, [id]);
 
-  if (loading) return <div className="p-20 text-center font-bold text-orange-600 text-2xl">Loading profile...</div>;
+  if (loading) return <div className="p-20 text-center font-bold text-[#708238] text-2xl">Loading profile...</div>;
   if (!seller) return <div className="p-20 text-center font-bold text-red-600 text-2xl">Seller not found.</div>;
 
   const StarRating = ({
@@ -174,7 +174,7 @@ export default function SellerPage({ params }: Props) {
   );
 
   const FireIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="#f97316">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="#708238">
       <path d="M12 2c0 0-5 4-5 9a5 5 0 0010 0c0-5-5-9-5-9z" />
     </svg>
   );
@@ -245,7 +245,7 @@ export default function SellerPage({ params }: Props) {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
-                <span style={{ fontSize: 32, fontWeight: 900, color: "#f97316" }}>
+                <span style={{ fontSize: 32, fontWeight: 900, color: "#708238" }}>
                   {seller.name.slice(0, 1).toUpperCase()}
                 </span>
               )}
@@ -255,7 +255,7 @@ export default function SellerPage({ params }: Props) {
             <div style={{ flex: 1 }}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <div>
-                  <h1 className="text-2xl font-extrabold text-orange-600 flex items-center justify-center md:justify-start gap-2 m-0">
+                  <h1 className="text-2xl font-extrabold text-[#708238] flex items-center justify-center md:justify-start gap-2 m-0">
                     {seller.name}
                     {seller.country_code && <span className="text-2xl" title={seller.country_name}>{getFlagEmoji(seller.country_code)}</span>}
                     <span
@@ -424,7 +424,7 @@ export default function SellerPage({ params }: Props) {
                         <div style={{ padding: 12 }}>
                           <div
                             style={{
-                              color: "#f97316",
+                              color: "#708238",
                               fontWeight: 800,
                               fontSize: 15,
                             }}
@@ -473,7 +473,7 @@ export default function SellerPage({ params }: Props) {
                                 display: "flex",
                                 alignItems: "center",
                                 gap: 2,
-                                color: "#f97316",
+                                color: "#708238",
                                 fontSize: 11,
                                 fontWeight: 700,
                               }}
@@ -503,7 +503,7 @@ export default function SellerPage({ params }: Props) {
                     style={{
                       width: "100%",
                       marginTop: 18,
-                      background: "#f97316",
+                      background: "#708238",
                       color: "#fff",
                       border: "none",
                       borderRadius: 8,
@@ -633,7 +633,7 @@ export default function SellerPage({ params }: Props) {
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#f97316",
+                  color: "#708238",
                   fontWeight: 600,
                   fontSize: 14,
                   cursor: "pointer",
@@ -663,7 +663,7 @@ export default function SellerPage({ params }: Props) {
                 style={{
                   fontWeight: 800,
                   fontSize: 20,
-                  color: "#f97316",
+                  color: "#708238",
                   margin: "0 0 8px",
                 }}
               >
@@ -683,7 +683,7 @@ export default function SellerPage({ params }: Props) {
                         }
                         window.location.href = `tel:${seller.phone}`;
                       }}
-                      className="w-full bg-[#f97316] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-orange-700 transition"
+                      className="w-full bg-[#708238] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-[#5E6E2F] transition"
                     >
                       <PhoneIcon /> Call Seller
                     </button>
@@ -884,7 +884,7 @@ export default function SellerPage({ params }: Props) {
                   "Meet in safe, public locations",
                   "Inspect item before payment",
                   "Never pay in advance",
-                  "Use 234Deals chat for communication",
+                  "Use 92Dealz chat for communication",
                 ].map((tip) => (
                   <div
                     key={tip}
@@ -920,25 +920,25 @@ export default function SellerPage({ params }: Props) {
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={() => window.open(`https://www.instagram.com/`, '_blank')}
-                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-[#708238] transition-all shadow-md active:scale-90"
                   >
                     <Instagram size={20} />
                   </button>
                   <button 
                     onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`, '_blank')}
-                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-[#708238] transition-all shadow-md active:scale-90"
                   >
                     <Facebook size={20} fill="currentColor" />
                   </button>
                   <button 
                     onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`, '_blank')}
-                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-[#708238] transition-all shadow-md active:scale-90"
                   >
                     <Twitter size={20} fill="currentColor" />
                   </button>
                   <button 
                     onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`, '_blank')}
-                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-orange-600 transition-all shadow-md active:scale-90"
+                    className="w-10 h-10 rounded-full bg-[#ff7a2d] flex items-center justify-center text-white hover:bg-[#708238] transition-all shadow-md active:scale-90"
                   >
                     <MessageCircle size={20} fill="currentColor" />
                   </button>

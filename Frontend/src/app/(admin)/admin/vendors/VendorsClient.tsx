@@ -99,7 +99,7 @@ export default function VendorsManagement() {
       <div className="bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center p-20">
-            <Loader2 className="animate-spin text-orange-500" size={32} />
+            <Loader2 className="animate-spin text-[#708238]" size={32} />
           </div>
         ) : filteredVendors.length === 0 ? (
           <div className="p-12 text-center text-zinc-500">
@@ -125,7 +125,7 @@ export default function VendorsManagement() {
                   <tr key={vendor.id} className="hover:bg-zinc-50/50 transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 font-bold">
+                        <div className="w-10 h-10 rounded-lg bg-[#E9E0D4] flex items-center justify-center text-[#708238] font-bold">
                           {vendor.businessName ? vendor.businessName[0].toUpperCase() : vendor.name[0].toUpperCase()}
                         </div>
                         <div>
@@ -148,7 +148,7 @@ export default function VendorsManagement() {
                         )}
                         {vendor.basic_plan_expires_at && (
                           <div className="flex items-center gap-1.5">
-                            <span className="px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 text-[10px] font-black uppercase">Featured</span>
+                            <span className="px-1.5 py-0.5 rounded bg-[#E9E0D4] text-[#5E6E2F] text-[10px] font-black uppercase">Featured</span>
                             <span className="text-[10px] text-zinc-400 font-bold">{new Date(vendor.basic_plan_expires_at).toLocaleDateString()}</span>
                           </div>
                         )}
@@ -167,7 +167,7 @@ export default function VendorsManagement() {
                         </span>
                       )}
                       {vendor.status === "active" && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FFFDF9]/30 text-emerald-700 border border-emerald-200">
                           <CheckCircle size={12} /> Active
                         </span>
                       )}
@@ -181,7 +181,7 @@ export default function VendorsManagement() {
                       {vendor.status === "pending" || vendor.status === "rejected" ? (
                         <button
                           onClick={() => handleUpdateStatus(vendor.id, "active")}
-                          className="px-3 py-1.5 bg-emerald-50 text-emerald-600 font-medium rounded-lg text-xs hover:bg-emerald-100 transition border border-emerald-200"
+                          className="px-3 py-1.5 bg-[#FFFDF9]/30 text-emerald-600 font-medium rounded-lg text-xs hover:bg-[#FFFDF9] transition border border-emerald-200"
                         >
                           Approve
                         </button>
@@ -221,3 +221,5 @@ export default function VendorsManagement() {
     </div>
   );
 }
+
+

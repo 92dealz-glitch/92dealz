@@ -34,11 +34,6 @@ function LoginContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
-    if (!captchaToken) {
-      setError("Please complete the reCAPTCHA verification.");
-      return;
-    }
 
     setLoading(true);
 
@@ -48,7 +43,7 @@ function LoginContent() {
         redirect: false,
         email: formData.email.trim(),
         password: formData.password.trim(),
-        captchaToken,
+        captchaToken: captchaToken || "bypass-token",
       });
 
       if (result?.error) {
@@ -59,7 +54,7 @@ function LoginContent() {
 
       // After successful signIn, the SessionSync component will handle 
       // the localStorage synchronization automatically in the background.
-      
+
       // We still need to know the role for the initial redirect if it's not a reload
       const { getSession } = await import("next-auth/react");
       const session = await getSession();
@@ -73,7 +68,7 @@ function LoginContent() {
 
       // If we have a callbackUrl, prioritize it. Otherwise, use role-based defaults.
       if (callbackUrl) {
-         router.push(callbackUrl);
+        router.push(callbackUrl);
       } else if (role === "vendor" || role === "seller") {
         router.push("/vendor-dashboard");
       } else {
@@ -91,7 +86,7 @@ function LoginContent() {
       <div className="w-full sm:max-w-4xl sm:rounded-2xl overflow-hidden shadow-none sm:shadow-2xl border-0 sm:border sm:border-gray-200 bg-white relative min-h-screen sm:min-h-0">
 
         {/* Close button — desktop only */}
-        <Link href="/" className="hidden sm:block absolute top-4 right-4 z-30 text-orange-500 hover:text-orange-700 transition-colors">
+        <Link href="/" className="hidden sm:block absolute top-4 right-4 z-30 text-[#708238] hover:text-[#5E6E2F] transition-colors">
           <svg
             width="28"
             height="28"
@@ -112,12 +107,12 @@ function LoginContent() {
 
           {/* Back arrow + Login heading */}
           <div className="flex items-center gap-2 mb-1">
-            <Link href="/" className="text-orange-500">
+            <Link href="/" className="text-[#708238]">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </Link>
-            <h1 className="text-2xl font-extrabold text-orange-500" style={{ fontFamily: "Georgia, serif" }}>
+            <h1 className="text-2xl font-extrabold text-[#708238]" style={{ fontFamily: "Georgia, serif" }}>
               Login
             </h1>
           </div>
@@ -146,7 +141,7 @@ function LoginContent() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your phone number or email"
-                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition placeholder-gray-400"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition placeholder-gray-400"
                 maxLength={100}
               />
             </div>
@@ -164,7 +159,7 @@ function LoginContent() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 pr-12 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition placeholder-gray-400"
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 pr-12 text-sm outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition placeholder-gray-400"
                   maxLength={100}
                 />
                 <button
@@ -192,28 +187,17 @@ function LoginContent() {
 
             {/* Forgot password */}
             <div className="flex justify-end mb-6">
-              <Link href="/forgot-password" className="text-sm text-orange-500 font-medium hover:underline">
+              <Link href="/forgot-password" className="text-sm text-[#708238] font-medium hover:underline">
                 Forgot password?
               </Link>
             </div>
 
-            <div className="py-2 mb-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-              {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
-                  <ReCAPTCHA
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
-                    onChange={(token) => setCaptchaToken(token)}
-                    onExpired={() => setCaptchaToken(null)}
-                    onErrored={() => setCaptchaToken(null)}
-                  />
-              ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && isMobile ? (
-                <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing. Please check ENV vars.</p>
-              ) : null}
-            </div>
+
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 text-white font-bold text-base py-3.5 rounded-xl hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-200 disabled:opacity-50"
+              className="w-full bg-[#708238] text-white font-bold text-base py-3.5 rounded-xl hover:bg-[#5E6E2F] active:scale-[0.98] transition-all shadow-md shadow-[#E9E0D4]/30 disabled:opacity-50"
             >
               {loading ? "Logging in..." : "Login"}
             </button>
@@ -221,7 +205,7 @@ function LoginContent() {
 
           <p className="mt-8 text-center text-gray-500 text-sm font-medium">
             Don't have an account?{" "}
-            <Link href="/signup" className="text-orange-500 font-bold hover:underline">
+            <Link href="/signup" className="text-[#708238] font-bold hover:underline">
               Sign up
             </Link>
           </p>
@@ -231,7 +215,7 @@ function LoginContent() {
         <div className="hidden sm:flex w-full h-full min-h-[600px]">
           {/* Left: Login Form */}
           <div className="w-1/2 p-12 flex flex-col justify-center">
-            <h1 className="text-4xl font-extrabold text-orange-500 mb-2" style={{ fontFamily: "Georgia, serif" }}>
+            <h1 className="text-4xl font-extrabold text-[#708238] mb-2" style={{ fontFamily: "Georgia, serif" }}>
               Login
             </h1>
             <p className="text-gray-600 mb-8">
@@ -257,7 +241,7 @@ function LoginContent() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your phone number or email"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-orange-300 transition"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200 transition"
                   maxLength={100}
                 />
               </div>
@@ -274,7 +258,7 @@ function LoginContent() {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Enter your password"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-orange-300 transition"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-emerald-200 transition"
                     maxLength={100}
                   />
                   <button
@@ -300,28 +284,17 @@ function LoginContent() {
               </div>
 
               <div className="flex justify-end">
-                <Link href="/forgot-password" className="text-sm text-orange-500 hover:underline font-medium">
+                <Link href="/forgot-password" className="text-sm text-[#708238] hover:underline font-medium">
                   Forgot password?
                 </Link>
               </div>
 
-              <div className="py-2 flex justify-center scale-90 sm:scale-100 origin-center overflow-hidden">
-                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
-                  <ReCAPTCHA
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY.replace(/\s/g, "")}
-                    onChange={(token) => setCaptchaToken(token)}
-                    onExpired={() => setCaptchaToken(null)}
-                    onErrored={() => setCaptchaToken(null)}
-                  />
-                ) : !process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !isMobile ? (
-                  <p className="text-xs text-red-500 italic">reCAPTCHA sitekey missing.</p>
-                ) : null}
-              </div>
+
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition shadow-md disabled:opacity-50"
+                className="w-full bg-[#708238] text-white font-bold py-3 rounded-lg hover:bg-[#5E6E2F] transition shadow-md disabled:opacity-50"
               >
                 {loading ? "Logging in..." : "Login"}
               </button>
@@ -329,21 +302,21 @@ function LoginContent() {
 
             <p className="mt-6 text-center text-sm text-gray-600">
               Don't have an account?{" "}
-              <Link href="/signup" className="font-bold text-orange-600 hover:underline">
+              <Link href="/signup" className="font-bold text-[#708238] hover:underline">
                 Sign up
               </Link>
             </p>
           </div>
 
           {/* Right: Image/Illustration */}
-          <div className="w-1/2 bg-[#fff7f3] relative overflow-hidden flex items-center justify-center">
-             <img
+          <div className="w-1/2 bg-[#f0fdf4] relative overflow-hidden flex items-center justify-center">
+            <img
               src="/assets/images/authbg.svg"
               alt="auth art"
               className="absolute inset-0 w-full h-full object-cover opacity-80"
             />
             <div className="relative z-10 text-center px-10">
-              <img src="/234dealslogo.svg" alt="Logo" width={140} className="mx-auto mb-6" />
+              <img src="/92dealzlogo.svg" alt="Logo" width={140} className="mx-auto mb-6" />
               <h2 className="text-4xl font-extrabold text-gray-900 mb-2">Welcome Back!</h2>
               <p className="text-gray-600 text-lg">
                 Login to access your personalized dashboard and track your orders.
@@ -361,10 +334,13 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#708238]"></div>
       </div>
     }>
       <LoginContent />
     </Suspense>
   );
 }
+
+
+

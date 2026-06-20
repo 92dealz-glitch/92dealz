@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin-dashboard/', '/vendor-dashboard/', '/api/'],
     },
-    sitemap: 'https://234deals.vercel.app/sitemap.xml',
+    sitemap: 'https://92dealz.vercel.app/sitemap.xml',
   }
 }
+

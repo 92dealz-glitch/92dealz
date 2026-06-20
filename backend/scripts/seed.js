@@ -10,7 +10,8 @@ const Deal = require('../models/Deal');
 
 async function main() {
   await sequelize.authenticate();
-  await sequelize.sync({ alter: true });
+  const isSqlite = sequelize.options.dialect === 'sqlite';
+  await sequelize.sync({ alter: !isSqlite });
 
   const categories = [
     {
@@ -90,7 +91,12 @@ async function main() {
       name: 'Vehicle',
       slug: 'vehicle',
       icon: '/assets/images/car.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Cars", items: ["Toyota", "Honda", "Mercedes-Benz", "Lexus"] },
+          { heading: "Other", items: ["Buses", "Motorcycles", "Trucks", "Car Parts"] }
+        ]
+      },
       specifications_template: [
         { label: "Condition", type: "select", options: ["Brand New", "Foreign Used (Tokunbo)", "Locally Used"] },
         { label: "Make/Brand", type: "text", placeholder: "e.g. Toyota, Honda, Mercedes-Benz" },
@@ -110,7 +116,13 @@ async function main() {
       name: 'Properties',
       slug: 'properties',
       icon: '/assets/images/house.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Residential", items: ["Apartments", "Houses", "Lands", "Rooms"] },
+          { heading: "Commercial", items: ["Offices", "Shops", "Warehouses", "Event Centers"] },
+          { heading: "Short Let", items: ["Apartments", "Hotels", "Guest Houses"] }
+        ]
+      },
       specifications_template: [
         { label: "Property Type", type: "select", options: ["House", "Apartment/Flat", "Land", "Commercial Space", "Office", "Warehouse"] },
         { label: "Bedrooms", type: "select", options: ["0 (Studio)", "1", "2", "3", "4", "5", "6+"] },
@@ -127,8 +139,10 @@ async function main() {
       icon: '/assets/images/woman.svg',
       mega_menu: {
         columns: [
-          { heading: "BEAUTY", items: ["Makeup", "Skincare", "Fragrances"] },
-          { heading: "HEALTH", items: ["Supplements", "Medical Supplies", "Wellness"] },
+          { heading: "Skin Care", items: ["Body Creams", "Face Serums", "Sunscreen", "Cleansers"] },
+          { heading: "Hair Care", items: ["Shampoos", "Conditioners", "Hair Oils", "Wigs & Weaves"] },
+          { heading: "Makeup", items: ["Foundations", "Lipsticks", "Eye Palettes", "Makeup Tools"] },
+          { heading: "Fragrances", items: ["Men's Perfumes", "Women's Perfumes", "Unisex Scents"] }
         ]
       },
       specifications_template: [
@@ -144,7 +158,13 @@ async function main() {
       name: 'Furniture & appliances',
       slug: 'furniture',
       icon: '/assets/images/furniture.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Living Room", items: ["Sofas", "TV Units", "Chairs"] },
+          { heading: "Kitchen", items: ["Fridges", "Microwaves", "Gas Cookers"] },
+          { heading: "Bedroom", items: ["Beds", "Wardrobes", "Mattresses"] }
+        ]
+      },
       specifications_template: [
         { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good", "Refurbished"] },
         { label: "Brand", type: "text", placeholder: "e.g. LG, Samsung, Sony" },
@@ -159,7 +179,13 @@ async function main() {
       name: 'Babies & kids',
       slug: 'babies',
       icon: '/assets/images/girl.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Clothing", items: ["Baby Wear", "Boys Clothing", "Girls Clothing"] },
+          { heading: "Essentials", items: ["Diapers", "Baby Food", "Feeding Bottles"] },
+          { heading: "Toys", items: ["Educational", "Dolls", "Action Figures"] }
+        ]
+      },
       specifications_template: [
         { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good"] },
         { label: "Brand", type: "text", placeholder: "e.g. Mothercare, Pampers" },
@@ -172,7 +198,13 @@ async function main() {
       name: 'Agriculture & food',
       slug: 'agriculture',
       icon: '/assets/images/foodbaasket.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Farm Produce", items: ["Fruit", "Vegetables", "Grains", "Livestock"] },
+          { heading: "Equipment", items: ["Tractors", "Irrigation", "Trailers"] },
+          { heading: "Feeds", items: ["Poultry Feed", "Fish Feed", "Cattle Feed"] }
+        ]
+      },
       specifications_template: [
         { label: "Category Type", type: "select", options: ["Crops & Seeds", "Livestock & Poultry", "Farm Machinery", "Feeds & Supplements", "Fertilizers/Chemicals", "Processed Food"] },
         { label: "Quantity/Weight", type: "text", placeholder: "e.g. 50 kg, 100 birds, 1 Ton" },
@@ -185,7 +217,13 @@ async function main() {
       name: 'Services',
       slug: 'services',
       icon: '/assets/images/engineer.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Home Services", items: ["Cleaning", "Plumbing", "Electrical", "Painting"] },
+          { heading: "Business", items: ["Consultivity", "Legal", "Design", "Marketing"] },
+          { heading: "Personal", items: ["Tutors", "Personal Trainers", "Event Planning"] }
+        ]
+      },
       specifications_template: [
         { label: "Service Area", type: "select", options: ["Consulting", "Cleaning", "Catering", "Event Planning", "Digital/IT Services", "Educational/Tutors", "Legal", "Handyman/Repairs", "Beauty/Spa"] },
         { label: "Delivery Format", type: "select", options: ["Remote/Online", "On-site/In-person", "Hybrid"] },
@@ -200,7 +238,7 @@ async function main() {
       mega_menu: {
         columns: [
           { heading: "TV & HOME THEATER", items: ["LED TVs", "Smart TVs", "Projectors"] },
-          { heading: "AUDIO", items: ["Speakers", "Headphones", "Home Audio"] },
+          { heading: "AUDIO", items: ["Speakers", "Headphones", "Home Audio"] }
         ]
       },
       specifications_template: [
@@ -218,7 +256,13 @@ async function main() {
       name: 'Commercial equipment',
       slug: 'commercial',
       icon: '/assets/images/equipment.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Industrial", items: ["Heavy Machinery", "Manufacturing", "Power Tools"] },
+          { heading: "Office", items: ["Office Furniture", "Printers", "Stationery"] },
+          { heading: "Trade", items: ["Construction", "Woodworking", "Metalworking"] }
+        ]
+      },
       specifications_template: [
         { label: "Condition", type: "select", options: ["New", "Used - Like New", "Used - Good", "Refurbished"] },
         { label: "Brand", type: "text", placeholder: "e.g. Caterpillar, Mikano, Siemens" },
@@ -232,7 +276,13 @@ async function main() {
       name: 'Repair and construction',
       slug: 'repair',
       icon: '/assets/images/equipmentbaket.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Materials", items: ["Cement", "Bricks", "Tiles", "Roofing"] },
+          { heading: "Tools", items: ["Power Tools", "Hand Tools", "Safety Gear"] },
+          { heading: "Services", items: ["Plumbing", "Electrical", "Carpentry"] }
+        ]
+      },
       specifications_template: [
         { label: "Condition", type: "select", options: ["New", "Used", "Refurbished"] },
         { label: "Brand", type: "text", placeholder: "e.g. Bosch, Makita" },
@@ -245,7 +295,12 @@ async function main() {
       name: 'Pets and animals',
       slug: 'pets',
       icon: '/assets/images/pet.svg',
-      mega_menu: { columns: [] },
+      mega_menu: {
+        columns: [
+          { heading: "Pets", items: ["Dogs", "Cats", "Birds", "Fish"] },
+          { heading: "Supplies", items: ["Pet Food", "Cages", "Grooming Kits"] }
+        ]
+      },
       specifications_template: [
         { label: "Animal Category", type: "select", options: ["Dogs", "Cats", "Birds", "Fish", "Reptiles", "Farm Animals/Livestock"] },
         { label: "Breed/Species", type: "text", placeholder: "e.g. German Shepherd, Persian Cat" },

@@ -90,7 +90,7 @@ export default function VerificationPage() {
         }
     };
 
-    if (loading) return <div className="flex items-center justify-center p-20"><Loader2 className="animate-spin text-orange-600" size={40} /></div>;
+    if (loading) return <div className="flex items-center justify-center p-20"><Loader2 className="animate-spin text-[#708238]" size={40} /></div>;
 
     const vStatus = status?.verification_status || 'none';
     const isVerified = status?.is_verified;
@@ -103,7 +103,7 @@ export default function VerificationPage() {
             <div className="bg-white rounded-3xl border border-zinc-200 shadow-xl shadow-zinc-100 overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-8">
                     <div className={`px-4 py-1.5 rounded-full text-[10px] font-black text-white shadow-lg ${
-                        (isVerified && vStatus === 'approved') ? 'bg-emerald-500 shadow-emerald-100' : 
+                        (isVerified && vStatus === 'approved') ? 'bg-[#FFFDF9]/300 shadow-[#E9E0D4]/30' : 
                         vStatus === 'pending' ? 'bg-amber-500 shadow-amber-100' : 
                         vStatus === 'rejected' ? 'bg-red-500 shadow-red-100' : 'bg-zinc-500 shadow-zinc-100'
                     }`}>
@@ -122,28 +122,28 @@ export default function VerificationPage() {
                                     <div className="space-y-4">
                                         <label className="text-zinc-900 font-bold text-xs pl-1">Select Identity Type</label>
                                         <div className="relative group">
-                                            <select className="appearance-none w-full border-2 border-zinc-100 rounded-2xl p-5 text-zinc-900 font-black text-sm focus:outline-none focus:border-[#f45c03] transition-all bg-zinc-50 group-hover:bg-white">
+                                            <select className="appearance-none w-full border-2 border-zinc-100 rounded-2xl p-5 text-zinc-900 font-black text-sm focus:outline-none focus:border-[#708238] transition-all bg-zinc-50 group-hover:bg-white">
                                                 <option>NIN (Slip or Card)</option>
                                                 <option>International Passport</option>
                                                 <option>Driver&apos;s License</option>
                                                 <option>Voter&apos;s Card</option>
                                             </select>
-                                            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 group-hover:text-orange-500 transition-colors">
+                                            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 group-hover:text-[#708238] transition-colors">
                                                 <ChevronDownIcon />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <label className="aspect-[1.8/1] rounded-3xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-300 hover:text-[#f45c03] group relative overflow-hidden bg-zinc-50/50">
+                                    <label className="aspect-[1.8/1] rounded-3xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[#708238] hover:bg-[#E9E0D4] transition-all text-zinc-300 hover:text-[#708238] group relative overflow-hidden bg-zinc-50/50">
                                         {uploading ? (
                                             <div className="flex flex-col items-center gap-3">
-                                                <Loader2 className="animate-spin text-orange-600" size={40} />
-                                                <span className="text-[10px] font-bold text-orange-600 animate-pulse">Scanning Document...</span>
+                                                <Loader2 className="animate-spin text-[#708238]" size={40} />
+                                                <span className="text-[10px] font-bold text-[#708238] animate-pulse">Scanning Document...</span>
                                             </div>
                                         ) : (
                                             <>
                                                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                                                     <Plus size={32} className="text-zinc-400 group-hover:text-[#f45c03]" />
+                                                     <Plus size={32} className="text-zinc-400 group-hover:text-[#708238]" />
                                                 </div>
                                                 <span className="text-[10px] font-black uppercase tracking-widest">Upload Front View</span>
                                             </>
@@ -162,7 +162,7 @@ export default function VerificationPage() {
                             <div className="bg-zinc-900 p-10 rounded-[40px] border border-white/10 flex flex-col md:flex-row items-center gap-8 shadow-2xl relative overflow-hidden group">
                                 <div className="absolute -top-20 -right-20 w-60 h-60 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors duration-700" />
                                 { (isVerified && vStatus === 'approved') ? (
-                                    <div className="w-20 h-20 bg-emerald-500 text-white rounded-[24px] flex items-center justify-center shadow-xl shadow-emerald-500/20 rotate-6">
+                                    <div className="w-20 h-20 bg-[#FFFDF9]/300 text-white rounded-[24px] flex items-center justify-center shadow-xl shadow-emerald-500/20 rotate-6">
                                         <CheckCircle2 size={40} />
                                     </div>
                                 ) : (
@@ -191,11 +191,11 @@ export default function VerificationPage() {
                 <div className="bg-white rounded-3xl border border-zinc-200 p-8 lg:p-12 shadow-xl shadow-zinc-100/50 flex flex-col justify-between group">
                     <div>
                         <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 bg-orange-100 text-[#f45c03] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                            <div className="w-12 h-12 bg-[#E9E0D4] text-[#708238] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
                                 <Phone size={24} />
                             </div>
                             <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${
-                                isPhoneVerified ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
+                                isPhoneVerified ? 'bg-[#FFFDF9] text-emerald-600' : 'bg-amber-100 text-amber-600'
                             }`}>
                                 {isPhoneVerified ? 'FULLY SECURED' : 'UNVERIFIED'}
                             </span>
@@ -211,7 +211,7 @@ export default function VerificationPage() {
                                 </div>
 
                                 {isPhoneVerified ? (
-                                    <div className="flex items-center gap-3 text-emerald-600 bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/50">
+                                    <div className="flex items-center gap-3 text-emerald-600 bg-[#FFFDF9]/30/50 p-4 rounded-xl border border-emerald-100/50">
                                         <ShieldCheck size={20} />
                                         <span className="text-[10px] font-black uppercase tracking-widest">Phone verified successfully</span>
                                     </div>
@@ -219,7 +219,7 @@ export default function VerificationPage() {
                                     <button 
                                         disabled={sendingOtp || !status?.phone}
                                         onClick={handleSendPhoneOtp}
-                                        className="w-full bg-[#f45c03] text-white py-4 rounded-2xl font-bold text-xs hover:bg-[#f45c03] shadow-lg shadow-orange-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                        className="w-full bg-[#708238] text-white py-4 rounded-2xl font-bold text-xs hover:bg-[#708238] shadow-lg shadow-[#E9E0D4] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
                                         {sendingOtp ? <Loader2 className="animate-spin" size={16} /> : <ArrowRight size={16} />}
                                         Verify This Number
@@ -228,17 +228,17 @@ export default function VerificationPage() {
                             </div>
                         ) : (
                             <div className="space-y-6 animate-in zoom-in-95 duration-200">
-                                <div className="bg-orange-50 p-5 rounded-2xl border border-orange-100 relative">
-                                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-3 pl-1">Enter 6-Digit Code</p>
+                                <div className="bg-[#E9E0D4] p-5 rounded-2xl border border-[#E9E0D4]/30 relative">
+                                    <p className="text-[10px] font-black text-[#708238] uppercase tracking-widest mb-3 pl-1">Enter 6-Digit Code</p>
                                     <input 
                                         type="text" 
                                         maxLength={6}
                                         value={otp}
                                         onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                                         placeholder="0 0 0 0 0 0"
-                                        className="w-full bg-transparent border-none outline-none text-2xl font-black tracking-[1em] text-center text-[#f45c03] placeholder:text-orange-200"
+                                        className="w-full bg-transparent border-none outline-none text-2xl font-black tracking-[1em] text-center text-[#708238] placeholder:text-orange-200"
                                     />
-                                    <button onClick={() => setShowOtpInput(false)} className="absolute top-2 right-2 p-1 text-orange-300 hover:text-orange-600 transition-colors">
+                                    <button onClick={() => setShowOtpInput(false)} className="absolute top-2 right-2 p-1 text-orange-300 hover:text-[#708238] transition-colors">
                                         <X size={16} />
                                     </button>
                                 </div>
@@ -258,10 +258,10 @@ export default function VerificationPage() {
                 <div className="bg-white rounded-3xl border border-zinc-200 p-8 lg:p-12 shadow-xl shadow-zinc-100/50 flex flex-col justify-between opacity-80 border-dashed">
                     <div>
                         <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center">
+                            <div className="w-12 h-12 bg-[#FFFDF9] text-emerald-600 rounded-2xl flex items-center justify-center">
                                 <ShieldCheck size={24} />
                             </div>
-                            <span className="bg-emerald-100 text-emerald-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm shadow-emerald-50">
+                            <span className="bg-[#FFFDF9] text-emerald-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm shadow-emerald-50">
                                 {isEmailVerified ? 'LOCKED & VERIFIED' : 'PENDING'}
                             </span>
                         </div>
@@ -288,3 +288,5 @@ export default function VerificationPage() {
 function ChevronDownIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
+
+

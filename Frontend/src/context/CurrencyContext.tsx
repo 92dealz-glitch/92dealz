@@ -2,20 +2,20 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { API_BASE } from "@/services/apiClient";
 
-type Currency = "NGN" | "USD" | "CNY";
+type Currency = "PKR" | "USD" | "CNY";
 
 interface CurrencyContextType {
   currency: Currency;
   setCurrency: (c: Currency) => void;
   rates: Record<string, number>;
-  formatPrice: (priceNgn: number) => string;
+  formatPrice: (pricePkr: number) => string;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
-  const [currency, setCurrencyState] = useState<Currency>("NGN");
-  const [rates, setRates] = useState<Record<string, number>>({ USD: 1, NGN: 1600, CNY: 7.2 });
+  const [currency, setCurrencyState] = useState<Currency>("PKR");
+  const [rates, setRates] = useState<Record<string, number>>({ USD: 1, PKR: 280, CNY: 7.2 });
 
   useEffect(() => {
     // 1. Fetch Rates
@@ -43,8 +43,8 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
           
           // Logic based on phone number prefix
           const phone = String(user.phone || "");
-          if (phone.startsWith("+234") || phone.startsWith("234")) {
-            setCurrencyState("NGN");
+          if (phone.startsWith("+92") || phone.startsWith("92")) {
+            setCurrencyState("PKR");
             return;
           } else if (phone.startsWith("+86") || phone.startsWith("86")) {
             setCurrencyState("CNY");
@@ -57,7 +57,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Default for Guests
-      setCurrencyState("NGN");
+      setCurrencyState("PKR");
     }
   }, []);
 
@@ -76,15 +76,15 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const formatPrice = (priceNgn: number) => {
-    const usdValue = priceNgn / rates.NGN;
+  const formatPrice = (pricePkr: number) => {
+    const usdValue = pricePkr / rates.PKR;
     const converted = usdValue * (rates[currency] || 1);
 
-    const formatter = new Intl.NumberFormat(currency === "NGN" ? "en-NG" : currency === "CNY" ? "zh-CN" : "en-US", {
+    const formatter = new Intl.NumberFormat(currency === "PKR" ? "ur-PK" : currency === "CNY" ? "zh-CN" : "en-US", {
       style: "currency",
       currency: currency,
-      minimumFractionDigits: currency === "NGN" ? 0 : 2,
-      maximumFractionDigits: currency === "NGN" ? 0 : 2,
+      minimumFractionDigits: currency === "PKR" ? 0 : 2,
+      maximumFractionDigits: currency === "PKR" ? 0 : 2,
     });
 
     return formatter.format(converted);
@@ -102,3 +102,5 @@ export const useCurrency = () => {
   if (!context) throw new Error("useCurrency must be used within a CurrencyProvider");
   return context;
 };
+
+

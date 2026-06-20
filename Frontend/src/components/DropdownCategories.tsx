@@ -44,7 +44,7 @@ export default function DropdownCategories({ className, onSelect }: { className?
               <div className="text-sm font-medium text-zinc-800">{c.title}</div>
             </div>
 
-            <div className="text-orange-500">
+            <div className="text-[#708238]">
               <ChevronRight size={18} />
             </div>
           </button>
@@ -53,3 +53,5 @@ export default function DropdownCategories({ className, onSelect }: { className?
     </div>
   );
 }
+
+

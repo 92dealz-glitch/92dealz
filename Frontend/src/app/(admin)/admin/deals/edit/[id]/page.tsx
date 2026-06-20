@@ -69,7 +69,7 @@ export default function EditDealPage() {
 
       <Link 
         href="/admin/deals" 
-        className="inline-flex items-center gap-2 px-4 py-2 border border-orange-500 text-orange-600 rounded-xl text-sm font-black hover:bg-orange-50 transition-all active:scale-95"
+        className="inline-flex items-center gap-2 px-4 py-2 border border-[#708238] text-[#708238] rounded-xl text-sm font-black hover:bg-orange-50 transition-all active:scale-95"
       >
         <ChevronLeft size={18} />
         BACK TO TABLE

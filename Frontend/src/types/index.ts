@@ -11,3 +11,5 @@ export interface User {
   is_phone_verified?: boolean;
   is_email_verified?: boolean;
 }
+
+

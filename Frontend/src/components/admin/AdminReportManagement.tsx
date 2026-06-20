@@ -91,7 +91,7 @@ export default function AdminReportManagement() {
     <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden mt-8">
       <div className="p-6 border-b border-zinc-100">
         <h3 className="font-bold text-zinc-900 text-lg flex items-center gap-2">
-          <Flag className="text-orange-500" />
+          <Flag className="text-[#708238]" />
           Reporting & Moderation
         </h3>
         <p className="text-zinc-500 text-sm">Review content flagged by users</p>
@@ -112,7 +112,7 @@ export default function AdminReportManagement() {
             {loading ? (
               <tr>
                 <td colSpan={5} className="py-20 text-center">
-                  <Loader2 className="animate-spin text-orange-600 mx-auto" />
+                  <Loader2 className="animate-spin text-[#708238] mx-auto" />
                 </td>
               </tr>
             ) : reports.length > 0 ? (
@@ -125,9 +125,9 @@ export default function AdminReportManagement() {
                   <td className="px-6 py-4">
                     {report.Product ? (
                       <div>
-                        <div className="font-bold text-orange-600 text-sm flex items-center gap-1.5">
+                        <div className="font-bold text-[#708238] text-sm flex items-center gap-1.5">
                           Product: {report.Product.title}
-                          <Link href={`/product/${report.Product.id}`} target="_blank" className="text-zinc-400 hover:text-orange-500">
+                          <Link href={`/product/${report.Product.id}`} target="_blank" className="text-zinc-400 hover:text-[#708238]">
                             <ExternalLink size={14} />
                           </Link>
                         </div>
@@ -165,7 +165,7 @@ export default function AdminReportManagement() {
                   <td className="px-6 py-4 text-center">
                     <span className={`px-2 py-1 text-[10px] font-black uppercase rounded ${
                       report.status === 'pending' ? 'bg-amber-100 text-amber-600' :
-                      report.status === 'resolved' ? 'bg-emerald-100 text-emerald-600' : 'bg-zinc-100 text-zinc-600'
+                      report.status === 'resolved' ? 'bg-[#FFFDF9] text-emerald-600' : 'bg-zinc-100 text-zinc-600'
                     }`}>
                       {report.status}
                     </span>
@@ -204,7 +204,7 @@ export default function AdminReportManagement() {
                           {report.seller_id && (
                             <button
                               onClick={() => handleQuickAction(report.seller_id, 'suspendVendor')}
-                              className="px-3 py-1.5 bg-zinc-900 text-white rounded-lg text-[10px] font-black uppercase hover:bg-orange-600 transition-all flex items-center gap-1.5"
+                              className="px-3 py-1.5 bg-zinc-900 text-white rounded-lg text-[10px] font-black uppercase hover:bg-[#708238] transition-all flex items-center gap-1.5"
                             >
                               <UserX size={12} />
                               Suspend User
@@ -214,7 +214,7 @@ export default function AdminReportManagement() {
                           <button
                             onClick={() => handleStatusUpdate(report.id, 'resolved')}
                             disabled={actionLoading === report.id}
-                            className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors font-bold"
+                            className="p-2 bg-[#FFFDF9]/30 text-emerald-600 hover:bg-[#FFFDF9] rounded-lg transition-colors font-bold"
                             title="Mark as Resolved"
                           >
                             <CheckCircle size={18} />
@@ -236,3 +236,5 @@ export default function AdminReportManagement() {
     </div>
   );
 }
+
+

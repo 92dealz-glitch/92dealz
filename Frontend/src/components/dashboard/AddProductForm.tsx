@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getFallbackArray } from "@/data/categoriesData";
 import { getMyProfile, UserProfile } from "@/lib/api";
-import { NIGERIAN_STATES, NIGERIAN_LOCATIONS } from "@/data/locationData";
+import { PAKISTAN_STATES, PAKISTAN_LOCATIONS } from "@/data/locationData";
 import { useAlert } from "@/context/AlertContext";
 import { useCurrency } from "@/context/CurrencyContext";
 
@@ -36,7 +36,7 @@ export default function AddProductForm() {
     const [showClearModal, setShowClearModal] = useState(false);
     const [categories, setCategories] = useState<CategoryItem[]>([]);
     const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [isNigerian, setIsNigerian] = useState(false);
+    const [isPakistani, setIsPakistani] = useState(false);
     const [isChina, setIsChina] = useState(false);
     const [profileLoaded, setProfileLoaded] = useState(false);
     const { showVendorTasks, showAlert } = useAlert();
@@ -54,7 +54,7 @@ export default function AddProductForm() {
         model: "",
         color: "",
         price: "",
-        originalCurrency: "USD" as "NGN" | "USD" | "CNY",
+        originalCurrency: "USD" as "PKR" | "USD" | "CNY",
         negotiable: "No",
         description: "",
         images: [] as string[],
@@ -78,18 +78,18 @@ export default function AddProductForm() {
                 const res = await getMyProfile();
                 if (res.success && res.data) {
                     const phoneStr = String(res.data.phone || "");
-                    const isNig = res.data.country_code === 'NG' || res.data.country_name === 'Nigeria' || phoneStr.startsWith('+234') || phoneStr.startsWith('234');
+                    const isPak = res.data.country_code === 'PK' || res.data.country_name === 'Pakistan' || phoneStr.startsWith('+92') || phoneStr.startsWith('92');
                     const isCh = res.data.country_code === 'CN' || res.data.country_name === 'China' || phoneStr.startsWith('+86') || phoneStr.startsWith('86');
                     setIsChina(isCh);
-                    let finalIsNig = isNig;
+                    let finalIsPak = isPak;
                     let finalIsChina = isCh;
 
                     // Fallback to IP location if phone is not verified or not matching known regions
-                    if (!isNig && !isCh) {
+                    if (!isPak && !isCh) {
                         try {
                             const ipRes = await fetch("https://ipapi.co/json/").then(r => r.json());
-                            if (ipRes && ipRes.country_code === "NG") {
-                                finalIsNig = true;
+                            if (ipRes && ipRes.country_code === "PK") {
+                                finalIsPak = true;
                             } else if (ipRes && ipRes.country_code === "CN") {
                                 finalIsChina = true;
                             }
@@ -98,12 +98,12 @@ export default function AddProductForm() {
                         }
                     }
 
-                    setIsNigerian(finalIsNig);
+                    setIsPakistani(finalIsPak);
                     setIsChina(finalIsChina);
                     setProfile(res.data);
 
-                    const defaultCurrency = finalIsNig ? "NGN" : finalIsChina ? "CNY" : "USD";
-                    const defaultLocation = finalIsNig ? "Nigeria" : finalIsChina ? "China" : "";
+                    const defaultCurrency = finalIsPak ? "PKR" : finalIsChina ? "CNY" : "USD";
+                    const defaultLocation = finalIsPak ? "Pakistan" : finalIsChina ? "China" : "";
 
                     setFormData(prev => ({
                         ...prev,
@@ -154,12 +154,12 @@ export default function AddProductForm() {
                             {step === 2 && "Pricing & Details"}
                             {step === 3 && "Photos & Location"}
                         </h3>
-                        <span className="text-[#10B981] font-bold text-sm">{step === 1 ? "33%" : step === 2 ? "66%" : "100%"}</span>
+                        <span className="text-[#C7A27C] font-bold text-sm">{step === 1 ? "33%" : step === 2 ? "66%" : "100%"}</span>
                     </div>
                     <div className="text-zinc-500 font-bold text-sm mb-3">Step {step} of 3</div>
                     <div className="w-full h-1.5 bg-zinc-100 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-[#f45c03] transition-all duration-500 ease-out"
+                            className="h-full bg-[#708238] transition-all duration-500 ease-out"
                             style={{ width: `${(step / 3) * 100}%` }}
                         />
                     </div>
@@ -169,7 +169,7 @@ export default function AddProductForm() {
                 {profile && (
                     <div className="mb-8 p-4 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-xl ${profile.subscription_plan === 'star' ? 'bg-yellow-100 text-yellow-600' : profile.subscription_plan === 'basic' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'}`}>
+                            <div className={`p-2 rounded-xl ${profile.subscription_plan === 'star' ? 'bg-yellow-100 text-yellow-600' : profile.subscription_plan === 'basic' ? 'bg-[#E9E0D4] text-[#708238]' : 'bg-gray-100 text-gray-600'}`}>
                                 {profile.subscription_plan === 'star' ? <Star size={20} /> : <Zap size={20} />}
                             </div>
                             <div>
@@ -211,7 +211,7 @@ export default function AddProductForm() {
                         data={formData}
                         updateData={updateFormData}
                         onBack={prevStep}
-                        isNigerian={isNigerian}
+                        isPakistani={isPakistani}
                         isChina={isChina}
                         profile={profile}
                         showVendorTasks={showVendorTasks}
@@ -300,7 +300,7 @@ function InputField({ label, placeholder, value, onChange, required = false, typ
     return (
         <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-                <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
+                <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#708238] ml-1">*</span>}</label>
                 {maxLength && (
                     <span className={`text-[10px] font-bold ${value.length >= maxLength ? 'text-red-500' : 'text-zinc-400'}`}>
                         {value.length} / {maxLength}
@@ -313,7 +313,7 @@ function InputField({ label, placeholder, value, onChange, required = false, typ
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
                 maxLength={maxLength}
-                className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors"
+                className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors"
             />
         </div>
     )
@@ -322,12 +322,12 @@ function InputField({ label, placeholder, value, onChange, required = false, typ
 function SelectField({ label, options, value, onChange, required = false }: { label: string, options: string[], value: string, onChange: (v: string) => void, required?: boolean }) {
     return (
         <div className="flex flex-col gap-2">
-            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
+            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#708238] ml-1">*</span>}</label>
             <div className="relative">
                 <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
+                    className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors bg-white"
                 >
                     <option value="" disabled>Select {label}</option>
                     {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -360,18 +360,18 @@ function CustomSelect({ label, options, value, onChange, required = false, disab
 
     return (
         <div className="flex flex-col gap-2 relative" ref={ref}>
-            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#f45c03] ml-1">*</span>}</label>
+            <label className="text-black font-black text-[15px]">{label}{required && <span className="text-[#708238] ml-1">*</span>}</label>
             <button
                 type="button"
                 onClick={() => !disabled && setOpen(!open)}
-                className={`flex items-center justify-between w-full border ${disabled ? 'bg-zinc-50 border-zinc-100' : 'bg-white border-zinc-200 focus:border-[#f45c03]'} rounded-lg p-4 text-zinc-900 font-bold transition-all text-left h-[58px]`}
+                className={`flex items-center justify-between w-full border ${disabled ? 'bg-zinc-50 border-zinc-100' : 'bg-white border-zinc-200 focus:border-[#708238]'} rounded-lg p-4 text-zinc-900 font-bold transition-all text-left h-[58px]`}
                 disabled={disabled}
             >
                 <span className={!value ? "text-zinc-400" : ""}>{value || `Select ${label}`}</span>
                 <ChevronDown className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} size={18} />
             </button>
             {open && (
-                <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border border-zinc-100 rounded-xl shadow-xl z-50 py-2 max-h-[300px] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200 border-t-4 border-t-orange-500">
+                <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border border-zinc-100 rounded-xl shadow-xl z-50 py-2 max-h-[300px] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200 border-t-4 border-t-emerald-500">
                     {options.map((opt) => (
                         <button
                             key={opt}
@@ -380,7 +380,7 @@ function CustomSelect({ label, options, value, onChange, required = false, disab
                                 onChange(opt);
                                 setOpen(false);
                             }}
-                            className={`w-full text-left px-4 py-3 text-sm font-bold transition-colors hover:bg-orange-50 hover:text-orange-600 ${value === opt ? 'bg-orange-50 text-orange-600' : 'text-zinc-700'}`}
+                            className={`w-full text-left px-4 py-3 text-sm font-bold transition-colors hover:bg-[#FFFDF9]/30 hover:text-emerald-600 ${value === opt ? 'bg-[#FFFDF9]/30 text-emerald-600' : 'text-zinc-700'}`}
                         >
                             {opt}
                         </button>
@@ -409,7 +409,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <InputField label="Product Title" placeholder="e.g. washing machine" value={data.title} onChange={(v) => updateData({ title: v })} required maxLength={70} />
             <div className="flex flex-col gap-2">
-                <label className="text-black font-black text-[15px]">Category<span className="text-[#f45c03] ml-1">*</span></label>
+                <label className="text-black font-black text-[15px]">Category<span className="text-[#708238] ml-1">*</span></label>
                 <div className="relative">
                     <select
                         value={data.category_id || ""}
@@ -418,7 +418,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                             const cat = categories.find(c => Number(c.catId) === id);
                             updateData({ category_id: id, category: cat?.id || "", subcategory: "" });
                         }}
-                        className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
+                        className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors bg-white"
                     >
                         <option value="" disabled>Select Category</option>
                         {categories.map(c => <option key={c.catId} value={c.catId}>{c.title}</option>)}
@@ -441,7 +441,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
 
             {specs.length > 0 && (
                 <div className="bg-zinc-50 border border-zinc-100 rounded-xl p-6 mt-4">
-                    <h4 className="text-black font-black text-[17px] mb-6">Product Specifications <span className="text-[#f45c03] ml-1">*</span></h4>
+                    <h4 className="text-black font-black text-[17px] mb-6">Product Specifications <span className="text-[#708238] ml-1">*</span></h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {specs.map((s: any) => (
                             <div key={s.label}>
@@ -460,7 +460,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                                             value={data.specifications[s.label] || ""}
                                             onChange={(e) => handleSpecChange(s.label, e.target.value)}
                                             placeholder={s.placeholder || ""}
-                                            className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-white"
+                                            className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors bg-white"
                                         />
                                     </div>
                                 ) : (
@@ -489,7 +489,7 @@ function StepOne({ data, updateData, onNext, categories }: { data: any, updateDa
                 <button
                     onClick={onNext}
                     disabled={!data.title || !data.category_id}
-                    className="bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                    className="bg-[#708238] hover:bg-[#5E6E2F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-[#E9E0D4]/30 w-full sm:w-auto sm:min-w-[200px]"
                 >
                     Next
                 </button>
@@ -505,15 +505,15 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
         <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="flex flex-col gap-2">
-                    <label className="text-black font-black text-[15px]">Price<span className="text-[#f45c03] ml-1">*</span></label>
+                    <label className="text-black font-black text-[15px]">Price<span className="text-[#708238] ml-1">*</span></label>
                     <div className="flex gap-2">
                         <div className="relative w-1/3">
                             <select
                                 value={data.originalCurrency}
                                 onChange={(e) => updateData({ originalCurrency: e.target.value as any })}
-                                className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors bg-zinc-50"
+                                className="appearance-none w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors bg-zinc-50"
                             >
-                                <option value="NGN">NGN (₦)</option>
+                                <option value="PKR">PKR (Rs)</option>
                                 <option value="USD">USD ($)</option>
                                 <option value="CNY">CNY (¥)</option>
                             </select>
@@ -530,13 +530,13 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                                     if (val.length <= 12) updateData({ price: val });
                                 }}
                                 placeholder="Enter price (Max 12 digits)"
-                                className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors"
+                                className="w-full border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors"
                             />
                         </div>
                     </div>
-                    {data.price && data.originalCurrency !== "NGN" && (
+                    {data.price && data.originalCurrency !== "PKR" && (
                         <p className="text-[10px] font-bold text-zinc-400">
-                            Standardized: {(Number(data.price) / (rates[data.originalCurrency] || 1) * rates.NGN).toLocaleString(undefined, { maximumFractionDigits: 0 })} NGN approx.
+                            Standardized: {(Number(data.price) / (rates[data.originalCurrency] || 1) * rates.PKR).toLocaleString(undefined, { maximumFractionDigits: 0 })} PKR approx.
                         </p>
                     )}
                 </div>
@@ -546,7 +546,7 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
 
             <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                    <label className="text-black font-black text-[15px]">Description <span className="text-[#f45c03] ml-1">*</span></label>
+                    <label className="text-black font-black text-[15px]">Description <span className="text-[#708238] ml-1">*</span></label>
                     <span className={`text-[10px] font-bold ${data.description.length >= 500 ? 'text-red-500' : 'text-zinc-400'}`}>
                         {data.description.length} / 500
                     </span>
@@ -557,7 +557,7 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                     onChange={(e) => updateData({ description: e.target.value })}
                     maxLength={500}
                     rows={6}
-                    className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#f45c03] transition-colors resize-none"
+                    className="border border-zinc-200 rounded-lg p-4 text-zinc-900 font-bold focus:outline-none focus:border-[#708238] transition-colors resize-none"
                 />
             </div>
 
@@ -570,14 +570,14 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
                 <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={onBack}
-                        className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                        className="bg-[#708238] hover:bg-[#5E6E2F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-[#E9E0D4]/30 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Back
                     </button>
                     <button
                         onClick={onNext}
                         disabled={!data.price || !data.description}
-                        className="bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                        className="bg-[#708238] hover:bg-[#5E6E2F] disabled:opacity-50 text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-[#E9E0D4]/30 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Next
                     </button>
@@ -587,11 +587,11 @@ function StepTwo({ data, updateData, onNext, onBack, selectedCategory }: { data:
     )
 }
 
-function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, showVendorTasks }: {
+function StepThree({ data, updateData, onBack, isPakistani, isChina, profile, showVendorTasks }: {
     data: any,
     updateData: (d: any) => void,
     onBack: () => void,
-    isNigerian?: boolean,
+    isPakistani?: boolean,
     isChina?: boolean,
     profile: any,
     showVendorTasks: () => void
@@ -683,28 +683,28 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
 
     return (
         <div className="space-y-12 animate-in slide-in-from-right-4 duration-300">
-            <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 mb-8">
-                <h4 className="text-orange-800 font-black text-sm mb-1">Review your details:</h4>
-                <p className="text-orange-600 text-xs font-bold">
-                    {data.title} • {data.originalCurrency === 'NGN' ? '₦' : data.originalCurrency === 'USD' ? '$' : '¥'}{Number(data.price).toLocaleString()} • {data.category} {data.subcategory && `> ${data.subcategory}`}
+            <div className="bg-[#FFFDF9]/30 p-4 rounded-xl border border-emerald-100 mb-8">
+                <h4 className="text-[#5E6E2F] font-black text-sm mb-1">Review your details:</h4>
+                <p className="text-emerald-600 text-xs font-bold">
+                    {data.title} • {data.originalCurrency === 'PKR' ? 'Rs ' : data.originalCurrency === 'USD' ? '$' : '¥'}{Number(data.price).toLocaleString()} • {data.category} {data.subcategory && `> ${data.subcategory}`}
                 </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <CustomSelect
                     label="Country"
-                    options={isChina ? ["China"] : ["Nigeria"]}
+                    options={isChina ? ["China"] : ["Pakistan"]}
                     value={data.location || ""}
                     onChange={(v) => {
                         updateData({ location: v, state: "", city: "" });
                     }}
                 />
 
-                {data.location === "Nigeria" ? (
+                {data.location === "Pakistan" ? (
                     <>
                         <CustomSelect
                             label="State"
-                            options={NIGERIAN_STATES}
+                            options={PAKISTAN_STATES}
                             value={data.state || ""}
                             onChange={(v) => updateData({ state: v, city: "" })}
                             required
@@ -712,7 +712,7 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                         {data.state && (
                             <CustomSelect
                                 label="City"
-                                options={NIGERIAN_LOCATIONS[data.state] || []}
+                                options={PAKISTAN_LOCATIONS[data.state] || []}
                                 value={data.city || ""}
                                 onChange={(v) => updateData({ city: v })}
                                 required
@@ -739,7 +739,7 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                         </div>
                     ))}
                     {data.images.length < 20 && (
-                        <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#f45c03] hover:bg-orange-50 transition-all text-zinc-400 hover:text-[#f45c03] relative overflow-hidden">
+                        <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#708238] hover:bg-[#FFFDF9]/30 transition-all text-zinc-400 hover:text-[#708238] relative overflow-hidden">
                             <>
                                 <Plus size={24} />
                                 <span className="text-[10px] font-black uppercase">{uploading ? "Uploading..." : data.images.length === 0 ? "Upload Image" : "Add Photo"}</span>
@@ -758,11 +758,11 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {(isChina && (profile?.subscription_plan === 'free' || !profile?.subscription_plan)) && (
                         <div className="md:col-span-2 lg:col-span-4">
-                            <div className="p-10 bg-black rounded-[32px] text-center border-4 border-[#f45c03] shadow-2xl">
-                                <Info size={56} className="text-[#f45c03] mx-auto mb-6" />
+                            <div className="p-10 bg-black rounded-[32px] text-center border-4 border-[#708238] shadow-2xl">
+                                <Info size={56} className="text-[#708238] mx-auto mb-6" />
                                 <h3 className="text-3xl font-black text-white mb-3">Subscription Required</h3>
                                 <p className="text-zinc-400 font-bold mb-8 text-lg">In order to add product you have to purchase a plan for better experience and visibility</p>
-                                <Link href="/pricing" className="inline-block bg-[#f45c03] text-white px-12 py-5 rounded-2xl font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-orange-500/20">
+                                <Link href="/pricing" className="inline-block bg-[#708238] text-white px-12 py-5 rounded-2xl font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-emerald-500/20">
                                     View Pricing Plans
                                 </Link>
                             </div>
@@ -834,14 +834,14 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                 {/* Limit Error Dialog */}
                 {limitError && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                        <div className="bg-white rounded-[32px] p-10 max-w-md w-full animate-in zoom-in-95 duration-200 shadow-2xl text-center border-4 border-orange-500">
-                            <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Info size={40} className="text-[#f45c03]" />
+                        <div className="bg-white rounded-[32px] p-10 max-w-md w-full animate-in zoom-in-95 duration-200 shadow-2xl text-center border-4 border-emerald-500">
+                            <div className="w-20 h-20 bg-[#FFFDF9] rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Info size={40} className="text-[#708238]" />
                             </div>
                             <h3 className="text-2xl font-black text-black mb-4">Capacity Reached</h3>
                             <p className="text-zinc-600 font-bold mb-8 leading-relaxed">{limitError}</p>
                             <div className="flex flex-col gap-3">
-                                <Link href="/pricing" className="w-full bg-[#f45c03] text-white py-4 rounded-xl font-black shadow-lg shadow-orange-100">Upgrade Plan</Link>
+                                <Link href="/pricing" className="w-full bg-[#708238] text-white py-4 rounded-xl font-black shadow-lg shadow-[#E9E0D4]/30">Upgrade Plan</Link>
                                 <button onClick={() => setLimitError(null)} className="w-full py-2 text-zinc-400 font-bold">Close</button>
                             </div>
                         </div>
@@ -857,11 +857,11 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                                 <h3 className="text-3xl font-black text-black mb-2">{explanationModal.title}</h3>
                                 <p className="text-zinc-500 font-bold text-sm">{explanationModal.msg}</p>
                             </div>
-                            <div className="p-5 bg-orange-50 border border-orange-100 rounded-2xl mb-8 flex items-center gap-4">
-                                <div className="p-3 bg-white rounded-xl shadow-sm"><Zap className="text-orange-600" size={24} /></div>
+                            <div className="p-5 bg-[#E9E0D4] border border-[#E9E0D4]/30 rounded-2xl mb-8 flex items-center gap-4">
+                                <div className="p-3 bg-white rounded-xl shadow-sm"><Zap className="text-[#708238]" size={24} /></div>
                                 <div>
                                     <p className="text-sm font-black text-orange-900">Required Upgrade</p>
-                                    <p className="text-xs font-bold text-orange-700">Need <span className="underline">{explanationModal.plan}</span> to unlock.</p>
+                                    <p className="text-xs font-bold text-[#5E6E2F]">Need <span className="underline">{explanationModal.plan}</span> to unlock.</p>
                                 </div>
                             </div>
                             <Link href="/pricing" className="block w-full text-center bg-black text-white py-4 rounded-xl font-black">Plan Pricing</Link>
@@ -869,9 +869,9 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                     </div>
                 )}
                 {profile?.subscription_plan === 'free' && !isChina && (
-                    <div className="mt-4 p-4 bg-orange-50 border border-orange-100 rounded-xl flex items-center gap-3">
-                        <Info size={18} className="text-orange-600" />
-                        <p className="text-xs font-bold text-orange-800">
+                    <div className="mt-4 p-4 bg-[#FFFDF9]/30 border border-emerald-100 rounded-xl flex items-center gap-3">
+                        <Info size={18} className="text-[#708238]" />
+                        <p className="text-xs font-bold text-[#5E6E2F]">
                             Upgrade to <Link href="/pricing" className="underline font-black">Basic, Star or Ultimate</Link> to unlock premium visibility tiers for your products.
                         </p>
                     </div>
@@ -888,7 +888,7 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                 <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={onBack}
-                        className="bg-[#f45c03] hover:bg-[#f45c03] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-orange-100 w-full sm:w-auto sm:min-w-[200px]"
+                        className="bg-[#708238] hover:bg-[#5E6E2F] text-white font-black py-4 px-12 rounded-xl transition-all shadow-lg shadow-[#E9E0D4]/30 w-full sm:w-auto sm:min-w-[200px]"
                     >
                         Back
                     </button>
@@ -915,7 +915,7 @@ function StepThree({ data, updateData, onBack, isNigerian, isChina, profile, sho
                                 <button
                                     onClick={postAd}
                                     disabled={submitting || data.images.length === 0 || !data.title || !data.price}
-                                    className="w-full sm:w-auto bg-[#f45c03] hover:bg-[#f45c03] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-orange-100 sm:min-w-[180px]"
+                                    className="w-full sm:w-auto bg-[#708238] hover:bg-[#5E6E2F] disabled:opacity-50 text-white font-black py-4 px-8 rounded-xl transition-all shadow-lg shadow-[#E9E0D4]/30 sm:min-w-[180px]"
                                 >
                                     {submitting ? "Posting..." : "Post Ad"}
                                 </button>
@@ -935,7 +935,7 @@ function VisibilityOption({ id, title, price, perk, active, onClick, disabled, c
             onClick={onClick}
             disabled={disabled}
             className={`flex flex-col p-5 rounded-[24px] border-2 transition-all text-left relative overflow-hidden ${active
-                    ? 'border-[#f45c03] bg-orange-50/50 shadow-md shadow-orange-100'
+                    ? 'border-[#708238] bg-[#FFFDF9]/30/50 shadow-md shadow-[#E9E0D4]/30'
                     : isLocked
                         ? 'border-zinc-100 bg-zinc-50'
                         : disabled
@@ -944,7 +944,7 @@ function VisibilityOption({ id, title, price, perk, active, onClick, disabled, c
                 }`}
         >
             {active && (
-                <div className="absolute top-3 right-3 text-[#f45c03]">
+                <div className="absolute top-3 right-3 text-[#708238]">
                     <CheckCircle2 size={24} />
                 </div>
             )}
@@ -953,14 +953,14 @@ function VisibilityOption({ id, title, price, perk, active, onClick, disabled, c
                     <Lock size={18} />
                 </div>
             )}
-            <div className={`mb-3 text-[10px] font-black uppercase tracking-widest ${active ? 'text-[#f45c03]' : 'text-zinc-400'}`}>
+            <div className={`mb-3 text-[10px] font-black uppercase tracking-widest ${active ? 'text-[#708238]' : 'text-zinc-400'}`}>
                 {price}
             </div>
             <h5 className="text-black font-black text-lg mb-1">{title}</h5>
             <p className="text-zinc-500 font-bold text-[11px] mb-4">{perk}</p>
 
             {count && (
-                <div className={`mt-auto pt-3 border-t ${active ? 'border-orange-200' : 'border-zinc-100'}`}>
+                <div className={`mt-auto pt-3 border-t ${active ? 'border-emerald-200' : 'border-zinc-100'}`}>
                     <span className="text-[9px] font-black uppercase text-zinc-400">Used Slots</span>
                     <div className="text-xs font-black text-black">{count}</div>
                 </div>
@@ -968,7 +968,7 @@ function VisibilityOption({ id, title, price, perk, active, onClick, disabled, c
 
             {isLocked && (
                 <div className="mt-auto pt-3 border-t border-zinc-100">
-                    <span className="text-[9px] font-black uppercase text-[#f45c03] font-black flex items-center gap-1">
+                    <span className="text-[9px] font-black uppercase text-[#708238] font-black flex items-center gap-1">
                         Unlock Tier
                     </span>
                 </div>
@@ -979,14 +979,14 @@ function VisibilityOption({ id, title, price, perk, active, onClick, disabled, c
 
 function PromoteCard({ title, price, desc }: { title: string, price: string, desc: string }) {
     return (
-        <div className="border border-[#f45c03]/30 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer group">
+        <div className="border border-[#708238]/30 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer group">
             <div className="flex justify-between items-center mb-4">
                 <h5 className="text-black font-black text-lg">{title}</h5>
-                <span className="text-[#f45c03] font-black text-xl">{price}</span>
+                <span className="text-[#708238] font-black text-xl">{price}</span>
             </div>
             <div className="flex gap-2 mb-4">
                 {["7 days", "14 days", "30 days"].map(d => (
-                    <span key={d} className="bg-green-100 text-green-600 px-3 py-1 rounded text-[11px] font-black">
+                    <span key={d} className="bg-green-100 text-[#708238] px-3 py-1 rounded text-[11px] font-black">
                         {d}
                     </span>
                 ))}
@@ -995,4 +995,6 @@ function PromoteCard({ title, price, desc }: { title: string, price: string, des
         </div>
     )
 }
+
+
 

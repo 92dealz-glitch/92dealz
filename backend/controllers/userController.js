@@ -297,11 +297,11 @@ exports.upgradeToVendor = async (req, res, next) => {
       }
     }
 
-    // Restriction Check: Only NG and CN users can become vendors (Temporarily Disabled Globally)
-    // if (!['NG', 'CN'].includes(user.country_code)) {
+    // Restriction Check: Only PK and CN users can become vendors (Temporarily Disabled Globally)
+    // if (!['PK', 'CN'].includes(user.country_code)) {
     //   return res.status(403).json({ 
     //     success: false, 
-    //     message: 'Vendor accounts are currently only available for users in Nigeria and China. You can still purchase products as a regular customer.' 
+    //     message: 'Vendor accounts are currently only available for users in Pakistan and China. You can still purchase products as a regular customer.' 
     //   });
     // }
 
@@ -413,9 +413,9 @@ exports.buyPlan = async (req, res, next) => {
 
     // Regional Plan Restrictions
     const isChina = user.country_code === 'CN';
-    const isNigeria = user.country_code === 'NG';
+    const isPakistan = user.country_code === 'PK';
 
-    if (!isChina && !isNigeria) {
+    if (!isChina && !isPakistan) {
       return res.status(403).json({ 
         success: false, 
         message: 'Vendor plans are not available in your country. You can still purchase products as a regular customer.' 
