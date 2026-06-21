@@ -293,19 +293,8 @@ function SignupContent() {
         console.error("NextAuth auto-login sync failed", signInErr);
       }
       
-      const r = String(res.user?.role || "").toLowerCase();
-      
-      // Prioritize callbackUrl if provided
-      if (callbackUrl) {
-        router.push(callbackUrl);
-      } else if (r === "vendor") {
-        showVendorTasks();
-        router.push("/vendor-dashboard");
-      } else if (r === "admin") {
-        router.push("/admin-dashboard");
-      } else {
-        router.push("/");
-      }
+      // Redirect to home page upon successful registration
+      router.push("/");
     } catch (err: any) {
       setError(err.message);
     } finally {
