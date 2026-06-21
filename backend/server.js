@@ -38,7 +38,8 @@ const allowedOrigins = [
   'https://92dealz.vercel.app',
   'https://www.92dealz.vercel.app',
   'https://92dealz.com',
-  'https://www.92dealz.com'
+  'https://www.92dealz.com',
+  'https://92dealz-glitch-92dealz.vercel.app'
 ];
 
 app.use(cors({
@@ -186,12 +187,22 @@ const listenWithFallback = async (port, maxAttempts = 5) => {
 };
 
 const isSqlite = sequelize.options.dialect === 'sqlite';
-sequelize.sync()
-  .then(async () => {
-    console.log('✅ Database synchronized');
-    await forceSchemaFix();
-    await listenWithFallback(START_PORT);
-  })
-  .catch(err => console.error('❌ Database sync failed:', err));
+if (!process.env.VERCEL) {
+  sequelize.sync()
+    .then(async () => {
+      console.log('✅ Database synchronized');
+      await forceSchemaFix();
+      await listenWithFallback(START_PORT);
+    })
+    .catch(err => console.error('❌ Database sync failed:', err));
+} else {
+  // On Vercel, we run database initialization but skip app.listen
+  sequelize.sync()
+    .then(async () => {
+      console.log('✅ Database synchronized on Vercel');
+      await forceSchemaFix();
+    })
+    .catch(err => console.error('❌ Database sync failed on Vercel:', err));
+}
 
 module.exports = app; // For Vercel
